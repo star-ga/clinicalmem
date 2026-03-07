@@ -30,8 +30,7 @@ _engine = ClinicalMemEngine()
 
 mcp = FastMCP(
     "ClinicalMem",
-    version="0.1.0",
-    description=(
+    instructions=(
         "Persistent, auditable, contradiction-safe clinical memory. "
         "Provides intelligent medication safety analysis, clinical context recall, "
         "and tamper-proof audit trails for healthcare AI agents. "

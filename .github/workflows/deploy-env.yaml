@@ -1,0 +1,45 @@
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        required: true
+        type: string
+      DOCKERFILE:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+      ACR_PASSWORD:
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name clinicalmemacr
+
+      - name: Build and push
+        run: |
+          TAG="clinicalmemacr.azurecr.io/${{ inputs.APP_NAME }}:${{ github.sha }}"
+          docker build -f ${{ inputs.DOCKERFILE }} -t "${TAG}" .
+          docker push "${TAG}"
+
+      - name: Deploy to Container Apps
+        run: |
+          az containerapp update \
+            --name ${{ inputs.APP_NAME }} \
+            --resource-group clinicalmem-rg \
+            --image "clinicalmemacr.azurecr.io/${{ inputs.APP_NAME }}:${{ github.sha }}"
+
+      - name: Logout from Azure
+        run: az logout

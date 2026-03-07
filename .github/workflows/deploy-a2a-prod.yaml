@@ -1,0 +1,12 @@
+name: Deploy A2A Agent (prod)
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    uses: ./.github/workflows/deploy-env.yaml
+    with:
+      AZURE_WEBAPP_NAME: clinicalmem-a2a
+      DOCKERFILE: Dockerfile.a2a
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
