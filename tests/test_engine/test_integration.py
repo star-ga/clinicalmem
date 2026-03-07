@@ -1,0 +1,348 @@
+"""
+Integration tests — wire FHIR client + ClinicalMem engine against Sarah Mitchell bundle.
+
+Mocks httpx.get to simulate a FHIR R4 server returning resources from the
+synthetic patient fixture.
+"""
+import json
+import os
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from engine.clinical_memory import ClinicalMemEngine
+from engine.fhir_client import FHIRClient, FHIRContext, FHIRClientError
+
+FIXTURES = Path(__file__).parent.parent / "fixtures"
+BUNDLE = json.loads((FIXTURES / "sarah_mitchell_bundle.json").read_text())
+
+# Group resources by type for mock FHIR responses
+_BY_TYPE: dict[str, list[dict]] = {}
+for entry in BUNDLE["entry"]:
+    res = entry["resource"]
+    _BY_TYPE.setdefault(res["resourceType"], []).append(res)
+
+
+def _make_search_bundle(resources: list[dict]) -> dict:
+    """Wrap resources in a FHIR searchset Bundle."""
+    return {
+        "resourceType": "Bundle",
+        "type": "searchset",
+        "total": len(resources),
+        "entry": [{"resource": r} for r in resources],
+    }
+
+
+def _mock_fhir_get(url: str, **kwargs) -> MagicMock:
+    """Route mock GET requests to the right resource type."""
+    resp = MagicMock()
+    resp.status_code = 200
+
+    # Parse path relative to base URL
+    base = "https://fhir.example.com/r4/"
+    rel_path = url.replace(base, "").split("?")[0]
+    resource_type = rel_path.split("/")[0]
+
+    if resource_type == "Patient" and "/" in rel_path:
+        # Direct read: GET /Patient/{id}
+        resp.json.return_value = _BY_TYPE["Patient"][0]
+    elif resource_type == "MedicationRequest":
+        resp.json.return_value = _make_search_bundle(_BY_TYPE.get("MedicationRequest", []))
+    elif resource_type == "Condition":
+        resp.json.return_value = _make_search_bundle(_BY_TYPE.get("Condition", []))
+    elif resource_type == "AllergyIntolerance":
+        resp.json.return_value = _make_search_bundle(_BY_TYPE.get("AllergyIntolerance", []))
+    elif resource_type == "Observation":
+        # Filter by category param if present
+        params = kwargs.get("params", {})
+        category = params.get("category", "")
+        obs = _BY_TYPE.get("Observation", [])
+        if category:
+            obs = [
+                o for o in obs
+                if any(
+                    cat.get("coding", [{}])[0].get("code") == category
+                    for cat in o.get("category", [])
+                )
+            ]
+        resp.json.return_value = _make_search_bundle(obs)
+    elif resource_type == "Encounter":
+        resp.json.return_value = _make_search_bundle(_BY_TYPE.get("Encounter", []))
+    else:
+        resp.status_code = 404
+        resp.text = "Not Found"
+
+    return resp
+
+
+@pytest.fixture
+def fhir_ctx():
+    return FHIRContext(
+        url="https://fhir.example.com/r4",
+        token="test-token-abc",
+        patient_id="patient-sarah-mitchell",
+    )
+
+
+@pytest.fixture
+def fhir_client(fhir_ctx):
+    with patch("httpx.get", side_effect=_mock_fhir_get):
+        yield FHIRClient(fhir_ctx)
+
+
+@pytest.fixture
+def engine(tmp_path):
+    return ClinicalMemEngine(data_dir=str(tmp_path / "clinicalmem"))
+
+
+# ── FHIR Client Tests ────────────────────────────────────────────────────
+
+
+class TestFHIRClient:
+    def test_get_patient(self, fhir_client):
+        patient = fhir_client.get_patient()
+        assert patient["resourceType"] == "Patient"
+        assert patient["name"][0]["family"] == "Mitchell"
+
+    def test_get_medications(self, fhir_client):
+        meds = fhir_client.get_medications()
+        assert len(meds) == 7  # 5 regular + ibuprofen + amoxicillin
+        names = [m["medicationCodeableConcept"]["text"] for m in meds]
+        assert "Warfarin 5mg" in names
+        assert "Ibuprofen 400mg" in names
+        assert "Amoxicillin 500mg" in names
+
+    def test_get_conditions(self, fhir_client):
+        conditions = fhir_client.get_conditions()
+        assert len(conditions) == 4
+        texts = [c["code"]["text"] for c in conditions]
+        assert "Type 2 Diabetes Mellitus" in texts
+        assert "Chronic Kidney Disease Stage 3b" in texts
+
+    def test_get_allergies(self, fhir_client):
+        allergies = fhir_client.get_allergies()
+        assert len(allergies) == 2
+        names = [a["code"]["text"] for a in allergies]
+        assert "Penicillin" in names
+        assert "Sulfa drugs" in names
+
+    def test_get_observations_vitals(self, fhir_client):
+        obs = fhir_client.get_observations(category="vital-signs")
+        assert len(obs) == 2  # 2 BP readings
+        assert all(o["resourceType"] == "Observation" for o in obs)
+
+    def test_get_observations_labs(self, fhir_client):
+        obs = fhir_client.get_observations(category="laboratory")
+        assert len(obs) == 5  # 3 GFR + HbA1c + INR
+
+    def test_get_encounters(self, fhir_client):
+        encounters = fhir_client.get_encounters()
+        assert len(encounters) == 1
+        assert "Fall" in encounters[0]["type"][0]["text"]
+
+
+class TestFHIRContext:
+    def test_missing_url_raises(self):
+        ctx = FHIRContext(url="", token="tok", patient_id="pid")
+        with pytest.raises(FHIRClientError, match="url"):
+            ctx.validate()
+
+    def test_missing_token_raises(self):
+        ctx = FHIRContext(url="https://fhir.example.com", token="", patient_id="pid")
+        with pytest.raises(FHIRClientError, match="token"):
+            ctx.validate()
+
+
+# ── Engine Ingestion Tests ────────────────────────────────────────────────
+
+
+class TestEngineIngestion:
+    def test_ingest_counts(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            counts = engine.ingest_from_fhir(fhir_client)
+
+        assert counts["medications"] == 7
+        assert counts["conditions"] == 4
+        assert counts["allergies"] == 2
+        assert counts["observations"] == 7  # 2 vitals + 5 labs
+
+    def test_ingest_creates_blocks(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+
+        blocks = engine._patient_blocks.get("patient-sarah-mitchell", [])
+        assert len(blocks) == 20  # 7 + 4 + 2 + 7
+
+    def test_ingest_audit_entry(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+
+        trail = engine.get_audit_trail()
+        assert len(trail) == 1
+        assert trail[0]["action"] == "ingest_fhir"
+
+
+# ── Medication Safety Tests ───────────────────────────────────────────────
+
+
+class TestMedicationSafety:
+    @pytest.fixture(autouse=True)
+    def _ingest(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+        self.engine = engine
+        self.pid = "patient-sarah-mitchell"
+
+    def test_detects_warfarin_ibuprofen_interaction(self):
+        report = self.engine.medication_safety_check(self.pid)
+        interaction_pairs = {(i.drug_a, i.drug_b) for i in report.interactions}
+        assert ("warfarin", "ibuprofen") in interaction_pairs
+
+    def test_detects_penicillin_amoxicillin_conflict(self):
+        report = self.engine.medication_safety_check(self.pid)
+        conflict_pairs = {(c.allergen, c.medication) for c in report.allergy_conflicts}
+        assert ("penicillin", "amoxicillin") in conflict_pairs
+
+    def test_report_has_summary(self):
+        report = self.engine.medication_safety_check(self.pid)
+        assert "drug interaction" in report.summary.lower()
+        assert "allergy conflict" in report.summary.lower()
+
+    def test_report_has_audit_hash(self):
+        report = self.engine.medication_safety_check(self.pid)
+        assert len(report.audit_hash) == 64  # SHA-256 hex
+
+
+# ── Contradiction Detection Tests ─────────────────────────────────────────
+
+
+class TestContradictionDetection:
+    @pytest.fixture(autouse=True)
+    def _ingest(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+        self.engine = engine
+        self.pid = "patient-sarah-mitchell"
+
+    def test_finds_allergy_medication_contradiction(self):
+        contradictions = self.engine.detect_contradictions(self.pid)
+        types = [c["type"] for c in contradictions]
+        assert "allergy_medication_conflict" in types
+
+    def test_finds_drug_interaction_contradiction(self):
+        contradictions = self.engine.detect_contradictions(self.pid)
+        types = [c["type"] for c in contradictions]
+        assert "drug_interaction" in types
+
+    def test_contradiction_severities(self):
+        contradictions = self.engine.detect_contradictions(self.pid)
+        severities = {c["severity"] for c in contradictions}
+        assert "critical" in severities or "high" in severities
+
+    def test_at_least_two_contradictions(self):
+        contradictions = self.engine.detect_contradictions(self.pid)
+        assert len(contradictions) >= 2
+
+
+# ── Recall Tests ──────────────────────────────────────────────────────────
+
+
+class TestRecall:
+    @pytest.fixture(autouse=True)
+    def _ingest(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+        self.engine = engine
+        self.pid = "patient-sarah-mitchell"
+
+    def test_recall_warfarin(self):
+        result = self.engine.recall(self.pid, "warfarin bleeding risk")
+        assert len(result.blocks) > 0
+        titles = [b["title"] for b in result.blocks]
+        assert any("warfarin" in t.lower() for t in titles)
+
+    def test_recall_diabetes(self):
+        result = self.engine.recall(self.pid, "diabetes management metformin")
+        assert len(result.blocks) > 0
+
+    def test_recall_empty_patient(self):
+        result = self.engine.recall("nonexistent", "any query")
+        assert result.confidence.should_abstain is True
+        assert len(result.blocks) == 0
+
+    def test_recall_has_audit(self):
+        result = self.engine.recall(self.pid, "blood pressure")
+        assert len(result.audit_hash) == 64
+
+    def test_negation_query_handling(self):
+        result = self.engine.recall(self.pid, "NOT allergic to penicillin")
+        assert result.blocks is not None  # Should not crash
+
+
+# ── Audit Chain Tests ─────────────────────────────────────────────────────
+
+
+class TestAuditChain:
+    def test_chain_integrity_after_operations(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+
+        pid = "patient-sarah-mitchell"
+        engine.recall(pid, "medications")
+        engine.medication_safety_check(pid)
+        engine.detect_contradictions(pid)
+        engine.patient_summary(pid)
+
+        assert engine.verify_audit_chain() is True
+
+    def test_chain_genesis(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+
+        trail = engine.get_audit_trail()
+        assert trail[0]["prev_hash"] == "genesis"
+
+    def test_chain_links(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+
+        pid = "patient-sarah-mitchell"
+        engine.recall(pid, "test")
+        engine.recall(pid, "test2")
+
+        trail = engine.get_audit_trail()
+        for i in range(1, len(trail)):
+            assert trail[i]["prev_hash"] == trail[i - 1]["hash"]
+
+
+# ── Patient Summary Tests ─────────────────────────────────────────────────
+
+
+class TestPatientSummary:
+    @pytest.fixture(autouse=True)
+    def _ingest(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+        self.engine = engine
+        self.pid = "patient-sarah-mitchell"
+
+    def test_summary_structure(self):
+        summary = self.engine.patient_summary(self.pid)
+        assert "medications" in summary
+        assert "conditions" in summary
+        assert "allergies" in summary
+        assert "recent_observations" in summary
+
+    def test_summary_counts(self):
+        summary = self.engine.patient_summary(self.pid)
+        assert len(summary["medications"]) == 7
+        assert len(summary["conditions"]) == 4
+        assert len(summary["allergies"]) == 2
+        assert summary["total_blocks"] == 20
+
+    def test_summary_medication_names(self):
+        summary = self.engine.patient_summary(self.pid)
+        med_names = [m["name"] for m in summary["medications"]]
+        assert "Warfarin 5mg" in med_names
+        assert "Metformin 500mg" in med_names
