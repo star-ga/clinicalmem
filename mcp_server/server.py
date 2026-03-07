@@ -173,6 +173,20 @@ def check_medication_conflicts(
     """
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     report = _engine.medication_safety_check(patient_id)
+
+    # Clinical action recommendations based on severity
+    recommendations = []
+    for i in report.interactions:
+        if i.severity == "contraindicated":
+            recommendations.append(f"STOP: {i.drug_a} + {i.drug_b} is contraindicated. {i.description}.")
+        elif i.severity == "serious":
+            recommendations.append(f"REVIEW: {i.drug_a} + {i.drug_b} — {i.description}. Consider alternatives.")
+    for c in report.allergy_conflicts:
+        recommendations.append(
+            f"STOP: {c.medication} prescribed despite {c.allergen} allergy ({c.description}). "
+            f"Use alternative outside the {c.cross_reaction_group} class."
+        )
+
     return {
         "status": "success",
         "patient_id": report.patient_id,
@@ -188,6 +202,17 @@ def check_medication_conflicts(
             for i in report.interactions
         ],
         "interaction_count": len(report.interactions),
+        "allergy_conflicts": [
+            {
+                "allergen": c.allergen,
+                "medication": c.medication,
+                "cross_reaction_group": c.cross_reaction_group,
+                "description": c.description,
+            }
+            for c in report.allergy_conflicts
+        ],
+        "allergy_conflict_count": len(report.allergy_conflicts),
+        "recommendations": recommendations,
         "confidence": {
             "score": round(report.confidence.score, 3),
             "level": report.confidence.level,
@@ -344,10 +369,16 @@ def detect_belief_drift(
     fhir_access_token: str = "",
 ) -> dict:
     """
-    Flag evolving clinical assessments that contradict prior ones.
+    Comprehensive clinical contradiction scanner.
 
-    Detects when different providers have conflicting recommendations,
-    or when a patient's condition trajectory contradicts the treatment plan.
+    Detects 5 types of contradictions:
+    1. Allergy-medication conflicts (e.g., Penicillin allergy + Amoxicillin prescription)
+    2. Drug-drug interactions (e.g., Warfarin + NSAID bleeding risk)
+    3. Lab-medication contraindications (e.g., declining GFR + Metformin)
+    4. Lab trend alerts (e.g., GFR declining trajectory approaching danger threshold)
+    5. Provider disagreements (e.g., conflicting BP targets from different specialists)
+
+    Each finding includes severity level and actionable clinical recommendation.
 
     Args:
         patient_id: The patient's FHIR ID
@@ -356,12 +387,33 @@ def detect_belief_drift(
     """
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     contradictions = _engine.detect_contradictions(patient_id)
+
+    critical = [c for c in contradictions if c["severity"] == "critical"]
+    high = [c for c in contradictions if c["severity"] == "high"]
+
+    escalation = None
+    if critical:
+        escalation = (
+            "IMMEDIATE CLINICAL REVIEW REQUIRED. "
+            f"{len(critical)} critical finding(s) detected that may pose imminent patient safety risk. "
+            "Recommend human-in-the-loop verification before any clinical action."
+        )
+    elif high:
+        escalation = (
+            f"PRIORITY REVIEW RECOMMENDED. {len(high)} high-severity finding(s) detected. "
+            "Schedule provider review within 24-48 hours."
+        )
+
     return {
         "status": "success",
         "patient_id": patient_id,
         "contradictions": contradictions,
         "contradiction_count": len(contradictions),
-        "has_critical": any(c["severity"] == "critical" for c in contradictions),
+        "critical_count": len(critical),
+        "high_count": len(high),
+        "types_found": list({c["type"] for c in contradictions}),
+        "has_critical": bool(critical),
+        "escalation": escalation,
     }
 
 

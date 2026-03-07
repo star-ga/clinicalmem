@@ -105,14 +105,16 @@ def medication_safety_review(tool_context: ToolContext) -> dict:
 
 def detect_record_contradictions(tool_context: ToolContext) -> dict:
     """
-    Scan the patient's clinical record for contradictions and conflicts.
+    Comprehensive clinical contradiction scanner for the current patient.
 
-    Detects:
-    - Allergy vs prescription conflicts (e.g., penicillin allergy + amoxicillin Rx)
-    - Dangerous drug-drug interactions
-    - Conflicting provider recommendations
+    Detects 5 types of contradictions:
+    1. Allergy-medication conflicts (e.g., penicillin allergy + amoxicillin Rx)
+    2. Drug-drug interactions (e.g., warfarin + ibuprofen bleeding risk)
+    3. Lab-medication contraindications (e.g., declining GFR + metformin)
+    4. Lab trend alerts (e.g., GFR declining trajectory)
+    5. Provider disagreements (e.g., conflicting BP targets from different specialists)
 
-    Uses MIND Lang adversarial kernel for negation-aware analysis.
+    Each finding includes severity level and actionable clinical recommendation.
     No arguments required — patient identity comes from session FHIR context.
     """
     _auto_ingest(tool_context)
@@ -123,16 +125,30 @@ def detect_record_contradictions(tool_context: ToolContext) -> dict:
     engine = _get_engine()
     contradictions = engine.detect_contradictions(patient_id)
 
+    critical = [c for c in contradictions if c["severity"] == "critical"]
+    high = [c for c in contradictions if c["severity"] == "high"]
+
+    escalation = None
+    if critical:
+        escalation = (
+            f"IMMEDIATE CLINICAL REVIEW REQUIRED. "
+            f"{len(critical)} critical finding(s): "
+            + "; ".join(c["description"][:100] for c in critical)
+        )
+    elif high:
+        escalation = (
+            f"PRIORITY REVIEW RECOMMENDED. {len(high)} high-severity finding(s) detected."
+        )
+
     return {
         "status": "success",
         "patient_id": patient_id,
         "contradictions": contradictions,
         "contradiction_count": len(contradictions),
-        "has_critical": any(c["severity"] == "critical" for c in contradictions),
-        "has_high": any(c["severity"] == "high" for c in contradictions),
-        "recommendation": (
-            "IMMEDIATE REVIEW REQUIRED: Critical contradictions found in patient record."
-            if any(c["severity"] == "critical" for c in contradictions)
-            else "No critical contradictions detected."
-        ),
+        "critical_count": len(critical),
+        "high_count": len(high),
+        "types_found": list({c["type"] for c in contradictions}),
+        "has_critical": bool(critical),
+        "has_high": bool(high),
+        "escalation": escalation,
     }

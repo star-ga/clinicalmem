@@ -238,3 +238,298 @@ def check_allergy_conflicts(
                 )
 
     return conflicts
+
+
+# ── Lab-based medication contraindications ────────────────────────────────────
+
+# Maps (lab_name_pattern, medication_pattern) -> threshold logic
+# Each entry: (lab_keywords, med_keywords, threshold, direction, severity, description, recommendation)
+_LAB_MED_CONTRAINDICATIONS: list[tuple[list[str], list[str], float, str, str, str, str]] = [
+    (
+        ["egfr", "gfr", "glomerular filtration"],
+        ["metformin"],
+        30.0, "below", "critical",
+        "Metformin is contraindicated when eGFR falls below 30 mL/min due to risk of lactic acidosis",
+        "STOP metformin immediately. Consider insulin or DPP-4 inhibitor (dose-adjusted for renal function).",
+    ),
+    (
+        ["egfr", "gfr", "glomerular filtration"],
+        ["metformin"],
+        45.0, "below", "high",
+        "Metformin dose reduction recommended when eGFR is 30-45 mL/min",
+        "Reduce metformin to maximum 1000mg/day. Monitor renal function every 3 months.",
+    ),
+    (
+        ["inr"],
+        ["warfarin"],
+        3.5, "above", "high",
+        "INR above therapeutic range (2.0-3.0) indicates excessive anticoagulation and bleeding risk",
+        "Hold warfarin dose. Check for new interacting medications (NSAIDs, antibiotics). Recheck INR in 2-3 days.",
+    ),
+    (
+        ["potassium", "k+"],
+        ["lisinopril", "losartan", "spironolactone"],
+        5.5, "above", "critical",
+        "Hyperkalemia risk with ACE inhibitors/ARBs/aldosterone antagonists when potassium exceeds 5.5 mEq/L",
+        "Hold potassium-sparing medications. Obtain stat ECG. Consider calcium gluconate if K+ > 6.0.",
+    ),
+    (
+        ["hba1c", "hemoglobin a1c", "a1c"],
+        ["metformin"],
+        9.0, "above", "moderate",
+        "HbA1c above 9% suggests inadequate glycemic control on current metformin regimen",
+        "Consider adding second-line agent (GLP-1 agonist or SGLT2 inhibitor). Reinforce lifestyle modifications.",
+    ),
+]
+
+
+@dataclass(frozen=True)
+class LabMedContraindication:
+    lab_name: str
+    lab_value: float
+    lab_unit: str
+    medication: str
+    threshold: float
+    direction: str  # "above" or "below"
+    severity: str
+    description: str
+    recommendation: str
+
+
+def check_lab_medication_contraindications(
+    observations: list[dict], medications: list[str]
+) -> list[LabMedContraindication]:
+    """
+    Cross-reference lab results against medications for contraindications.
+
+    Detects clinically dangerous combinations like declining GFR + metformin,
+    elevated INR + warfarin, or hyperkalemia + ACE inhibitors.
+
+    Args:
+        observations: List of observation dicts with keys: observation_name, value, unit
+        medications: List of active medication names
+    """
+    meds_lower = [m.lower().strip() for m in medications]
+    contraindications = []
+
+    for lab_keywords, med_keywords, threshold, direction, severity, desc, rec in _LAB_MED_CONTRAINDICATIONS:
+        # Check if any medication matches
+        med_match = None
+        for med_kw in med_keywords:
+            for m in meds_lower:
+                if med_kw in m:
+                    med_match = m
+                    break
+            if med_match:
+                break
+        if not med_match:
+            continue
+
+        # Find matching lab observations
+        for obs in observations:
+            obs_name = (obs.get("observation_name") or obs.get("name") or "").lower()
+            if not any(kw in obs_name for kw in lab_keywords):
+                continue
+            try:
+                val = float(obs.get("value", 0))
+            except (ValueError, TypeError):
+                continue
+            unit = obs.get("unit") or obs.get("lab_unit") or ""
+
+            triggered = (
+                (direction == "below" and val < threshold) or
+                (direction == "above" and val > threshold)
+            )
+            if triggered:
+                contraindications.append(
+                    LabMedContraindication(
+                        lab_name=obs.get("observation_name") or obs.get("name") or "Unknown",
+                        lab_value=val,
+                        lab_unit=unit,
+                        medication=med_match,
+                        threshold=threshold,
+                        direction=direction,
+                        severity=severity,
+                        description=desc,
+                        recommendation=rec,
+                    )
+                )
+
+    # Deduplicate: keep only the highest severity per (lab_name, medication) pair
+    seen = {}
+    severity_rank = {"critical": 4, "high": 3, "moderate": 2, "low": 1}
+    for c in contraindications:
+        key = (c.lab_name, c.medication)
+        existing = seen.get(key)
+        if not existing or severity_rank.get(c.severity, 0) > severity_rank.get(existing.severity, 0):
+            seen[key] = c
+
+    return sorted(seen.values(), key=lambda c: severity_rank.get(c.severity, 0), reverse=True)
+
+
+# ── Lab trend analysis ────────────────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class LabTrend:
+    lab_name: str
+    values: list[float]
+    dates: list[str]
+    direction: str  # "declining", "rising", "stable"
+    rate_of_change: float  # per-measurement average change
+    severity: str
+    description: str
+    recommendation: str
+
+
+def detect_lab_trends(observations: list[dict]) -> list[LabTrend]:
+    """
+    Detect clinically significant trends in sequential lab values.
+
+    Groups observations by lab name, orders by date, and identifies
+    declining or rising patterns that warrant clinical attention.
+    """
+    # Group observations by name
+    by_name: dict[str, list[tuple[str, float]]] = {}
+    for obs in observations:
+        name = (obs.get("observation_name") or obs.get("name") or "").strip()
+        date = obs.get("effective_date") or obs.get("date") or ""
+        try:
+            val = float(obs.get("value", 0))
+        except (ValueError, TypeError):
+            continue
+        if name and date:
+            by_name.setdefault(name, []).append((date, val))
+
+    trends = []
+    for name, points in by_name.items():
+        if len(points) < 2:
+            continue
+        # Sort by date
+        points.sort(key=lambda x: x[0])
+        values = [p[1] for p in points]
+        dates = [p[0] for p in points]
+
+        # Calculate trend
+        changes = [values[i+1] - values[i] for i in range(len(values)-1)]
+        avg_change = sum(changes) / len(changes)
+        total_change = values[-1] - values[0]
+
+        name_lower = name.lower()
+
+        # GFR declining trend
+        if any(kw in name_lower for kw in ["egfr", "gfr", "glomerular"]):
+            if total_change < -5:  # Decline of 5+ mL/min
+                severity = "critical" if values[-1] < 30 else "high" if values[-1] < 45 else "moderate"
+                trends.append(LabTrend(
+                    lab_name=name,
+                    values=values,
+                    dates=dates,
+                    direction="declining",
+                    rate_of_change=round(avg_change, 2),
+                    severity=severity,
+                    description=(
+                        f"eGFR declining: {values[0]:.0f} → {values[-1]:.0f} mL/min/1.73m² "
+                        f"(Δ {total_change:+.0f} over {len(values)} measurements). "
+                        f"{'Approaching contraindication threshold for nephrotoxic medications.' if values[-1] < 45 else 'Monitor closely.'}"
+                    ),
+                    recommendation=(
+                        "Review all renally-cleared medications for dose adjustment. "
+                        "Nephrology referral if not already involved. "
+                        "Recheck eGFR in 4-6 weeks."
+                    ),
+                ))
+
+        # INR trending high
+        elif any(kw in name_lower for kw in ["inr"]):
+            if total_change > 0.5 and values[-1] > 3.0:
+                trends.append(LabTrend(
+                    lab_name=name,
+                    values=values,
+                    dates=dates,
+                    direction="rising",
+                    rate_of_change=round(avg_change, 2),
+                    severity="high",
+                    description=(
+                        f"INR rising above therapeutic range: {values[0]:.1f} → {values[-1]:.1f}. "
+                        "Check for new interacting medications or dietary changes."
+                    ),
+                    recommendation="Hold warfarin. Investigate cause. Recheck INR in 2-3 days.",
+                ))
+
+    return trends
+
+
+# ── Provider disagreement detection ───────────────────────────────────────────
+
+@dataclass(frozen=True)
+class ProviderDisagreement:
+    topic: str
+    provider_a: str
+    provider_a_position: str
+    provider_b: str
+    provider_b_position: str
+    severity: str
+    description: str
+    recommendation: str
+
+
+def detect_provider_disagreements(blocks: list[dict]) -> list[ProviderDisagreement]:
+    """
+    Detect conflicting clinical recommendations from different providers.
+
+    Compares notes and targets across observations/blocks from different
+    providers to find disagreements in treatment goals.
+    """
+    disagreements = []
+
+    # Look for BP target conflicts in observation notes
+    bp_targets: list[dict] = []
+    for block in blocks:
+        content = (block.get("content") or "").lower()
+        source = block.get("source") or block.get("metadata", {}).get("performer") or ""
+        title = (block.get("title") or "").lower()
+        notes = block.get("metadata", {}).get("notes") or ""
+
+        # Check for BP target mentions
+        if "blood pressure" in title or "bp" in title:
+            import re
+            # Match patterns like "<130/80", "target: 130/80", "<140/90"
+            target_match = re.search(r'target[:\s]*<?(\d{2,3})/(\d{2,3})', content + " " + notes.lower())
+            if target_match:
+                systolic = int(target_match.group(1))
+                diastolic = int(target_match.group(2))
+                bp_targets.append({
+                    "systolic": systolic,
+                    "diastolic": diastolic,
+                    "source": source,
+                    "content": content,
+                })
+
+    # Compare BP targets from different providers
+    for i in range(len(bp_targets)):
+        for j in range(i + 1, len(bp_targets)):
+            a, b = bp_targets[i], bp_targets[j]
+            if a["source"] == b["source"]:
+                continue
+            systolic_diff = abs(a["systolic"] - b["systolic"])
+            if systolic_diff >= 10:
+                disagreements.append(ProviderDisagreement(
+                    topic="Blood pressure target",
+                    provider_a=a["source"],
+                    provider_a_position=f"Target <{a['systolic']}/{a['diastolic']} mmHg",
+                    provider_b=b["source"],
+                    provider_b_position=f"Target <{b['systolic']}/{b['diastolic']} mmHg",
+                    severity="high",
+                    description=(
+                        f"Provider disagreement on BP target: {a['source']} recommends "
+                        f"<{a['systolic']}/{a['diastolic']}, but {b['source']} recommends "
+                        f"<{b['systolic']}/{b['diastolic']}. {systolic_diff} mmHg systolic difference."
+                    ),
+                    recommendation=(
+                        "Schedule care coordination meeting between providers. "
+                        "Consider patient comorbidities (CKD vs cardiovascular risk) "
+                        "to establish unified BP target."
+                    ),
+                ))
+
+    return disagreements

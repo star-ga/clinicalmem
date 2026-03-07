@@ -1,6 +1,6 @@
 # ClinicalMem
 
-[![Tests](https://img.shields.io/badge/tests-61%2F61-brightgreen)](#tests)
+[![Tests](https://img.shields.io/badge/tests-79%2F79-brightgreen)](#tests)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![MCP](https://img.shields.io/badge/protocol-MCP-purple)](#mcp-server)
@@ -73,12 +73,16 @@ Streamable HTTP       Cloud Run
 
 ## Synthetic Patient: Sarah Mitchell
 
-67-year-old female with 4 providers, 22 FHIR resources, and **4 planted conflicts**:
+67-year-old female with 4 providers, 22 FHIR resources, and **4 planted conflicts** — all detected:
 
-1. **Ibuprofen + Warfarin** — serious bleeding risk
-2. **Amoxicillin + Penicillin allergy** — anaphylaxis risk
-3. **Declining GFR + Metformin** — approaching contraindication
-4. **BP target conflict** — provider belief drift (130/80 vs 140/90)
+1. **Ibuprofen + Warfarin** — serious bleeding risk ✅
+2. **Amoxicillin + Penicillin allergy** — anaphylaxis risk ✅
+3. **Declining GFR + Metformin** — approaching contraindication (GFR 45→38→32) ✅
+4. **BP target conflict** — provider belief drift (Cardiologist <130/80 vs Nephrologist <140/90) ✅
+
+Plus 2 bonus findings the engine discovers autonomously:
+- **INR 3.8** — above therapeutic range (2.0-3.0), correlated with ibuprofen addition
+- **eGFR declining trajectory** — 13-point drop over 3 measurements, approaching metformin contraindication threshold
 
 ## Quick Start
 
@@ -98,11 +102,11 @@ docker compose up --build
 
 ## Tests
 
-61 tests covering engine scoring, FHIR ingestion, medication safety, contradiction detection, recall, and audit chain integrity.
+79 tests covering engine scoring, FHIR ingestion, medication safety, lab-medication contraindications, lab trend analysis, provider disagreement detection, contradiction detection, recall, and audit chain integrity.
 
 ```
-tests/test_engine/test_clinical_scoring.py — 30 tests
-tests/test_engine/test_integration.py      — 31 tests
+tests/test_engine/test_clinical_scoring.py — 43 tests
+tests/test_engine/test_integration.py      — 36 tests
 ```
 
 ## Tech Stack

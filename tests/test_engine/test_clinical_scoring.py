@@ -8,12 +8,18 @@ from engine.clinical_scoring import (
     ClinicalConfidence,
     DrugInteraction,
     AllergyConflict,
+    LabMedContraindication,
+    LabTrend,
+    ProviderDisagreement,
     confidence_gate,
     clinical_importance,
     medication_severity_score,
     is_negation_query,
     check_drug_interactions,
     check_allergy_conflicts,
+    check_lab_medication_contraindications,
+    detect_lab_trends,
+    detect_provider_disagreements,
 )
 
 
@@ -181,3 +187,146 @@ class TestAllergyConflicts:
     def test_empty_medications(self):
         conflicts = check_allergy_conflicts(["Penicillin"], [])
         assert conflicts == []
+
+
+# ── Lab-medication contraindication checking ──────────────────────────────────
+
+
+class TestLabMedContraindications:
+    def test_low_gfr_metformin_critical(self):
+        obs = [{"observation_name": "eGFR", "value": 28, "unit": "mL/min/1.73m2"}]
+        results = check_lab_medication_contraindications(obs, ["Metformin 500mg"])
+        assert len(results) >= 1
+        critical = [r for r in results if r.severity == "critical"]
+        assert len(critical) >= 1
+        assert "metformin" in critical[0].medication.lower()
+
+    def test_moderate_gfr_metformin_high(self):
+        obs = [{"observation_name": "eGFR", "value": 38, "unit": "mL/min/1.73m2"}]
+        results = check_lab_medication_contraindications(obs, ["Metformin 500mg"])
+        assert len(results) >= 1
+        assert any(r.severity == "high" for r in results)
+
+    def test_normal_gfr_metformin_no_alert(self):
+        obs = [{"observation_name": "eGFR", "value": 65, "unit": "mL/min/1.73m2"}]
+        results = check_lab_medication_contraindications(obs, ["Metformin 500mg"])
+        assert len(results) == 0
+
+    def test_high_inr_warfarin(self):
+        obs = [{"observation_name": "INR", "value": 3.8, "unit": "{INR}"}]
+        results = check_lab_medication_contraindications(obs, ["Warfarin 5mg"])
+        assert len(results) >= 1
+        assert any("warfarin" in r.medication.lower() for r in results)
+
+    def test_no_matching_medication(self):
+        obs = [{"observation_name": "eGFR", "value": 25, "unit": "mL/min/1.73m2"}]
+        results = check_lab_medication_contraindications(obs, ["Atorvastatin"])
+        assert len(results) == 0
+
+    def test_returns_recommendation(self):
+        obs = [{"observation_name": "eGFR", "value": 28, "unit": "mL/min/1.73m2"}]
+        results = check_lab_medication_contraindications(obs, ["Metformin 500mg"])
+        assert len(results) >= 1
+        assert len(results[0].recommendation) > 0
+
+
+# ── Lab trend detection ──────────────────────────────────────────────────────
+
+
+class TestLabTrends:
+    def test_declining_gfr_detected(self):
+        obs = [
+            {"observation_name": "eGFR", "value": 45, "effective_date": "2025-09-15"},
+            {"observation_name": "eGFR", "value": 38, "effective_date": "2025-12-10"},
+            {"observation_name": "eGFR", "value": 32, "effective_date": "2026-02-28"},
+        ]
+        trends = detect_lab_trends(obs)
+        assert len(trends) >= 1
+        assert trends[0].direction == "declining"
+        assert "45" in trends[0].description
+        assert "32" in trends[0].description
+
+    def test_stable_gfr_no_trend(self):
+        obs = [
+            {"observation_name": "eGFR", "value": 60, "effective_date": "2025-09-15"},
+            {"observation_name": "eGFR", "value": 59, "effective_date": "2025-12-10"},
+        ]
+        trends = detect_lab_trends(obs)
+        assert len(trends) == 0
+
+    def test_single_value_no_trend(self):
+        obs = [{"observation_name": "eGFR", "value": 30, "effective_date": "2026-02-28"}]
+        trends = detect_lab_trends(obs)
+        assert len(trends) == 0
+
+    def test_trend_has_recommendation(self):
+        obs = [
+            {"observation_name": "eGFR", "value": 45, "effective_date": "2025-09-15"},
+            {"observation_name": "eGFR", "value": 32, "effective_date": "2026-02-28"},
+        ]
+        trends = detect_lab_trends(obs)
+        assert len(trends) >= 1
+        assert len(trends[0].recommendation) > 0
+
+
+# ── Provider disagreement detection ──────────────────────────────────────────
+
+
+class TestProviderDisagreements:
+    def test_bp_target_conflict_detected(self):
+        blocks = [
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Blood Pressure: 148 mmHg. Target: <130/80 per cardiologist",
+                "source": "Dr. Maria Lopez (Cardiologist)",
+                "metadata": {"notes": ""},
+            },
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Blood Pressure: 142 mmHg. Target: <140/90 per nephrologist",
+                "source": "Dr. Raj Patel (Nephrologist)",
+                "metadata": {"notes": ""},
+            },
+        ]
+        disagreements = detect_provider_disagreements(blocks)
+        assert len(disagreements) >= 1
+        assert disagreements[0].topic == "Blood pressure target"
+        assert "130" in disagreements[0].provider_a_position
+        assert "140" in disagreements[0].provider_b_position
+
+    def test_same_target_no_conflict(self):
+        blocks = [
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Blood Pressure: 148 mmHg. Target: <130/80 per cardiologist",
+                "source": "Dr. A",
+                "metadata": {"notes": ""},
+            },
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Blood Pressure: 142 mmHg. Target: <130/80 per other doc",
+                "source": "Dr. B",
+                "metadata": {"notes": ""},
+            },
+        ]
+        disagreements = detect_provider_disagreements(blocks)
+        assert len(disagreements) == 0
+
+    def test_disagreement_has_recommendation(self):
+        blocks = [
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Target: <130/80",
+                "source": "Dr. A",
+                "metadata": {"notes": ""},
+            },
+            {
+                "title": "vital-signs: Blood Pressure",
+                "content": "Target: <140/90",
+                "source": "Dr. B",
+                "metadata": {"notes": ""},
+            },
+        ]
+        disagreements = detect_provider_disagreements(blocks)
+        assert len(disagreements) >= 1
+        assert "coordination" in disagreements[0].recommendation.lower()

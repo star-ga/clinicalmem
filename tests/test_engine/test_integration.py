@@ -244,6 +244,45 @@ class TestContradictionDetection:
         contradictions = self.engine.detect_contradictions(self.pid)
         assert len(contradictions) >= 2
 
+    def test_detects_gfr_metformin_contraindication(self):
+        """Planted conflict #3: declining GFR + Metformin."""
+        contradictions = self.engine.detect_contradictions(self.pid)
+        lab_med = [c for c in contradictions if c["type"] == "lab_medication_contraindication"]
+        assert len(lab_med) >= 1
+        assert any("metformin" in str(c).lower() for c in lab_med)
+        assert any("gfr" in str(c).lower() or "egfr" in str(c).lower() for c in lab_med)
+
+    def test_detects_declining_gfr_trend(self):
+        """Planted conflict #3: GFR 45 -> 38 -> 32 declining trend."""
+        contradictions = self.engine.detect_contradictions(self.pid)
+        trends = [c for c in contradictions if c["type"] == "lab_trend_alert"]
+        assert len(trends) >= 1
+        assert any("declining" in c["description"].lower() for c in trends)
+
+    def test_detects_bp_target_disagreement(self):
+        """Planted conflict #4: Cardiologist <130/80 vs Nephrologist <140/90."""
+        contradictions = self.engine.detect_contradictions(self.pid)
+        provider = [c for c in contradictions if c["type"] == "provider_disagreement"]
+        assert len(provider) >= 1
+        assert any("bp target" in c["description"].lower() for c in provider)
+
+    def test_all_four_planted_conflicts_detected(self):
+        """All 4 planted conflicts in Sarah Mitchell's data should be found."""
+        contradictions = self.engine.detect_contradictions(self.pid)
+        types_found = {c["type"] for c in contradictions}
+        assert "allergy_medication_conflict" in types_found
+        assert "drug_interaction" in types_found
+        assert "lab_medication_contraindication" in types_found
+        # Either trend or provider disagreement (both are new detections)
+        assert "lab_trend_alert" in types_found or "provider_disagreement" in types_found
+
+    def test_contradictions_have_recommendations(self):
+        """All contradictions should include actionable recommendations."""
+        contradictions = self.engine.detect_contradictions(self.pid)
+        for c in contradictions:
+            assert "recommendation" in c, f"Missing recommendation in: {c['type']}"
+            assert len(c["recommendation"]) > 10, f"Empty recommendation in: {c['type']}"
+
 
 # ── Recall Tests ──────────────────────────────────────────────────────────
 

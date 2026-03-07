@@ -22,8 +22,14 @@ from engine.clinical_scoring import (
     AllergyConflict,
     ClinicalConfidence,
     DrugInteraction,
+    LabMedContraindication,
+    LabTrend,
+    ProviderDisagreement,
     check_allergy_conflicts,
     check_drug_interactions,
+    check_lab_medication_contraindications,
+    detect_lab_trends,
+    detect_provider_disagreements,
     confidence_gate,
     clinical_importance,
     is_negation_query,
@@ -235,30 +241,71 @@ class ClinicalMemEngine:
                     code = res.get("code", {})
                     name = code.get("text") or coding_display(code.get("coding", []))
                     value = ""
+                    value_numeric = None
+                    unit = ""
                     if "valueQuantity" in res:
                         vq = res["valueQuantity"]
-                        value = f"{vq.get('value')} {vq.get('unit', '')}"
+                        value_numeric = vq.get("value")
+                        unit = vq.get("unit", "")
+                        value = f"{value_numeric} {unit}"
                     elif "valueString" in res:
                         value = res["valueString"]
+
+                    # Extract notes
+                    notes = " ".join(
+                        n.get("text", "") for n in res.get("note", [])
+                    )
+
+                    # Extract performer
+                    performers = res.get("performer", [])
+                    performer = performers[0].get("display", "FHIR") if performers else "FHIR"
+
+                    # Build richer content including notes and targets
+                    content_parts = [
+                        f"{name}: {value}.",
+                        f"Date: {res.get('effectiveDateTime', 'Unknown')}.",
+                        f"Status: {res.get('status', 'Unknown')}.",
+                        f"Recorded by: {performer}.",
+                    ]
+                    if notes:
+                        content_parts.append(f"Notes: {notes}")
+
+                    # Extract component values (e.g., BP systolic/diastolic)
+                    components = {}
+                    for comp in res.get("component", []):
+                        comp_name = (comp.get("code", {}).get("coding", [{}])[0]
+                                     .get("display", ""))
+                        comp_vq = comp.get("valueQuantity", {})
+                        if comp_vq:
+                            components[comp_name] = f"{comp_vq.get('value')} {comp_vq.get('unit', '')}"
+                    if components:
+                        content_parts.append(
+                            "Components: " + "; ".join(
+                                f"{k}: {v}" for k, v in components.items()
+                            )
+                        )
+
                     block = ClinicalBlock(
                         block_id=res.get("id", f"obs-{counts['observations']}"),
                         patient_id=pid,
                         resource_type="Observation",
                         title=f"{category}: {name}",
-                        content=f"{name}: {value}. "
-                        f"Date: {res.get('effectiveDateTime', 'Unknown')}. "
-                        f"Status: {res.get('status', 'Unknown')}.",
+                        content=" ".join(content_parts),
                         metadata={
                             "observation_name": name,
-                            "value": value,
+                            "value": value_numeric if value_numeric is not None else value,
+                            "unit": unit,
                             "category": category,
                             "effective_date": res.get("effectiveDateTime"),
                             "interpretation": (
                                 (res.get("interpretation") or [{}])[0].get("text")
                             ),
+                            "notes": notes,
+                            "components": components,
+                            "performer": performer,
                         },
                         timestamp=res.get("effectiveDateTime", ""),
-                        source="FHIR",
+                        source=performer,
                     )
                     self._store_block(block)
                     counts["observations"] += 1
@@ -466,14 +513,16 @@ class ClinicalMemEngine:
         Detect contradictions in patient clinical data.
 
         Checks for:
-        - Conflicting medication statuses
-        - Allergy vs prescription conflicts
-        - Duplicate or conflicting conditions
+        - Allergy vs prescription conflicts (e.g., Penicillin allergy + Amoxicillin)
+        - Dangerous drug-drug interactions (e.g., Warfarin + Ibuprofen)
+        - Lab-medication contraindications (e.g., declining GFR + Metformin)
+        - Lab value trends (e.g., GFR 45→38→32 declining trajectory)
+        - Provider disagreements (e.g., conflicting BP targets)
         """
         blocks = self._patient_blocks.get(patient_id, [])
         contradictions = []
 
-        # Check allergy-medication conflicts
+        # 1. Allergy-medication conflicts
         safety = self.medication_safety_check(patient_id)
         for conflict in safety.allergy_conflicts:
             contradictions.append({
@@ -483,10 +532,14 @@ class ClinicalMemEngine:
                     f"Patient has {conflict.allergen} allergy but is prescribed "
                     f"{conflict.medication} ({conflict.description})"
                 ),
+                "recommendation": (
+                    f"STOP {conflict.medication} immediately. "
+                    f"Use alternative outside the {conflict.cross_reaction_group} class."
+                ),
                 "blocks_involved": [conflict.allergen, conflict.medication],
             })
 
-        # Check for drug interactions as contradictions
+        # 2. Drug interactions
         for interaction in safety.interactions:
             if interaction.severity in ("contraindicated", "serious"):
                 contradictions.append({
@@ -496,14 +549,82 @@ class ClinicalMemEngine:
                         f"{interaction.drug_a} + {interaction.drug_b}: "
                         f"{interaction.description}"
                     ),
+                    "recommendation": (
+                        f"Review co-prescription of {interaction.drug_a} and "
+                        f"{interaction.drug_b}. Consider alternatives or close monitoring."
+                    ),
                     "blocks_involved": [interaction.drug_a, interaction.drug_b],
                 })
+
+        # 3. Lab-medication contraindications (e.g., declining GFR + Metformin)
+        med_names = [
+            b.metadata.get("medication_name", "")
+            for b in blocks if b.resource_type == "MedicationRequest"
+        ]
+        obs_dicts = [
+            {
+                "observation_name": b.metadata.get("observation_name", ""),
+                "value": b.metadata.get("value", ""),
+                "unit": b.metadata.get("unit", ""),
+                "effective_date": b.metadata.get("effective_date", ""),
+            }
+            for b in blocks if b.resource_type == "Observation"
+        ]
+        lab_contras = check_lab_medication_contraindications(obs_dicts, med_names)
+        for lc in lab_contras:
+            contradictions.append({
+                "type": "lab_medication_contraindication",
+                "severity": lc.severity,
+                "description": (
+                    f"{lc.lab_name} = {lc.lab_value} {lc.lab_unit} "
+                    f"({lc.direction} threshold {lc.threshold}): {lc.description}"
+                ),
+                "recommendation": lc.recommendation,
+                "blocks_involved": [lc.lab_name, lc.medication],
+            })
+
+        # 4. Lab trends (e.g., declining GFR trajectory)
+        lab_trends = detect_lab_trends(obs_dicts)
+        for trend in lab_trends:
+            contradictions.append({
+                "type": "lab_trend_alert",
+                "severity": trend.severity,
+                "description": trend.description,
+                "recommendation": trend.recommendation,
+                "blocks_involved": [trend.lab_name],
+            })
+
+        # 5. Provider disagreements (e.g., conflicting BP targets)
+        block_dicts = [
+            {
+                "title": b.title,
+                "content": b.content,
+                "source": b.source,
+                "metadata": {
+                    **b.metadata,
+                    "notes": " ".join(
+                        str(v) for v in b.metadata.values() if isinstance(v, str)
+                    ),
+                },
+            }
+            for b in blocks
+        ]
+        provider_conflicts = detect_provider_disagreements(block_dicts)
+        for pc in provider_conflicts:
+            contradictions.append({
+                "type": "provider_disagreement",
+                "severity": pc.severity,
+                "description": pc.description,
+                "recommendation": pc.recommendation,
+                "blocks_involved": [pc.provider_a, pc.provider_b],
+            })
 
         self._append_audit(
             "detect_contradictions",
             {
                 "patient_id": patient_id,
                 "contradiction_count": len(contradictions),
+                "types_found": list({c["type"] for c in contradictions}),
             },
         )
 
