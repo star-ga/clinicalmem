@@ -22,6 +22,23 @@ logger = logging.getLogger(__name__)
 # Shared engine instance
 _engine = ClinicalMemEngine()
 
+# Demo mode: pre-load Sarah Mitchell fixture data
+if os.environ.get("DEMO_MODE", "").lower() in ("1", "true", "yes"):
+    try:
+        import json as _json
+
+        _fixture_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            "tests", "fixtures", "sarah_mitchell_bundle.json",
+        )
+        if os.path.exists(_fixture_path):
+            with open(_fixture_path) as _f:
+                _bundle = _json.load(_f)
+            _counts = _engine.ingest_from_bundle(_bundle, "patient-sarah-mitchell")
+            logger.info("DEMO MODE: Pre-loaded Sarah Mitchell (%s)", _counts)
+    except Exception as e:
+        logger.warning("Demo auto-load failed: %s", e)
+
 
 def _get_engine() -> ClinicalMemEngine:
     return _engine
