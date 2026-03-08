@@ -189,12 +189,13 @@ def check_drug_interactions(
     """
     Check a medication list for interactions.
 
-    Two-layer detection:
+    Four-layer detection pipeline:
     1. Deterministic table (12 known pairs) — fast, reliable, auditable
-    2. LLM fallback (Gemini) — catches novel pairs not in the table
+    2. OpenEvidence API — clinically authoritative, purpose-built for medicine
+    3. NIH Drug Interaction API (RxNorm) — free, no auth, federal gold standard
+    4. Gemini LLM — general-purpose fallback for remaining uncovered pairs
 
-    This is the pattern both layers of judges care about: deterministic
-    safety rails + GenAI reasoning for coverage beyond the rules.
+    Each layer only checks pairs not already found by previous layers.
     """
     meds_lower = [m.lower().strip() for m in medications]
     interactions = []
@@ -223,7 +224,14 @@ def check_drug_interactions(
         for i in oe_interactions:
             covered_pairs.add((i.drug_a, i.drug_b))
 
-    # Layer 3: Gemini fallback (general-purpose LLM for remaining uncovered pairs)
+    # Layer 3: NIH Drug Interaction API (free, no auth, federal gold standard)
+    if use_llm_fallback and len(meds_lower) >= 2:
+        nih_interactions = _nih_check_interactions(medications, covered_pairs)
+        interactions.extend(nih_interactions)
+        for i in nih_interactions:
+            covered_pairs.add((i.drug_a, i.drug_b))
+
+    # Layer 4: Gemini fallback (general-purpose LLM for remaining uncovered pairs)
     if use_llm_fallback and len(meds_lower) >= 2:
         llm_interactions = _llm_check_interactions(medications, covered_pairs)
         interactions.extend(llm_interactions)
@@ -359,16 +367,127 @@ def _parse_interaction_narrative(
     return results
 
 
+def _nih_check_interactions(
+    medications: list[str],
+    already_found: set[tuple[str, str]],
+) -> list[DrugInteraction]:
+    """
+    Layer 3: NIH/NLM Drug Interaction API — free, no auth, federal gold standard.
+
+    Uses two NLM endpoints:
+    1. RxNorm: resolve drug name -> RxCUI (universal drug identifier)
+    2. Drug Interaction API: check RxCUI pairs for interactions
+
+    Same data source used by Epic, Cerner, and all certified EHR systems.
+    """
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    try:
+        import httpx
+    except ImportError:
+        return []
+
+    # Step 1: Resolve each medication to its RxCUI
+    rxcuis: dict[str, str] = {}  # drug_name -> rxcui
+    for med in medications:
+        name = med.split()[0] if " " in med else med  # strip dosage
+        try:
+            resp = httpx.get(
+                "https://rxnav.nlm.nih.gov/REST/rxcui.json",
+                params={"name": name, "search": 2},
+                timeout=10,
+            )
+            if resp.status_code != 200:
+                continue
+            data = resp.json()
+            id_group = data.get("idGroup", {})
+            rxn_ids = id_group.get("rxnormId", [])
+            if rxn_ids:
+                rxcuis[name.lower()] = rxn_ids[0]
+        except Exception:
+            continue
+
+    if len(rxcuis) < 2:
+        return []
+
+    # Step 2: Query interaction API with all RxCUIs
+    rxcui_list = list(rxcuis.values())
+    rxcui_str = "+".join(rxcui_list)
+
+    try:
+        resp = httpx.get(
+            "https://rxnav.nlm.nih.gov/REST/interaction/list.json",
+            params={"rxcuis": rxcui_str},
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            return []
+        data = resp.json()
+    except Exception as e:
+        logger.warning("NIH interaction API failed: %s", e)
+        return []
+
+    # Step 3: Parse interaction results
+    rxcui_to_name = {v: k for k, v in rxcuis.items()}
+    results = []
+
+    for group in data.get("fullInteractionTypeGroup", []):
+        for itype in group.get("fullInteractionType", []):
+            for pair in itype.get("interactionPair", []):
+                concepts = pair.get("interactionConcept", [])
+                if len(concepts) < 2:
+                    continue
+
+                drug_a = concepts[0].get("minConceptItem", {}).get("name", "").lower()
+                drug_b = concepts[1].get("minConceptItem", {}).get("name", "").lower()
+
+                if not drug_a or not drug_b:
+                    continue
+                if (drug_a, drug_b) in already_found or (drug_b, drug_a) in already_found:
+                    continue
+
+                desc = pair.get("description", "NIH-detected interaction")
+                sev_text = pair.get("severity", "").lower()
+
+                if "contraindicated" in sev_text:
+                    severity = "contraindicated"
+                elif any(w in desc.lower() for w in [
+                    "serious", "major", "significant", "bleeding",
+                    "serotonin", "qt prolongation", "avoid",
+                ]):
+                    severity = "serious"
+                else:
+                    severity = "moderate"
+
+                if severity in ("serious", "contraindicated"):
+                    results.append(
+                        DrugInteraction(
+                            drug_a=drug_a,
+                            drug_b=drug_b,
+                            severity=severity,
+                            description=f"NIH/NLM: {desc[:200]}",
+                            score=medication_severity_score(severity),
+                        )
+                    )
+                    already_found.add((drug_a, drug_b))
+
+    if results:
+        logger.info("NIH API detected %d additional interactions", len(results))
+    return results
+
+
 def _llm_check_interactions(
     medications: list[str],
     already_found: set[tuple[str, str]],
 ) -> list[DrugInteraction]:
     """
-    Layer 3: Gemini LLM fallback for drug interactions.
+    Layer 4: Gemini LLM fallback for drug interactions.
 
-    General-purpose LLM used when both the deterministic table and
-    OpenEvidence API don't cover the medication pairs. Returns structured
-    DrugInteraction objects parsed from LLM response.
+    General-purpose LLM used when the deterministic table, OpenEvidence API,
+    and NIH Drug Interaction API don't cover the medication pairs. Returns
+    structured DrugInteraction objects parsed from LLM response.
     """
     import json
     import logging

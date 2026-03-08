@@ -23,7 +23,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 
 - **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
 - **LLM-Grounded Clinical Synthesis** — Uses GenAI to generate patient-specific clinical narratives, but only from retrieved evidence with explicit citations. When confidence is low, the system **abstains rather than hallucinating**
-- **Three-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) provides clinically authoritative evidence-grounded detection for novel pairs, (3) Gemini LLM fallback for remaining coverage. Each tier is audited
+- **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) NIH/NLM Drug Interaction API (RxNorm — the same federal database used by Epic, Cerner, and all certified EHRs) for free, authoritative coverage, (4) Gemini LLM fallback for remaining pairs. Each tier is audited
 - **Allergy Cross-Reaction Alerts** — Catches prescriptions that cross-react with known allergies (Penicillin allergy + Amoxicillin = anaphylaxis risk)
 - **Cross-Provider Contradiction Detection** — Surfaces conflicting care plans, declining lab trends, and medication-lab contraindications across fragmented provider records
 - **SHA-256 Hash-Chain Audit Trail** — Every clinical decision is logged in a tamper-proof Merkle chain, providing cryptographic proof that AI recommendations haven't been altered
@@ -62,7 +62,9 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 2. **Detection Layer 2** (OpenEvidence API) — For medication pairs not in the deterministic table, ClinicalMem queries OpenEvidence — the same medical AI engine powering Elsevier's ClinicalKey AI, developed with Mayo Clinic. Returns evidence-grounded answers with peer-reviewed citations.
 
-3. **Detection Layer 3** (Gemini LLM) — General-purpose LLM fallback for any remaining uncovered pairs. Structured JSON extraction with severity filtering.
+3. **Detection Layer 3** (NIH/NLM Drug Interaction API) — Queries RxNorm to resolve drug names to RxCUI identifiers, then checks the NIH Drug Interaction API — the same federal database used by Epic, Cerner, and all certified EHR systems. Free, no API key required, authoritative.
+
+4. **Detection Layer 4** (Gemini LLM) — General-purpose LLM fallback for any remaining uncovered pairs. Structured JSON extraction with severity filtering.
 
 4. **Synthesis Layer** (GenAI) — An LLM generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
 
@@ -72,6 +74,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 - Python 3.12
 - mind-mem (hybrid BM25 + vector search engine)
+- NIH/NLM Drug Interaction API (RxNorm — federal gold standard, used by Epic/Cerner)
 - OpenEvidence API (clinically authoritative medical AI, Mayo Clinic / Elsevier)
 - FastMCP 2.x (MCP server framework)
 - Google ADK + a2a-sdk (A2A agent framework)
@@ -125,13 +128,14 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 - python
 - mind-mem
 - mind-lang
+- nih-rxnorm
 - openevidence
 - fhir
 - fastmcp
 - google-adk
 - a2a-protocol
 - docker
-- google-cloud-run
+- azure-container-apps
 
 ## Try it out
 
