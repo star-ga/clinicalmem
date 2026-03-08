@@ -216,7 +216,14 @@ def check_drug_interactions(
             )
             covered_pairs.add((drug_a, drug_b))
 
-    # Layer 2: LLM fallback for uncovered medication pairs
+    # Layer 2: OpenEvidence API (clinically authoritative, purpose-built for medicine)
+    if use_llm_fallback and len(meds_lower) >= 2:
+        oe_interactions = _openevidence_check_interactions(medications, covered_pairs)
+        interactions.extend(oe_interactions)
+        for i in oe_interactions:
+            covered_pairs.add((i.drug_a, i.drug_b))
+
+    # Layer 3: Gemini fallback (general-purpose LLM for remaining uncovered pairs)
     if use_llm_fallback and len(meds_lower) >= 2:
         llm_interactions = _llm_check_interactions(medications, covered_pairs)
         interactions.extend(llm_interactions)
@@ -224,15 +231,144 @@ def check_drug_interactions(
     return sorted(interactions, key=lambda i: i.score, reverse=True)
 
 
+def _openevidence_check_interactions(
+    medications: list[str],
+    already_found: set[tuple[str, str]],
+) -> list[DrugInteraction]:
+    """
+    Layer 2: OpenEvidence API — clinically authoritative drug interaction check.
+
+    OpenEvidence is purpose-built for medicine (Mayo Clinic, Elsevier ClinicalKey AI,
+    90%+ USMLE accuracy). Unlike a general LLM, it returns evidence-grounded answers
+    with citations to peer-reviewed literature.
+
+    API: POST https://api.openevidence.com/analysis
+    Auth: Token-based (OPENEVIDENCE_API_KEY)
+    """
+    import json
+    import logging
+    import os
+
+    logger = logging.getLogger(__name__)
+
+    api_key = os.environ.get("OPENEVIDENCE_API_KEY")
+    if not api_key:
+        return []
+
+    med_names = [m.split()[0] if " " in m else m for m in medications]
+    query = (
+        f"Are there clinically significant drug-drug interactions between any of "
+        f"these medications: {', '.join(med_names)}? "
+        f"For each interaction found, state the two drugs, severity "
+        f"(serious or contraindicated), and a one-sentence clinical description."
+    )
+
+    try:
+        import httpx
+
+        resp = httpx.post(
+            "https://api.openevidence.com/analysis",
+            headers={
+                "Authorization": f"Token {api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            json={"text": query, "model": "oe-v2"},
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            logger.warning("OpenEvidence API returned %d", resp.status_code)
+            return []
+
+        data = resp.json()
+        # OpenEvidence returns a narrative analysis — parse for drug pairs
+        analysis_text = data.get("text", "") or data.get("analysis", "") or str(data)
+        if not analysis_text:
+            return []
+
+        results = _parse_interaction_narrative(
+            analysis_text, med_names, already_found, source="OpenEvidence"
+        )
+        if results:
+            logger.info(
+                "OpenEvidence detected %d additional interactions", len(results)
+            )
+        return results
+
+    except Exception as e:
+        logger.warning("OpenEvidence API call failed: %s", e)
+        return []
+
+
+def _parse_interaction_narrative(
+    text: str,
+    med_names: list[str],
+    already_found: set[tuple[str, str]],
+    source: str = "OpenEvidence",
+) -> list[DrugInteraction]:
+    """Parse a narrative text for drug interaction mentions."""
+    text_lower = text.lower()
+    results = []
+    meds_lower = [m.lower() for m in med_names]
+
+    # Check all medication pairs against the narrative
+    for i, med_a in enumerate(meds_lower):
+        for med_b in meds_lower[i + 1 :]:
+            if (med_a, med_b) in already_found or (med_b, med_a) in already_found:
+                continue
+            # Both meds mentioned in the analysis text = potential interaction
+            if med_a in text_lower and med_b in text_lower:
+                # Check for severity indicators
+                severity = "moderate"
+                if any(
+                    w in text_lower
+                    for w in [
+                        "contraindicated",
+                        "avoid",
+                        "do not combine",
+                        "prohibited",
+                    ]
+                ):
+                    severity = "contraindicated"
+                elif any(
+                    w in text_lower
+                    for w in [
+                        "serious",
+                        "significant",
+                        "major",
+                        "dangerous",
+                        "bleeding risk",
+                        "serotonin syndrome",
+                        "qt prolongation",
+                    ]
+                ):
+                    severity = "serious"
+
+                if severity in ("serious", "contraindicated"):
+                    # Extract a description snippet around the drug mentions
+                    desc = f"{source}-detected interaction between {med_a} and {med_b}"
+                    results.append(
+                        DrugInteraction(
+                            drug_a=med_a,
+                            drug_b=med_b,
+                            severity=severity,
+                            description=desc,
+                            score=medication_severity_score(severity),
+                        )
+                    )
+    return results
+
+
 def _llm_check_interactions(
     medications: list[str],
     already_found: set[tuple[str, str]],
 ) -> list[DrugInteraction]:
     """
-    Use LLM to detect drug interactions not in the deterministic table.
+    Layer 3: Gemini LLM fallback for drug interactions.
 
-    Only called when we have medications not covered by known pairs.
-    Returns structured DrugInteraction objects parsed from LLM response.
+    General-purpose LLM used when both the deterministic table and
+    OpenEvidence API don't cover the medication pairs. Returns structured
+    DrugInteraction objects parsed from LLM response.
     """
     import json
     import logging
