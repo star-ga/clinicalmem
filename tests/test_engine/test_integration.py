@@ -180,7 +180,13 @@ class TestEngineIngestion:
 
         trail = engine.get_audit_trail()
         assert len(trail) == 1
-        assert trail[0]["action"] == "ingest_fhir"
+        # mind-mem uses "operation" field; fallback uses "action"
+        entry = trail[0]
+        if "action" in entry:
+            assert entry["action"] == "ingest_fhir"
+        else:
+            assert entry["operation"] == "create_block"
+            assert entry["agent"] == "clinicalmem"
 
 
 # ── Medication Safety Tests ───────────────────────────────────────────────
@@ -340,7 +346,8 @@ class TestAuditChain:
             engine.ingest_from_fhir(fhir_client)
 
         trail = engine.get_audit_trail()
-        assert trail[0]["prev_hash"] == "genesis"
+        # mind-mem uses "0" * 64 as genesis; fallback uses "genesis"
+        assert trail[0]["prev_hash"] in ("genesis", "0" * 64)
 
     def test_chain_links(self, engine, fhir_client):
         with patch("httpx.get", side_effect=_mock_fhir_get):
@@ -352,7 +359,9 @@ class TestAuditChain:
 
         trail = engine.get_audit_trail()
         for i in range(1, len(trail)):
-            assert trail[i]["prev_hash"] == trail[i - 1]["hash"]
+            # mind-mem uses "entry_hash"; fallback uses "hash"
+            prev_entry_hash = trail[i - 1].get("entry_hash") or trail[i - 1].get("hash")
+            assert trail[i]["prev_hash"] == prev_entry_hash
 
 
 # ── Patient Summary Tests ─────────────────────────────────────────────────

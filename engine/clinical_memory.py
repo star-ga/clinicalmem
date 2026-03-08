@@ -6,16 +6,14 @@ Maps FHIR R4 resources to mind-mem memory blocks, providing:
 - Contradiction detection across patient records
 - Importance scoring with clinical acuity awareness
 - Confidence gating (abstention when evidence is insufficient)
-- Hash-chain audit trail for all clinical decisions
+- Hash-chain audit trail for all clinical decisions (via mind-mem AuditChain)
 """
-import hashlib
 import json
 import logging
 import os
 import tempfile
 import time
-from dataclasses import asdict, dataclass
-from pathlib import Path
+from dataclasses import dataclass
 from typing import Any
 
 from engine.clinical_scoring import (
@@ -88,6 +86,8 @@ class ClinicalMemEngine:
     Core engine: FHIR data -> mind-mem blocks -> clinical intelligence.
 
     Each patient gets their own corpus (namespace) in mind-mem.
+    Uses mind-mem AuditChain for tamper-proof logging and
+    HybridBackend for BM25 + RRF search when available.
     """
 
     def __init__(self, data_dir: str | None = None):
@@ -95,18 +95,28 @@ class ClinicalMemEngine:
             tempfile.gettempdir(), "clinicalmem_data"
         )
         os.makedirs(self._data_dir, exist_ok=True)
-        self._audit_chain: list[dict[str, Any]] = []
         self._patient_blocks: dict[str, list[ClinicalBlock]] = {}
-        self._mind_mem_available = self._check_mind_mem()
 
-    def _check_mind_mem(self) -> bool:
-        """Check if mind-mem is available for hybrid search."""
+        # mind-mem integration
+        self._mind_mem_available = False
+        self._audit_chain_mm = None  # mind_mem.audit_chain.AuditChain
+        self._hybrid_backend = None  # mind_mem.hybrid_recall.HybridBackend
+        self._init_mind_mem()
+
+    def _init_mind_mem(self) -> None:
+        """Initialize mind-mem AuditChain and HybridBackend if available."""
         try:
-            import mind_mem  # noqa: F401
-            return True
+            from mind_mem.audit_chain import AuditChain
+            from mind_mem.hybrid_recall import HybridBackend
+
+            self._audit_chain_mm = AuditChain(self._data_dir)
+            self._hybrid_backend = HybridBackend({"rrf_k": 60, "bm25_weight": 1.0})
+            self._mind_mem_available = True
+            logger.info("mind-mem initialized: AuditChain + HybridBackend active")
         except ImportError:
-            logger.warning("mind-mem not installed — using fallback search")
-            return False
+            logger.warning("mind-mem not installed — using fallback search and audit")
+        except Exception as e:
+            logger.warning("mind-mem init failed: %s — using fallback", e)
 
     def _patient_dir(self, patient_id: str) -> str:
         safe_id = patient_id.replace("/", "_").replace("..", "")
@@ -115,8 +125,47 @@ class ClinicalMemEngine:
         return path
 
     def _append_audit(self, action: str, details: dict[str, Any]) -> str:
-        """Append to hash-chain audit log. Returns the new hash."""
-        prev_hash = self._audit_chain[-1]["hash"] if self._audit_chain else "genesis"
+        """Append to audit log. Uses mind-mem AuditChain when available."""
+        if self._audit_chain_mm is not None:
+            return self._append_audit_mindmem(action, details)
+        return self._append_audit_fallback(action, details)
+
+    def _append_audit_mindmem(self, action: str, details: dict[str, Any]) -> str:
+        """Append via mind-mem's Merkle-chain audit ledger."""
+        # Map clinical actions to mind-mem's valid operations
+        op_map = {
+            "ingest_fhir": "create_block",
+            "store_observation": "append_block",
+            "recall": "apply_proposal",
+            "medication_safety_check": "apply_proposal",
+            "detect_contradictions": "apply_proposal",
+            "patient_summary": "apply_proposal",
+            "treatment_dependencies": "apply_proposal",
+        }
+        operation = op_map.get(action, "apply_proposal")
+        target = details.get("patient_id", "system")
+
+        entry = self._audit_chain_mm.append(
+            operation=operation,
+            target=f"patient/{target}",
+            agent="clinicalmem",
+            reason=f"clinical_{action}",
+            payload=details,
+        )
+        return entry.entry_hash
+
+    def _append_audit_fallback(self, action: str, details: dict[str, Any]) -> str:
+        """Fallback: in-memory hash chain when mind-mem is unavailable."""
+        import hashlib
+
+        if not hasattr(self, "_audit_chain_fallback"):
+            self._audit_chain_fallback: list[dict[str, Any]] = []
+
+        prev_hash = (
+            self._audit_chain_fallback[-1]["hash"]
+            if self._audit_chain_fallback
+            else "genesis"
+        )
         entry = {
             "action": action,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -125,7 +174,7 @@ class ClinicalMemEngine:
         }
         entry_bytes = json.dumps(entry, sort_keys=True).encode()
         entry["hash"] = hashlib.sha256(entry_bytes).hexdigest()
-        self._audit_chain.append(entry)
+        self._audit_chain_fallback.append(entry)
         return entry["hash"]
 
     # ── Ingest FHIR data ──────────────────────────────────────────────────
@@ -320,11 +369,45 @@ class ClinicalMemEngine:
         return counts
 
     def _store_block(self, block: ClinicalBlock) -> None:
-        """Store a clinical block in the patient's memory."""
+        """Store a clinical block in the patient's memory.
+
+        Also writes a Markdown file for mind-mem's BM25 corpus search.
+        """
         pid = block.patient_id
         if pid not in self._patient_blocks:
             self._patient_blocks[pid] = []
         self._patient_blocks[pid].append(block)
+
+        # Write mind-mem compatible Markdown block for BM25 search
+        if self._mind_mem_available:
+            self._write_block_markdown(block)
+
+    def _write_block_markdown(self, block: ClinicalBlock) -> None:
+        """Write a clinical block as mind-mem compatible Markdown for BM25 corpus."""
+        pdir = self._patient_dir(block.patient_id)
+        corpus_dir = os.path.join(pdir, "corpus")
+        os.makedirs(corpus_dir, exist_ok=True)
+
+        # One file per resource type per patient
+        safe_type = block.resource_type.replace("/", "_")
+        fpath = os.path.join(corpus_dir, f"{safe_type}.md")
+
+        # Append mind-mem block format: [ID] header + key-value fields
+        md_block = (
+            f"\n[{block.block_id}]\n"
+            f"Title: {block.title}\n"
+            f"Status: active\n"
+            f"Type: {block.resource_type}\n"
+            f"Source: {block.source}\n"
+            f"Timestamp: {block.timestamp}\n"
+            f"Content: {block.content}\n"
+        )
+        for key, val in block.metadata.items():
+            if val is not None and key not in ("type", "source"):
+                md_block += f"{key}: {val}\n"
+
+        with open(fpath, "a", encoding="utf-8") as f:
+            f.write(md_block)
 
     # ── Recall ────────────────────────────────────────────────────────────
 
@@ -334,8 +417,8 @@ class ClinicalMemEngine:
         """
         Recall clinical context for a patient query.
 
-        Uses hybrid search (BM25 keyword + content matching) with
-        MIND-kernel confidence gating.
+        Uses mind-mem HybridBackend (BM25 + RRF) when available,
+        with MIND-kernel confidence gating.
         """
         blocks = self._patient_blocks.get(patient_id, [])
         if not blocks:
@@ -352,6 +435,111 @@ class ClinicalMemEngine:
                 audit_hash=audit_hash,
             )
 
+        # Try mind-mem HybridBackend first
+        if self._hybrid_backend is not None:
+            return self._recall_mindmem(patient_id, query, blocks, top_k)
+
+        return self._recall_fallback(patient_id, query, blocks, top_k)
+
+    def _recall_mindmem(
+        self,
+        patient_id: str,
+        query: str,
+        blocks: list[ClinicalBlock],
+        top_k: int,
+    ) -> ClinicalRecallResult:
+        """Recall using mind-mem's HybridBackend (real BM25 + RRF fusion)."""
+        pdir = self._patient_dir(patient_id)
+
+        try:
+            mm_results = self._hybrid_backend.search(
+                query=query,
+                workspace=pdir,
+                limit=top_k,
+            )
+        except Exception as e:
+            logger.warning("mind-mem hybrid search failed: %s — falling back", e)
+            return self._recall_fallback(patient_id, query, blocks, top_k)
+
+        if not mm_results:
+            # mind-mem found nothing (maybe corpus not indexed yet), fall back
+            return self._recall_fallback(patient_id, query, blocks, top_k)
+
+        # Map mind-mem results back to clinical blocks
+        block_map = {b.block_id: b for b in blocks}
+        result_blocks = []
+        bm25_scores = []
+        entity_overlaps = []
+
+        for item in mm_results:
+            bid = item.get("_id", "") or item.get("id", "")
+            score = item.get("rrf_score", 0.0) or item.get("score", 0.0)
+            matched_block = block_map.get(bid)
+
+            if matched_block:
+                # Compute entity overlap for confidence gating
+                query_terms = set(query.lower().split())
+                meta_values = " ".join(
+                    str(v) for v in matched_block.metadata.values()
+                ).lower()
+                entity_hits = sum(1 for t in query_terms if t in meta_values)
+                overlap = entity_hits / (len(query_terms) + 1e-6)
+
+                result_blocks.append({
+                    "block_id": matched_block.block_id,
+                    "title": matched_block.title,
+                    "content": matched_block.content,
+                    "resource_type": matched_block.resource_type,
+                    "score": round(score, 4),
+                    "metadata": matched_block.metadata,
+                    "search_backend": "mind-mem/hybrid",
+                })
+                bm25_scores.append(min(score * 10, 1.0))  # Normalize RRF score
+                entity_overlaps.append(overlap)
+            else:
+                # Block from mind-mem corpus but not in our map — include raw
+                result_blocks.append({
+                    "block_id": bid,
+                    "title": item.get("Title", bid),
+                    "content": item.get("Content", item.get("excerpt", "")),
+                    "resource_type": item.get("Type", "Unknown"),
+                    "score": round(score, 4),
+                    "metadata": {},
+                    "search_backend": "mind-mem/hybrid",
+                })
+                bm25_scores.append(min(score * 10, 1.0))
+                entity_overlaps.append(0.0)
+
+        conf = confidence_gate(bm25_scores, entity_overlaps)
+
+        audit_hash = self._append_audit(
+            "recall",
+            {
+                "patient_id": patient_id,
+                "query": query,
+                "results": len(result_blocks),
+                "confidence": conf.score,
+                "abstained": conf.should_abstain,
+                "backend": "mind-mem/hybrid",
+            },
+        )
+
+        return ClinicalRecallResult(
+            blocks=result_blocks,
+            confidence=conf,
+            query=query,
+            patient_id=patient_id,
+            audit_hash=audit_hash,
+        )
+
+    def _recall_fallback(
+        self,
+        patient_id: str,
+        query: str,
+        blocks: list[ClinicalBlock],
+        top_k: int,
+    ) -> ClinicalRecallResult:
+        """Fallback recall using approximate BM25 term matching."""
         is_negation = is_negation_query(query)
         query_terms = set(query.lower().split())
 
@@ -360,16 +548,15 @@ class ClinicalMemEngine:
             content_lower = block.content.lower()
             title_lower = block.title.lower()
 
-            # BM25-style term matching
-            term_hits = sum(1 for t in query_terms if t in content_lower or t in title_lower)
+            term_hits = sum(
+                1 for t in query_terms if t in content_lower or t in title_lower
+            )
             bm25_approx = term_hits / (len(query_terms) + 1e-6)
 
-            # Entity overlap
             meta_values = " ".join(str(v) for v in block.metadata.values()).lower()
             entity_hits = sum(1 for t in query_terms if t in meta_values)
             entity_overlap = entity_hits / (len(query_terms) + 1e-6)
 
-            # Importance boost
             importance = clinical_importance(
                 access_count=1,
                 days_since_access=0,
@@ -380,7 +567,6 @@ class ClinicalMemEngine:
             final_score = (bm25_approx * 0.6 + entity_overlap * 0.4) * importance
 
             if is_negation:
-                # In negation queries, penalize blocks that don't contain negation
                 has_negation = any(
                     neg in content_lower
                     for neg in ["not ", "no ", "negative", "denies", "without"]
@@ -394,8 +580,8 @@ class ClinicalMemEngine:
         top = scored[:top_k]
 
         bm25_scores = [s[2] for s in top]
-        entity_overlaps = [s[3] for s in top]
-        conf = confidence_gate(bm25_scores, entity_overlaps)
+        entity_overlaps_list = [s[3] for s in top]
+        conf = confidence_gate(bm25_scores, entity_overlaps_list)
 
         result_blocks = [
             {
@@ -405,6 +591,7 @@ class ClinicalMemEngine:
                 "resource_type": b.resource_type,
                 "score": round(score, 4),
                 "metadata": b.metadata,
+                "search_backend": "fallback/bm25-approx",
             }
             for b, score, _, _ in top
         ]
@@ -417,6 +604,7 @@ class ClinicalMemEngine:
                 "results": len(result_blocks),
                 "confidence": conf.score,
                 "abstained": conf.should_abstain,
+                "backend": "fallback/bm25-approx",
             },
         )
 
@@ -634,16 +822,39 @@ class ClinicalMemEngine:
 
     def get_audit_trail(self, limit: int = 50) -> list[dict[str, Any]]:
         """Return the hash-chain audit trail."""
-        return self._audit_chain[-limit:]
+        if self._audit_chain_mm is not None:
+            return self._get_audit_trail_mindmem(limit)
+        fallback = getattr(self, "_audit_chain_fallback", [])
+        return fallback[-limit:]
+
+    def _get_audit_trail_mindmem(self, limit: int) -> list[dict[str, Any]]:
+        """Read audit trail from mind-mem's JSONL ledger."""
+        chain_path = self._audit_chain_mm._chain_path
+        if not os.path.isfile(chain_path):
+            return []
+        entries = []
+        with open(chain_path, "r", encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped:
+                    entries.append(json.loads(stripped))
+        return entries[-limit:]
 
     def verify_audit_chain(self) -> bool:
         """Verify integrity of the audit chain (tamper detection)."""
-        for i, entry in enumerate(self._audit_chain):
+        if self._audit_chain_mm is not None:
+            is_valid, errors = self._audit_chain_mm.verify()
+            if errors:
+                logger.warning("Audit chain verification errors: %s", errors)
+            return is_valid
+        # Fallback verification
+        fallback = getattr(self, "_audit_chain_fallback", [])
+        for i, entry in enumerate(fallback):
             if i == 0:
                 if entry.get("prev_hash") != "genesis":
                     return False
             else:
-                if entry.get("prev_hash") != self._audit_chain[i - 1]["hash"]:
+                if entry.get("prev_hash") != fallback[i - 1]["hash"]:
                     return False
         return True
 
