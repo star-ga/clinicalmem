@@ -32,6 +32,11 @@ from engine.clinical_scoring import (
     clinical_importance,
     is_negation_query,
 )
+from engine.llm_synthesizer import (
+    ClinicalNarrative,
+    explain_conflict,
+    generate_clinical_handoff,
+)
 from engine.fhir_client import (
     FHIRClient,
     FHIRContext,
@@ -919,3 +924,109 @@ class ClinicalMemEngine:
             "recent_observations": observations[:10],
             "audit_hash": audit_hash,
         }
+
+    # ── LLM-Grounded Clinical Synthesis ───────────────────────────────────
+
+    def explain_clinical_conflict(
+        self, patient_id: str, conflict_index: int = 0
+    ) -> ClinicalNarrative:
+        """
+        Generate a patient-specific LLM explanation for a detected conflict.
+
+        Uses deterministic detection + GenAI synthesis pattern:
+        - Detection: rule-based (reliable, auditable)
+        - Explanation: LLM-generated (expressive, context-aware)
+        - Abstention: hard gate when evidence is insufficient
+        """
+        contradictions = self.detect_contradictions(patient_id)
+        if not contradictions or conflict_index >= len(contradictions):
+            return ClinicalNarrative(
+                narrative="ABSTAIN: No conflicts detected for this patient.",
+                evidence_citations=[],
+                confidence_score=0.0,
+                abstained=True,
+                model_used="abstention_gate",
+                audit_context={"reason": "no_conflicts"},
+            )
+
+        conflict = contradictions[conflict_index]
+        patient_ctx = self.patient_summary(patient_id)
+
+        # Get evidence blocks relevant to this conflict
+        involved = conflict.get("blocks_involved", [])
+        blocks = self._patient_blocks.get(patient_id, [])
+        evidence = [
+            {
+                "block_id": b.block_id,
+                "title": b.title,
+                "content": b.content,
+                "resource_type": b.resource_type,
+                "metadata": b.metadata,
+            }
+            for b in blocks
+            if any(
+                term.lower() in b.content.lower() or term.lower() in b.title.lower()
+                for term in involved
+            )
+        ]
+
+        narrative = explain_conflict(conflict, patient_ctx, evidence)
+
+        self._append_audit(
+            "explain_conflict",
+            {
+                "patient_id": patient_id,
+                "conflict_type": conflict.get("type"),
+                "conflict_index": conflict_index,
+                "abstained": narrative.abstained,
+                "model_used": narrative.model_used,
+                "citations": len(narrative.evidence_citations),
+            },
+        )
+
+        return narrative
+
+    def clinical_handoff(self, patient_id: str) -> ClinicalNarrative:
+        """
+        Generate a complete clinical care handoff note with LLM synthesis.
+
+        Combines all detected findings into a structured clinician-ready note
+        with evidence citations. Demonstrates GenAI + deterministic safety rails.
+        """
+        contradictions = self.detect_contradictions(patient_id)
+        patient_ctx = self.patient_summary(patient_id)
+        safety = self.medication_safety_check(patient_id)
+
+        blocks = self._patient_blocks.get(patient_id, [])
+        evidence = [
+            {
+                "block_id": b.block_id,
+                "title": b.title,
+                "content": b.content,
+                "resource_type": b.resource_type,
+                "metadata": b.metadata,
+            }
+            for b in blocks
+        ]
+
+        safety_report = {
+            "interaction_count": len(safety.interactions),
+            "allergy_conflict_count": len(safety.allergy_conflicts),
+        }
+
+        narrative = generate_clinical_handoff(
+            patient_ctx, contradictions, safety_report, evidence
+        )
+
+        self._append_audit(
+            "clinical_handoff",
+            {
+                "patient_id": patient_id,
+                "contradiction_count": len(contradictions),
+                "abstained": narrative.abstained,
+                "model_used": narrative.model_used,
+                "citations": len(narrative.evidence_citations),
+            },
+        )
+
+        return narrative

@@ -1,6 +1,6 @@
 # ClinicalMem
 
-[![Tests](https://img.shields.io/badge/tests-79%2F79-brightgreen)](#tests)
+[![Tests](https://img.shields.io/badge/tests-86%2F86-brightgreen)](#tests)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![MCP](https://img.shields.io/badge/protocol-MCP-purple)](#mcp-server)
@@ -43,12 +43,12 @@ Powered by [mind-mem](https://github.com/star-ga/mind-mem) hybrid search engine 
      |                     |
 MCP Server            A2A Agent
 (FastMCP 2.x)        (Google ADK)
-9 tools               4 skills
+11 tools              5 skills
 SHARP-on-MCP          A2A protocol
-Streamable HTTP       Cloud Run
+Streamable HTTP       Azure Container Apps
 ```
 
-## MCP Server (9 Tools)
+## MCP Server (11 Tools)
 
 | Tool | Purpose |
 |------|---------|
@@ -61,8 +61,10 @@ Streamable HTTP       Cloud Run
 | `summarize_patient_history` | Importance-scored patient overview |
 | `detect_belief_drift` | Contradiction detection |
 | `ingest_patient_data` | Pull all FHIR data into memory |
+| `explain_clinical_conflict` | **GenAI**: LLM-grounded conflict explanation with citations |
+| `clinical_care_handoff` | **GenAI**: Evidence-grounded care handoff note |
 
-## A2A Agent (4 Skills)
+## A2A Agent (5 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -70,6 +72,7 @@ Streamable HTTP       Cloud Run
 | `clinical-context-recall` | Hybrid search with confidence gating |
 | `contradiction-assessment` | Scan for conflicting records |
 | `care-transition-summary` | Structured handoff summary |
+| `explain-conflict` | **GenAI**: LLM-grounded clinical rationale with evidence citations |
 
 ## Synthetic Patient: Sarah Mitchell
 
@@ -102,11 +105,11 @@ docker compose up --build
 
 ## Tests
 
-79 tests covering engine scoring, FHIR ingestion, medication safety, lab-medication contraindications, lab trend analysis, provider disagreement detection, contradiction detection, recall, and audit chain integrity.
+86 tests covering engine scoring, FHIR ingestion, medication safety, lab-medication contraindications, lab trend analysis, provider disagreement detection, contradiction detection, recall, audit chain integrity, and LLM synthesis (explain_conflict + clinical_handoff with abstention).
 
 ```
 tests/test_engine/test_clinical_scoring.py — 43 tests
-tests/test_engine/test_integration.py      — 36 tests
+tests/test_engine/test_integration.py      — 43 tests
 ```
 
 ## Tech Stack
@@ -116,7 +119,7 @@ tests/test_engine/test_integration.py      — 36 tests
 - **MCP:** FastMCP 2.x with SHARP-on-MCP headers
 - **A2A:** Google ADK with A2A protocol
 - **FHIR:** R4 client with synthetic patient data
-- **Deploy:** Docker + Google Cloud Run
+- **Deploy:** Docker + Azure Container Apps
 
 ## License
 

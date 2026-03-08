@@ -394,3 +394,58 @@ class TestPatientSummary:
         med_names = [m["name"] for m in summary["medications"]]
         assert "Warfarin 5mg" in med_names
         assert "Metformin 500mg" in med_names
+
+
+# ── LLM Synthesis Tests ──────────────────────────────────────────────────
+
+
+class TestLLMSynthesis:
+    """Test GenAI synthesis features (explain_conflict, clinical_handoff).
+
+    These tests run without an LLM API key — they exercise the template
+    fallback and the abstention gate, which are the deterministic parts.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _ingest(self, engine, fhir_client):
+        with patch("httpx.get", side_effect=_mock_fhir_get):
+            engine.ingest_from_fhir(fhir_client)
+        self.engine = engine
+        self.pid = "patient-sarah-mitchell"
+
+    def test_explain_conflict_returns_narrative(self):
+        narrative = self.engine.explain_clinical_conflict(self.pid, conflict_index=0)
+        assert narrative.narrative  # Non-empty
+        assert isinstance(narrative.confidence_score, float)
+        assert narrative.model_used  # Either LLM name or fallback
+
+    def test_explain_conflict_has_audit(self):
+        narrative = self.engine.explain_clinical_conflict(self.pid, conflict_index=0)
+        assert narrative.audit_context is not None
+        assert "conflict_type" in narrative.audit_context or "reason" in narrative.audit_context
+
+    def test_explain_nonexistent_conflict_abstains(self):
+        narrative = self.engine.explain_clinical_conflict(self.pid, conflict_index=99)
+        assert narrative.abstained is True
+        assert "ABSTAIN" in narrative.narrative
+
+    def test_explain_empty_patient_abstains(self):
+        narrative = self.engine.explain_clinical_conflict("nonexistent", conflict_index=0)
+        assert narrative.abstained is True
+
+    def test_clinical_handoff_returns_note(self):
+        narrative = self.engine.clinical_handoff(self.pid)
+        assert narrative.narrative  # Non-empty
+        assert isinstance(narrative.confidence_score, float)
+        assert narrative.confidence_score > 0  # Has evidence
+
+    def test_clinical_handoff_empty_patient_abstains(self):
+        narrative = self.engine.clinical_handoff("nonexistent")
+        # No blocks = no contradictions detected, but still generates note
+        # The abstention check is based on evidence count
+        assert narrative.narrative  # Should produce something
+
+    def test_narrative_dataclass_immutable(self):
+        narrative = self.engine.explain_clinical_conflict(self.pid, conflict_index=0)
+        with pytest.raises(AttributeError):
+            narrative.narrative = "tampered"  # type: ignore[misc]

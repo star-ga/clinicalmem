@@ -453,6 +453,83 @@ def ingest_patient_data(
         return {"status": "error", "error_message": f"Ingestion failed: {e}"}
 
 
+# ── Tool: Explain Clinical Conflict (GenAI Synthesis) ────────────────────────
+
+@mcp.tool()
+def explain_clinical_conflict(
+    patient_id: str,
+    conflict_index: int = 0,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Generate a patient-specific LLM explanation for a detected clinical conflict.
+
+    Uses deterministic detection + GenAI synthesis pattern:
+    - Detection: rule-based safety rails (reliable, auditable)
+    - Explanation: LLM-generated (expressive, context-aware, with evidence citations)
+    - Abstention: hard gate when evidence is insufficient — refuses to guess
+
+    This demonstrates ClinicalMem's approach to trustworthy clinical AI:
+    deterministic safety catches the problem, GenAI explains it in context.
+
+    Args:
+        patient_id: The patient's FHIR ID
+        conflict_index: Which detected conflict to explain (0-based index)
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+    narrative = _engine.explain_clinical_conflict(patient_id, conflict_index)
+    return {
+        "status": "success",
+        "patient_id": patient_id,
+        "narrative": narrative.narrative,
+        "evidence_citations": narrative.evidence_citations,
+        "confidence_score": round(narrative.confidence_score, 3),
+        "abstained": narrative.abstained,
+        "model_used": narrative.model_used,
+    }
+
+
+# ── Tool: Clinical Care Handoff (GenAI Synthesis) ───────────────────────────
+
+@mcp.tool()
+def clinical_care_handoff(
+    patient_id: str,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Generate a complete clinical care handoff note using GenAI synthesis.
+
+    Combines all detected safety findings into a structured clinician-ready
+    note with evidence citations. Uses LLM to synthesize findings into
+    natural clinical language while maintaining traceability to source records.
+
+    Demonstrates:
+    - Evidence-grounded generation (every claim cites a source block)
+    - Safe abstention (refuses when data is insufficient)
+    - Deterministic detection + GenAI explanation pattern
+
+    Args:
+        patient_id: The patient's FHIR ID
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+    narrative = _engine.clinical_handoff(patient_id)
+    return {
+        "status": "success",
+        "patient_id": patient_id,
+        "handoff_note": narrative.narrative,
+        "evidence_citations": narrative.evidence_citations,
+        "confidence_score": round(narrative.confidence_score, 3),
+        "abstained": narrative.abstained,
+        "model_used": narrative.model_used,
+    }
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _auto_ingest(patient_id: str, fhir_url: str, fhir_token: str) -> None:

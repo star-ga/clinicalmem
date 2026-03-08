@@ -30,6 +30,7 @@ from a2a_agent.tools.memory_tools import (
 from a2a_agent.tools.safety_tools import (
     medication_safety_review,
     detect_record_contradictions,
+    explain_clinical_conflict,
 )
 
 # We reuse the fhir_hook from the starter repo pattern
@@ -110,6 +111,8 @@ root_agent = Agent(
         # Safety analysis tools (MIND kernel powered)
         medication_safety_review,
         detect_record_contradictions,
+        # GenAI synthesis tools (deterministic detection + LLM explanation)
+        explain_clinical_conflict,
     ],
     before_model_callback=extract_fhir_context,
 )

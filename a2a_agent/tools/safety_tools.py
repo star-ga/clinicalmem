@@ -152,3 +152,37 @@ def detect_record_contradictions(tool_context: ToolContext) -> dict:
         "has_high": bool(high),
         "escalation": escalation,
     }
+
+
+def explain_clinical_conflict(
+    tool_context: ToolContext,
+    conflict_index: int = 0,
+) -> dict:
+    """
+    Generate a patient-specific LLM explanation for a detected clinical conflict.
+
+    Uses deterministic detection + GenAI synthesis pattern:
+    - Detection: rule-based safety rails (reliable, auditable)
+    - Explanation: LLM-generated (expressive, context-aware, with evidence citations)
+    - Abstention: hard gate when evidence is insufficient — refuses to guess
+
+    Args:
+        conflict_index: Which detected conflict to explain (0-based). Run
+            detect_record_contradictions first to see available conflicts.
+    """
+    _auto_ingest(tool_context)
+    patient_id = tool_context.state.get("patient_id", "")
+    if not patient_id:
+        return {"status": "error", "error_message": "No patient_id in session context."}
+
+    engine = _get_engine()
+    narrative = engine.explain_clinical_conflict(patient_id, conflict_index)
+    return {
+        "status": "success",
+        "patient_id": patient_id,
+        "narrative": narrative.narrative,
+        "evidence_citations": narrative.evidence_citations,
+        "confidence_score": round(narrative.confidence_score, 3),
+        "abstained": narrative.abstained,
+        "model_used": narrative.model_used,
+    }

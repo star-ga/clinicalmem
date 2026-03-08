@@ -23,7 +23,7 @@ services:
       - PORT=8080
       - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8080/.well-known/agent.json')"]
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8080/.well-known/agent-card.json')"]
       interval: 30s
       timeout: 5s
       retries: 3

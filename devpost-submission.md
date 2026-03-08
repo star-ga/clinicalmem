@@ -11,22 +11,22 @@ ClinicalMem
 
 ## Tagline (short description)
 
-Persistent, auditable, contradiction-safe clinical memory for healthcare AI agents — powered by mind-mem and MIND Lang scoring kernels.
+The deterministic memory layer that prevents LLM hallucinations in clinical care — with auditable evidence, safe abstention, and cross-provider contradiction detection.
 
 ## About (What it does)
 
-ClinicalMem gives healthcare AI agents something they desperately need: **memory that understands medicine**.
+ClinicalMem solves the biggest barrier to AI in healthcare: **trust**.
 
-Today's clinical AI can answer questions about a patient — but it forgets everything between conversations. It can't detect when a new prescription conflicts with an existing allergy. It can't notice that two specialists are giving contradictory guidance. It can't audit why it made a recommendation six months ago.
+Today's clinical AI agents hallucinate. They forget patient history between conversations. They can't detect when a new prescription conflicts with an existing allergy. They can't notice that two specialists are giving contradictory guidance. And there's no cryptographic proof of what they recommended or why.
 
-ClinicalMem fixes this by providing:
+ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to verified clinical evidence:
 
-- **Persistent Clinical Memory** — Ingests FHIR R4 patient data (medications, conditions, allergies, observations) and stores it as searchable memory blocks using hybrid BM25 + vector retrieval
-- **Drug Interaction Detection** — Automatically flags dangerous medication combinations (e.g., Warfarin + NSAIDs = bleeding risk) using a clinical knowledge base of 12 interaction pairs
-- **Allergy Cross-Reaction Alerts** — Catches prescriptions that cross-react with known allergies (e.g., Penicillin allergy + Amoxicillin prescription = anaphylaxis risk) across 4 cross-reaction groups
-- **Confidence Gating (Abstention)** — When evidence is insufficient, ClinicalMem abstains rather than guessing. In healthcare, "I don't know" is better than a wrong answer
-- **Contradiction Detection** — Identifies conflicts between providers, medications, and clinical guidelines
-- **SHA-256 Hash-Chain Audit Trail** — Every clinical decision is logged in a tamper-proof chain, providing HIPAA-grade accountability
+- **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
+- **LLM-Grounded Clinical Synthesis** — Uses GenAI to generate patient-specific clinical narratives, but only from retrieved evidence with explicit citations. When confidence is low, the system **abstains rather than hallucinating**
+- **Drug Interaction Detection** — Deterministic safety rails flag dangerous combinations (Warfarin + NSAIDs = bleeding risk), then an LLM explains the risk in the patient's specific clinical context
+- **Allergy Cross-Reaction Alerts** — Catches prescriptions that cross-react with known allergies (Penicillin allergy + Amoxicillin = anaphylaxis risk)
+- **Cross-Provider Contradiction Detection** — Surfaces conflicting care plans, declining lab trends, and medication-lab contraindications across fragmented provider records
+- **SHA-256 Hash-Chain Audit Trail** — Every clinical decision is logged in a tamper-proof Merkle chain, providing cryptographic proof that AI recommendations haven't been altered
 
 ### Demo Scenario: Sarah Mitchell
 
@@ -50,9 +50,19 @@ ClinicalMem is built on two open-source STARGA technologies:
 
 ### Architecture
 
-- **Shared Engine** (`engine/`) — FHIR R4 client, clinical memory, scoring kernels
-- **MCP Server** (`mcp_server/`) — FastMCP 2.x with Streamable HTTP transport, 9 SHARP-on-MCP tools
-- **A2A Agent** (`a2a_agent/`) — Google ADK agent with 4 clinical skills, AgentCard, API key middleware
+- **Shared Engine** (`engine/`) — FHIR R4 client, clinical memory, scoring kernels, LLM synthesizer
+- **MCP Server** (`mcp_server/`) — FastMCP 2.x with Streamable HTTP transport, 11 SHARP-on-MCP tools
+- **A2A Agent** (`a2a_agent/`) — Google ADK agent with 5 clinical skills, AgentCard, API key middleware
+
+### The GenAI Pattern: Deterministic Detection + LLM Synthesis
+
+ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
+
+1. **Detection Layer** (Deterministic) — Rule-based safety rails catch drug interactions, allergy conflicts, lab contraindications, and provider disagreements. These are reliable, auditable, and never hallucinate.
+
+2. **Synthesis Layer** (GenAI) — An LLM generates patient-specific clinical explanations from the detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the deterministic layer found, in the context of this specific patient.
+
+3. **Abstention Gate** — When evidence is insufficient, the system refuses to generate a narrative. In healthcare, "I don't know" saves lives.
 
 ### Tech Stack
 
@@ -62,15 +72,16 @@ ClinicalMem is built on two open-source STARGA technologies:
 - Google ADK + a2a-sdk (A2A agent framework)
 - httpx (async FHIR R4 client)
 - FHIR R4 (HL7 healthcare data standard)
-- Docker + Google Cloud Run (deployment)
+- Docker + Azure Container Apps (deployment)
 
 ### Testing
 
-61 tests covering:
+86 tests covering:
 - Clinical scoring kernels (confidence gating, drug interactions, allergy conflicts, negation detection)
 - FHIR client integration with mock server
 - Engine ingestion, recall, safety checks, contradiction detection
 - Hash-chain audit trail integrity verification
+- LLM synthesis (conflict explanation, care handoff, abstention gate, immutability)
 
 ## Challenges we ran into
 
@@ -84,10 +95,11 @@ ClinicalMem is built on two open-source STARGA technologies:
 
 ## Accomplishments that we're proud of
 
-- **Zero infrastructure** — ClinicalMem runs as a single Python process. No vector database, no graph database, no external LLM for extraction. Pure BM25 + local scoring.
-- **4 conflicts caught in demo** — Drug interactions, allergy cross-reactions, declining lab trends, and provider disagreements — all detected automatically.
-- **Tamper-proof audit trail** — SHA-256 hash chain provides cryptographic proof that clinical decision logs haven't been altered.
-- **61 tests passing** — Comprehensive test coverage including integration tests with a synthetic FHIR patient bundle.
+- **Deterministic safety + GenAI synthesis** — Rules catch the conflicts reliably; LLMs explain them in clinical context. Best of both worlds.
+- **4 conflicts caught in demo** — Drug interactions, allergy cross-reactions, declining lab trends, and provider disagreements — all detected automatically with patient-specific clinical rationale.
+- **Safe abstention** — When evidence is insufficient, ClinicalMem says "I don't know" instead of hallucinating. In healthcare, this saves lives.
+- **Tamper-proof audit trail** — SHA-256 Merkle chain provides cryptographic proof that clinical decision logs haven't been altered.
+- **86 tests passing** — Comprehensive test coverage including integration tests with a synthetic FHIR patient bundle.
 
 ## What we learned
 
@@ -118,5 +130,5 @@ ClinicalMem is built on two open-source STARGA technologies:
 ## Try it out
 
 - GitHub: https://github.com/star-ga/clinicalmem
-- MCP Server: [Cloud Run URL after deployment]
-- A2A Agent: [Cloud Run URL after deployment]
+- MCP Server: https://clinicalmem-mcp.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io
+- A2A Agent: https://clinicalmem-a2a.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io
