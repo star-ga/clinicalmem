@@ -129,6 +129,41 @@ class FHIRClient:
         return [e["resource"] for e in bundle.get("entry", []) if "resource" in e]
 
 
+class BundleFHIRClient:
+    """In-memory FHIR client backed by a pre-parsed Bundle.
+
+    Provides the same interface as FHIRClient (patient_id, get_medications, etc.)
+    without making any network calls. Used for demo mode and testing.
+    """
+
+    def __init__(self, resources_by_type: dict[str, list], patient_id: str):
+        self._resources = resources_by_type
+        self._patient_id = patient_id
+
+    @property
+    def patient_id(self) -> str:
+        return self._patient_id
+
+    def get_patient(self) -> dict:
+        patients = self._resources.get("Patient", [{}])
+        return patients[0] if patients else {}
+
+    def get_medications(self, status: str = "active") -> list[dict]:
+        return self._resources.get("MedicationRequest", [])
+
+    def get_conditions(self, clinical_status: str = "active") -> list[dict]:
+        return self._resources.get("Condition", [])
+
+    def get_allergies(self) -> list[dict]:
+        return self._resources.get("AllergyIntolerance", [])
+
+    def get_observations(self, category: str = "vital-signs", count: int = 20) -> list[dict]:
+        return self._resources.get("Observation", [])[:count]
+
+    def get_encounters(self, count: int = 20) -> list[dict]:
+        return self._resources.get("Encounter", [])[:count]
+
+
 def coding_display(codings: list[dict[str, Any]]) -> str:
     """Return the first human-readable display text from FHIR codings."""
     for c in codings:

@@ -554,7 +554,7 @@ def _llm_check_interactions(
     Tries models in order of clinical strength, using whichever API keys
     are available. Each model uses the same structured prompt.
 
-    Cascade: OpenAI GPT-4o → MedGemma 27B → Gemini Flash
+    Cascade: OpenAI GPT-5.4 → MedGemma 27B → Gemini Flash
     """
     import json
     import logging

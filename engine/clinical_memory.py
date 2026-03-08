@@ -38,6 +38,7 @@ from engine.llm_synthesizer import (
     generate_clinical_handoff,
 )
 from engine.fhir_client import (
+    BundleFHIRClient,
     FHIRClient,
     FHIRContext,
     extract_condition_name,
@@ -186,9 +187,11 @@ class ClinicalMemEngine:
     # ── Ingest FHIR data ──────────────────────────────────────────────────
 
     def ingest_from_bundle(self, bundle: dict, patient_id: str) -> dict[str, int]:
-        """Ingest a FHIR Bundle directly (for demo/testing without a live FHIR server)."""
-        from unittest.mock import patch
+        """Ingest a FHIR Bundle directly (for demo/testing without a live FHIR server).
 
+        Parses the bundle and feeds resources directly into ingest_from_fhir
+        via a BundleFHIRClient adapter — no mocking or monkey-patching required.
+        """
         entries = bundle.get("entry", [])
         resources_by_type: dict[str, list] = {}
         for entry in entries:
@@ -196,30 +199,8 @@ class ClinicalMemEngine:
             rt = res.get("resourceType", "")
             resources_by_type.setdefault(rt, []).append(res)
 
-        def mock_get(url, **kwargs):
-            from unittest.mock import MagicMock
-            resp = MagicMock()
-            resp.status_code = 200
-            path = url.split("/")[-1] if "/" in url else ""
-            if "MedicationRequest" in url:
-                resp.json.return_value = {"entry": [{"resource": r} for r in resources_by_type.get("MedicationRequest", [])]}
-            elif "Condition" in url:
-                resp.json.return_value = {"entry": [{"resource": r} for r in resources_by_type.get("Condition", [])]}
-            elif "AllergyIntolerance" in url:
-                resp.json.return_value = {"entry": [{"resource": r} for r in resources_by_type.get("AllergyIntolerance", [])]}
-            elif "Observation" in url:
-                resp.json.return_value = {"entry": [{"resource": r} for r in resources_by_type.get("Observation", [])]}
-            elif "Patient" in path:
-                patients = resources_by_type.get("Patient", [{}])
-                resp.json.return_value = patients[0] if patients else {}
-            else:
-                resp.json.return_value = {"entry": []}
-            return resp
-
-        ctx = FHIRContext(url="https://demo.fhir.local/r4", token="demo", patient_id=patient_id)
-        with patch("httpx.get", side_effect=mock_get):
-            fhir = FHIRClient(ctx)
-            return self.ingest_from_fhir(fhir)
+        fhir = BundleFHIRClient(resources_by_type, patient_id)
+        return self.ingest_from_fhir(fhir)
 
     def ingest_from_fhir(self, fhir: FHIRClient) -> dict[str, int]:
         """Pull patient data from FHIR server and store as clinical blocks."""

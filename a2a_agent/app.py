@@ -34,9 +34,10 @@ logger = logging.getLogger(__name__)
 
 # ── API Key Middleware ────────────────────────────────────────────────────────
 
-VALID_API_KEYS = set(
-    filter(None, os.getenv("API_KEYS", "my-secret-key-123").split(","))
-)
+_raw_keys = os.getenv("API_KEYS", "")
+if not _raw_keys:
+    logger.warning("API_KEYS not set — rejecting all requests until configured")
+VALID_API_KEYS = set(filter(None, _raw_keys.split(",")))
 
 
 class ApiKeyMiddleware(BaseHTTPMiddleware):
