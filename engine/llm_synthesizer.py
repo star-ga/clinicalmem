@@ -148,7 +148,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                     "https://api.openai.com/v1/chat/completions",
                     headers={"Authorization": f"Bearer {openai_key}"},
                     json={
-                        "model": "gpt-4o",
+                        "model": "gpt-5.4",
                         "messages": [
                             {"role": "system", "content": system},
                             {"role": "user", "content": prompt},
@@ -170,7 +170,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
         if google_key:
             for model_id, model_label in [
                 ("medgemma-27b-text-v1", "MedGemma-27B"),
-                ("gemini-2.0-flash", "gemini-2.0-flash"),
+                ("gemini-3-flash", "gemini-3-flash"),
             ]:
                 try:
                     resp = await client.post(
@@ -228,7 +228,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                 "https://api.openai.com/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openai_key}"},
                 json={
-                    "model": "gpt-4o",
+                    "model": "gpt-5.4",
                     "messages": [
                         {"role": "system", "content": system},
                         {"role": "user", "content": prompt},
@@ -252,7 +252,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
     if google_key:
         google_models = [
             ("medgemma-27b-text-v1", "MedGemma-27B"),
-            ("gemini-2.0-flash", "gemini-2.0-flash"),
+            ("gemini-3-flash", "gemini-3-flash"),
         ]
         for model_id, model_label in google_models:
             try:

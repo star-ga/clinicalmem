@@ -22,7 +22,7 @@ Today's clinical AI agents hallucinate. They forget patient history between conv
 ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to verified clinical evidence:
 
 - **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
-- **LLM-Grounded Clinical Synthesis** — Uses MedGemma (Google's purpose-built medical model) to generate patient-specific clinical narratives, but only from retrieved evidence with explicit citations. Falls back to Gemini Flash if MedGemma unavailable. When confidence is low, the system **abstains rather than hallucinating**
+- **LLM-Grounded Clinical Synthesis** — Uses MedGemma (Google's purpose-built medical model) to generate patient-specific clinical narratives, but only from retrieved evidence with explicit citations. Falls back to Gemini 3 Flash if MedGemma unavailable. When confidence is low, the system **abstains rather than hallucinating**
 - **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) NIH/NLM Drug Interaction API (RxNorm — the same federal database used by Epic, Cerner, and all certified EHRs) for free, authoritative coverage, (4) Gemini LLM fallback for remaining pairs. Each tier is audited
 - **Allergy Cross-Reaction Alerts** — Catches prescriptions that cross-react with known allergies (Penicillin allergy + Amoxicillin = anaphylaxis risk)
 - **Cross-Provider Contradiction Detection** — Surfaces conflicting care plans, declining lab trends, and medication-lab contraindications across fragmented provider records
@@ -64,7 +64,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 3. **Detection Layer 3** (NIH/NLM Drug Interaction API) — Queries RxNorm to resolve drug names to RxCUI identifiers, then checks the NIH Drug Interaction API — the same federal database used by Epic, Cerner, and all certified EHR systems. Free, no API key required, authoritative.
 
-4. **Detection Layer 4** (Multi-LLM Cascade) — Tries the best available medical LLM: OpenAI GPT-4o (HIPAA-validated, tested by 260 physicians) → MedGemma 27B (Google's purpose-built medical model, 87.7% MedQA) → Gemini Flash. Uses whichever API keys are configured — judges bring their own keys.
+4. **Detection Layer 4** (Multi-LLM Cascade) — Tries the best available medical LLM: OpenAI GPT-5.4 (HIPAA-validated, tested by 260 physicians) → MedGemma 27B (Google's purpose-built medical model, 87.7% MedQA) → Gemini 3 Flash. Uses whichever API keys are configured — judges bring their own keys.
 
 4. **Synthesis Layer** (GenAI) — An LLM generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
 

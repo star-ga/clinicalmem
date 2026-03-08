@@ -490,7 +490,7 @@ def _call_openai_json(prompt: str, api_key: str) -> str | None:
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {api_key}"},
             json={
-                "model": "gpt-4o",
+                "model": "gpt-5.4",
                 "messages": [
                     {
                         "role": "system",
@@ -588,10 +588,10 @@ JSON array:"""
     # Build model cascade based on available API keys
     attempts: list[tuple[str, callable]] = []
     if openai_key:
-        attempts.append(("OpenAI", lambda: _call_openai_json(prompt, openai_key)))
+        attempts.append(("OpenAI-GPT-5.4", lambda: _call_openai_json(prompt, openai_key)))
     if google_key:
         attempts.append(("MedGemma", lambda: _call_google_json(prompt, google_key, "medgemma-27b-text-v1")))
-        attempts.append(("Gemini", lambda: _call_google_json(prompt, google_key, "gemini-2.0-flash")))
+        attempts.append(("Gemini", lambda: _call_google_json(prompt, google_key, "gemini-3-flash")))
 
     for model_label, call_fn in attempts:
         text = call_fn()
