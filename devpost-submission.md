@@ -64,7 +64,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 3. **Detection Layer 3** (NIH/NLM Drug Interaction API) — Queries RxNorm to resolve drug names to RxCUI identifiers, then checks the NIH Drug Interaction API — the same federal database used by Epic, Cerner, and all certified EHR systems. Free, no API key required, authoritative.
 
-4. **Detection Layer 4** (MedGemma → Gemini) — Google's MedGemma (purpose-built medical model, 87.7% MedQA accuracy) as primary LLM fallback, with Gemini Flash as secondary. Structured JSON extraction with severity filtering.
+4. **Detection Layer 4** (Multi-LLM Cascade) — Tries the best available medical LLM: OpenAI GPT-4o (HIPAA-validated, tested by 260 physicians) → MedGemma 27B (Google's purpose-built medical model, 87.7% MedQA) → Gemini Flash. Uses whichever API keys are configured — judges bring their own keys.
 
 4. **Synthesis Layer** (GenAI) — An LLM generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
 

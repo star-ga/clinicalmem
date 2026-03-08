@@ -129,15 +129,12 @@ Cite evidence blocks by [block_id] for every clinical claim."""
 
 
 async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None, str]:
-    """Async medical LLM cascade: MedGemma → Gemini Flash."""
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return None, "none"
+    """Async medical LLM cascade: OpenAI GPT-4o → MedGemma → Gemini Flash."""
+    openai_key = os.environ.get("OPENAI_API_KEY")
+    google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
-    models = [
-        ("medgemma-27b-text-v1", "MedGemma-27B"),
-        ("gemini-2.0-flash", "gemini-2.0-flash"),
-    ]
+    if not openai_key and not google_key:
+        return None, "none"
 
     try:
         import httpx
@@ -145,10 +142,122 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
         return None, "none"
 
     async with httpx.AsyncClient(timeout=30) as client:
-        for model_id, model_label in models:
+        if openai_key:
             try:
                 resp = await client.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {openai_key}"},
+                    json={
+                        "model": "gpt-4o",
+                        "messages": [
+                            {"role": "system", "content": system},
+                            {"role": "user", "content": prompt},
+                        ],
+                        "temperature": 0.2,
+                        "max_tokens": 1024,
+                    },
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    text = data["choices"][0]["message"]["content"]
+                    if text:
+                        return text, "OpenAI-GPT-4o"
+                else:
+                    logger.info("OpenAI returned %d, trying next", resp.status_code)
+            except Exception as e:
+                logger.info("OpenAI failed: %s, trying next", e)
+
+        if google_key:
+            for model_id, model_label in [
+                ("medgemma-27b-text-v1", "MedGemma-27B"),
+                ("gemini-2.0-flash", "gemini-2.0-flash"),
+            ]:
+                try:
+                    resp = await client.post(
+                        f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={google_key}",
+                        json={
+                            "systemInstruction": {"parts": [{"text": system}]},
+                            "contents": [{"parts": [{"text": prompt}]}],
+                            "generationConfig": {
+                                "temperature": 0.2,
+                                "maxOutputTokens": 1024,
+                            },
+                        },
+                    )
+                    if resp.status_code != 200:
+                        logger.info("%s returned %d, trying next", model_label, resp.status_code)
+                        continue
+                    data = resp.json()
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and parts[0].get("text"):
+                            return parts[0]["text"], model_label
+                except Exception as e:
+                    logger.info("%s failed: %s, trying next", model_label, e)
+                    continue
+
+    return None, "none"
+
+
+def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
+    """
+    Call medical LLM with cascade: OpenAI GPT-4o → MedGemma → Gemini Flash.
+
+    Uses whichever API keys are available. OpenAI has the strongest clinical
+    validation (260 physicians, HIPAA BAA). MedGemma is purpose-built for
+    medicine (87.7% MedQA). Gemini Flash is the general fallback.
+
+    Returns (response_text, model_used).
+    """
+    openai_key = os.environ.get("OPENAI_API_KEY")
+    google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+
+    if not openai_key and not google_key:
+        return None, "none"
+
+    try:
+        import httpx
+    except ImportError:
+        return None, "none"
+
+    # Attempt 1: OpenAI (if key available)
+    if openai_key:
+        try:
+            resp = httpx.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={"Authorization": f"Bearer {openai_key}"},
+                json={
+                    "model": "gpt-4o",
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.2,
+                    "max_tokens": 1024,
+                },
+                timeout=30,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                text = data["choices"][0]["message"]["content"]
+                if text:
+                    return text, "OpenAI-GPT-4o"
+            else:
+                logger.info("OpenAI returned %d, trying next model", resp.status_code)
+        except Exception as e:
+            logger.info("OpenAI failed: %s, trying next model", e)
+
+    # Attempt 2-3: Google models (MedGemma → Gemini Flash)
+    if google_key:
+        google_models = [
+            ("medgemma-27b-text-v1", "MedGemma-27B"),
+            ("gemini-2.0-flash", "gemini-2.0-flash"),
+        ]
+        for model_id, model_label in google_models:
+            try:
+                resp = httpx.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={google_key}",
                     json={
                         "systemInstruction": {"parts": [{"text": system}]},
                         "contents": [{"parts": [{"text": prompt}]}],
@@ -157,6 +266,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                             "maxOutputTokens": 1024,
                         },
                     },
+                    timeout=30,
                 )
                 if resp.status_code != 200:
                     logger.info("%s returned %d, trying next", model_label, resp.status_code)
@@ -170,60 +280,6 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
             except Exception as e:
                 logger.info("%s failed: %s, trying next", model_label, e)
                 continue
-
-    return None, "none"
-
-
-def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
-    """
-    Call medical LLM with cascade: MedGemma → Gemini Flash.
-
-    MedGemma (27B text) is Google's purpose-built medical model trained on
-    clinical literature, scoring 87.7% on MedQA. Falls back to Gemini Flash
-    if MedGemma is unavailable.
-
-    Returns (response_text, model_used).
-    """
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return None, "none"
-
-    models = [
-        ("medgemma-27b-text-v1", "MedGemma-27B"),
-        ("gemini-2.0-flash", "gemini-2.0-flash"),
-    ]
-
-    try:
-        import httpx
-    except ImportError:
-        return None, "none"
-
-    for model_id, model_label in models:
-        try:
-            resp = httpx.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
-                json={
-                    "systemInstruction": {"parts": [{"text": system}]},
-                    "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {
-                        "temperature": 0.2,
-                        "maxOutputTokens": 1024,
-                    },
-                },
-                timeout=30,
-            )
-            if resp.status_code != 200:
-                logger.info("%s returned %d, trying next model", model_label, resp.status_code)
-                continue
-            data = resp.json()
-            candidates = data.get("candidates", [])
-            if candidates:
-                parts = candidates[0].get("content", {}).get("parts", [])
-                if parts and parts[0].get("text"):
-                    return parts[0]["text"], model_label
-        except Exception as e:
-            logger.info("%s failed: %s, trying next model", model_label, e)
-            continue
 
     return None, "none"
 

@@ -478,16 +478,83 @@ def _nih_check_interactions(
     return results
 
 
+def _call_openai_json(prompt: str, api_key: str) -> str | None:
+    """Call OpenAI API for structured JSON drug interaction response."""
+    import logging
+
+    logger = logging.getLogger(__name__)
+    try:
+        import httpx
+
+        resp = httpx.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "model": "gpt-4o",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are a clinical pharmacist with expertise in drug-drug "
+                            "interactions. You ONLY return valid JSON arrays."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.1,
+                "max_tokens": 512,
+            },
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            logger.info("OpenAI returned %d", resp.status_code)
+            return None
+        data = resp.json()
+        return data["choices"][0]["message"]["content"]
+    except Exception as e:
+        logger.info("OpenAI call failed: %s", e)
+        return None
+
+
+def _call_google_json(prompt: str, api_key: str, model_id: str) -> str | None:
+    """Call Google GenAI API for structured JSON drug interaction response."""
+    import logging
+
+    logger = logging.getLogger(__name__)
+    try:
+        import httpx
+
+        resp = httpx.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+            json={
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.1, "maxOutputTokens": 512},
+            },
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            logger.info("%s returned %d", model_id, resp.status_code)
+            return None
+        data = resp.json()
+        candidates = data.get("candidates", [])
+        if candidates:
+            return candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+    except Exception as e:
+        logger.info("%s failed: %s", model_id, e)
+    return None
+
+
 def _llm_check_interactions(
     medications: list[str],
     already_found: set[tuple[str, str]],
 ) -> list[DrugInteraction]:
     """
-    Layer 4: Medical LLM fallback for drug interactions.
+    Layer 4: Medical LLM cascade for drug interactions.
 
-    Tries MedGemma first (Google's purpose-built medical model, 87.7% MedQA,
-    trained on medical literature), then falls back to Gemini Flash if
-    MedGemma is unavailable. Returns structured DrugInteraction objects.
+    Tries models in order of clinical strength, using whichever API keys
+    are available. Each model uses the same structured prompt.
+
+    Cascade: OpenAI GPT-4o → MedGemma 27B → Gemini Flash
     """
     import json
     import logging
@@ -495,11 +562,12 @@ def _llm_check_interactions(
 
     logger = logging.getLogger(__name__)
 
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
+    openai_key = os.environ.get("OPENAI_API_KEY")
+    google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+
+    if not openai_key and not google_key:
         return []
 
-    # Build list of medication names (strip dosages for cleaner query)
     med_names = [m.split()[0] if " " in m else m for m in medications]
 
     prompt = f"""You are a clinical pharmacist. Given these medications: {', '.join(med_names)}
@@ -517,79 +585,58 @@ If NO significant interactions exist, respond with: []
 
 JSON array:"""
 
-    # Model cascade: MedGemma (medical-specialized) → Gemini Flash (general)
-    models = [
-        ("medgemma-27b-text-v1", "MedGemma"),
-        ("gemini-2.0-flash", "Gemini"),
-    ]
+    # Build model cascade based on available API keys
+    attempts: list[tuple[str, callable]] = []
+    if openai_key:
+        attempts.append(("OpenAI", lambda: _call_openai_json(prompt, openai_key)))
+    if google_key:
+        attempts.append(("MedGemma", lambda: _call_google_json(prompt, google_key, "medgemma-27b-text-v1")))
+        attempts.append(("Gemini", lambda: _call_google_json(prompt, google_key, "gemini-2.0-flash")))
 
-    try:
-        import httpx
-    except ImportError:
-        return []
-
-    for model_id, model_label in models:
-        try:
-            resp = httpx.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
-                json={
-                    "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {
-                        "temperature": 0.1,
-                        "maxOutputTokens": 512,
-                    },
-                },
-                timeout=20,
-            )
-            if resp.status_code != 200:
-                logger.info("%s returned %d, trying next model", model_label, resp.status_code)
-                continue
-
-            data = resp.json()
-            candidates = data.get("candidates", [])
-            if not candidates:
-                continue
-            text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-
-            # Extract JSON from response (handle markdown code blocks)
-            text = text.strip()
-            if text.startswith("```"):
-                text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-                text = text.rsplit("```", 1)[0]
-            text = text.strip()
-
-            if not text or text == "[]":
-                return []
-
-            parsed = json.loads(text)
-            if not isinstance(parsed, list):
-                continue
-
-            results = []
-            for item in parsed:
-                a = item.get("drug_a", "").lower()
-                b = item.get("drug_b", "").lower()
-                if (a, b) in already_found or (b, a) in already_found:
-                    continue
-                sev = item.get("severity", "moderate")
-                if sev not in ("serious", "contraindicated"):
-                    continue
-                results.append(
-                    DrugInteraction(
-                        drug_a=a,
-                        drug_b=b,
-                        severity=sev,
-                        description=f"{model_label}: {item.get('description', 'LLM-detected interaction')}",
-                        score=medication_severity_score(sev),
-                    )
-                )
-            if results:
-                logger.info("%s detected %d additional drug interactions", model_label, len(results))
-            return results
-
-        except Exception as e:
-            logger.info("%s failed: %s, trying next model", model_label, e)
+    for model_label, call_fn in attempts:
+        text = call_fn()
+        if not text:
             continue
+
+        # Extract JSON (handle markdown code blocks)
+        text = text.strip()
+        if text.startswith("```"):
+            text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+            text = text.rsplit("```", 1)[0]
+        text = text.strip()
+
+        if not text or text == "[]":
+            return []
+
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            logger.info("%s returned invalid JSON, trying next", model_label)
+            continue
+        if not isinstance(parsed, list):
+            continue
+
+        results = []
+        for item in parsed:
+            a = item.get("drug_a", "").lower()
+            b = item.get("drug_b", "").lower()
+            if (a, b) in already_found or (b, a) in already_found:
+                continue
+            sev = item.get("severity", "moderate")
+            if sev not in ("serious", "contraindicated"):
+                continue
+            results.append(
+                DrugInteraction(
+                    drug_a=a,
+                    drug_b=b,
+                    severity=sev,
+                    description=f"{model_label}: {item.get('description', 'LLM-detected interaction')}",
+                    score=medication_severity_score(sev),
+                )
+            )
+        if results:
+            logger.info("%s detected %d additional drug interactions", model_label, len(results))
+        return results
 
     return []
 
