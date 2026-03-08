@@ -63,6 +63,14 @@ def _auto_ingest(tool_context: ToolContext) -> None:
         logger.warning("Auto-ingest failed for %s: %s", patient_id, e)
 
 
+def _demo_patient_id(tool_context: ToolContext) -> str:
+    """Return patient_id from session state, falling back to demo patient if DEMO_MODE."""
+    pid = tool_context.state.get("patient_id", "")
+    if not pid and os.environ.get("DEMO_MODE", "").lower() in ("1", "true", "yes"):
+        pid = "patient-sarah-mitchell"
+    return pid
+
+
 def recall_clinical_context(query: str, tool_context: ToolContext, top_k: int = 5) -> dict:
     """
     Retrieve relevant patient clinical history using hybrid search.
@@ -77,7 +85,7 @@ def recall_clinical_context(query: str, tool_context: ToolContext, top_k: int = 
         top_k: Maximum number of results to return (default: 10)
     """
     _auto_ingest(tool_context)
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not patient_id:
         return {"status": "error", "error_message": "No patient_id in session context."}
 
@@ -115,7 +123,7 @@ def store_clinical_note(
         observation_type: Type of observation — 'clinical_note', 'lab_result',
                          'medication_change', 'assessment', 'plan'
     """
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not patient_id:
         return {"status": "error", "error_message": "No patient_id in session context."}
 

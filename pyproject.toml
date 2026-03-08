@@ -1,12 +1,26 @@
 [project]
 name = "clinicalmem"
-version = "0.1.0"
-description = "Persistent, Auditable, Contradiction-Safe Clinical Memory — STARGA Inc."
+version = "3.1.0"
+description = "Persistent, Auditable, Contradiction-Safe Clinical Memory for Healthcare AI Agents"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [
     { name = "STARGA Inc", email = "noreply@star.ga" }
 ]
+readme = "README.md"
+keywords = ["healthcare", "fhir", "mcp", "a2a", "clinical-memory", "drug-interactions", "patient-safety"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Healthcare Industry",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/star-ga/clinicalmem"
+Repository = "https://github.com/star-ga/clinicalmem"
+"Prompt Opinion" = "https://app.promptopinion.ai/marketplace"
 dependencies = [
     "mind-mem>=1.9.0",
     "httpx>=0.27",

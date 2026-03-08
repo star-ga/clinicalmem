@@ -15,8 +15,10 @@ RUN pip install --no-cache-dir \
 # Copy application code
 COPY engine/ engine/
 COPY a2a_agent/ a2a_agent/
+COPY tests/fixtures/ tests/fixtures/
 
 ENV PORT=8080
+ENV DEMO_MODE=true
 EXPOSE 8080
 
 CMD ["uvicorn", "a2a_agent.app:a2a_app", "--host", "0.0.0.0", "--port", "8080"]

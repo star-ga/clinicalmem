@@ -19,6 +19,14 @@ from engine.fhir_client import FHIRClient, FHIRContext
 logger = logging.getLogger(__name__)
 
 
+def _demo_patient_id(tool_context: ToolContext) -> str:
+    """Return patient_id from session state, falling back to demo patient if DEMO_MODE."""
+    pid = tool_context.state.get("patient_id", "")
+    if not pid and os.environ.get("DEMO_MODE", "").lower() in ("1", "true", "yes"):
+        pid = "patient-sarah-mitchell"
+    return pid
+
+
 def _get_engine() -> ClinicalMemEngine:
     from a2a_agent.tools.memory_tools import _engine
     return _engine
@@ -27,7 +35,7 @@ def _get_engine() -> ClinicalMemEngine:
 def _auto_ingest(tool_context: ToolContext) -> None:
     fhir_url = tool_context.state.get("fhir_url", "")
     fhir_token = tool_context.state.get("fhir_token", "")
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not all([fhir_url, fhir_token, patient_id]):
         return
     engine = _get_engine()
@@ -52,7 +60,7 @@ def medication_safety_review(tool_context: ToolContext) -> dict:
     No arguments required — patient identity comes from the session FHIR context.
     """
     _auto_ingest(tool_context)
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not patient_id:
         return {"status": "error", "error_message": "No patient_id in session context."}
 
@@ -118,7 +126,7 @@ def detect_record_contradictions(tool_context: ToolContext) -> dict:
     No arguments required — patient identity comes from session FHIR context.
     """
     _auto_ingest(tool_context)
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not patient_id:
         return {"status": "error", "error_message": "No patient_id in session context."}
 
@@ -178,7 +186,7 @@ def explain_clinical_conflict(
             detect_record_contradictions first to see available conflicts.
     """
     _auto_ingest(tool_context)
-    patient_id = tool_context.state.get("patient_id", "")
+    patient_id = _demo_patient_id(tool_context)
     if not patient_id:
         return {"status": "error", "error_message": "No patient_id in session context."}
 

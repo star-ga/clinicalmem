@@ -7,3 +7,26 @@ dist/
 build/
 .env
 .venv/
+
+# Generated media (not tracked)
+*.mp4
+*.mp3
+*.gif
+*.cast
+*.png
+concat_list.txt
+silence.mp3
+vo_segment_*.mp3
+
+# Temporary test files
+test_bundle.json
+sarah_essential.json
+sarah_mitchell_fhir.json
+
+# DevPost artifacts (local only)
+devpost-form-fields.md
+sarah_clinical_notes.txt
+
+# IDE
+.vscode/
+.idea/
