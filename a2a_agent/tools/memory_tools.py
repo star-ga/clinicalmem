@@ -46,7 +46,7 @@ def _auto_ingest(tool_context: ToolContext) -> None:
         logger.warning("Auto-ingest failed for %s: %s", patient_id, e)
 
 
-def recall_clinical_context(query: str, top_k: int, tool_context: ToolContext) -> dict:
+def recall_clinical_context(query: str, tool_context: ToolContext, top_k: int = 5) -> dict:
     """
     Retrieve relevant patient clinical history using hybrid search.
 

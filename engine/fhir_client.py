@@ -41,6 +41,16 @@ class FHIRContext:
             missing.append("patient_id")
         if missing:
             raise FHIRClientError(f"FHIR context missing: {', '.join(missing)}")
+        # SSRF protection: only allow HTTPS URLs to known FHIR endpoints
+        from urllib.parse import urlparse
+
+        parsed = urlparse(self.url)
+        if parsed.scheme not in ("https", "http"):
+            raise FHIRClientError(f"Invalid FHIR URL scheme: {parsed.scheme}")
+        if parsed.hostname in ("localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254"):
+            raise FHIRClientError("FHIR URL must not point to localhost or metadata endpoints")
+        if parsed.hostname and parsed.hostname.startswith("10."):
+            raise FHIRClientError("FHIR URL must not point to private network addresses")
 
 
 class FHIRClient:

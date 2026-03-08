@@ -96,8 +96,9 @@ class ClinicalMemEngine:
     """
 
     def __init__(self, data_dir: str | None = None):
-        self._data_dir = data_dir or os.path.join(
-            tempfile.gettempdir(), "clinicalmem_data"
+        self._data_dir = data_dir or os.environ.get(
+            "CLINICALMEM_DATA_DIR",
+            os.path.join(tempfile.gettempdir(), "clinicalmem_data"),
         )
         os.makedirs(self._data_dir, exist_ok=True)
         self._patient_blocks: dict[str, list[ClinicalBlock]] = {}

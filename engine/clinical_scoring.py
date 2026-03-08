@@ -282,7 +282,7 @@ def _openevidence_check_interactions(
                 "Accept": "application/json",
             },
             json={"text": query, "model": "oe-v2"},
-            timeout=20,
+            timeout=5,
         )
         if resp.status_code != 200:
             logger.warning("OpenEvidence API returned %d", resp.status_code)
@@ -397,7 +397,7 @@ def _nih_check_interactions(
             resp = httpx.get(
                 "https://rxnav.nlm.nih.gov/REST/rxcui.json",
                 params={"name": name, "search": 2},
-                timeout=10,
+                timeout=5,
             )
             if resp.status_code != 200:
                 continue
@@ -420,7 +420,7 @@ def _nih_check_interactions(
         resp = httpx.get(
             "https://rxnav.nlm.nih.gov/REST/interaction/list.json",
             params={"rxcuis": rxcui_str},
-            timeout=15,
+            timeout=5,
         )
         if resp.status_code != 200:
             return []
@@ -504,7 +504,7 @@ def _call_openai_json(prompt: str, api_key: str) -> str | None:
                 "temperature": 0.1,
                 "max_tokens": 512,
             },
-            timeout=20,
+            timeout=5,
         )
         if resp.status_code != 200:
             logger.info("OpenAI returned %d", resp.status_code)
@@ -530,7 +530,7 @@ def _call_google_json(prompt: str, api_key: str, model_id: str) -> str | None:
                 "contents": [{"parts": [{"text": prompt}]}],
                 "generationConfig": {"temperature": 0.1, "maxOutputTokens": 512},
             },
-            timeout=20,
+            timeout=5,
         )
         if resp.status_code != 200:
             logger.info("%s returned %d", model_id, resp.status_code)

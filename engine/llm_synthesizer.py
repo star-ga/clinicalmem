@@ -141,7 +141,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
     except ImportError:
         return None, "none"
 
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(timeout=8) as client:
         if openai_key:
             try:
                 resp = await client.post(
@@ -236,7 +236,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                     "temperature": 0.2,
                     "max_tokens": 1024,
                 },
-                timeout=30,
+                timeout=8,
             )
             if resp.status_code == 200:
                 data = resp.json()
@@ -266,7 +266,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                             "maxOutputTokens": 1024,
                         },
                     },
-                    timeout=30,
+                    timeout=8,
                 )
                 if resp.status_code != 200:
                     logger.info("%s returned %d, trying next", model_label, resp.status_code)
