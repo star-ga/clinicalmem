@@ -153,6 +153,27 @@ class TestFHIRContext:
         with pytest.raises(FHIRClientError, match="token"):
             ctx.validate()
 
+    @pytest.mark.parametrize("host", [
+        "localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254", "[::1]",
+    ])
+    def test_ssrf_localhost_blocked(self, host):
+        ctx = FHIRContext(url=f"https://{host}/fhir", token="tok", patient_id="pid")
+        with pytest.raises(FHIRClientError, match="localhost|metadata"):
+            ctx.validate()
+
+    @pytest.mark.parametrize("host", [
+        "10.0.0.1", "172.16.0.1", "172.31.255.255", "192.168.1.1",
+        "169.254.1.1", "fc00::1", "fd12::1", "fe80::1",
+    ])
+    def test_ssrf_private_ranges_blocked(self, host):
+        ctx = FHIRContext(url=f"https://{host}/fhir", token="tok", patient_id="pid")
+        with pytest.raises(FHIRClientError, match="private network"):
+            ctx.validate()
+
+    def test_ssrf_public_url_allowed(self):
+        ctx = FHIRContext(url="https://fhir.epic.com/r4", token="tok", patient_id="pid")
+        ctx.validate()  # Should not raise
+
 
 # ── Engine Ingestion Tests ────────────────────────────────────────────────
 

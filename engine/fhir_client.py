@@ -47,10 +47,26 @@ class FHIRContext:
         parsed = urlparse(self.url)
         if parsed.scheme not in ("https", "http"):
             raise FHIRClientError(f"Invalid FHIR URL scheme: {parsed.scheme}")
-        if parsed.hostname in ("localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254"):
+        # Strip IPv6 brackets for comparison
+        hostname = parsed.hostname or ""
+        bare_host = hostname.strip("[]")
+        if bare_host in ("localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254", "::1"):
             raise FHIRClientError("FHIR URL must not point to localhost or metadata endpoints")
-        if parsed.hostname and parsed.hostname.startswith("10."):
-            raise FHIRClientError("FHIR URL must not point to private network addresses")
+        if bare_host:
+            # Block all RFC 1918 private ranges + link-local + IPv6 private
+            host = bare_host
+            if (
+                host.startswith("10.")
+                or host.startswith("172.16.") or host.startswith("172.17.")
+                or host.startswith("172.18.") or host.startswith("172.19.")
+                or host.startswith("172.2") or host.startswith("172.30.")
+                or host.startswith("172.31.")
+                or host.startswith("192.168.")
+                or host.startswith("169.254.")
+                or host.startswith("fc") or host.startswith("fd")
+                or host.startswith("fe80")
+            ):
+                raise FHIRClientError("FHIR URL must not point to private network addresses")
 
 
 class FHIRClient:

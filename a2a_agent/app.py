@@ -11,6 +11,8 @@ import json
 import logging
 import os
 import sys
+import time
+from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -38,6 +40,33 @@ _raw_keys = os.getenv("API_KEYS", "")
 if not _raw_keys:
     logger.warning("API_KEYS not set — rejecting all requests until configured")
 VALID_API_KEYS = set(filter(None, _raw_keys.split(",")))
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Simple sliding-window rate limiter (per API key, 60 req/min)."""
+
+    MAX_REQUESTS = 60
+    WINDOW_SECONDS = 60
+
+    def __init__(self, app):
+        super().__init__(app)
+        self._requests: dict[str, list[float]] = defaultdict(list)
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path == "/.well-known/agent-card.json":
+            return await call_next(request)
+        key = request.headers.get("X-API-Key", request.client.host if request.client else "unknown")
+        now = time.monotonic()
+        cutoff = now - self.WINDOW_SECONDS
+        window = [t for t in self._requests[key] if t > cutoff]
+        if len(window) >= self.MAX_REQUESTS:
+            return JSONResponse(
+                status_code=429,
+                content={"error": "Too Many Requests", "detail": "Rate limit exceeded (60/min)"},
+            )
+        window.append(now)
+        self._requests[key] = window
+        return await call_next(request)
 
 
 class ApiKeyMiddleware(BaseHTTPMiddleware):
@@ -155,3 +184,4 @@ agent_card = AgentCard(
 
 a2a_app = to_a2a(root_agent, port=PORT, agent_card=agent_card)
 a2a_app.add_middleware(ApiKeyMiddleware)
+a2a_app.add_middleware(RateLimitMiddleware)

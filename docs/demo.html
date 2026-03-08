@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClinicalMem — 6-Layer Clinical Safety Pipeline</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' },
+        clinical: { red: '#dc2626', amber: '#f59e0b', green: '#22c55e', blue: '#3b82f6', purple: '#8b5cf6' }
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+      }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Base */
+  body { background: #0f172a; }
+  ::selection { background: rgba(139, 92, 246, 0.4); }
+
+  /* Animations */
+  @keyframes pulse-critical {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+  }
+  @keyframes pulse-high {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes chainPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  .pulse-critical { animation: pulse-critical 2s ease-in-out infinite; }
+  .pulse-high { animation: pulse-high 2.5s ease-in-out infinite; }
+  .float { animation: float 3s ease-in-out infinite; }
+  .heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+
+  .shimmer-text {
+    background: linear-gradient(90deg, #e2e8f0, #ffffff, #e2e8f0);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+  .slide-in-left { animation: slideInLeft 0.5s ease-out forwards; }
+
+  /* Glass morphism */
+  .glass {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  .glass-strong {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+  }
+
+  /* Gradient border effect */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(59, 130, 246, 0.5), rgba(34, 197, 94, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Grid pattern overlay */
+  .grid-pattern {
+    background-image: radial-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Pipeline connector */
+  .pipeline-connector {
+    position: relative;
+  }
+  .pipeline-connector::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 24px;
+    background: linear-gradient(to bottom, rgba(148, 163, 184, 0.3), transparent);
+  }
+
+  /* Chain link animation */
+  .chain-link { animation: chainPulse 3s ease-in-out infinite; }
+  .chain-link:nth-child(2) { animation-delay: 0.3s; }
+  .chain-link:nth-child(3) { animation-delay: 0.6s; }
+
+  /* Hover glow */
+  .hover-glow {
+    transition: all 0.3s ease;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+  /* Sticky nav blur */
+  .nav-blur {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Scanline overlay for hero */
+  .scanline-overlay {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.03;
+  }
+  .scanline-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.1) 2px,
+      rgba(255,255,255,0.1) 4px
+    );
+    animation: scanline 8s linear infinite;
+  }
+</style>
+</head>
+<body class="font-sans text-slate-200 antialiased">
+
+<!-- Navigation -->
+<nav class="nav-blur fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-clinical-purple to-clinical-blue flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <span class="font-bold text-lg tracking-tight">ClinicalMem</span>
+      </div>
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-400">
+        <a href="#patient" class="hover:text-white transition-colors">Patient</a>
+        <a href="#findings" class="hover:text-white transition-colors">Findings</a>
+        <a href="#pipeline" class="hover:text-white transition-colors">Pipeline</a>
+        <a href="#audit" class="hover:text-white transition-colors">Audit</a>
+        <a href="#tools" class="hover:text-white transition-colors">Tools</a>
+        <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-clinical-green/10 text-clinical-green border border-clinical-green/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-clinical-green animate-pulse"></span>
+          Live Demo
+        </span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-14">
+  <!-- Background effects -->
+  <div class="absolute inset-0 grid-pattern"></div>
+  <div class="scanline-overlay"></div>
+  <div class="absolute top-1/4 -left-32 w-96 h-96 bg-clinical-purple/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-clinical-blue/10 rounded-full blur-3xl"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-clinical-red/5 rounded-full blur-3xl"></div>
+
+  <div class="relative max-w-5xl mx-auto px-4 text-center">
+    <!-- Top badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs font-medium text-slate-300 mb-8 fade-in-up" style="animation-delay: 0.1s">
+      <svg class="w-4 h-4 text-clinical-red heartbeat" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      Agents Assemble Healthcare AI Hackathon 2026
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight mb-4 fade-in-up" style="animation-delay: 0.2s">
+      <span class="shimmer-text">ClinicalMem</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-xl sm:text-2xl font-light text-slate-400 mb-3 fade-in-up" style="animation-delay: 0.3s">
+      6-Layer Clinical Safety Pipeline
+    </p>
+    <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto mb-10 fade-in-up" style="animation-delay: 0.4s">
+      Persistent, Auditable, Contradiction-Safe Clinical Memory for Healthcare AI Agents
+    </p>
+
+    <!-- Badges row -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12 fade-in-up" style="animation-delay: 0.5s">
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-green/10 text-clinical-green border border-clinical-green/20">90/90 Tests</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">MCP Protocol</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">A2A Protocol</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20">FHIR R4</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-red/10 text-clinical-red border border-clinical-red/20">6 Safety Layers</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/20">SHA-256 Audit</span>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto fade-in-up" style="animation-delay: 0.6s">
+      <div class="glass rounded-xl p-4 hover-glow">
+        <div class="text-3xl font-black text-white">11</div>
+        <div class="text-xs text-slate-400 mt-1">MCP Tools</div>
+      </div>
+      <div class="glass rounded-xl p-4 hover-glow">
+        <div class="text-3xl font-black text-white">5</div>
+        <div class="text-xs text-slate-400 mt-1">A2A Skills</div>
+      </div>
+      <div class="glass rounded-xl p-4 hover-glow">
+        <div class="text-3xl font-black text-white">6</div>
+        <div class="text-xs text-slate-400 mt-1">Safety Layers</div>
+      </div>
+      <div class="glass rounded-xl p-4 hover-glow">
+        <div class="text-3xl font-black text-clinical-red">4</div>
+        <div class="text-xs text-slate-400 mt-1">Conflicts Found</div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-600">
+      <span class="text-xs">Scroll to explore</span>
+      <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- Patient Card Section -->
+<section id="patient" class="relative py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="flex items-center gap-3 mb-8">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">Live Patient Scenario</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+
+    <div class="glass-strong rounded-2xl overflow-hidden gradient-border">
+      <!-- Patient header bar -->
+      <div class="bg-gradient-to-r from-clinical-red/10 via-navy-800 to-clinical-red/10 px-6 sm:px-8 py-4 border-b border-slate-700/50">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <!-- Avatar -->
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-rose-500/20 to-rose-600/30 flex items-center justify-center border-2 border-rose-500/30 flex-shrink-0">
+              <span class="text-2xl font-bold text-rose-400">SM</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Sarah Mitchell</h3>
+              <p class="text-sm text-slate-400">MRN: SM-2026-0847 &bull; DOB: 1959-03-14</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-clinical-red/20 text-clinical-red border border-clinical-red/30 pulse-critical">2 CRITICAL</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-clinical-amber/20 text-clinical-amber border border-clinical-amber/30 pulse-high">2 HIGH</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient details grid -->
+      <div class="p-6 sm:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Demographics -->
+          <div class="space-y-4">
+            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Demographics
+            </h4>
+            <div class="space-y-2.5">
+              <div class="flex justify-between"><span class="text-slate-400">Age</span><span class="font-medium text-white">67</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Sex</span><span class="font-medium text-white">Female</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Providers</span><span class="font-medium text-clinical-blue">4 Active</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Medications</span><span class="font-medium text-clinical-amber">7 Active</span></div>
+            </div>
+          </div>
+
+          <!-- Active Conditions -->
+          <div class="space-y-4">
+            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              Active Conditions
+            </h4>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-clinical-amber flex-shrink-0"></span>
+                <span class="text-sm text-slate-300">Type 2 Diabetes Mellitus</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-clinical-red flex-shrink-0"></span>
+                <span class="text-sm text-slate-300">Hypertension</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-clinical-red flex-shrink-0"></span>
+                <span class="text-sm text-slate-300">CKD Stage 3</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-clinical-purple flex-shrink-0"></span>
+                <span class="text-sm text-slate-300">Atrial Fibrillation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Providers -->
+          <div class="space-y-4">
+            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Care Team
+            </h4>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-300">Dr. Chen</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">Endocrinology</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-300">Dr. Patel</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">Cardiology</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-300">Dr. Williams</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">Nephrology</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-300">Dr. Rodriguez</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">ER Physician</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allergy banner -->
+        <div class="mt-6 rounded-lg bg-clinical-red/5 border border-clinical-red/20 px-4 py-3 flex items-center gap-3">
+          <svg class="w-5 h-5 text-clinical-red flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <span class="text-sm"><strong class="text-clinical-red">Known Allergy:</strong> <span class="text-slate-300">Penicillin (Documented 2019 &mdash; Anaphylaxis)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Safety Findings Dashboard -->
+<section id="findings" class="relative py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">Safety Findings</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+    <p class="text-center text-slate-500 text-sm mb-10">All findings detected automatically from FHIR R4 patient data</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Finding 1: Warfarin + Ibuprofen -->
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+        <div class="h-1 bg-gradient-to-r from-clinical-red via-red-500 to-clinical-red"></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-clinical-red/15 flex items-center justify-center">
+                <svg class="w-6 h-6 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-slate-500">FINDING #1</span>
+                <h3 class="text-lg font-bold text-white">Warfarin + Ibuprofen</h3>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-black bg-clinical-red/20 text-clinical-red border border-clinical-red/30 pulse-critical tracking-wider">CRITICAL</span>
+          </div>
+
+          <p class="text-sm text-slate-300 mb-4">
+            <strong class="text-clinical-red">NSAID bleeding risk.</strong> ER physician prescribed ibuprofen without checking existing anticoagulant therapy. Concurrent use increases risk of GI hemorrhage by <strong class="text-white">3-6x</strong>.
+          </p>
+
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-clinical-green/10 text-clinical-green border border-clinical-green/20 font-medium">Drug Interaction Pipeline</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">Layer 1 &bull; Deterministic</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">&lt;1ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finding 2: Penicillin + Amoxicillin -->
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+        <div class="h-1 bg-gradient-to-r from-clinical-red via-red-500 to-clinical-red"></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-clinical-red/15 flex items-center justify-center">
+                <svg class="w-6 h-6 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-slate-500">FINDING #2</span>
+                <h3 class="text-lg font-bold text-white">Penicillin Allergy + Amoxicillin</h3>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-black bg-clinical-red/20 text-clinical-red border border-clinical-red/30 pulse-critical tracking-wider">CRITICAL</span>
+          </div>
+
+          <p class="text-sm text-slate-300 mb-4">
+            <strong class="text-clinical-red">Allergy cross-reaction.</strong> Urgent Care prescribed amoxicillin (beta-lactam) to a patient with documented penicillin anaphylaxis. <strong class="text-white">Cross-reactivity rate: ~2%</strong>, but history of anaphylaxis makes this <strong class="text-white">contraindicated</strong>.
+          </p>
+
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-clinical-green/10 text-clinical-green border border-clinical-green/20 font-medium">Allergy Cross-Reaction</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">Layer 1 &bull; Deterministic</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">&lt;1ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finding 3: Declining GFR + Metformin -->
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+        <div class="h-1 bg-gradient-to-r from-clinical-amber via-amber-400 to-clinical-amber"></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-clinical-amber/15 flex items-center justify-center">
+                <svg class="w-6 h-6 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-slate-500">FINDING #3</span>
+                <h3 class="text-lg font-bold text-white">Declining GFR + Metformin</h3>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-black bg-clinical-amber/20 text-clinical-amber border border-clinical-amber/30 pulse-high tracking-wider">HIGH</span>
+          </div>
+
+          <p class="text-sm text-slate-300 mb-4">
+            <strong class="text-clinical-amber">Lab-medication contraindication.</strong> eGFR trend:
+            <span class="font-mono text-white">45 &rarr; 38 &rarr; 32 mL/min</span>. FDA recommends discontinuing metformin at eGFR &lt;30. Current trajectory reaches threshold in <strong class="text-white">~3 months</strong>.
+          </p>
+
+          <!-- GFR Trend Mini Chart -->
+          <div class="mb-4 flex items-end gap-3 h-16">
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <div class="w-full bg-clinical-amber/30 rounded-t" style="height: 45px;"></div>
+              <span class="text-xs text-slate-500 font-mono">45</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <div class="w-full bg-clinical-amber/50 rounded-t" style="height: 38px;"></div>
+              <span class="text-xs text-slate-500 font-mono">38</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <div class="w-full bg-clinical-red/60 rounded-t" style="height: 32px;"></div>
+              <span class="text-xs text-slate-500 font-mono">32</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 flex-1 opacity-40">
+              <div class="w-full bg-clinical-red/40 rounded-t border-2 border-dashed border-clinical-red/30" style="height: 26px;"></div>
+              <span class="text-xs text-slate-600 font-mono">~26?</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <div class="w-full border-t-2 border-dashed border-clinical-red/50 relative" style="height: 30px;">
+                <span class="absolute -top-5 left-0 right-0 text-center text-[10px] text-clinical-red font-bold">STOP LINE</span>
+              </div>
+              <span class="text-xs text-clinical-red font-mono">30</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20 font-medium">Lab-Medication Monitor</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">Layers 1+3 &bull; Deterministic + RxNorm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finding 4: Conflicting BP Targets -->
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+        <div class="h-1 bg-gradient-to-r from-clinical-amber via-amber-400 to-clinical-amber"></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-clinical-amber/15 flex items-center justify-center">
+                <svg class="w-6 h-6 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-slate-500">FINDING #4</span>
+                <h3 class="text-lg font-bold text-white">Conflicting BP Targets</h3>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-black bg-clinical-amber/20 text-clinical-amber border border-clinical-amber/30 pulse-high tracking-wider">HIGH</span>
+          </div>
+
+          <p class="text-sm text-slate-300 mb-4">
+            <strong class="text-clinical-amber">Provider contradiction.</strong> Two specialists set incompatible blood pressure targets for the same patient:
+          </p>
+
+          <!-- Contradiction Visualization -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="flex-1 rounded-lg bg-clinical-purple/10 border border-clinical-purple/20 p-3 text-center">
+              <div class="text-xs text-slate-400 mb-1">Dr. Patel (Cardiology)</div>
+              <div class="text-lg font-bold font-mono text-clinical-purple">&lt;130/80</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <svg class="w-6 h-6 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span class="text-[10px] text-clinical-amber font-bold">CONFLICT</span>
+            </div>
+            <div class="flex-1 rounded-lg bg-clinical-blue/10 border border-clinical-blue/20 p-3 text-center">
+              <div class="text-xs text-slate-400 mb-1">Dr. Williams (Nephrology)</div>
+              <div class="text-lg font-bold font-mono text-clinical-blue">&lt;140/90</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20 font-medium">Provider Contradiction</span>
+            <span class="px-2.5 py-1 rounded-md bg-slate-700/50 text-slate-400 font-mono">Layer 4+5 &bull; Multi-LLM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6-Layer Pipeline Visualization -->
+<section id="pipeline" class="relative py-20 overflow-hidden">
+  <!-- Background glow -->
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-clinical-purple/5 to-transparent rounded-full blur-3xl"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">6-Layer Safety Pipeline</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+    <p class="text-center text-slate-500 text-sm mb-12">Each clinical decision flows through all 6 layers sequentially. Green never hallucinates. Purple uses LLMs. Red is the safety gate.</p>
+
+    <div class="max-w-3xl mx-auto space-y-4">
+      <!-- Layer 1 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-green flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-green/10 flex items-center justify-center flex-shrink-0 border border-clinical-green/20">
+              <span class="text-lg font-black text-clinical-green">1</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-bold text-white">Deterministic Table</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-green/10 text-clinical-green border border-clinical-green/20">RULE-BASED</span>
+              </div>
+              <p class="text-sm text-slate-400">Hard-coded drug interaction pairs and allergy cross-reaction rules. Zero hallucination risk.</p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-green text-lg">&lt;1ms</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div>
+
+      <!-- Layer 2 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-blue flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-blue/10 flex items-center justify-center flex-shrink-0 border border-clinical-blue/20">
+              <span class="text-lg font-black text-clinical-blue">2</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-bold text-white">OpenEvidence API</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20">EVIDENCE API</span>
+              </div>
+              <p class="text-sm text-slate-400">Mayo Clinic and Elsevier ClinicalKey AI. Peer-reviewed evidence retrieval.</p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-blue text-lg">~2s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div>
+
+      <!-- Layer 3 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-blue flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-blue/10 flex items-center justify-center flex-shrink-0 border border-clinical-blue/20">
+              <span class="text-lg font-black text-clinical-blue">3</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-bold text-white">NIH RxNorm API</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20">FEDERAL STANDARD</span>
+              </div>
+              <p class="text-sm text-slate-400">Federal gold standard used by Epic and Cerner. Drug class lookups and interaction validation.</p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-blue text-lg">~1s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div>
+
+      <!-- Layer 4 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-purple flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-purple/10 flex items-center justify-center flex-shrink-0 border border-clinical-purple/20">
+              <span class="text-lg font-black text-clinical-purple">4</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h3 class="font-bold text-white">Multi-LLM Cascade</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">AI-POWERED</span>
+              </div>
+              <p class="text-sm text-slate-400">
+                <span class="font-mono text-clinical-purple">GPT-5.4</span> &rarr;
+                <span class="font-mono text-clinical-purple">MedGemma 27B</span> &rarr;
+                <span class="font-mono text-clinical-purple">Gemini 3 Flash</span>
+                &mdash; Cascading consensus with majority vote.
+              </p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-purple text-lg">~3s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div>
+
+      <!-- Layer 5 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-purple flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-purple/10 flex items-center justify-center flex-shrink-0 border border-clinical-purple/20">
+              <span class="text-lg font-black text-clinical-purple">5</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-bold text-white">LLM Synthesis</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">AI-POWERED</span>
+              </div>
+              <p class="text-sm text-slate-400">Generates patient-specific clinical narratives with explicit evidence citations. Every claim is grounded.</p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-purple text-lg">~3s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div>
+
+      <!-- Layer 6 -->
+      <div class="glass-strong rounded-xl overflow-hidden hover-glow group">
+        <div class="flex items-stretch">
+          <div class="w-1.5 bg-clinical-red flex-shrink-0"></div>
+          <div class="flex items-center gap-4 px-5 py-4 flex-1">
+            <div class="w-12 h-12 rounded-xl bg-clinical-red/10 flex items-center justify-center flex-shrink-0 border border-clinical-red/20">
+              <span class="text-lg font-black text-clinical-red">6</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="font-bold text-white">Abstention Gate</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-red/10 text-clinical-red border border-clinical-red/20">SAFETY GATE</span>
+              </div>
+              <p class="text-sm text-slate-400">"I don't know" when evidence is insufficient. The system <strong class="text-white">refuses to guess</strong> about patient safety.</p>
+            </div>
+            <div class="text-right flex-shrink-0 hidden sm:block">
+              <div class="text-xs text-slate-500">Latency</div>
+              <div class="font-mono font-bold text-clinical-red text-lg">0ms</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline legend -->
+    <div class="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-clinical-green"></span> Deterministic (never hallucinates)</div>
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-clinical-blue"></span> Evidence APIs (peer-reviewed)</div>
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-clinical-purple"></span> LLM-Powered (grounded)</div>
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-clinical-red"></span> Safety Gate (fail-safe)</div>
+    </div>
+  </div>
+</section>
+
+<!-- Audit Trail Section -->
+<section id="audit" class="relative py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">SHA-256 Audit Trail</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+    <p class="text-center text-slate-500 text-sm mb-10">Tamper-proof Merkle chain &mdash; every clinical decision is cryptographically chained to the previous entry</p>
+
+    <div class="max-w-3xl mx-auto">
+      <!-- Genesis block -->
+      <div class="glass-strong rounded-xl p-5 hover-glow chain-link">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-lg bg-clinical-green/10 flex items-center justify-center flex-shrink-0 border border-clinical-green/20">
+            <svg class="w-5 h-5 text-clinical-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-semibold text-clinical-green">BLOCK #0 &mdash; GENESIS</span>
+              <span class="text-xs text-slate-500 font-mono">2026-03-07 09:14:22 UTC</span>
+            </div>
+            <p class="text-sm text-slate-300 mb-2">Patient data ingested: Sarah Mitchell (FHIR R4 Bundle &mdash; 47 resources)</p>
+            <div class="font-mono text-xs text-slate-500 bg-navy-900/50 rounded px-3 py-1.5 break-all">
+              SHA-256: <span class="text-slate-400">a3f8c2e1...</span><span class="text-clinical-green">d7b94e6f</span>
+            </div>
+            <div class="font-mono text-xs text-slate-600 mt-1 px-3">
+              prev: <span class="text-slate-500">0000000000000000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chain connector -->
+      <div class="flex justify-center py-2">
+        <div class="flex flex-col items-center">
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+        </div>
+      </div>
+
+      <!-- Block 1 -->
+      <div class="glass-strong rounded-xl p-5 hover-glow chain-link">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-lg bg-clinical-red/10 flex items-center justify-center flex-shrink-0 border border-clinical-red/20">
+            <svg class="w-5 h-5 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-semibold text-clinical-red">BLOCK #1 &mdash; CRITICAL FINDING</span>
+              <span class="text-xs text-slate-500 font-mono">2026-03-07 09:14:23 UTC</span>
+            </div>
+            <p class="text-sm text-slate-300 mb-2">Drug interaction detected: Warfarin + Ibuprofen (severity=CRITICAL, pipeline=deterministic)</p>
+            <div class="font-mono text-xs text-slate-500 bg-navy-900/50 rounded px-3 py-1.5 break-all">
+              SHA-256: <span class="text-slate-400">7e2b5f91...</span><span class="text-clinical-red">c4a83d2e</span>
+            </div>
+            <div class="font-mono text-xs text-slate-600 mt-1 px-3">
+              prev: a3f8c2e1...<span class="text-clinical-green">d7b94e6f</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chain connector -->
+      <div class="flex justify-center py-2">
+        <div class="flex flex-col items-center">
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+        </div>
+      </div>
+
+      <!-- Block 2 -->
+      <div class="glass-strong rounded-xl p-5 hover-glow chain-link">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-lg bg-clinical-red/10 flex items-center justify-center flex-shrink-0 border border-clinical-red/20">
+            <svg class="w-5 h-5 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-semibold text-clinical-red">BLOCK #2 &mdash; CRITICAL FINDING</span>
+              <span class="text-xs text-slate-500 font-mono">2026-03-07 09:14:23 UTC</span>
+            </div>
+            <p class="text-sm text-slate-300 mb-2">Allergy cross-reaction: Penicillin allergy + Amoxicillin prescribed (severity=CRITICAL)</p>
+            <div class="font-mono text-xs text-slate-500 bg-navy-900/50 rounded px-3 py-1.5 break-all">
+              SHA-256: <span class="text-slate-400">b9d4a7c3...</span><span class="text-clinical-red">f1e62a8b</span>
+            </div>
+            <div class="font-mono text-xs text-slate-600 mt-1 px-3">
+              prev: 7e2b5f91...<span class="text-clinical-red">c4a83d2e</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chain connector -->
+      <div class="flex justify-center py-2">
+        <div class="flex flex-col items-center">
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <div class="w-0.5 h-4 bg-slate-700"></div>
+        </div>
+      </div>
+
+      <!-- Block 3 -->
+      <div class="glass-strong rounded-xl p-5 hover-glow chain-link">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-lg bg-clinical-amber/10 flex items-center justify-center flex-shrink-0 border border-clinical-amber/20">
+            <svg class="w-5 h-5 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-semibold text-clinical-amber">BLOCK #3 &mdash; HIGH FINDING</span>
+              <span class="text-xs text-slate-500 font-mono">2026-03-07 09:14:24 UTC</span>
+            </div>
+            <p class="text-sm text-slate-300 mb-2">Lab-medication alert: eGFR 32 mL/min + Metformin (approaching FDA contraindication threshold)</p>
+            <div class="font-mono text-xs text-slate-500 bg-navy-900/50 rounded px-3 py-1.5 break-all">
+              SHA-256: <span class="text-slate-400">4c1e8d5a...</span><span class="text-clinical-amber">92f7b3c1</span>
+            </div>
+            <div class="font-mono text-xs text-slate-600 mt-1 px-3">
+              prev: b9d4a7c3...<span class="text-clinical-red">f1e62a8b</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit note -->
+    <div class="max-w-3xl mx-auto mt-6 rounded-lg bg-slate-800/30 border border-slate-700/30 px-4 py-3 flex items-start gap-3">
+      <svg class="w-5 h-5 text-slate-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p class="text-xs text-slate-400">Each block's SHA-256 hash includes the previous block's hash, creating a tamper-proof chain. Any modification to a historical entry invalidates all subsequent hashes. This provides <strong class="text-slate-300">HIPAA-grade audit compliance</strong> without a blockchain.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Tools & Skills Section -->
+<section id="tools" class="relative py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">MCP Tools & A2A Skills</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+    <p class="text-center text-slate-500 text-sm mb-10">11 MCP tools for Claude + 5 A2A skills for agent-to-agent orchestration</p>
+
+    <!-- MCP Tools -->
+    <div class="mb-10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="px-3 py-1 rounded-lg text-xs font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">MCP Protocol</span>
+        <span class="text-sm text-slate-400">11 Tools &mdash; FastMCP 2.x + SHARP-on-MCP</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- Tool cards -->
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-green/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">store_clinical_observation</code>
+          </div>
+          <p class="text-xs text-slate-500">Store clinical note for patient</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-blue/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">recall_patient_context</code>
+          </div>
+          <p class="text-xs text-slate-500">Hybrid search over clinical memory</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-red/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">check_medication_conflicts</code>
+          </div>
+          <p class="text-xs text-slate-500">Drug interaction detection (4-tier)</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-red/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">check_allergy_conflicts</code>
+          </div>
+          <p class="text-xs text-slate-500">Allergy cross-reaction alerts</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-amber/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">get_treatment_dependencies</code>
+          </div>
+          <p class="text-xs text-slate-500">Condition-medication dependency map</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">get_clinical_audit_trail</code>
+          </div>
+          <p class="text-xs text-slate-500">Tamper-proof audit chain</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-blue/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">summarize_patient_history</code>
+          </div>
+          <p class="text-xs text-slate-500">Importance-scored patient overview</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-amber/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">detect_belief_drift</code>
+          </div>
+          <p class="text-xs text-slate-500">Cross-provider contradiction detection</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-green/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">ingest_patient_data</code>
+          </div>
+          <p class="text-xs text-slate-500">Pull all FHIR data into memory</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group relative">
+          <div class="absolute top-2 right-2">
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">GenAI</span>
+          </div>
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-purple/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">explain_clinical_conflict</code>
+          </div>
+          <p class="text-xs text-slate-500">LLM-grounded conflict explanation with citations</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group relative">
+          <div class="absolute top-2 right-2">
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">GenAI</span>
+          </div>
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-clinical-purple/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-clinical-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">clinical_care_handoff</code>
+          </div>
+          <p class="text-xs text-slate-500">Evidence-grounded care handoff note</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- A2A Skills -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="px-3 py-1 rounded-lg text-xs font-bold bg-orange-500/10 text-orange-400 border border-orange-500/20">A2A Protocol</span>
+        <span class="text-sm text-slate-400">5 Skills &mdash; Google ADK Agent-to-Agent</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">medication-safety-review</code>
+          </div>
+          <p class="text-xs text-slate-500">Drug interactions + allergy conflicts</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">clinical-context-recall</code>
+          </div>
+          <p class="text-xs text-slate-500">Hybrid search with confidence gating</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">contradiction-assessment</code>
+          </div>
+          <p class="text-xs text-slate-500">Scan for conflicting records</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">care-transition-summary</code>
+          </div>
+          <p class="text-xs text-slate-500">Structured handoff summary</p>
+        </div>
+
+        <div class="glass rounded-lg p-4 hover-glow group relative">
+          <div class="absolute top-2 right-2">
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">GenAI</span>
+          </div>
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <code class="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">explain-conflict</code>
+          </div>
+          <p class="text-xs text-slate-500">LLM-grounded clinical rationale with evidence citations</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture Section -->
+<section id="architecture" class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0 grid-pattern opacity-50"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-500">System Architecture</h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
+    </div>
+    <p class="text-center text-slate-500 text-sm mb-12">Shared engine powering both MCP and A2A interfaces</p>
+
+    <!-- Architecture Diagram -->
+    <div class="max-w-4xl mx-auto">
+      <!-- Input layer -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="glass rounded-xl p-4 text-center hover-glow">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-clinical-blue/10 flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-clinical-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+          </div>
+          <div class="text-sm font-bold text-white">FHIR R4 Patient Data</div>
+          <div class="text-xs text-slate-500 mt-1">Conditions, Medications, Labs, Allergies</div>
+        </div>
+        <div class="glass rounded-xl p-4 text-center hover-glow">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-clinical-purple/10 flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-clinical-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+          </div>
+          <div class="text-sm font-bold text-white">Medical APIs</div>
+          <div class="text-xs text-slate-500 mt-1">NIH RxNorm, OpenEvidence, GPT-5.4, MedGemma</div>
+        </div>
+      </div>
+
+      <!-- Arrow down -->
+      <div class="flex justify-center mb-6">
+        <div class="flex flex-col items-center">
+          <div class="w-0.5 h-4 bg-gradient-to-b from-slate-600 to-clinical-purple/50"></div>
+          <svg class="w-6 h-6 text-clinical-purple/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+      </div>
+
+      <!-- Core Engine -->
+      <div class="glass-strong rounded-2xl p-6 mb-6 gradient-border">
+        <div class="text-center mb-5">
+          <h3 class="text-lg font-bold text-white">Shared Engine</h3>
+          <p class="text-xs text-slate-500 font-mono">engine/</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="rounded-lg bg-navy-900/60 p-3 text-center border border-slate-700/30">
+            <div class="text-xs font-bold text-clinical-blue mb-1">Clinical Memory</div>
+            <div class="text-[10px] text-slate-500">BM25 + Vector + RRF</div>
+          </div>
+          <div class="rounded-lg bg-navy-900/60 p-3 text-center border border-slate-700/30">
+            <div class="text-xs font-bold text-clinical-green mb-1">MIND Kernels</div>
+            <div class="text-[10px] text-slate-500">Clinical Scoring</div>
+          </div>
+          <div class="rounded-lg bg-navy-900/60 p-3 text-center border border-slate-700/30">
+            <div class="text-xs font-bold text-clinical-red mb-1">Drug Interactions</div>
+            <div class="text-[10px] text-slate-500">4-Tier Pipeline</div>
+          </div>
+          <div class="rounded-lg bg-navy-900/60 p-3 text-center border border-slate-700/30">
+            <div class="text-xs font-bold text-clinical-purple mb-1">LLM Synthesizer</div>
+            <div class="text-[10px] text-slate-500">Evidence-Cited</div>
+          </div>
+        </div>
+        <!-- Audit layer -->
+        <div class="mt-3 rounded-lg bg-teal-500/5 border border-teal-500/10 p-2.5 text-center">
+          <div class="text-xs font-bold text-teal-400">SHA-256 Audit Trail (Merkle Chain)</div>
+        </div>
+      </div>
+
+      <!-- Arrow down splitting into 3 -->
+      <div class="flex justify-center mb-6">
+        <div class="relative w-full max-w-md">
+          <!-- Center line down -->
+          <div class="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-6 bg-gradient-to-b from-clinical-purple/50 to-slate-600"></div>
+          <!-- Horizontal line -->
+          <div class="absolute left-[15%] right-[15%] top-6 h-0.5 bg-slate-600"></div>
+          <!-- Three lines down -->
+          <div class="absolute left-[15%] top-6 w-0.5 h-6 bg-slate-600"></div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-6 w-0.5 h-6 bg-slate-600"></div>
+          <div class="absolute right-[15%] top-6 w-0.5 h-6 bg-slate-600"></div>
+          <!-- Arrows -->
+          <div class="h-14"></div>
+        </div>
+      </div>
+
+      <!-- Output layer -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="glass rounded-xl p-5 text-center hover-glow">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-clinical-purple/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-clinical-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="text-sm font-bold text-white mb-1">MCP Server</div>
+          <div class="text-xs text-slate-500 mb-2">FastMCP 2.x</div>
+          <div class="flex justify-center gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-purple/10 text-clinical-purple">11 Tools</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/50 text-slate-400">SHARP</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-5 text-center hover-glow">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-orange-500/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div class="text-sm font-bold text-white mb-1">A2A Agent</div>
+          <div class="text-xs text-slate-500 mb-2">Google ADK</div>
+          <div class="flex justify-center gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/10 text-orange-400">5 Skills</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/50 text-slate-400">A2A</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-5 text-center hover-glow">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-teal-500/10 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div class="text-sm font-bold text-white mb-1">Audit Trail</div>
+          <div class="text-xs text-slate-500 mb-2">Hash Chain</div>
+          <div class="flex justify-center gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-400">SHA-256</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/50 text-slate-400">Tamper-proof</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="relative border-t border-slate-800/50 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <!-- Left -->
+      <div class="flex flex-col items-center md:items-start gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-clinical-purple to-clinical-blue flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <span class="font-bold text-lg text-white">ClinicalMem</span>
+        </div>
+        <p class="text-sm text-slate-500 text-center md:text-left">
+          Built for the <a href="https://agents-assemble.devpost.com/" class="text-clinical-blue hover:text-clinical-blue/80 transition-colors underline underline-offset-2">Agents Assemble Healthcare AI Hackathon</a>
+        </p>
+      </div>
+
+      <!-- Center badges -->
+      <div class="flex flex-wrap justify-center gap-2">
+        <a href="https://github.com/star-ga/mind-mem" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-400 border border-teal-500/20 hover:bg-teal-500/20 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          Powered by mind-mem
+        </a>
+        <a href="https://app.promptopinion.ai/marketplace" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-colors">
+          Prompt Opinion Marketplace
+        </a>
+      </div>
+
+      <!-- Right -->
+      <div class="flex flex-col items-center md:items-end gap-2">
+        <a href="https://star.ga" class="text-sm font-semibold text-white hover:text-clinical-purple transition-colors">STARGA Inc.</a>
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/star-ga/clinicalmem" class="text-slate-500 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="mt-8 pt-6 border-t border-slate-800/50 text-center">
+      <p class="text-xs text-slate-600">
+        All patient data is synthetic (FHIR R4 test fixtures). No real patient information is used.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll-triggered fade-in observer -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Intersection Observer for fade-in animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  // Observe all sections
+  document.querySelectorAll('section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    observer.observe(section);
+  });
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Active nav highlighting
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (window.scrollY >= sectionTop - 100) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('text-white');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('text-white');
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>

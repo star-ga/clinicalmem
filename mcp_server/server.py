@@ -11,6 +11,8 @@ import json
 import logging
 import os
 import sys
+import time
+from collections import defaultdict
 
 from fastmcp import FastMCP
 
@@ -25,6 +27,23 @@ logger = logging.getLogger(__name__)
 # ── Global state ──────────────────────────────────────────────────────────────
 
 _engine = ClinicalMemEngine()
+
+# ── Rate limiter (60 requests/minute per tool) ──────────────────────────────
+
+_rate_limit_window: dict[str, list[float]] = defaultdict(list)
+_RATE_LIMIT_MAX = 60
+_RATE_LIMIT_WINDOW = 60.0
+
+
+def _check_rate_limit(tool_name: str) -> None:
+    """Raise ValueError if rate limit exceeded."""
+    now = time.monotonic()
+    cutoff = now - _RATE_LIMIT_WINDOW
+    window = [t for t in _rate_limit_window[tool_name] if t > cutoff]
+    if len(window) >= _RATE_LIMIT_MAX:
+        raise ValueError(f"Rate limit exceeded for {tool_name} (max {_RATE_LIMIT_MAX}/min)")
+    window.append(now)
+    _rate_limit_window[tool_name] = window
 
 # Demo mode: pre-load Sarah Mitchell fixture data
 if os.environ.get("DEMO_MODE", "").lower() in ("1", "true", "yes"):

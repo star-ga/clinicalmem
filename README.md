@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-90%2F90-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-209%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -18,6 +18,12 @@
 
 <p align="center">
   Built for the <a href="https://agents-assemble.devpost.com/">Agents Assemble Healthcare AI Hackathon</a> by <a href="https://star.ga">STARGA Inc.</a>
+</p>
+
+<p align="center">
+  <a href="https://star-ga.github.io/clinicalmem/demo.html"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
+  <a href="https://youtu.be/wvL9o3Bu-7o"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
+  <a href="https://devpost.com/software/clinimalmem"><strong>DevPost</strong></a>
 </p>
 
 ---
@@ -126,6 +132,19 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | `care-transition-summary` | Structured handoff summary |
 | `explain-conflict` | **GenAI**: LLM-grounded clinical rationale with evidence citations |
 
+## Why ClinicalMem
+
+| Capability | ClinicalMem | Typical Healthcare AI |
+|-----------|-------------|----------------------|
+| **Drug interactions** | 4-tier: deterministic + OpenEvidence + NIH RxNorm + Multi-LLM | Hardcoded lookup table |
+| **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard) | None |
+| **LLM safety** | Cascade with fallback (GPT-5.4 &rarr; MedGemma &rarr; Gemini) | Single model, no fallback |
+| **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
+| **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
+| **Protocol support** | Both MCP (11 tools) AND A2A (5 skills) | One or neither |
+| **Test coverage** | 209 tests (engine, MCP tools, A2A tools, SSRF) | Untested |
+| **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
+
 ## Quick Start
 
 ### Run Tests
@@ -190,11 +209,14 @@ clinicalmem/
 │   └── test_engine/
 │       ├── test_clinical_scoring.py    # 43 unit tests
 │       └── test_integration.py         # 47 integration tests
+├── docs/
+│   └── demo.html               # Interactive demo dashboard
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run 90 tests on push
+│   ├── test.yaml               # CI: Run 104 tests on push
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
-│   └── deploy-env.yaml         # Shared deployment config
+│   ├── deploy-env.yaml         # Shared deployment config
+│   └── pages.yaml              # Deploy demo to GitHub Pages
 ├── Dockerfile.mcp              # MCP Server container
 ├── Dockerfile.a2a              # A2A Agent container
 ├── docker-compose.yml          # Local development stack
@@ -205,11 +227,13 @@ clinicalmem/
 
 ## Tests
 
-**90 tests** covering the full clinical safety pipeline:
+**209 tests** covering the full clinical safety pipeline:
 
 ```
 tests/test_engine/test_clinical_scoring.py  — 43 tests (scoring kernels)
-tests/test_engine/test_integration.py       — 47 tests (engine + FHIR integration)
+tests/test_engine/test_integration.py       — 61 tests (engine + FHIR + SSRF)
+tests/test_mcp/test_mcp_tools.py            — 58 tests (all 11 MCP tools)
+tests/test_a2a/test_a2a_tools.py            — 47 tests (A2A tools + FHIR helpers)
 ```
 
 Coverage includes:
@@ -225,6 +249,8 @@ Coverage includes:
 - SHA-256 hash-chain audit trail integrity
 - LLM synthesis with evidence citations
 - Safe abstention when evidence is insufficient
+- SSRF protection (RFC 1918, link-local, IPv6 private ranges)
+- Rate limiting middleware
 
 ## Tech Stack
 
