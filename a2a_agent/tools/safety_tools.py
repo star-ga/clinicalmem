@@ -140,6 +140,11 @@ def detect_record_contradictions(tool_context: ToolContext) -> dict:
             f"PRIORITY REVIEW RECOMMENDED. {len(high)} high-severity finding(s) detected."
         )
 
+    # Verify audit chain integrity for trust proof
+    chain_verified = engine.verify_audit_chain()
+    trail = engine.get_audit_trail(limit=1)
+    latest_audit_hash = trail[-1].get("entry_hash") or trail[-1].get("hash", "") if trail else ""
+
     return {
         "status": "success",
         "patient_id": patient_id,
@@ -151,6 +156,8 @@ def detect_record_contradictions(tool_context: ToolContext) -> dict:
         "has_critical": bool(critical),
         "has_high": bool(high),
         "escalation": escalation,
+        "audit_hash": latest_audit_hash,
+        "chain_integrity": "verified" if chain_verified else "TAMPERED",
     }
 
 
@@ -177,6 +184,11 @@ def explain_clinical_conflict(
 
     engine = _get_engine()
     narrative = engine.explain_clinical_conflict(patient_id, conflict_index)
+
+    chain_verified = engine.verify_audit_chain()
+    trail = engine.get_audit_trail(limit=1)
+    latest_audit_hash = trail[-1].get("entry_hash") or trail[-1].get("hash", "") if trail else ""
+
     return {
         "status": "success",
         "patient_id": patient_id,
@@ -185,4 +197,6 @@ def explain_clinical_conflict(
         "confidence_score": round(narrative.confidence_score, 3),
         "abstained": narrative.abstained,
         "model_used": narrative.model_used,
+        "audit_hash": latest_audit_hash,
+        "chain_integrity": "verified" if chain_verified else "TAMPERED",
     }

@@ -126,6 +126,16 @@ agent_card = AgentCard(
             ),
             tags=["transitions", "handoff", "summary"],
         ),
+        AgentSkill(
+            id="explain-conflict",
+            name="explain-conflict",
+            description=(
+                "GenAI-powered clinical conflict explanation. Uses LLM to generate "
+                "patient-specific rationale for a detected safety conflict, with evidence "
+                "citations and hard abstention when evidence is insufficient."
+            ),
+            tags=["genai", "explanation", "safety", "citations"],
+        ),
     ],
     securitySchemes={
         "apiKey": SecurityScheme(
