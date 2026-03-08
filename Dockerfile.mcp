@@ -16,8 +16,11 @@ COPY engine/ engine/
 COPY mcp_server/ mcp_server/
 COPY tests/fixtures/ tests/fixtures/
 
+RUN addgroup --system app && adduser --system --ingroup app app
+
 ENV PORT=8080
 ENV DEMO_MODE=true
 EXPOSE 8080
 
+USER app
 CMD ["python", "-m", "mcp_server.server"]

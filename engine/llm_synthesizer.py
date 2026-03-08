@@ -174,7 +174,8 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
             ]:
                 try:
                     resp = await client.post(
-                        f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={google_key}",
+                        f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent",
+                        headers={"x-goog-api-key": google_key},
                         json={
                             "systemInstruction": {"parts": [{"text": system}]},
                             "contents": [{"parts": [{"text": prompt}]}],
@@ -257,7 +258,8 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
         for model_id, model_label in google_models:
             try:
                 resp = httpx.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={google_key}",
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent",
+                    headers={"x-goog-api-key": google_key},
                     json={
                         "systemInstruction": {"parts": [{"text": system}]},
                         "contents": [{"parts": [{"text": prompt}]}],

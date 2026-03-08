@@ -525,7 +525,8 @@ def _call_google_json(prompt: str, api_key: str, model_id: str) -> str | None:
         import httpx
 
         resp = httpx.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent",
+            headers={"x-goog-api-key": api_key},
             json={
                 "contents": [{"parts": [{"text": prompt}]}],
                 "generationConfig": {"temperature": 0.1, "maxOutputTokens": 512},

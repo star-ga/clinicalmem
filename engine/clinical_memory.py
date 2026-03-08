@@ -126,8 +126,13 @@ class ClinicalMemEngine:
             logger.warning("mind-mem init failed: %s — using fallback", e)
 
     def _patient_dir(self, patient_id: str) -> str:
-        safe_id = patient_id.replace("/", "_").replace("..", "")
-        path = os.path.join(self._data_dir, safe_id)
+        import re
+        safe_id = re.sub(r"[^a-zA-Z0-9_\-]", "_", patient_id)[:128]
+        if not safe_id:
+            raise ValueError(f"Invalid patient_id: {patient_id!r}")
+        path = os.path.realpath(os.path.join(self._data_dir, safe_id))
+        if not path.startswith(os.path.realpath(self._data_dir) + os.sep):
+            raise ValueError(f"Patient ID escapes data directory: {patient_id!r}")
         os.makedirs(path, exist_ok=True)
         return path
 

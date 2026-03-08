@@ -17,8 +17,11 @@ COPY engine/ engine/
 COPY a2a_agent/ a2a_agent/
 COPY tests/fixtures/ tests/fixtures/
 
+RUN addgroup --system app && adduser --system --ingroup app app
+
 ENV PORT=8080
 ENV DEMO_MODE=true
 EXPOSE 8080
 
+USER app
 CMD ["uvicorn", "a2a_agent.app:a2a_app", "--host", "0.0.0.0", "--port", "8080"]
