@@ -76,7 +76,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 ### Testing
 
-86 tests covering:
+90 tests covering:
 - Clinical scoring kernels (confidence gating, drug interactions, allergy conflicts, negation detection)
 - FHIR client integration with mock server
 - Engine ingestion, recall, safety checks, contradiction detection
@@ -99,7 +99,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 - **4 conflicts caught in demo** — Drug interactions, allergy cross-reactions, declining lab trends, and provider disagreements — all detected automatically with patient-specific clinical rationale.
 - **Safe abstention** — When evidence is insufficient, ClinicalMem says "I don't know" instead of hallucinating. In healthcare, this saves lives.
 - **Tamper-proof audit trail** — SHA-256 Merkle chain provides cryptographic proof that clinical decision logs haven't been altered.
-- **86 tests passing** — Comprehensive test coverage including integration tests with a synthetic FHIR patient bundle.
+- **90 tests passing** — Comprehensive test coverage including integration tests with a synthetic FHIR patient bundle.
 
 ## What we learned
 

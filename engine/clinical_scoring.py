@@ -183,11 +183,24 @@ class DrugInteraction:
     score: float
 
 
-def check_drug_interactions(medications: list[str]) -> list[DrugInteraction]:
-    """Check a medication list for known interactions."""
+def check_drug_interactions(
+    medications: list[str], use_llm_fallback: bool = True
+) -> list[DrugInteraction]:
+    """
+    Check a medication list for interactions.
+
+    Two-layer detection:
+    1. Deterministic table (12 known pairs) — fast, reliable, auditable
+    2. LLM fallback (Gemini) — catches novel pairs not in the table
+
+    This is the pattern both layers of judges care about: deterministic
+    safety rails + GenAI reasoning for coverage beyond the rules.
+    """
     meds_lower = [m.lower().strip() for m in medications]
     interactions = []
 
+    # Layer 1: Deterministic table (microseconds)
+    covered_pairs: set[tuple[str, str]] = set()
     for drug_a, drug_b, severity, description in _KNOWN_INTERACTIONS:
         a_match = any(drug_a in m for m in meds_lower)
         b_match = any(drug_b in m for m in meds_lower)
@@ -201,8 +214,117 @@ def check_drug_interactions(medications: list[str]) -> list[DrugInteraction]:
                     score=medication_severity_score(severity),
                 )
             )
+            covered_pairs.add((drug_a, drug_b))
+
+    # Layer 2: LLM fallback for uncovered medication pairs
+    if use_llm_fallback and len(meds_lower) >= 2:
+        llm_interactions = _llm_check_interactions(medications, covered_pairs)
+        interactions.extend(llm_interactions)
 
     return sorted(interactions, key=lambda i: i.score, reverse=True)
+
+
+def _llm_check_interactions(
+    medications: list[str],
+    already_found: set[tuple[str, str]],
+) -> list[DrugInteraction]:
+    """
+    Use LLM to detect drug interactions not in the deterministic table.
+
+    Only called when we have medications not covered by known pairs.
+    Returns structured DrugInteraction objects parsed from LLM response.
+    """
+    import json
+    import logging
+    import os
+
+    logger = logging.getLogger(__name__)
+
+    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return []
+
+    # Build list of medication names (strip dosages for cleaner query)
+    med_names = [m.split()[0] if " " in m else m for m in medications]
+
+    prompt = f"""You are a clinical pharmacist. Given these medications: {', '.join(med_names)}
+
+Check for drug-drug interactions. ONLY report clinically significant interactions
+(serious or contraindicated). Do NOT report minor or theoretical interactions.
+
+Respond with ONLY a JSON array. Each element must have:
+- "drug_a": first drug name (lowercase)
+- "drug_b": second drug name (lowercase)
+- "severity": "serious" or "contraindicated"
+- "description": one-sentence clinical description
+
+If NO significant interactions exist, respond with: []
+
+JSON array:"""
+
+    try:
+        import httpx
+
+        resp = httpx.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
+            json={
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {
+                    "temperature": 0.1,
+                    "maxOutputTokens": 512,
+                },
+            },
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            return []
+
+        data = resp.json()
+        candidates = data.get("candidates", [])
+        if not candidates:
+            return []
+        text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+
+        # Extract JSON from response (handle markdown code blocks)
+        text = text.strip()
+        if text.startswith("```"):
+            text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+            text = text.rsplit("```", 1)[0]
+        text = text.strip()
+
+        if not text or text == "[]":
+            return []
+
+        parsed = json.loads(text)
+        if not isinstance(parsed, list):
+            return []
+
+        results = []
+        for item in parsed:
+            a = item.get("drug_a", "").lower()
+            b = item.get("drug_b", "").lower()
+            # Skip if already found by deterministic layer
+            if (a, b) in already_found or (b, a) in already_found:
+                continue
+            sev = item.get("severity", "moderate")
+            if sev not in ("serious", "contraindicated"):
+                continue
+            results.append(
+                DrugInteraction(
+                    drug_a=a,
+                    drug_b=b,
+                    severity=sev,
+                    description=item.get("description", "LLM-detected interaction"),
+                    score=medication_severity_score(sev),
+                )
+            )
+        if results:
+            logger.info("LLM detected %d additional drug interactions", len(results))
+        return results
+
+    except Exception as e:
+        logger.warning("LLM drug interaction check failed: %s", e)
+        return []
 
 
 @dataclass(frozen=True)

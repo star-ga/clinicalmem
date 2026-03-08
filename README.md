@@ -1,6 +1,6 @@
 # ClinicalMem
 
-[![Tests](https://img.shields.io/badge/tests-86%2F86-brightgreen)](#tests)
+[![Tests](https://img.shields.io/badge/tests-90%2F90-brightgreen)](#tests)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![MCP](https://img.shields.io/badge/protocol-MCP-purple)](#mcp-server)
@@ -105,11 +105,11 @@ docker compose up --build
 
 ## Tests
 
-86 tests covering engine scoring, FHIR ingestion, medication safety, lab-medication contraindications, lab trend analysis, provider disagreement detection, contradiction detection, recall, audit chain integrity, and LLM synthesis (explain_conflict + clinical_handoff with abstention).
+90 tests covering engine scoring, FHIR ingestion, medication safety, lab-medication contraindications, lab trend analysis, provider disagreement detection, contradiction detection, recall, audit chain integrity, and LLM synthesis (explain_conflict + clinical_handoff with abstention).
 
 ```
 tests/test_engine/test_clinical_scoring.py — 43 tests
-tests/test_engine/test_integration.py      — 43 tests
+tests/test_engine/test_integration.py      — 47 tests
 ```
 
 ## Tech Stack

@@ -449,3 +449,45 @@ class TestLLMSynthesis:
         narrative = self.engine.explain_clinical_conflict(self.pid, conflict_index=0)
         with pytest.raises(AttributeError):
             narrative.narrative = "tampered"  # type: ignore[misc]
+
+
+# ── LLM-Augmented Detection Tests ────────────────────────────────────────
+
+
+class TestLLMAugmentedDetection:
+    """Test LLM fallback for drug interactions beyond the 12-pair table."""
+
+    def test_deterministic_still_works_without_llm(self):
+        """Deterministic table catches known pairs even with LLM disabled."""
+        from engine.clinical_scoring import check_drug_interactions
+
+        meds = ["Warfarin 5mg", "Ibuprofen 400mg"]
+        interactions = check_drug_interactions(meds, use_llm_fallback=False)
+        pairs = {(i.drug_a, i.drug_b) for i in interactions}
+        assert ("warfarin", "ibuprofen") in pairs
+
+    def test_llm_fallback_does_not_break_deterministic(self):
+        """LLM fallback only adds — never removes deterministic results."""
+        from engine.clinical_scoring import check_drug_interactions
+
+        meds = ["Warfarin 5mg", "Ibuprofen 400mg"]
+        without_llm = check_drug_interactions(meds, use_llm_fallback=False)
+        with_llm = check_drug_interactions(meds, use_llm_fallback=True)
+        # with_llm should have at least as many as without_llm
+        assert len(with_llm) >= len(without_llm)
+
+    def test_empty_meds_no_crash(self):
+        """Empty medication list doesn't crash LLM fallback."""
+        from engine.clinical_scoring import check_drug_interactions
+
+        interactions = check_drug_interactions([], use_llm_fallback=True)
+        assert interactions == []
+
+    def test_single_med_no_interactions(self):
+        """Single medication can't have interactions."""
+        from engine.clinical_scoring import check_drug_interactions
+
+        interactions = check_drug_interactions(
+            ["Metformin 500mg"], use_llm_fallback=False
+        )
+        assert interactions == []
