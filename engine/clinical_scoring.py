@@ -483,11 +483,11 @@ def _llm_check_interactions(
     already_found: set[tuple[str, str]],
 ) -> list[DrugInteraction]:
     """
-    Layer 4: Gemini LLM fallback for drug interactions.
+    Layer 4: Medical LLM fallback for drug interactions.
 
-    General-purpose LLM used when the deterministic table, OpenEvidence API,
-    and NIH Drug Interaction API don't cover the medication pairs. Returns
-    structured DrugInteraction objects parsed from LLM response.
+    Tries MedGemma first (Google's purpose-built medical model, 87.7% MedQA,
+    trained on medical literature), then falls back to Gemini Flash if
+    MedGemma is unavailable. Returns structured DrugInteraction objects.
     """
     import json
     import logging
@@ -517,69 +517,81 @@ If NO significant interactions exist, respond with: []
 
 JSON array:"""
 
+    # Model cascade: MedGemma (medical-specialized) → Gemini Flash (general)
+    models = [
+        ("medgemma-27b-text-v1", "MedGemma"),
+        ("gemini-2.0-flash", "Gemini"),
+    ]
+
     try:
         import httpx
-
-        resp = httpx.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
-            json={
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "temperature": 0.1,
-                    "maxOutputTokens": 512,
-                },
-            },
-            timeout=15,
-        )
-        if resp.status_code != 200:
-            return []
-
-        data = resp.json()
-        candidates = data.get("candidates", [])
-        if not candidates:
-            return []
-        text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-
-        # Extract JSON from response (handle markdown code blocks)
-        text = text.strip()
-        if text.startswith("```"):
-            text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-            text = text.rsplit("```", 1)[0]
-        text = text.strip()
-
-        if not text or text == "[]":
-            return []
-
-        parsed = json.loads(text)
-        if not isinstance(parsed, list):
-            return []
-
-        results = []
-        for item in parsed:
-            a = item.get("drug_a", "").lower()
-            b = item.get("drug_b", "").lower()
-            # Skip if already found by deterministic layer
-            if (a, b) in already_found or (b, a) in already_found:
-                continue
-            sev = item.get("severity", "moderate")
-            if sev not in ("serious", "contraindicated"):
-                continue
-            results.append(
-                DrugInteraction(
-                    drug_a=a,
-                    drug_b=b,
-                    severity=sev,
-                    description=item.get("description", "LLM-detected interaction"),
-                    score=medication_severity_score(sev),
-                )
-            )
-        if results:
-            logger.info("LLM detected %d additional drug interactions", len(results))
-        return results
-
-    except Exception as e:
-        logger.warning("LLM drug interaction check failed: %s", e)
+    except ImportError:
         return []
+
+    for model_id, model_label in models:
+        try:
+            resp = httpx.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+                json={
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": 0.1,
+                        "maxOutputTokens": 512,
+                    },
+                },
+                timeout=20,
+            )
+            if resp.status_code != 200:
+                logger.info("%s returned %d, trying next model", model_label, resp.status_code)
+                continue
+
+            data = resp.json()
+            candidates = data.get("candidates", [])
+            if not candidates:
+                continue
+            text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+
+            # Extract JSON from response (handle markdown code blocks)
+            text = text.strip()
+            if text.startswith("```"):
+                text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+                text = text.rsplit("```", 1)[0]
+            text = text.strip()
+
+            if not text or text == "[]":
+                return []
+
+            parsed = json.loads(text)
+            if not isinstance(parsed, list):
+                continue
+
+            results = []
+            for item in parsed:
+                a = item.get("drug_a", "").lower()
+                b = item.get("drug_b", "").lower()
+                if (a, b) in already_found or (b, a) in already_found:
+                    continue
+                sev = item.get("severity", "moderate")
+                if sev not in ("serious", "contraindicated"):
+                    continue
+                results.append(
+                    DrugInteraction(
+                        drug_a=a,
+                        drug_b=b,
+                        severity=sev,
+                        description=f"{model_label}: {item.get('description', 'LLM-detected interaction')}",
+                        score=medication_severity_score(sev),
+                    )
+                )
+            if results:
+                logger.info("%s detected %d additional drug interactions", model_label, len(results))
+            return results
+
+        except Exception as e:
+            logger.info("%s failed: %s, trying next model", model_label, e)
+            continue
+
+    return []
 
 
 @dataclass(frozen=True)

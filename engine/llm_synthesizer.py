@@ -128,69 +128,104 @@ Write a structured care handoff note with sections:
 Cite evidence blocks by [block_id] for every clinical claim."""
 
 
-async def _call_gemini(prompt: str, system: str) -> str | None:
-    """Call Google Gemini API (used by hackathon platform)."""
+async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None, str]:
+    """Async medical LLM cascade: MedGemma → Gemini Flash."""
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return None
+        return None, "none"
+
+    models = [
+        ("medgemma-27b-text-v1", "MedGemma-27B"),
+        ("gemini-2.0-flash", "gemini-2.0-flash"),
+    ]
 
     try:
         import httpx
+    except ImportError:
+        return None, "none"
 
-        resp = await httpx.AsyncClient(timeout=30).post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
-            json={
-                "systemInstruction": {"parts": [{"text": system}]},
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "temperature": 0.2,
-                    "maxOutputTokens": 1024,
+    async with httpx.AsyncClient(timeout=30) as client:
+        for model_id, model_label in models:
+            try:
+                resp = await client.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+                    json={
+                        "systemInstruction": {"parts": [{"text": system}]},
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "temperature": 0.2,
+                            "maxOutputTokens": 1024,
+                        },
+                    },
+                )
+                if resp.status_code != 200:
+                    logger.info("%s returned %d, trying next", model_label, resp.status_code)
+                    continue
+                data = resp.json()
+                candidates = data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and parts[0].get("text"):
+                        return parts[0]["text"], model_label
+            except Exception as e:
+                logger.info("%s failed: %s, trying next", model_label, e)
+                continue
+
+    return None, "none"
+
+
+def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
+    """
+    Call medical LLM with cascade: MedGemma → Gemini Flash.
+
+    MedGemma (27B text) is Google's purpose-built medical model trained on
+    clinical literature, scoring 87.7% on MedQA. Falls back to Gemini Flash
+    if MedGemma is unavailable.
+
+    Returns (response_text, model_used).
+    """
+    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return None, "none"
+
+    models = [
+        ("medgemma-27b-text-v1", "MedGemma-27B"),
+        ("gemini-2.0-flash", "gemini-2.0-flash"),
+    ]
+
+    try:
+        import httpx
+    except ImportError:
+        return None, "none"
+
+    for model_id, model_label in models:
+        try:
+            resp = httpx.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}",
+                json={
+                    "systemInstruction": {"parts": [{"text": system}]},
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": 0.2,
+                        "maxOutputTokens": 1024,
+                    },
                 },
-            },
-        )
-        if resp.status_code == 200:
+                timeout=30,
+            )
+            if resp.status_code != 200:
+                logger.info("%s returned %d, trying next model", model_label, resp.status_code)
+                continue
             data = resp.json()
             candidates = data.get("candidates", [])
             if candidates:
                 parts = candidates[0].get("content", {}).get("parts", [])
-                if parts:
-                    return parts[0].get("text", "")
-    except Exception as e:
-        logger.warning("Gemini API call failed: %s", e)
-    return None
+                if parts and parts[0].get("text"):
+                    return parts[0]["text"], model_label
+        except Exception as e:
+            logger.info("%s failed: %s, trying next model", model_label, e)
+            continue
 
-
-def _call_gemini_sync(prompt: str, system: str) -> str | None:
-    """Synchronous wrapper for Gemini API call."""
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return None
-
-    try:
-        import httpx
-
-        resp = httpx.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
-            json={
-                "systemInstruction": {"parts": [{"text": system}]},
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "temperature": 0.2,
-                    "maxOutputTokens": 1024,
-                },
-            },
-            timeout=30,
-        )
-        if resp.status_code == 200:
-            data = resp.json()
-            candidates = data.get("candidates", [])
-            if candidates:
-                parts = candidates[0].get("content", {}).get("parts", [])
-                if parts:
-                    return parts[0].get("text", "")
-    except Exception as e:
-        logger.warning("Gemini API call failed: %s", e)
-    return None
+    return None, "none"
 
 
 def _template_conflict_explanation(
@@ -274,9 +309,8 @@ def explain_conflict(
     # Build prompt
     prompt = _build_conflict_prompt(conflict, patient_context, evidence_blocks)
 
-    # Try LLM synthesis
-    llm_response = _call_gemini_sync(prompt, _SYSTEM_PROMPT)
-    model_used = "gemini-2.0-flash"
+    # Try LLM synthesis (MedGemma → Gemini cascade)
+    llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 
     if llm_response and "ABSTAIN" not in llm_response:
         # Extract citations from response
@@ -356,8 +390,7 @@ def generate_clinical_handoff(
         patient_context, contradictions, safety_report, evidence_blocks
     )
 
-    llm_response = _call_gemini_sync(prompt, _SYSTEM_PROMPT)
-    model_used = "gemini-2.0-flash"
+    llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 
     if llm_response and "ABSTAIN" not in llm_response:
         import re
