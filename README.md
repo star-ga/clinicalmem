@@ -206,13 +206,18 @@ clinicalmem/
 ├── tests/
 │   ├── fixtures/
 │   │   └── sarah_mitchell_bundle.json  # Synthetic FHIR patient
-│   └── test_engine/
-│       ├── test_clinical_scoring.py    # 43 unit tests
-│       └── test_integration.py         # 47 integration tests
+│   ├── test_engine/
+│   │   ├── test_clinical_scoring.py    # 43 unit tests
+│   │   └── test_integration.py         # 61 integration tests
+│   ├── test_mcp/
+│   │   └── test_mcp_tools.py           # 58 MCP tool tests
+│   └── test_a2a/
+│       └── test_a2a_tools.py           # 47 A2A tool tests
 ├── docs/
-│   └── demo.html               # Interactive demo dashboard
+│   ├── demo.html               # Interactive demo dashboard
+│   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run 104 tests on push
+│   ├── test.yaml               # CI: Run 209 tests on push
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
