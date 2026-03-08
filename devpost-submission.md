@@ -23,7 +23,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 
 - **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
 - **LLM-Grounded Clinical Synthesis** — Uses MedGemma (Google's purpose-built medical model) to generate patient-specific clinical narratives, but only from retrieved evidence with explicit citations. Falls back to Gemini 3 Flash if MedGemma unavailable. When confidence is low, the system **abstains rather than hallucinating**
-- **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) NIH/NLM Drug Interaction API (RxNorm — the same federal database used by Epic, Cerner, and all certified EHRs) for free, authoritative coverage, (4) Gemini LLM fallback for remaining pairs. Each tier is audited
+- **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) NIH/NLM Drug Interaction API (RxNorm — the same federal database used by Epic, Cerner, and all certified EHRs) for free, authoritative coverage, (4) Multi-LLM cascade (OpenAI GPT-5.4 → MedGemma 27B → Gemini 3 Flash) for remaining pairs. Each tier is audited with model attribution
 - **Allergy Cross-Reaction Alerts** — Catches prescriptions that cross-react with known allergies (Penicillin allergy + Amoxicillin = anaphylaxis risk)
 - **Cross-Provider Contradiction Detection** — Surfaces conflicting care plans, declining lab trends, and medication-lab contraindications across fragmented provider records
 - **SHA-256 Hash-Chain Audit Trail** — Every clinical decision is logged in a tamper-proof Merkle chain, providing cryptographic proof that AI recommendations haven't been altered
@@ -66,14 +66,15 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 4. **Detection Layer 4** (Multi-LLM Cascade) — Tries the best available medical LLM: OpenAI GPT-5.4 (HIPAA-validated, tested by 260 physicians) → MedGemma 27B (Google's purpose-built medical model, 87.7% MedQA) → Gemini 3 Flash. Uses whichever API keys are configured — judges bring their own keys.
 
-4. **Synthesis Layer** (GenAI) — An LLM generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
+5. **Synthesis Layer** (Medical LLM Cascade) — OpenAI GPT-5.4 → MedGemma 27B → Gemini 3 Flash generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found. Each response tags which model responded for audit transparency.
 
-5. **Abstention Gate** — When evidence is insufficient, the system refuses to generate a narrative. In healthcare, "I don't know" saves lives.
+6. **Abstention Gate** — When evidence is insufficient, the system refuses to generate a narrative. In healthcare, "I don't know" saves lives.
 
 ### Tech Stack
 
 - Python 3.12
 - mind-mem (hybrid BM25 + vector search engine)
+- OpenAI GPT-5.4 (HIPAA-validated, 260-physician clinical evaluation)
 - MedGemma 27B (Google's purpose-built medical model, 87.7% MedQA)
 - NIH/NLM Drug Interaction API (RxNorm — federal gold standard, used by Epic/Cerner)
 - OpenEvidence API (clinically authoritative medical AI, Mayo Clinic / Elsevier)
@@ -118,7 +119,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 
 ## What's next for ClinicalMem
 
-- OpenAI Healthcare API integration (HIPAA BAA, GPT-5 clinical validation across 260 physicians) for production-grade LLM synthesis
+- OpenAI Healthcare API with HIPAA BAA for production deployment (GPT-5.4 cascade already integrated)
 - Full RxNorm + DailyMed integration for complete FDA drug interaction coverage
 - Temporal trend analysis with predictive alerts (detect worsening trajectories before they hit thresholds)
 - Multi-patient analytics (population-level safety signals)
@@ -130,6 +131,7 @@ ClinicalMem uses a two-layer architecture that makes AI safe for healthcare:
 - python
 - mind-mem
 - mind-lang
+- openai
 - medgemma
 - nih-rxnorm
 - openevidence
