@@ -11,7 +11,7 @@ on:
       AZURE_CREDENTIALS:
         required: true
       ACR_PASSWORD:
-        required: true
+        required: false
 
 jobs:
   build-and-deploy:

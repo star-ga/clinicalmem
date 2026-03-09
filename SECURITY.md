@@ -17,6 +17,11 @@ If you discover a security vulnerability, please report it responsibly:
 - A2A Agent requires API key authentication via `X-API-Key` header
 - MCP Server uses SHARP-on-MCP header-based context delivery
 
+### API Key Management
+- UMLS API key loaded from environment variable (`UMLS_API_KEY`), never hardcoded
+- `.env` file is gitignored; secrets stored in Azure Key Vault for production
+- RxNorm and SNOMED CT modules degrade gracefully without API keys
+
 ### Network Security
 - FHIR client validates server URLs against an allowlist (SSRF protection)
 - All external API calls use HTTPS with timeout limits

@@ -6,7 +6,7 @@ jobs:
   build-and-deploy:
     uses: ./.github/workflows/deploy-env.yaml
     with:
-      AZURE_WEBAPP_NAME: clinicalmem-mcp
+      APP_NAME: clinicalmem-mcp
       DOCKERFILE: Dockerfile.mcp
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}

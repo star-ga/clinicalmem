@@ -16,6 +16,17 @@ pip install -e ".[dev]"
 python -m pytest tests/ -v
 ```
 
+## Environment Variables
+
+```bash
+# Optional: UMLS Metathesaurus API key (for cross-vocabulary mapping)
+# Get a free key at https://uts.nlm.nih.gov/uts/signup-login
+echo "UMLS_API_KEY=your-key-here" > .env
+```
+
+The RxNorm and SNOMED CT modules work without an API key (using free public APIs).
+UMLS crosswalk features require a UMLS API key.
+
 ## Running Locally
 
 ```bash
@@ -31,7 +42,7 @@ docker compose up --build
 
 ## Test Coverage
 
-All changes must maintain 90/90 tests passing. Run the full suite before submitting:
+All changes must maintain 235/235 tests passing. Run the full suite before submitting:
 
 ```bash
 python -m pytest tests/ -v --tb=short
