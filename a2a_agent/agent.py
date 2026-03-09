@@ -105,7 +105,7 @@ root_agent = Agent(
         "- What-if scenario simulation: 'What if we add ibuprofen?' runs safety diff before change\n"
         "- FDA safety alerts: real federal data from openFDA (adverse events, black box warnings, recalls)\n"
         "- Clinical trial matching: real ClinicalTrials.gov data with NCT numbers\n"
-        "- Multi-LLM consensus: up to 6 independent models verify critical findings\n\n"
+        "- Multi-LLM consensus: 6 US-based models (GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash, Grok 4.1, Claude Opus 4.6, Perplexity Sonar) verify critical findings\n\n"
         "WHAT-IF SCENARIOS:\n"
         "- When asked 'what if we add/remove/switch a medication?', use what_if_scenario tool\n"
         "- Present the result as: safe/unsafe, risk delta, new risks, resolved risks, recommendation\n"

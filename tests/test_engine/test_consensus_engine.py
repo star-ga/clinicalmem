@@ -103,7 +103,7 @@ def _clear_all_api_keys(monkeypatch):
     """Ensure no real API keys leak into tests."""
     for key in (
         "OPENAI_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY",
-        "XAI_API_KEY", "DEEPSEEK_API_KEY", "MISTRAL_API_KEY",
+        "XAI_API_KEY", "ANTHROPIC_API_KEY", "PERPLEXITY_API_KEY",
     ):
         monkeypatch.delenv(key, raising=False)
 
@@ -258,34 +258,35 @@ class TestVerifyFindingConsensus:
         assert result.verdicts[0].agrees is True
 
     @respx.mock
-    def test_deepseek_included(self, monkeypatch):
-        """DeepSeek Reasoner joins consensus when DEEPSEEK_API_KEY is set."""
+    def test_anthropic_included(self, monkeypatch):
+        """Anthropic Claude joins consensus when ANTHROPIC_API_KEY is set."""
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.setenv("DEEPSEEK_API_KEY", "ds-test")
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test")
 
         agree_json = json.dumps({"agrees": True, "confidence": 0.9, "reasoning": "Confirmed"})
-        respx.post("https://api.deepseek.com/v1/chat/completions").mock(
+        respx.post("https://api.anthropic.com/v1/messages").mock(
             return_value=httpx.Response(200, json={
-                "choices": [{"message": {"content": agree_json}}]
+                "content": [{"type": "text", "text": agree_json}]
             })
         )
 
         result = verify_finding_consensus_sync("Test finding", [], {})
         assert result.total_models == 1
-        assert result.verdicts[0].model == "DeepSeek-Reasoner"
+        assert result.verdicts[0].model == "Anthropic-Claude-Opus-4.6"
+        assert result.verdicts[0].agrees is True
 
     @respx.mock
-    def test_mistral_included(self, monkeypatch):
-        """Mistral Large joins consensus when MISTRAL_API_KEY is set."""
+    def test_perplexity_included(self, monkeypatch):
+        """Perplexity Sonar joins consensus when PERPLEXITY_API_KEY is set."""
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.setenv("MISTRAL_API_KEY", "mis-test")
+        monkeypatch.setenv("PERPLEXITY_API_KEY", "pplx-test")
 
         agree_json = json.dumps({"agrees": False, "confidence": 0.4, "reasoning": "Uncertain"})
-        respx.post("https://api.mistral.ai/v1/chat/completions").mock(
+        respx.post("https://api.perplexity.ai/chat/completions").mock(
             return_value=httpx.Response(200, json={
                 "choices": [{"message": {"content": agree_json}}]
             })
@@ -293,17 +294,17 @@ class TestVerifyFindingConsensus:
 
         result = verify_finding_consensus_sync("Test finding", [], {})
         assert result.total_models == 1
-        assert result.verdicts[0].model == "Mistral-Large"
+        assert result.verdicts[0].model == "Perplexity-Sonar-Pro"
         assert result.verdicts[0].agrees is False
 
     @respx.mock
     def test_six_model_consensus(self, monkeypatch):
-        """All 6 models fire in parallel when all keys are available."""
+        """All 6 US-based models fire in parallel when all keys are available."""
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.setenv("GOOGLE_API_KEY", "gk-test")
         monkeypatch.setenv("XAI_API_KEY", "xai-test")
-        monkeypatch.setenv("DEEPSEEK_API_KEY", "ds-test")
-        monkeypatch.setenv("MISTRAL_API_KEY", "mis-test")
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test")
+        monkeypatch.setenv("PERPLEXITY_API_KEY", "pplx-test")
 
         agree_json = json.dumps({"agrees": True, "confidence": 0.9, "reasoning": "Valid"})
 
@@ -325,12 +326,12 @@ class TestVerifyFindingConsensus:
                 "choices": [{"message": {"content": agree_json}}]
             })
         )
-        respx.post("https://api.deepseek.com/v1/chat/completions").mock(
+        respx.post("https://api.anthropic.com/v1/messages").mock(
             return_value=httpx.Response(200, json={
-                "choices": [{"message": {"content": agree_json}}]
+                "content": [{"type": "text", "text": agree_json}]
             })
         )
-        respx.post("https://api.mistral.ai/v1/chat/completions").mock(
+        respx.post("https://api.perplexity.ai/chat/completions").mock(
             return_value=httpx.Response(200, json={
                 "choices": [{"message": {"content": agree_json}}]
             })
@@ -343,10 +344,10 @@ class TestVerifyFindingConsensus:
         assert result.should_report is True
         models = {v.model for v in result.verdicts}
         assert "OpenAI-GPT-5.4" in models
-        assert "MedGemma-27B" in models
+        assert "Gemini-3.1-Pro" in models
         assert "xAI-Grok-4.1" in models
-        assert "DeepSeek-Reasoner" in models
-        assert "Mistral-Large" in models
+        assert "Anthropic-Claude-Opus-4.6" in models
+        assert "Perplexity-Sonar-Pro" in models
 
     @respx.mock
     def test_partial_failure_still_works(self, monkeypatch):
@@ -355,8 +356,8 @@ class TestVerifyFindingConsensus:
         monkeypatch.setenv("XAI_API_KEY", "xai-test")
         monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
         monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-        monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
-        monkeypatch.delenv("MISTRAL_API_KEY", raising=False)
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("PERPLEXITY_API_KEY", raising=False)
 
         agree_json = json.dumps({"agrees": True, "confidence": 0.9, "reasoning": "Valid"})
 

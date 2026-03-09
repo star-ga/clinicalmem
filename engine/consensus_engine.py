@@ -4,14 +4,15 @@ Instead of trusting a single LLM, this module runs up to 6 LLMs independently
 on the same clinical finding and calculates an agreement score. Only findings
 with ≥2/3 agreement are reported as verified.
 
-Models (used when API keys are available):
+Models (used when API keys are available — all US-based):
 - OpenAI GPT-5.4 (clinical validation, 260 physicians, HIPAA BAA)
-- Google MedGemma 27B (purpose-built medical, 87.7% MedQA)
-- Google Gemini 3 Flash (fast general reasoning)
-- xAI Grok 4.1 (fast reasoning, independent architecture)
-- DeepSeek Reasoner (chain-of-thought reasoning)
-- Mistral Large (European model, different training data)
+- Google Gemini 3.1 Pro (flagship reasoning, 1M context)
+- Google Gemini 3.1 Flash Lite (fast cost-efficient reasoning)
+- xAI Grok 4.1 (fast reasoning, 2M context)
+- Anthropic Claude Opus 4.6 (deepest reasoning, safety-focused)
+- Perplexity Sonar Reasoning Pro (web-grounded clinical search)
 
+All 6 models are US-based providers, ensuring HIPAA-compatible data residency.
 Diversity of model architectures reduces correlated hallucination risk.
 """
 import asyncio
@@ -137,7 +138,7 @@ async def _call_openai(prompt: str, api_key: str) -> LLMVerdict:
                     {"role": "user", "content": prompt},
                 ],
                 "temperature": 0.1,
-                "max_tokens": 256,
+                "max_completion_tokens": 256,
             },
         )
         if resp.status_code != 200:
@@ -173,7 +174,7 @@ async def _call_openai_compatible(
     model: str,
     label: str,
 ) -> LLMVerdict:
-    """Call any OpenAI-compatible API (xAI, DeepSeek, Mistral)."""
+    """Call any OpenAI-compatible API (xAI, Perplexity)."""
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.post(
             f"{base_url}/v1/chat/completions",
@@ -192,6 +193,53 @@ async def _call_openai_compatible(
             raise RuntimeError(f"{label} returned {resp.status_code}")
         text = resp.json()["choices"][0]["message"]["content"]
         return _parse_verdict(text, label)
+
+
+async def _call_perplexity(prompt: str, api_key: str) -> LLMVerdict:
+    """Call Perplexity Sonar Reasoning Pro for verification."""
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.post(
+            "https://api.perplexity.ai/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "model": "sonar-reasoning-pro",
+                "messages": [
+                    {"role": "system", "content": _SYSTEM_MSG},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.1,
+                "max_tokens": 256,
+            },
+        )
+        if resp.status_code != 200:
+            raise RuntimeError(f"Perplexity returned {resp.status_code}")
+        text = resp.json()["choices"][0]["message"]["content"]
+        return _parse_verdict(text, "Perplexity-Sonar-Pro")
+
+
+async def _call_anthropic(prompt: str, api_key: str) -> LLMVerdict:
+    """Call Anthropic Claude Opus 4.6 for verification."""
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-opus-4-6",
+                "max_tokens": 256,
+                "temperature": 0.1,
+                "system": _SYSTEM_MSG,
+                "messages": [{"role": "user", "content": prompt}],
+            },
+        )
+        if resp.status_code != 200:
+            raise RuntimeError(f"Anthropic returned {resp.status_code}")
+        content = resp.json().get("content", [])
+        text = content[0].get("text", "") if content else ""
+        return _parse_verdict(text, "Anthropic-Claude-Opus-4.6")
 
 
 async def verify_finding_consensus(
@@ -223,8 +271,8 @@ async def verify_finding_consensus(
     openai_key = os.environ.get("OPENAI_API_KEY")
     google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     xai_key = os.environ.get("XAI_API_KEY")
-    deepseek_key = os.environ.get("DEEPSEEK_API_KEY")
-    mistral_key = os.environ.get("MISTRAL_API_KEY")
+    anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
+    perplexity_key = os.environ.get("PERPLEXITY_API_KEY")
 
     tasks: list[tuple[str, Any]] = []
 
@@ -232,25 +280,23 @@ async def verify_finding_consensus(
     if openai_key:
         tasks.append(("OpenAI-GPT-5.4", _call_openai(prompt, openai_key)))
     if google_key:
-        tasks.append(("MedGemma-27B", _call_google(
-            prompt, google_key, "medgemma-27b-text-v1", "MedGemma-27B",
+        tasks.append(("Gemini-3.1-Pro", _call_google(
+            prompt, google_key, "gemini-3.1-pro-preview", "Gemini-3.1-Pro",
         )))
-        tasks.append(("Gemini-3-Flash", _call_google(
-            prompt, google_key, "gemini-3-flash", "Gemini-3-Flash",
+        tasks.append(("Gemini-3.1-Flash-Lite", _call_google(
+            prompt, google_key, "gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite",
         )))
 
-    # Tier 2: Diverse architecture models (reduce correlated errors)
+    # Tier 2: Diverse US-based models (reduce correlated errors)
     if xai_key:
         tasks.append(("xAI-Grok-4.1", _call_openai_compatible(
             prompt, xai_key, "https://api.x.ai", "grok-4-1-fast-reasoning", "xAI-Grok-4.1",
         )))
-    if deepseek_key:
-        tasks.append(("DeepSeek-Reasoner", _call_openai_compatible(
-            prompt, deepseek_key, "https://api.deepseek.com", "deepseek-reasoner", "DeepSeek-Reasoner",
-        )))
-    if mistral_key:
-        tasks.append(("Mistral-Large", _call_openai_compatible(
-            prompt, mistral_key, "https://api.mistral.ai", "mistral-large-latest", "Mistral-Large",
+    if anthropic_key:
+        tasks.append(("Anthropic-Claude-Opus-4.6", _call_anthropic(prompt, anthropic_key)))
+    if perplexity_key:
+        tasks.append(("Perplexity-Sonar-Pro", _call_perplexity(
+            prompt, perplexity_key,
         )))
 
     if not tasks:
