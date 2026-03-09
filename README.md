@@ -25,7 +25,7 @@
 
 <p align="center">
   <a href="https://clinicalmem-demo.pages.dev/demo"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
-  <a href="https://youtu.be/cVNQ4X4x3dQ"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
+  <a href="https://youtu.be/iDKfbA89AnI"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
   <a href="https://devpost.com/software/clinimalmem"><strong>DevPost</strong></a>
 </p>
 
