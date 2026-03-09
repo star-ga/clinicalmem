@@ -71,7 +71,7 @@ Plus 2 bonus findings discovered autonomously:
 ```
                     FHIR R4                      Medical APIs
                   Patient Data              NIH RxNorm, OpenEvidence
-                      |                     GPT-5.4, MedGemma 27B
+                      |                     GPT-5.4, Gemini 3.1 Pro
                       v                            |
               +-------+----------------------------+-------+
               |           SHARED ENGINE (engine/)           |
@@ -105,7 +105,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 1 | **Deterministic Table** | Rule-based | < 1ms |
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
-| 4 | **Multi-LLM Cascade** | GPT-5.4 &rarr; MedGemma 27B &rarr; Gemini 3 Flash | ~3s |
+| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash, Grok 4.1, Claude Opus 4.6, Perplexity Sonar | ~3s |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
@@ -145,7 +145,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | **Drug interactions** | 4-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Multi-LLM | Hardcoded lookup table |
 | **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard) | None |
-| **LLM safety** | Cascade with fallback (GPT-5.4 &rarr; MedGemma &rarr; Gemini) | Single model, no fallback |
+| **LLM safety** | Cascade with fallback (GPT-5.4 &rarr; Gemini 3.1 Pro &rarr; Gemini) | Single model, no fallback |
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (12 tools) AND A2A (5 skills) | One or neither |
@@ -284,7 +284,7 @@ Coverage includes:
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
 | **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Multi-LLM |
 | **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
-| **LLM Cascade** | OpenAI GPT-5.4 &rarr; Google MedGemma 27B &rarr; Gemini 3 Flash |
+| **LLM Cascade** | OpenAI GPT-5.4 &rarr; Google Gemini 3.1 Pro &rarr; Gemini 3.1 Flash Lite |
 | **MCP** | [FastMCP 2.x](https://github.com/jlowin/fastmcp) with SHARP-on-MCP headers |
 | **A2A** | [Google ADK](https://github.com/google/adk-python) with A2A protocol |
 | **FHIR** | R4 client with synthetic patient data |
