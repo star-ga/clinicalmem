@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-209%20passed-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-235%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -42,8 +42,9 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 
 | Capability | Description |
 |-----------|-------------|
-| **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; NIH RxNorm API &rarr; Multi-LLM cascade |
-| **Allergy Cross-Reaction Alerts** | Catches prescriptions that cross-react with known allergies |
+| **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (proper drug normalization) &rarr; Multi-LLM cascade |
+| **Allergy Cross-Reaction Alerts** | SNOMED CT drug class hierarchy with 8 classes + alias expansion + cross-class detection |
+| **UMLS Cross-Vocabulary Mapping** | ICD-10 &harr; SNOMED CT &harr; LOINC &harr; RxNorm via UMLS Metathesaurus |
 | **Cross-Provider Contradiction Detection** | Surfaces conflicting care plans, declining lab trends, and medication-lab contraindications |
 | **Persistent Clinical Memory** | Ingests FHIR R4 data into searchable memory blocks (BM25 + vector + RRF fusion) |
 | **LLM-Grounded Synthesis** | Medical LLM cascade generates patient-specific narratives with explicit evidence citations |
@@ -81,7 +82,11 @@ Plus 2 bonus findings discovered autonomously:
               |   Drug Interactions  LLM Synthesizer        |
               |   (4-tier pipeline)  (evidence-cited)       |
               |                                             |
-              |   Audit Trail (SHA-256 Merkle Chain)        |
+              |   RxNorm Client      SNOMED CT Client       |
+              |   (drug normalize)   (allergy hierarchy)    |
+              |                                             |
+              |   UMLS Mapper        Audit Trail            |
+              |   (cross-vocabulary) (SHA-256 Merkle Chain) |
               +--------+------------------+--------+--------+
                        |                  |        |
                        v                  v        v
@@ -99,7 +104,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 |-------|------|------|---------|
 | 1 | **Deterministic Table** | Rule-based | < 1ms |
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
-| 3 | **NIH RxNorm API** | Federal gold standard (Epic/Cerner) | ~1s |
+| 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
 | 4 | **Multi-LLM Cascade** | GPT-5.4 &rarr; MedGemma 27B &rarr; Gemini 3 Flash | ~3s |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
@@ -137,13 +142,14 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 
 | Capability | ClinicalMem | Typical Healthcare AI |
 |-----------|-------------|----------------------|
-| **Drug interactions** | 4-tier: deterministic + OpenEvidence + NIH RxNorm + Multi-LLM | Hardcoded lookup table |
+| **Drug interactions** | 4-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Multi-LLM | Hardcoded lookup table |
+| **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard) | None |
 | **LLM safety** | Cascade with fallback (GPT-5.4 &rarr; MedGemma &rarr; Gemini) | Single model, no fallback |
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (12 tools) AND A2A (5 skills) | One or neither |
-| **Test coverage** | 209 tests (engine, MCP tools, A2A tools, SSRF) | Untested |
+| **Test coverage** | 235 tests (engine, MCP tools, A2A tools, UMLS, SSRF) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ## Quick Start
@@ -183,12 +189,15 @@ docker compose up --build
 
 ```
 clinicalmem/
-├── engine/                     # Shared core engine
+├── engine/                     # Shared core engine (7 modules)
 │   ├── __init__.py
 │   ├── clinical_memory.py      # mind-mem adapted for clinical data
 │   ├── clinical_scoring.py     # MIND Lang scoring kernels
 │   ├── fhir_client.py          # FHIR R4 client
-│   └── llm_synthesizer.py      # Medical LLM cascade + abstention
+│   ├── llm_synthesizer.py      # Medical LLM cascade + abstention
+│   ├── rxnorm_client.py        # RxNorm drug normalization + interactions
+│   ├── snomed_client.py        # SNOMED CT allergy cross-reactivity
+│   └── umls_mapper.py          # UMLS cross-vocabulary mapping
 ├── mcp_server/                 # MCP Server (FastMCP 2.x)
 │   ├── __init__.py
 │   ├── __main__.py
@@ -209,7 +218,10 @@ clinicalmem/
 │   │   └── sarah_mitchell_bundle.json  # Synthetic FHIR patient
 │   ├── test_engine/
 │   │   ├── test_clinical_scoring.py    # 43 unit tests
-│   │   └── test_integration.py         # 61 integration tests
+│   │   ├── test_integration.py         # 61 integration tests
+│   │   ├── test_rxnorm_client.py       # 8 RxNorm API tests
+│   │   ├── test_snomed_client.py       # 12 SNOMED CT tests
+│   │   └── test_umls_mapper.py         # 6 UMLS mapper tests
 │   ├── test_mcp/
 │   │   └── test_mcp_tools.py           # 58 MCP tool tests
 │   └── test_a2a/
@@ -218,7 +230,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run 209 tests on push
+│   ├── test.yaml               # CI: Run 235 tests on push
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -233,12 +245,15 @@ clinicalmem/
 
 ## Tests
 
-**209 tests** covering the full clinical safety pipeline:
+**235 tests** covering the full clinical safety pipeline:
 
 ```
 tests/test_engine/test_clinical_scoring.py  — 43 tests (scoring kernels)
 tests/test_engine/test_integration.py       — 61 tests (engine + FHIR + SSRF)
-tests/test_mcp/test_mcp_tools.py            — 58 tests (all 11 MCP tools)
+tests/test_engine/test_rxnorm_client.py     —  8 tests (RxNorm drug normalization)
+tests/test_engine/test_snomed_client.py     — 12 tests (SNOMED CT cross-reactivity)
+tests/test_engine/test_umls_mapper.py       —  6 tests (UMLS cross-vocabulary mapping)
+tests/test_mcp/test_mcp_tools.py            — 58 tests (all 12 MCP tools)
 tests/test_a2a/test_a2a_tools.py            — 47 tests (A2A tools + FHIR helpers)
 ```
 
@@ -248,7 +263,10 @@ Coverage includes:
 - Adversarial negation detection ("ruled out", "NOT allergic")
 - FHIR R4 resource ingestion and normalization
 - Drug interaction detection (all 4 tiers)
-- Allergy cross-reaction matching
+- RxNorm drug normalization (exact + approximate matching)
+- SNOMED CT allergy cross-reactivity (8 drug classes, alias expansion)
+- UMLS Metathesaurus cross-vocabulary mapping (ICD-10 &harr; SNOMED &harr; RxNorm)
+- Allergy cross-reaction matching (including penicillin &rarr; cephalosporin)
 - Lab-medication contraindication detection
 - Lab trend analysis (declining GFR trajectory)
 - Cross-provider contradiction detection (BP targets)
@@ -264,7 +282,8 @@ Coverage includes:
 |-----------|------------|
 | **Engine** | [mind-mem](https://github.com/star-ga/mind-mem) hybrid search (BM25 + vector + RRF fusion) |
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
-| **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [NIH RxNorm](https://rxnav.nlm.nih.gov/) + Multi-LLM |
+| **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Multi-LLM |
+| **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
 | **LLM Cascade** | OpenAI GPT-5.4 &rarr; Google MedGemma 27B &rarr; Gemini 3 Flash |
 | **MCP** | [FastMCP 2.x](https://github.com/jlowin/fastmcp) with SHARP-on-MCP headers |
 | **A2A** | [Google ADK](https://github.com/google/adk-python) with A2A protocol |
