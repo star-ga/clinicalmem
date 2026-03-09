@@ -1,8 +1,11 @@
 <p align="center">
-  <h1 align="center">ClinicalMem</h1>
-  <p align="center">
-    <strong>Persistent, Auditable, Contradiction-Safe Clinical Memory for Healthcare AI Agents</strong>
-  </p>
+  <img src="docs/logo.svg" alt="ClinicalMem Logo" width="180">
+</p>
+
+<h1 align="center">ClinicalMem</h1>
+
+<p align="center">
+  <strong>Persistent, Auditable, Contradiction-Safe Clinical Memory for Healthcare AI Agents</strong>
 </p>
 
 <p align="center">
