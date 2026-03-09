@@ -129,7 +129,7 @@ Cite evidence blocks by [block_id] for every clinical claim."""
 
 
 async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None, str]:
-    """Async medical LLM cascade: OpenAI GPT-5.4 → MedGemma → Gemini Flash."""
+    """Async medical LLM cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite."""
     openai_key = os.environ.get("OPENAI_API_KEY")
     google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
@@ -169,8 +169,8 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
 
         if google_key:
             for model_id, model_label in [
-                ("medgemma-27b-text-v1", "MedGemma-27B"),
-                ("gemini-3-flash", "gemini-3-flash"),
+                ("gemini-3.1-pro-preview", "Gemini-3.1-Pro"),
+                ("gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite"),
             ]:
                 try:
                     resp = await client.post(
@@ -203,11 +203,11 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
 
 def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
     """
-    Call medical LLM with cascade: OpenAI GPT-5.4 → MedGemma → Gemini Flash.
+    Call medical LLM with cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite.
 
     Uses whichever API keys are available. OpenAI has the strongest clinical
-    validation (260 physicians, HIPAA BAA). MedGemma is purpose-built for
-    medicine (87.7% MedQA). Gemini Flash is the general fallback.
+    validation (260 physicians, HIPAA BAA). Gemini 3.1 Pro is Google's most
+    capable model. Gemini 3.1 Flash Lite is the fast fallback.
 
     Returns (response_text, model_used).
     """
@@ -249,11 +249,11 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
         except Exception as e:
             logger.info("OpenAI failed: %s, trying next model", e)
 
-    # Attempt 2-3: Google models (MedGemma → Gemini Flash)
+    # Attempt 2-3: Google models (Gemini 3.1 Pro → Gemini 3.1 Flash Lite)
     if google_key:
         google_models = [
-            ("medgemma-27b-text-v1", "MedGemma-27B"),
-            ("gemini-3-flash", "gemini-3-flash"),
+            ("gemini-3.1-pro-preview", "Gemini-3.1-Pro"),
+            ("gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite"),
         ]
         for model_id, model_label in google_models:
             try:
@@ -374,7 +374,7 @@ def explain_conflict(
     except ImportError:
         pass
 
-    # Try LLM synthesis (MedGemma → Gemini cascade)
+    # Try LLM synthesis (GPT-5.4 → Gemini 3.1 Pro → Gemini Flash cascade)
     llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 
     if llm_response and "ABSTAIN" not in llm_response:

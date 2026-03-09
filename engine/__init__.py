@@ -3,7 +3,7 @@
 Modules:
 - clinical_memory: Core FHIR-to-memory pipeline with hybrid search
 - clinical_scoring: MIND kernel-inspired scoring (abstention, importance, adversarial)
-- consensus_engine: Multi-LLM consensus verification (GPT-5.4, MedGemma, Gemini)
+- consensus_engine: Multi-LLM consensus verification (6 US-based models)
 - fda_client: openFDA drug safety alerts (FAERS, labels, recalls)
 - fhir_client: FHIR R4 REST client with SSRF protection
 - hallucination_detector: Evidence grounding gate — FHIR-traced claim verification

@@ -495,7 +495,7 @@ def _llm_check_interactions(
     Tries models in order of clinical strength, using whichever API keys
     are available. Each model uses the same structured prompt.
 
-    Cascade: OpenAI GPT-5.4 → MedGemma 27B → Gemini Flash
+    Cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite
     """
     import json
     import logging
@@ -531,8 +531,8 @@ JSON array:"""
     if openai_key:
         attempts.append(("OpenAI-GPT-5.4", lambda: _call_openai_json(prompt, openai_key)))
     if google_key:
-        attempts.append(("MedGemma", lambda: _call_google_json(prompt, google_key, "medgemma-27b-text-v1")))
-        attempts.append(("Gemini", lambda: _call_google_json(prompt, google_key, "gemini-3-flash")))
+        attempts.append(("Gemini-3.1-Pro", lambda: _call_google_json(prompt, google_key, "gemini-3.1-pro-preview")))
+        attempts.append(("Gemini-3.1-Flash-Lite", lambda: _call_google_json(prompt, google_key, "gemini-3.1-flash-lite-preview")))
 
     for model_label, call_fn in attempts:
         text = call_fn()
