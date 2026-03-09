@@ -367,6 +367,13 @@ def explain_conflict(
     # Build prompt
     prompt = _build_conflict_prompt(conflict, patient_context, evidence_blocks)
 
+    # PHI guard: redact before sending to external LLMs
+    try:
+        from engine.phi_detector import redact_phi
+        prompt, _ = redact_phi(prompt)
+    except ImportError:
+        pass
+
     # Try LLM synthesis (MedGemma → Gemini cascade)
     llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 
@@ -447,6 +454,13 @@ def generate_clinical_handoff(
     prompt = _build_handoff_prompt(
         patient_context, contradictions, safety_report, evidence_blocks
     )
+
+    # PHI guard: redact before sending to external LLMs
+    try:
+        from engine.phi_detector import redact_phi
+        prompt, _ = redact_phi(prompt)
+    except ImportError:
+        pass
 
     llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 

@@ -615,6 +615,359 @@ def _is_related(condition: str, medication: str) -> bool:
     return False
 
 
+# ── Tool: What-If Medication Change ───────────────────────────────────────────
+
+@mcp.tool()
+def what_if_medication_change(
+    patient_id: str,
+    action: str,
+    medication: str,
+    swap_to: str = "",
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Simulate the safety impact of adding, removing, or swapping a medication.
+
+    Runs the proposed change through the full safety pipeline BEFORE it reaches
+    the patient. Shows new risks introduced, risks resolved, and net safety delta.
+
+    Args:
+        patient_id: The patient's FHIR ID
+        action: "add", "remove", or "swap"
+        medication: The medication to add/remove (or remove in swap)
+        swap_to: For swap action only — the replacement medication
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _check_rate_limit("what_if_medication_change")
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+
+    from engine.what_if import (
+        simulate_add_medication,
+        simulate_remove_medication,
+        simulate_swap_medication,
+    )
+
+    blocks = _engine._patient_blocks.get(patient_id, [])
+    current_meds = [
+        b.metadata.get("medication_name", "")
+        for b in blocks if b.resource_type == "MedicationRequest"
+    ]
+    allergies = [
+        b.metadata.get("allergen", "")
+        for b in blocks if b.resource_type == "AllergyIntolerance"
+    ]
+    observations = [
+        {
+            "code": b.metadata.get("code", ""),
+            "value": b.metadata.get("value"),
+            "unit": b.metadata.get("unit", ""),
+            "date": b.metadata.get("date", ""),
+        }
+        for b in blocks if b.resource_type == "Observation"
+    ]
+
+    action_lower = action.strip().lower()
+    if action_lower == "add":
+        result = simulate_add_medication(
+            patient_id, medication, current_meds, allergies, observations,
+        )
+    elif action_lower == "remove":
+        result = simulate_remove_medication(
+            patient_id, medication, current_meds, allergies, observations,
+        )
+    elif action_lower == "swap" and swap_to:
+        result = simulate_swap_medication(
+            patient_id, medication, swap_to, current_meds, allergies, observations,
+        )
+    else:
+        return {"status": "error", "error_message": f"Invalid action '{action}'. Use add/remove/swap."}
+
+    audit_hash = _engine._append_audit(
+        "what_if_simulation",
+        {"patient_id": patient_id, "action": action, "medication": medication},
+    )
+
+    return {
+        "status": "success",
+        "scenario": result.scenario,
+        "patient_id": result.patient_id,
+        "safe_to_proceed": result.safe_to_proceed,
+        "risk_delta": result.risk_delta,
+        "new_interactions": [
+            {"drug_a": i.drug_a, "drug_b": i.drug_b, "severity": i.severity, "description": i.description}
+            for i in result.new_interactions
+        ],
+        "new_allergy_conflicts": [
+            {"allergen": c.allergen, "medication": c.medication, "description": c.description}
+            for c in result.new_allergy_conflicts
+        ],
+        "removed_risks": result.removed_risks,
+        "recommendation": result.recommendation,
+        "audit_hash": audit_hash,
+    }
+
+
+# ── Tool: Verify Clinical Claims (Hallucination Detector) ────────────────────
+
+@mcp.tool()
+def verify_clinical_claims(
+    text: str,
+    patient_id: str,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Verify that clinical claims in LLM-generated text are grounded in patient evidence.
+
+    Extracts clinical claims from the text, checks each against the patient's
+    stored FHIR evidence blocks. Flags ungrounded claims as potential hallucinations.
+
+    Args:
+        text: LLM-generated clinical text to verify
+        patient_id: The patient's FHIR ID
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _check_rate_limit("verify_clinical_claims")
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+
+    from engine.hallucination_detector import ground_check
+
+    blocks = _engine._patient_blocks.get(patient_id, [])
+    block_dicts = [
+        {"block_id": b.block_id, "content": b.content, "title": b.title, "metadata": b.metadata}
+        for b in blocks
+    ]
+
+    report = ground_check(text, block_dicts)
+    return {
+        "status": "success",
+        "grounding_score": report.grounding_score,
+        "grounded_count": report.grounded_count,
+        "ungrounded_count": report.ungrounded_count,
+        "flagged_hallucinations": report.flagged_hallucinations,
+        "claims": [
+            {"claim": v.claim, "grounded": v.grounded, "confidence": v.confidence, "evidence_block_ids": v.evidence_block_ids}
+            for v in report.claims
+        ],
+    }
+
+
+# ── Tool: Scan for PHI ───────────────────────────────────────────────────────
+
+@mcp.tool()
+def scan_for_phi(text: str) -> dict:
+    """
+    Scan clinical text for Protected Health Information (PHI).
+
+    Detects HIPAA-defined PHI categories: SSN, phone, email, MRN, dates,
+    addresses, ZIP codes, IP addresses, names, account numbers, URLs.
+    Returns the redacted version and a list of detected PHI items.
+
+    Args:
+        text: Clinical text to scan for PHI
+    """
+    _check_rate_limit("scan_for_phi")
+
+    from engine.phi_detector import scan_phi
+
+    report = scan_phi(text)
+    return {
+        "status": "success",
+        "is_safe": report.is_safe,
+        "phi_count": report.phi_count,
+        "categories_found": report.categories_found,
+        "redacted_text": report.redacted_text,
+        "matches": [
+            {"category": m.category, "text": m.text, "confidence": m.confidence}
+            for m in report.matches
+        ],
+    }
+
+
+# ── Tool: FDA Safety Alerts ──────────────────────────────────────────────────
+
+@mcp.tool()
+def check_fda_safety_alerts(
+    patient_id: str,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Query real FDA safety data for the patient's active medications.
+
+    Checks openFDA for:
+    - Adverse event reports (FAERS database — millions of real-world reports)
+    - FDA-approved label warnings (including black box warnings)
+    - Active drug recalls
+
+    This is real federal safety data, not a lookup table.
+
+    Args:
+        patient_id: The patient's FHIR ID
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _check_rate_limit("check_fda_safety_alerts")
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+
+    from engine.fda_client import get_safety_profile
+
+    blocks = _engine._patient_blocks.get(patient_id, [])
+    medications = [
+        b.metadata.get("medication_name", "")
+        for b in blocks if b.resource_type == "MedicationRequest"
+        and b.metadata.get("medication_name")
+    ]
+
+    if not medications:
+        return {"status": "success", "medications": [], "alerts": [], "message": "No active medications found."}
+
+    profile = get_safety_profile(medications)
+
+    audit_hash = _engine._append_audit(
+        "fda_safety_check",
+        {"patient_id": patient_id, "medications": medications},
+    )
+
+    return {
+        "status": "success",
+        "medications": profile.medications,
+        "alert_count": len(profile.alerts),
+        "alerts": [
+            {"drug": a.drug_name, "type": a.alert_type, "severity": a.severity, "description": a.description, "source": a.source}
+            for a in profile.alerts[:20]
+        ],
+        "black_box_warnings": profile.black_box_warnings,
+        "total_adverse_event_reports": profile.total_adverse_events,
+        "highest_severity": profile.highest_severity,
+        "audit_hash": audit_hash,
+    }
+
+
+# ── Tool: Find Matching Clinical Trials ──────────────────────────────────────
+
+@mcp.tool()
+def find_matching_trials(
+    patient_id: str,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Match the patient's conditions to active recruiting clinical trials.
+
+    Queries ClinicalTrials.gov API v2 (real federal data) for trials matching
+    the patient's active conditions. Returns real NCT numbers and enrollment info.
+
+    Args:
+        patient_id: The patient's FHIR ID
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _check_rate_limit("find_matching_trials")
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+
+    from engine.trials_client import match_patient_to_trials
+
+    blocks = _engine._patient_blocks.get(patient_id, [])
+    conditions = [
+        b.metadata.get("condition_name", "")
+        for b in blocks if b.resource_type == "Condition"
+        and b.metadata.get("condition_name")
+    ]
+
+    if not conditions:
+        return {"status": "success", "conditions": [], "trials": [], "message": "No active conditions found."}
+
+    result = match_patient_to_trials(conditions)
+
+    audit_hash = _engine._append_audit(
+        "trial_matching",
+        {"patient_id": patient_id, "conditions": conditions},
+    )
+
+    return {
+        "status": "success",
+        "patient_conditions": list(result.patient_conditions),
+        "total_trials_found": result.total_found,
+        "trials": [
+            {
+                "nct_id": t.nct_id, "title": t.title, "status": t.status,
+                "conditions": list(t.conditions), "interventions": list(t.interventions),
+                "phase": t.phase, "enrollment": t.enrollment,
+                "locations": list(t.locations), "url": t.url,
+            }
+            for t in result.matched_trials[:15]
+        ],
+        "audit_hash": audit_hash,
+    }
+
+
+# ── Tool: Multi-LLM Consensus Verification ──────────────────────────────────
+
+@mcp.tool()
+def consensus_verify_finding(
+    finding: str,
+    patient_id: str,
+    fhir_server_url: str = "",
+    fhir_access_token: str = "",
+) -> dict:
+    """
+    Multi-LLM consensus verification for critical clinical safety findings.
+
+    Sends the finding to up to 6 independent LLMs in parallel (GPT-5.4,
+    MedGemma, Gemini, Grok, DeepSeek, Mistral) and requires >=2/3 agreement
+    before confirming. Reduces hallucination risk through architectural diversity.
+
+    Args:
+        finding: The clinical safety finding to verify
+        patient_id: The patient's FHIR ID
+        fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
+        fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
+    """
+    _check_rate_limit("consensus_verify_finding")
+    _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
+
+    from engine.consensus_engine import verify_finding_consensus_sync
+
+    blocks = _engine._patient_blocks.get(patient_id, [])
+    evidence = [
+        {"block_id": b.block_id, "title": b.title, "content": b.content}
+        for b in blocks[:10]
+    ]
+
+    summary = _engine.patient_summary(patient_id)
+    patient_context = {
+        "patient_id": patient_id,
+        "medications": summary.get("medications", []),
+        "conditions": summary.get("conditions", []),
+        "allergies": summary.get("allergies", []),
+    }
+
+    result = verify_finding_consensus_sync(finding, evidence, patient_context)
+
+    audit_hash = _engine._append_audit(
+        "consensus_verification",
+        {"patient_id": patient_id, "finding": finding[:200], "consensus_level": result.consensus_level},
+    )
+
+    return {
+        "status": "success",
+        "finding": result.finding,
+        "consensus_level": result.consensus_level,
+        "agreement": f"{result.agreement_count}/{result.total_models}",
+        "confidence_score": result.confidence_score,
+        "should_report": result.should_report,
+        "verdicts": [
+            {"model": v.model, "agrees": v.agrees, "confidence": v.confidence, "reasoning": v.reasoning}
+            for v in result.verdicts
+        ],
+        "audit_hash": audit_hash,
+    }
+
+
 # ── Health Check ──────────────────────────────────────────────────────────────
 
 @mcp.tool()
