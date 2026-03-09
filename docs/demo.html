@@ -195,6 +195,41 @@ tailwind.config = {
     );
     animation: scanline 8s linear infinite;
   }
+
+  /* Safety check button & spinner */
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .safety-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  /* Findings reveal animation */
+  @keyframes findingReveal {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .finding-card-animate {
+    opacity: 0;
+    animation: findingReveal 0.4s ease-out forwards;
+  }
+
+  /* prefers-reduced-motion: kill all animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body class="font-sans text-slate-200 antialiased">
@@ -203,12 +238,12 @@ tailwind.config = {
 <nav class="nav-blur fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-14">
-      <div class="flex items-center gap-3">
+      <a href="#" aria-label="ClinicalMem home" class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-clinical-purple to-clinical-blue flex items-center justify-center">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <span class="font-bold text-lg tracking-tight">ClinicalMem</span>
-      </div>
+      </a>
       <div class="hidden md:flex items-center gap-6 text-sm text-slate-400">
         <a href="#patient" class="hover:text-white transition-colors">Patient</a>
         <a href="#findings" class="hover:text-white transition-colors">Findings</a>
@@ -222,7 +257,24 @@ tailwind.config = {
           <span class="w-1.5 h-1.5 rounded-full bg-clinical-green animate-pulse"></span>
           Live Demo
         </span>
+        <!-- Hamburger (mobile only) -->
+        <button id="nav-hamburger" class="md:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-slate-800/60 transition-colors" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+          <span class="block w-5 h-0.5 bg-slate-400 transition-all"></span>
+          <span class="block w-5 h-0.5 bg-slate-400 transition-all"></span>
+          <span class="block w-5 h-0.5 bg-slate-400 transition-all"></span>
+        </button>
       </div>
+    </div>
+  </div>
+  <!-- Mobile nav menu -->
+  <div id="mobile-nav" class="hidden md:hidden border-t border-slate-800/50 nav-blur">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1 text-sm text-slate-400">
+      <a href="#patient" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Patient</a>
+      <a href="#findings" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Findings</a>
+      <a href="#pipeline" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Pipeline</a>
+      <a href="#audit" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Audit</a>
+      <a href="#tools" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Tools</a>
+      <a href="#architecture" class="hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-slate-800/40">Architecture</a>
     </div>
   </div>
 </nav>
@@ -258,7 +310,7 @@ tailwind.config = {
 
     <!-- Badges row -->
     <div class="flex flex-wrap justify-center gap-3 mb-12 fade-in-up" style="animation-delay: 0.5s">
-      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-green/10 text-clinical-green border border-clinical-green/20">90/90 Tests</span>
+      <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-green/10 text-clinical-green border border-clinical-green/20">209/209 Tests Passing</span>
       <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">MCP Protocol</span>
       <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20">A2A Protocol</span>
       <span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20">FHIR R4</span>
@@ -281,8 +333,8 @@ tailwind.config = {
         <div class="text-xs text-slate-400 mt-1">Safety Layers</div>
       </div>
       <div class="glass rounded-xl p-4 hover-glow">
-        <div class="text-3xl font-black text-clinical-red">4</div>
-        <div class="text-xs text-slate-400 mt-1">Conflicts Found</div>
+        <div class="text-3xl font-black text-clinical-green">4</div>
+        <div class="text-xs text-slate-400 mt-1">Conflicts Prevented</div>
       </div>
     </div>
 
@@ -403,6 +455,16 @@ tailwind.config = {
       </div>
     </div>
   </div>
+
+  <!-- Run Safety Check CTA -->
+  <div class="flex justify-center mt-10">
+    <button id="run-safety-check"
+      class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-clinical-purple to-clinical-blue text-white font-bold text-base shadow-lg hover:shadow-clinical-purple/30 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-clinical-purple focus:ring-offset-2 focus:ring-offset-navy-900"
+      aria-label="Run automated safety check on patient medications">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Run Safety Check
+    </button>
+  </div>
 </section>
 
 <!-- Safety Findings Dashboard -->
@@ -415,9 +477,9 @@ tailwind.config = {
     </div>
     <p class="text-center text-slate-500 text-sm mb-10">All findings detected automatically from FHIR R4 patient data</p>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div id="findings-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Finding 1: Warfarin + Ibuprofen -->
-      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group" role="alert">
         <div class="h-1 bg-gradient-to-r from-clinical-red via-red-500 to-clinical-red"></div>
         <div class="p-6">
           <div class="flex items-start justify-between mb-4">
@@ -446,7 +508,7 @@ tailwind.config = {
       </div>
 
       <!-- Finding 2: Penicillin + Amoxicillin -->
-      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group" role="alert">
         <div class="h-1 bg-gradient-to-r from-clinical-red via-red-500 to-clinical-red"></div>
         <div class="p-6">
           <div class="flex items-start justify-between mb-4">
@@ -475,7 +537,7 @@ tailwind.config = {
       </div>
 
       <!-- Finding 3: Declining GFR + Metformin -->
-      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group" role="status">
         <div class="h-1 bg-gradient-to-r from-clinical-amber via-amber-400 to-clinical-amber"></div>
         <div class="p-6">
           <div class="flex items-start justify-between mb-4">
@@ -497,7 +559,8 @@ tailwind.config = {
           </p>
 
           <!-- GFR Trend Mini Chart -->
-          <div class="mb-4 flex items-end gap-3 h-16">
+          <div class="mb-4 min-w-0 overflow-x-auto">
+          <div class="flex items-end gap-3 h-16 min-w-[280px]">
             <div class="flex flex-col items-center gap-1 flex-1">
               <div class="w-full bg-clinical-amber/30 rounded-t" style="height: 45px;"></div>
               <span class="text-xs text-slate-500 font-mono">45</span>
@@ -521,6 +584,7 @@ tailwind.config = {
               <span class="text-xs text-clinical-red font-mono">30</span>
             </div>
           </div>
+          </div><!-- end overflow-x-auto wrapper -->
 
           <div class="flex items-center gap-2 text-xs">
             <span class="px-2.5 py-1 rounded-md bg-clinical-blue/10 text-clinical-blue border border-clinical-blue/20 font-medium">Lab-Medication Monitor</span>
@@ -530,7 +594,7 @@ tailwind.config = {
       </div>
 
       <!-- Finding 4: Conflicting BP Targets -->
-      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group">
+      <div class="glass-strong rounded-2xl overflow-hidden hover-glow group" role="status">
         <div class="h-1 bg-gradient-to-r from-clinical-amber via-amber-400 to-clinical-amber"></div>
         <div class="p-6">
           <div class="flex items-start justify-between mb-4">
@@ -908,7 +972,7 @@ tailwind.config = {
     <div class="mb-10">
       <div class="flex items-center gap-2 mb-4">
         <span class="px-3 py-1 rounded-lg text-xs font-bold bg-clinical-purple/10 text-clinical-purple border border-clinical-purple/20">MCP Protocol</span>
-        <span class="text-sm text-slate-400">11 Tools &mdash; FastMCP 2.x + SHARP-on-MCP</span>
+        <span class="text-sm text-slate-400">12 Tools &mdash; FastMCP 2.x + SHARP-on-MCP</span>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <!-- Tool cards -->
@@ -1164,19 +1228,11 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Arrow down splitting into 3 -->
-      <div class="flex justify-center mb-6">
-        <div class="relative w-full max-w-md">
-          <!-- Center line down -->
-          <div class="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-6 bg-gradient-to-b from-clinical-purple/50 to-slate-600"></div>
-          <!-- Horizontal line -->
-          <div class="absolute left-[15%] right-[15%] top-6 h-0.5 bg-slate-600"></div>
-          <!-- Three lines down -->
-          <div class="absolute left-[15%] top-6 w-0.5 h-6 bg-slate-600"></div>
-          <div class="absolute left-1/2 -translate-x-1/2 top-6 w-0.5 h-6 bg-slate-600"></div>
-          <div class="absolute right-[15%] top-6 w-0.5 h-6 bg-slate-600"></div>
-          <!-- Arrows -->
-          <div class="h-14"></div>
+      <!-- Arrow down splitting into 3 (flexbox, mobile-safe) -->
+      <div class="flex justify-center mb-6" aria-hidden="true">
+        <div class="flex flex-col items-center">
+          <div class="w-0.5 h-4 bg-gradient-to-b from-clinical-purple/50 to-slate-600"></div>
+          <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
         </div>
       </div>
 
@@ -1189,7 +1245,7 @@ tailwind.config = {
           <div class="text-sm font-bold text-white mb-1">MCP Server</div>
           <div class="text-xs text-slate-500 mb-2">FastMCP 2.x</div>
           <div class="flex justify-center gap-1.5">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-purple/10 text-clinical-purple">11 Tools</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-clinical-purple/10 text-clinical-purple">12 Tools</span>
             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/50 text-slate-400">SHARP</span>
           </div>
         </div>
@@ -1241,8 +1297,8 @@ tailwind.config = {
 
       <!-- Center badges -->
       <div class="flex flex-wrap justify-center gap-2">
-        <a href="https://github.com/star-ga/mind-mem" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-400 border border-teal-500/20 hover:bg-teal-500/20 transition-colors">
-          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        <a href="https://github.com/star-ga/mind-mem" aria-label="mind-mem on GitHub" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-400 border border-teal-500/20 hover:bg-teal-500/20 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           Powered by mind-mem
         </a>
         <a href="https://app.promptopinion.ai/marketplace" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-colors">
@@ -1254,8 +1310,8 @@ tailwind.config = {
       <div class="flex flex-col items-center md:items-end gap-2">
         <a href="https://star.ga" class="text-sm font-semibold text-white hover:text-clinical-purple transition-colors">STARGA Inc.</a>
         <div class="flex items-center gap-3">
-          <a href="https://github.com/star-ga/clinicalmem" class="text-slate-500 hover:text-white transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          <a href="https://github.com/star-ga/clinicalmem" aria-label="ClinicalMem on GitHub" class="text-slate-500 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           </a>
         </div>
       </div>
@@ -1274,6 +1330,7 @@ tailwind.config = {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   // Intersection Observer for fade-in animations
+  // Fix: exclude the first section (hero) from opacity:0 initialization
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1283,24 +1340,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  // Observe all sections
-  document.querySelectorAll('section').forEach(section => {
+  const allSections = document.querySelectorAll('section');
+  allSections.forEach((section, index) => {
+    if (index === 0) {
+      // Hero: leave fully visible, no fade-in needed
+      return;
+    }
     section.style.opacity = '0';
     section.style.transform = 'translateY(20px)';
     section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
     observer.observe(section);
   });
 
-  // Smooth scroll for nav links
+  // Smooth scroll for nav links (also close mobile menu)
+  const mobileNav = document.getElementById('mobile-nav');
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return; // logo link — let default scroll-to-top happen
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const target = document.querySelector(href);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close mobile menu if open
+        if (mobileNav && !mobileNav.classList.contains('hidden')) {
+          mobileNav.classList.add('hidden');
+          const btn = document.getElementById('nav-hamburger');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
       }
     });
   });
+
+  // Hamburger toggle
+  const hamburger = document.getElementById('nav-hamburger');
+  if (hamburger && mobileNav) {
+    hamburger.addEventListener('click', () => {
+      const isOpen = !mobileNav.classList.contains('hidden');
+      mobileNav.classList.toggle('hidden');
+      hamburger.setAttribute('aria-expanded', String(!isOpen));
+    });
+  }
 
   // Active nav highlighting
   const sections = document.querySelectorAll('section[id]');
@@ -1322,6 +1402,59 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Run Safety Check interactive button
+  const safetyBtn = document.getElementById('run-safety-check');
+  const findingsGrid = document.getElementById('findings-grid');
+
+  if (safetyBtn && findingsGrid) {
+    // Start with findings hidden until the button is clicked for the first time
+    const findingCards = findingsGrid.querySelectorAll('.glass-strong');
+    let hasRun = false;
+
+    safetyBtn.addEventListener('click', () => {
+      if (hasRun) return;
+      hasRun = true;
+
+      // Show loading state
+      safetyBtn.disabled = true;
+      safetyBtn.innerHTML = '<span class="safety-spinner"></span>Scanning medications...';
+
+      // Hide findings initially for the reveal animation
+      findingCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(16px)';
+      });
+
+      // After 1.5s, reveal each card with stagger
+      setTimeout(() => {
+        // Scroll findings section into view
+        const findingsSection = document.getElementById('findings');
+        if (findingsSection) {
+          findingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        findingCards.forEach((card, i) => {
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, i * 150);
+        });
+
+        // Update button to success state after all cards revealed
+        const totalDelay = findingCards.length * 150 + 400;
+        setTimeout(() => {
+          safetyBtn.innerHTML =
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>' +
+            '4 Dangerous Conflicts Prevented ✓';
+          safetyBtn.classList.remove('from-clinical-purple', 'to-clinical-blue');
+          safetyBtn.classList.add('from-clinical-green/80', 'to-emerald-600');
+          safetyBtn.style.cursor = 'default';
+        }, totalDelay);
+      }, 1500);
+    });
+  }
 });
 </script>
 

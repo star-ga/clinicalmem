@@ -334,8 +334,8 @@ class TestSummarizePatientHistory:
 
     def test_total_blocks(self, mcp_tools):
         result = mcp_tools["summarize_patient_history"](patient_id=PATIENT_ID)
-        # Bundle ingestion loads all observations (vitals + labs) = 27 blocks
-        assert result["total_blocks"] == 27
+        # Bundle ingestion: 7 meds + 4 conditions + 2 allergies + 7 obs = 20 blocks
+        assert result["total_blocks"] == 20
 
     def test_empty_patient(self, mcp_tools):
         result = mcp_tools["summarize_patient_history"](patient_id="nonexistent")

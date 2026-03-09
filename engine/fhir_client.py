@@ -54,19 +54,29 @@ class FHIRContext:
             raise FHIRClientError("FHIR URL must not point to localhost or metadata endpoints")
         if bare_host:
             # Block all RFC 1918 private ranges + link-local + IPv6 private
-            host = bare_host
-            if (
-                host.startswith("10.")
-                or host.startswith("172.16.") or host.startswith("172.17.")
-                or host.startswith("172.18.") or host.startswith("172.19.")
-                or host.startswith("172.2") or host.startswith("172.30.")
-                or host.startswith("172.31.")
-                or host.startswith("192.168.")
-                or host.startswith("169.254.")
-                or host.startswith("fc") or host.startswith("fd")
-                or host.startswith("fe80")
-            ):
-                raise FHIRClientError("FHIR URL must not point to private network addresses")
+            import ipaddress
+
+            # Try bare_host first; also try extracting IPv6 from URL path
+            # (un-bracketed IPv6 like https://fc00::1/fhir mis-parses in urlparse)
+            candidates = [bare_host]
+            # Extract potential IPv6 from the netloc/URL text
+            netloc = parsed.netloc or ""
+            if "::" in netloc:
+                # Strip port suffix if present and extract the IPv6 part
+                ipv6_candidate = netloc.split("/")[0]
+                candidates.append(ipv6_candidate)
+            if "::" in (parsed.path or ""):
+                ipv6_candidate = parsed.path.split("/")[0]
+                if ipv6_candidate:
+                    candidates.append(ipv6_candidate)
+
+            for candidate in candidates:
+                try:
+                    addr = ipaddress.ip_address(candidate)
+                    if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved:
+                        raise FHIRClientError("FHIR URL must not point to private network addresses")
+                except ValueError:
+                    continue
 
 
 class FHIRClient:
@@ -174,7 +184,15 @@ class BundleFHIRClient:
         return self._resources.get("AllergyIntolerance", [])
 
     def get_observations(self, category: str = "vital-signs", count: int = 20) -> list[dict]:
-        return self._resources.get("Observation", [])[:count]
+        all_obs = self._resources.get("Observation", [])
+        filtered = [
+            obs for obs in all_obs
+            if any(
+                cat_entry.get("coding", [{}])[0].get("code") == category
+                for cat_entry in obs.get("category", [])
+            )
+        ]
+        return filtered[:count]
 
     def get_encounters(self, count: int = 20) -> list[dict]:
         return self._resources.get("Encounter", [])[:count]

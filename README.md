@@ -87,7 +87,7 @@ Plus 2 bonus findings discovered autonomously:
                        v                  v        v
                   MCP Server         A2A Agent   Audit Trail
                  (FastMCP 2.x)     (Google ADK)  (Hash Chain)
-                  11 tools          5 skills     Tamper-proof
+                  12 tools          5 skills     Tamper-proof
                   SHARP-on-MCP      A2A Protocol
 ```
 
@@ -106,7 +106,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 
 > Green layers (1) never hallucinate. Purple layers (4-5) are LLM-powered. Red layer (6) is a safety gate.
 
-## MCP Server (11 Tools)
+## MCP Server (12 Tools)
 
 | Tool | Purpose |
 |------|---------|
@@ -121,6 +121,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | `ingest_patient_data` | Pull all FHIR data into memory |
 | `explain_clinical_conflict` | **GenAI**: LLM-grounded conflict explanation with citations |
 | `clinical_care_handoff` | **GenAI**: Evidence-grounded care handoff note |
+| `health_check` | Container orchestrator health probe |
 
 ## A2A Agent (5 Skills)
 
@@ -141,7 +142,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | **LLM safety** | Cascade with fallback (GPT-5.4 &rarr; MedGemma &rarr; Gemini) | Single model, no fallback |
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
-| **Protocol support** | Both MCP (11 tools) AND A2A (5 skills) | One or neither |
+| **Protocol support** | Both MCP (12 tools) AND A2A (5 skills) | One or neither |
 | **Test coverage** | 209 tests (engine, MCP tools, A2A tools, SSRF) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 

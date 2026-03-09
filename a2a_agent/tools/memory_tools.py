@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import time
+import uuid
 
 from google.adk.tools import ToolContext
 
@@ -129,7 +130,7 @@ def store_clinical_note(
 
     engine = _get_engine()
     block = ClinicalBlock(
-        block_id=f"note-{int(time.time())}-{hash(content) % 10000}",
+        block_id=f"note-{uuid.uuid4().hex[:12]}",
         patient_id=patient_id,
         resource_type=observation_type or "clinical_note",
         title=title,

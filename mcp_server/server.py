@@ -12,6 +12,7 @@ import logging
 import os
 import sys
 import time
+import uuid
 from collections import defaultdict
 
 from fastmcp import FastMCP
@@ -109,11 +110,11 @@ def store_clinical_observation(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("store_clinical_observation")
     from engine.clinical_memory import ClinicalBlock
-    import time
 
     block = ClinicalBlock(
-        block_id=f"obs-{int(time.time())}-{hash(content) % 10000}",
+        block_id=f"obs-{uuid.uuid4().hex[:12]}",
         patient_id=patient_id,
         resource_type=observation_type,
         title=title,
@@ -158,6 +159,7 @@ def recall_patient_context(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("recall_patient_context")
     # Auto-ingest from FHIR if we have context and no stored blocks
     if fhir_server_url and fhir_access_token:
         if patient_id not in _engine._patient_blocks or not _engine._patient_blocks[patient_id]:
@@ -204,6 +206,7 @@ def check_medication_conflicts(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("check_medication_conflicts")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     report = _engine.medication_safety_check(patient_id)
 
@@ -273,6 +276,7 @@ def check_allergy_conflicts(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("check_allergy_conflicts")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     report = _engine.medication_safety_check(patient_id)
     return {
@@ -311,6 +315,7 @@ def get_treatment_dependencies(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("get_treatment_dependencies")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     blocks = _engine._patient_blocks.get(patient_id, [])
 
@@ -359,6 +364,7 @@ def get_clinical_audit_trail(limit: int = 50) -> dict:
     Args:
         limit: Maximum number of audit entries to return (most recent first)
     """
+    _check_rate_limit("get_clinical_audit_trail")
     trail = _engine.get_audit_trail(limit)
     chain_valid = _engine.verify_audit_chain()
     return {
@@ -388,6 +394,7 @@ def summarize_patient_history(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("summarize_patient_history")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     summary = _engine.patient_summary(patient_id)
     return {"status": "success", **summary}
@@ -418,6 +425,7 @@ def detect_belief_drift(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("detect_belief_drift")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     contradictions = _engine.detect_contradictions(patient_id)
 
@@ -469,6 +477,7 @@ def ingest_patient_data(
         fhir_server_url: The FHIR R4 server URL
         fhir_access_token: Bearer token for FHIR server auth
     """
+    _check_rate_limit("ingest_patient_data")
     try:
         ctx = FHIRContext(url=fhir_server_url, token=fhir_access_token, patient_id=patient_id)
         fhir = FHIRClient(ctx)
@@ -513,6 +522,7 @@ def explain_clinical_conflict(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("explain_clinical_conflict")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     narrative = _engine.explain_clinical_conflict(patient_id, conflict_index)
     return {
@@ -551,6 +561,7 @@ def clinical_care_handoff(
         fhir_server_url: FHIR server URL (from SHARP-on-MCP headers)
         fhir_access_token: FHIR access token (from SHARP-on-MCP headers)
     """
+    _check_rate_limit("clinical_care_handoff")
     _auto_ingest(patient_id, fhir_server_url, fhir_access_token)
     narrative = _engine.clinical_handoff(patient_id)
     return {
@@ -602,6 +613,23 @@ def _is_related(condition: str, medication: str) -> bool:
             if any(m in medication for m in med_list):
                 return True
     return False
+
+
+# ── Health Check ──────────────────────────────────────────────────────────────
+
+@mcp.tool()
+def health_check() -> dict:
+    """
+    Health check endpoint for container orchestrators (Azure, K8s).
+
+    Returns server status, uptime, and engine readiness.
+    """
+    return {
+        "status": "healthy",
+        "engine_ready": True,
+        "mind_mem_available": _engine._mind_mem_available,
+        "audit_chain_active": _engine._audit_chain_mm is not None,
+    }
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
