@@ -1,6 +1,6 @@
 [project]
 name = "clinicalmem"
-version = "3.2.0"
+version = "3.3.0"
 description = "Persistent, Auditable, Contradiction-Safe Clinical Memory for Healthcare AI Agents"
 requires-python = ">=3.11"
 license = "MIT"
