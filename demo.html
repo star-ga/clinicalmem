@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClinicalMem — 6-Layer Clinical Safety Pipeline</title>
+<title>ClinicalMem — Clinical Safety Memory for Healthcare AI</title>
+<meta name="description" content="Persistent clinical memory for healthcare AI agents. Catches drug interactions, allergy conflicts, and provider contradictions with UMLS terminology, confidence-gated retrieval, and tamper-proof audit trails.">
+<meta name="keywords" content="clinical AI, healthcare, drug interactions, FHIR, MCP, A2A, patient safety, UMLS, RxNorm, SNOMED CT, audit trail">
+<meta name="author" content="STARGA Inc.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://clinicalmem-demo.pages.dev/">
+
+<!-- Open Graph / Social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ClinicalMem — Clinical Safety Memory for Healthcare AI">
+<meta property="og:description" content="Persistent clinical memory for healthcare AI. Catches drug interactions, allergy conflicts, and provider contradictions with UMLS terminology and tamper-proof audit trails.">
+<meta property="og:url" content="https://clinicalmem-demo.pages.dev/">
+<meta property="og:site_name" content="ClinicalMem">
+<meta property="og:image" content="https://clinicalmem-demo.pages.dev/og-image.svg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ClinicalMem — Clinical Safety Memory for Healthcare AI">
+<meta name="twitter:description" content="Persistent clinical memory for healthcare AI. Catches drug interactions, allergy conflicts, and provider contradictions with UMLS terminology and tamper-proof audit trails.">
+
+<!-- Favicon: red cross + heart -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 28C16 28 28 20 28 13C28 8.6 24.4 5 20 5C18 5 16.5 6 16 6.5C15.5 6 14 5 12 5C7.6 5 4 8.6 4 13C4 20 16 28 16 28Z' fill='%23dc2626'/%3E%3Crect x='13.5' y='10' width='5' height='14' rx='1' fill='white'/%3E%3Crect x='9' y='13.5' width='14' height='5' rx='1' fill='white'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#dc2626">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -105,8 +128,14 @@ tailwind.config = {
   <div class="max-w-5xl mx-auto px-4">
     <div class="flex items-center justify-between h-14">
       <a href="#" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-clinical-purple to-clinical-blue flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <div class="w-8 h-8 flex items-center justify-center">
+          <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none">
+            <!-- Heart shape forms the cross: the heart IS the cross -->
+            <path d="M16 28C16 28 28 20 28 13C28 8.6 24.4 5 20 5C18 5 16.5 6 16 6.5C15.5 6 14 5 12 5C7.6 5 4 8.6 4 13C4 20 16 28 16 28Z" fill="#dc2626"/>
+            <!-- White cross cutout inside the heart -->
+            <rect x="13.5" y="10" width="5" height="14" rx="1" fill="white"/>
+            <rect x="9" y="13.5" width="14" height="5" rx="1" fill="white"/>
+          </svg>
         </div>
         <span class="font-bold text-lg text-slate-900">ClinicalMem</span>
       </a>
@@ -778,8 +807,12 @@ tailwind.config = {
   <div class="max-w-5xl mx-auto px-4">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded-md bg-gradient-to-br from-clinical-purple to-clinical-blue flex items-center justify-center">
-          <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <div class="w-6 h-6 flex items-center justify-center">
+          <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
+            <path d="M16 28C16 28 28 20 28 13C28 8.6 24.4 5 20 5C18 5 16.5 6 16 6.5C15.5 6 14 5 12 5C7.6 5 4 8.6 4 13C4 20 16 28 16 28Z" fill="#dc2626"/>
+            <rect x="13.5" y="10" width="5" height="14" rx="1" fill="white"/>
+            <rect x="9" y="13.5" width="14" height="5" rx="1" fill="white"/>
+          </svg>
         </div>
         <span class="font-bold text-sm text-slate-900">ClinicalMem</span>
         <span class="text-xs text-slate-400">v3.2.0</span>
