@@ -112,6 +112,84 @@ tailwind.config = {
   ::-webkit-scrollbar-track { background: #f1f5f9; }
   ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
+  /* Sparkline draw animation */
+  @keyframes drawLine {
+    from { stroke-dashoffset: 200; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes drawDanger {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .sparkline-path {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+  }
+  .sparkline-visible .sparkline-path {
+    animation: drawLine 1.5s ease-out forwards;
+  }
+  .sparkline-visible .sparkline-danger {
+    animation: drawDanger 0.5s ease-out 1.2s forwards;
+    opacity: 0;
+  }
+
+  /* Consensus ring animation */
+  @keyframes ringFill {
+    from { stroke-dashoffset: 251; }
+    to { stroke-dashoffset: 0; }
+  }
+  .consensus-ring {
+    stroke-dasharray: 251;
+    stroke-dashoffset: 251;
+    transform: rotate(-90deg);
+    transform-origin: center;
+  }
+  .ring-visible .consensus-ring {
+    animation: ringFill 2s ease-out forwards;
+  }
+  @keyframes modelPop {
+    from { opacity: 0.3; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .ring-visible .model-chip {
+    animation: modelPop 0.3s ease-out forwards;
+    opacity: 0.3;
+  }
+
+  /* Pipeline flow dots */
+  @keyframes flowDown {
+    0% { transform: translateY(-8px); opacity: 0; }
+    30% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { transform: translateY(8px); opacity: 0; }
+  }
+  .flow-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #7c3aed;
+    animation: flowDown 1.5s ease-in-out infinite;
+  }
+
+  /* Donut chart animation */
+  @keyframes donutFill {
+    from { stroke-dashoffset: 100; }
+  }
+
+  /* Pill shapes */
+  .pill-capsule { border-radius: 50%; }
+  .pill-tablet { border-radius: 3px; }
+
+  /* What-If animations */
+  @keyframes resolveCard {
+    0% { border-color: #fecaca; background: #fef2f2; }
+    100% { border-color: #bbf7d0; background: #f0fdf4; }
+  }
+  .finding-resolved {
+    transition: all 0.6s ease-out;
+  }
+  .finding-resolved .severity-bar {
+    transition: background-color 0.6s ease-out;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -213,8 +291,23 @@ tailwind.config = {
         <div class="text-xs text-slate-400 mt-0.5">Engine Modules</div>
       </div>
       <div class="card p-4 text-center">
-        <div class="text-2xl font-black text-clinical-red">4</div>
-        <div class="text-xs text-slate-400 mt-0.5">Conflicts Found</div>
+        <div class="flex items-center justify-center">
+          <svg class="w-10 h-10" viewBox="0 0 40 40" id="severity-donut">
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#e2e8f0" stroke-width="4"/>
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#dc2626" stroke-width="4"
+              stroke-dasharray="50 100" stroke-dashoffset="0"
+              transform="rotate(-90 20 20)" class="donut-seg" style="transition: stroke-dashoffset 1s ease-out 0.3s"/>
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#d97706" stroke-width="4"
+              stroke-dasharray="50 100" stroke-dashoffset="-50"
+              transform="rotate(-90 20 20)" class="donut-seg" style="transition: stroke-dashoffset 1s ease-out 0.6s"/>
+            <text x="20" y="22" text-anchor="middle" class="text-[11px] font-black" fill="#0f172a">4</text>
+          </svg>
+        </div>
+        <div class="text-xs text-slate-400 mt-0.5">Conflicts</div>
+        <div class="flex justify-center gap-2 mt-1">
+          <span class="flex items-center gap-0.5 text-[9px]"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red"></span>2 Crit</span>
+          <span class="flex items-center gap-0.5 text-[9px]"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber"></span>2 High</span>
+        </div>
       </div>
     </div>
   </div>
@@ -273,14 +366,14 @@ tailwind.config = {
           <!-- Medications -->
           <div>
             <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Active Medications</h4>
-            <div class="space-y-1.5 text-sm">
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span>Warfarin 5mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span>Ibuprofen 400mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber flex-shrink-0"></span><span>Metformin 1000mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0"></span><span>Lisinopril 20mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0"></span><span>Amlodipine 10mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span>Amoxicillin 500mg</span></div>
-              <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 flex-shrink-0"></span><span>Atorvastatin 40mg</span></div>
+            <div class="space-y-1.5 text-sm" id="med-list">
+              <div class="flex items-center gap-2" data-med="warfarin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#ef4444"/></svg><span>Warfarin 5mg</span></div>
+              <div class="flex items-center gap-2" data-med="ibuprofen"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#dc2626"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg><span>Ibuprofen 400mg</span></div>
+              <div class="flex items-center gap-2" data-med="metformin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#d97706"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span>Metformin 1000mg</span></div>
+              <div class="flex items-center gap-2" data-med="lisinopril"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span>Lisinopril 20mg</span></div>
+              <div class="flex items-center gap-2" data-med="amlodipine"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span>Amlodipine 10mg</span></div>
+              <div class="flex items-center gap-2" data-med="amoxicillin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#fca5a5"/></svg><span>Amoxicillin 500mg</span></div>
+              <div class="flex items-center gap-2" data-med="atorvastatin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#94a3b8"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span>Atorvastatin 40mg</span></div>
             </div>
           </div>
         </div>
@@ -354,7 +447,37 @@ tailwind.config = {
               <h3 class="text-base font-bold text-slate-900">Declining GFR + Metformin</h3>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-clinical-amber flex-shrink-0">HIGH</span>
             </div>
-            <p class="text-sm text-slate-500 mb-3">eGFR 45&rarr;38&rarr;32 mL/min over 6 months. Approaching metformin contraindication at &lt;30.</p>
+            <p class="text-sm text-slate-500 mb-2">eGFR declining over 6 months. Approaching metformin contraindication at &lt;30.</p>
+            <!-- eGFR Sparkline Chart -->
+            <div class="bg-slate-50 rounded-lg p-3 mb-3" id="egfr-sparkline">
+              <svg viewBox="0 0 200 80" class="w-full h-16">
+                <!-- Danger zone -->
+                <rect x="0" y="55" width="200" height="25" fill="#fef2f2" rx="2" class="sparkline-danger"/>
+                <text x="4" y="75" class="text-[8px]" fill="#dc2626" opacity="0.6">Danger &lt;30</text>
+                <!-- Grid lines -->
+                <line x1="0" y1="15" x2="200" y2="15" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4"/>
+                <line x1="0" y1="35" x2="200" y2="35" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4"/>
+                <line x1="0" y1="55" x2="200" y2="55" stroke="#fecaca" stroke-width="0.5" stroke-dasharray="4"/>
+                <!-- Y-axis labels -->
+                <text x="2" y="13" class="text-[7px]" fill="#94a3b8">50</text>
+                <text x="2" y="33" class="text-[7px]" fill="#94a3b8">40</text>
+                <text x="2" y="53" class="text-[7px]" fill="#94a3b8">30</text>
+                <!-- Data line: 45→38→32 mapped to y-coords (50=5, 45=15, 40=25, 38=29, 32=41, 30=45) -->
+                <polyline points="30,17 100,31 170,43" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sparkline-path"/>
+                <!-- Data points -->
+                <circle cx="30" cy="17" r="4" fill="white" stroke="#d97706" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <circle cx="100" cy="31" r="4" fill="white" stroke="#d97706" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <circle cx="170" cy="43" r="4" fill="white" stroke="#dc2626" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <!-- Data labels -->
+                <text x="30" y="10" text-anchor="middle" class="text-[8px] font-bold" fill="#d97706">45</text>
+                <text x="100" y="24" text-anchor="middle" class="text-[8px] font-bold" fill="#d97706">38</text>
+                <text x="170" y="37" text-anchor="middle" class="text-[8px] font-bold" fill="#dc2626">32</text>
+                <!-- X-axis labels -->
+                <text x="30" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">6mo ago</text>
+                <text x="100" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">3mo ago</text>
+                <text x="170" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">Now</text>
+              </svg>
+            </div>
             <div class="flex flex-wrap gap-1.5 text-[10px]">
               <span class="px-2 py-0.5 rounded bg-green-50 text-clinical-green font-semibold border border-green-200">Lab Trend Analysis</span>
               <span class="px-2 py-0.5 rounded bg-blue-50 text-clinical-blue font-semibold border border-blue-200">Lab-Med Contraindication</span>
@@ -390,6 +513,65 @@ tailwind.config = {
         <li>&bull; <strong>eGFR declining trajectory</strong> &mdash; 13-point drop over 6 months</li>
       </ul>
     </div>
+
+    <!-- What-If Drug Substitution Simulator -->
+    <div class="mt-8 card overflow-hidden" id="what-if-card">
+      <div class="bg-gradient-to-r from-purple-50 to-blue-50 px-5 py-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-clinical-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <h3 class="font-bold text-slate-900 text-sm">What-If Drug Substitution Simulator</h3>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-clinical-purple ml-auto">INTERACTIVE</span>
+        </div>
+      </div>
+      <div class="p-5">
+        <p class="text-sm text-slate-500 mb-4">What happens if we swap the dangerous NSAID for a safer alternative?</p>
+
+        <div class="flex flex-col sm:flex-row items-center gap-3 mb-5">
+          <!-- Before -->
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200 flex-1 w-full" id="whatif-before">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#dc2626"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg>
+            <span class="text-sm font-bold text-red-800">Ibuprofen 400mg</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 ml-auto">NSAID</span>
+          </div>
+
+          <!-- Arrow -->
+          <div class="flex-shrink-0">
+            <svg class="w-6 h-6 text-clinical-purple rotate-90 sm:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </div>
+
+          <!-- After -->
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 border border-green-200 flex-1 w-full" id="whatif-after">
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#16a34a"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg>
+            <span class="text-sm font-bold text-green-800">Acetaminophen 500mg</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-700 ml-auto">Non-NSAID</span>
+          </div>
+        </div>
+
+        <!-- Impact preview -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5" id="whatif-impact" style="opacity:0;transform:translateY(8px);transition:all 0.5s ease-out">
+          <div class="rounded-lg bg-green-50 border border-green-200 p-3 text-center">
+            <div class="text-lg font-black text-clinical-green">-1</div>
+            <div class="text-[10px] text-green-700">Critical Resolved</div>
+            <div class="text-[9px] text-green-600 mt-0.5">Warfarin+NSAID eliminated</div>
+          </div>
+          <div class="rounded-lg bg-green-50 border border-green-200 p-3 text-center">
+            <div class="text-lg font-black text-clinical-green">Safe</div>
+            <div class="text-[10px] text-green-700">INR Impact</div>
+            <div class="text-[9px] text-green-600 mt-0.5">No bleeding risk increase</div>
+          </div>
+          <div class="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
+            <div class="text-lg font-black text-clinical-amber">3</div>
+            <div class="text-[10px] text-amber-700">Remaining Findings</div>
+            <div class="text-[9px] text-amber-600 mt-0.5">1 critical, 2 high</div>
+          </div>
+        </div>
+
+        <button id="whatif-btn" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-clinical-purple to-clinical-blue shadow-lg hover:shadow-xl transition-all active:scale-[0.98]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          Simulate: Swap Ibuprofen &rarr; Acetaminophen
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -399,7 +581,7 @@ tailwind.config = {
     <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 text-center mb-2">6-Layer Safety Pipeline</p>
     <p class="text-center text-sm text-slate-400 mb-8">Each layer adds confidence. Together they prevent hallucinations about patient safety.</p>
 
-    <div class="space-y-3">
+    <div class="space-y-0" id="pipeline-layers">
       <!-- Layer 1 -->
       <div class="card overflow-hidden">
         <div class="flex items-stretch">
@@ -414,6 +596,7 @@ tailwind.config = {
           </div>
         </div>
       </div>
+      <div class="flex justify-center py-1"><div class="flow-dot" style="animation-delay:0s"></div></div>
 
       <!-- Layer 2 -->
       <div class="card overflow-hidden">
@@ -429,6 +612,7 @@ tailwind.config = {
           </div>
         </div>
       </div>
+      <div class="flex justify-center py-1"><div class="flow-dot" style="animation-delay:0.25s;background:#2563eb"></div></div>
 
       <!-- Layer 3 -->
       <div class="card overflow-hidden">
@@ -444,21 +628,45 @@ tailwind.config = {
           </div>
         </div>
       </div>
+      <div class="flex justify-center py-1"><div class="flow-dot" style="animation-delay:0.5s;background:#2563eb"></div></div>
 
       <!-- Layer 4 -->
-      <div class="card overflow-hidden">
+      <div class="card overflow-hidden" id="consensus-layer">
         <div class="flex items-stretch">
           <div class="w-1 bg-clinical-purple flex-shrink-0"></div>
-          <div class="flex items-center gap-3 px-4 py-3 flex-1">
-            <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 text-sm font-black text-clinical-purple border border-purple-200">4</div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-slate-900 text-sm">Multi-LLM Consensus</h3>
-              <p class="text-xs text-slate-400"><span class="font-mono">GPT-5.4</span>, <span class="font-mono">Gemini 3.1 Pro</span>, <span class="font-mono">Grok 4.1</span>, <span class="font-mono">Claude Opus 4.6</span>, <span class="font-mono">Perplexity Sonar</span>, <span class="font-mono">Gemini Flash</span></p>
+          <div class="px-4 py-3 flex-1">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 text-sm font-black text-clinical-purple border border-purple-200">4</div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-slate-900 text-sm">Multi-LLM Consensus</h3>
+                <p class="text-xs text-slate-400">6 US-based models must agree</p>
+              </div>
+              <div class="text-right flex-shrink-0"><span class="font-mono text-xs font-bold text-clinical-purple">~3s</span></div>
             </div>
-            <div class="text-right flex-shrink-0"><span class="font-mono text-xs font-bold text-clinical-purple">~3s</span></div>
+            <!-- Consensus Ring + Model Chips -->
+            <div class="flex items-center gap-4">
+              <div class="flex-shrink-0">
+                <svg class="w-16 h-16" viewBox="0 0 90 90" id="consensus-ring">
+                  <circle cx="45" cy="45" r="40" fill="none" stroke="#f1f5f9" stroke-width="5"/>
+                  <circle cx="45" cy="45" r="40" fill="none" stroke="#7c3aed" stroke-width="5"
+                    class="consensus-ring"/>
+                  <text x="45" y="43" text-anchor="middle" class="text-[13px] font-black" fill="#7c3aed">6/6</text>
+                  <text x="45" y="55" text-anchor="middle" class="text-[7px]" fill="#94a3b8">AGREE</text>
+                </svg>
+              </div>
+              <div class="flex flex-wrap gap-1.5 flex-1" id="model-chips">
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-green-50 text-clinical-green border border-green-200" style="animation-delay:0.3s">GPT-5.4</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-clinical-blue border border-blue-200" style="animation-delay:0.6s">Gemini 3.1 Pro</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300" style="animation-delay:0.9s">Grok 4.1</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-50 text-orange-600 border border-orange-200" style="animation-delay:1.2s">Claude Opus 4.6</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-clinical-purple border border-purple-200" style="animation-delay:1.5s">Perplexity Sonar</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-clinical-blue border border-blue-200" style="animation-delay:1.8s">Gemini Flash</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <div class="flex justify-center py-1"><div class="flow-dot" style="animation-delay:0.75s"></div></div>
 
       <!-- Layer 5 -->
       <div class="card overflow-hidden">
@@ -474,6 +682,7 @@ tailwind.config = {
           </div>
         </div>
       </div>
+      <div class="flex justify-center py-1"><div class="flow-dot" style="animation-delay:1s"></div></div>
 
       <!-- Layer 6 -->
       <div class="card overflow-hidden">
@@ -836,23 +1045,33 @@ tailwind.config = {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Scroll fade-in
-  const observer = new IntersectionObserver((entries) => {
+  // Scroll-triggered animation observer
+  const animObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
+        entry.target.classList.add('sparkline-visible', 'ring-visible');
         entry.target.style.opacity = '1';
         entry.target.style.transform = 'translateY(0)';
       }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
+  // Fade-in sections on scroll
   document.querySelectorAll('section').forEach((s, i) => {
     if (i === 0) return;
     s.style.opacity = '0';
     s.style.transform = 'translateY(16px)';
     s.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-    observer.observe(s);
+    animObserver.observe(s);
   });
+
+  // Animate sparkline on scroll
+  const sparkline = document.getElementById('egfr-sparkline');
+  if (sparkline) animObserver.observe(sparkline);
+
+  // Animate consensus ring on scroll
+  const consensusLayer = document.getElementById('consensus-layer');
+  if (consensusLayer) animObserver.observe(consensusLayer);
 
   // Smooth scroll + close mobile menu
   const mobileNav = document.getElementById('mobile-nav');
@@ -924,6 +1143,66 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.style.cursor = 'default';
         }, cards.length * 120 + 400);
       }, 1200);
+    });
+  }
+
+  // What-If Drug Substitution Simulator
+  const whatifBtn = document.getElementById('whatif-btn');
+  if (whatifBtn) {
+    let whatifDone = false;
+    whatifBtn.addEventListener('click', () => {
+      if (whatifDone) return;
+      whatifDone = true;
+      whatifBtn.disabled = true;
+      whatifBtn.innerHTML = '<span class="safety-spinner"></span>Running simulation...';
+
+      setTimeout(() => {
+        // Show impact stats
+        const impact = document.getElementById('whatif-impact');
+        if (impact) { impact.style.opacity = '1'; impact.style.transform = 'translateY(0)'; }
+
+        // Animate Finding 1 (Warfarin + Ibuprofen) to resolved
+        const findingCards = document.querySelectorAll('#findings-grid .card');
+        if (findingCards[0]) {
+          const card = findingCards[0];
+          const bar = card.querySelector('.w-1');
+          const badge = card.querySelector('.px-2.py-0\\.5');
+          const desc = card.querySelector('.text-sm.text-slate-500');
+
+          if (bar) { bar.style.transition = 'background-color 0.6s'; bar.style.backgroundColor = '#16a34a'; }
+          if (badge) {
+            badge.style.transition = 'all 0.6s';
+            badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 flex-shrink-0';
+            badge.textContent = 'RESOLVED';
+          }
+          if (desc) {
+            desc.style.transition = 'all 0.4s';
+            desc.innerHTML = '<span class="line-through text-slate-300">ER prescribed NSAID without checking anticoagulant.</span> <span class="text-clinical-green font-medium">Acetaminophen substituted — no bleeding risk.</span>';
+          }
+          card.style.transition = 'all 0.6s';
+          card.style.borderColor = '#bbf7d0';
+        }
+
+        // Update ibuprofen pill in med list
+        const ibuRow = document.querySelector('[data-med="ibuprofen"]');
+        if (ibuRow) {
+          ibuRow.style.transition = 'all 0.5s';
+          ibuRow.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#16a34a"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg><span class="line-through text-slate-300">Ibuprofen 400mg</span> <span class="text-clinical-green font-medium text-xs">→ Acetaminophen 500mg</span>';
+        }
+
+        // Update button
+        whatifBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Substitution Simulated — 1 Critical Resolved';
+        whatifBtn.classList.remove('from-clinical-purple', 'to-clinical-blue');
+        whatifBtn.classList.add('from-clinical-green', 'to-emerald-600');
+        whatifBtn.style.cursor = 'default';
+
+        // Update hero donut count
+        const donutText = document.querySelector('#severity-donut text');
+        if (donutText) {
+          donutText.style.transition = 'all 0.5s';
+          donutText.textContent = '3';
+        }
+      }, 1500);
     });
   }
 });
