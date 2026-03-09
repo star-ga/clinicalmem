@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://star-ga.github.io/clinicalmem/demo.html"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
+  <a href="https://clinicalmem-demo.pages.dev/demo"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
   <a href="https://youtu.be/wvL9o3Bu-7o"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
   <a href="https://devpost.com/software/clinimalmem"><strong>DevPost</strong></a>
 </p>
