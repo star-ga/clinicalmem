@@ -987,7 +987,12 @@ def health_check() -> dict:
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
-if __name__ == "__main__":
+def main():
+    """Start the MCP server (extracted for testability)."""
     port = int(os.environ.get("PORT", "8080"))
     logger.info("Starting ClinicalMem MCP Server on port %d", port)
     mcp.run(transport="streamable-http", host="0.0.0.0", port=port)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()

@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-356%20passed%20·%2080%25%20coverage-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-771%20passed%20·%20100%25%20coverage-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -186,7 +186,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
-| **Test coverage** | 429 tests, 80% line coverage | Untested |
+| **Test coverage** | 771 tests, 100% line coverage | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ### vs. Commercial Clinical Decision Support
@@ -359,7 +359,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run tests on push (429 tests, 80% coverage)
+│   ├── test.yaml               # CI: Run tests on push (771 tests, 100% coverage)
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -446,8 +446,8 @@ Coverage includes:
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
 | **Six-model LLM consensus** | ~3-5s (all 6 models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
-| **Test suite execution** | ~4s for 429 tests |
-| **Code coverage** | 80% line coverage across engine, MCP server, and A2A agent |
+| **Test suite execution** | ~5min for 771 tests |
+| **Code coverage** | 100% line coverage across engine, MCP server, and A2A agent |
 
 ### Cost Analysis (per patient safety check)
 
@@ -511,7 +511,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 
 ### Current State (Hackathon)
 
-- &check; 356 automated tests including adversarial cases (negation detection, boundary conditions)
+- &check; 771 automated tests including adversarial cases (negation detection, boundary conditions)
 - &check; SSRF protection validated against RFC 1918, link-local, and IPv6 private ranges
 - &check; PHI detection tested against 25 patterns (SSN, MRN, phone, email, DOB, address)
 - &check; Hallucination detection validated against fabricated citations and unsupported claims

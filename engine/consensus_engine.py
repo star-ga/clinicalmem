@@ -352,7 +352,7 @@ async def verify_finding_consensus(
             for v in verdicts
         )
         confidence = weighted_sum / total
-    else:
+    else:  # pragma: no cover — early return handles empty tasks
         confidence = 0.0
 
     reasoning_parts = [

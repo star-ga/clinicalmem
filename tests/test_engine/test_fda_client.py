@@ -2,8 +2,10 @@
 import pytest
 import respx
 import httpx
+from unittest.mock import patch
 
 from engine.fda_client import (
+    _get_httpx,
     get_adverse_events,
     get_label_warnings,
     get_drug_recalls,
@@ -217,3 +219,99 @@ class TestGetSafetyProfile:
                 a = severity_rank.get(profile.alerts[i].severity, 0)
                 b = severity_rank.get(profile.alerts[i + 1].severity, 0)
                 assert a >= b
+
+
+# ---------------------------------------------------------------------------
+# Coverage gap tests — lines 48-49, 62, 97-99, 110, 128, 174-176, 187, 201,
+#                       225-227
+# ---------------------------------------------------------------------------
+
+
+class TestGetHttpxImportError:
+    """Cover lines 48-49: _get_httpx() ImportError path."""
+
+    def test_returns_none_when_httpx_unavailable(self):
+        """Simulate httpx not installed by making the import raise."""
+        import builtins
+
+        real_import = builtins.__import__
+
+        def _mock_import(name, *args, **kwargs):
+            if name == "httpx":
+                raise ImportError("No module named 'httpx'")
+            return real_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=_mock_import):
+            result = _get_httpx()
+        assert result is None
+
+
+class TestHttpxUnavailableReturnsEmpty:
+    """Cover lines 62, 110, 187: each public function returns [] when
+    _get_httpx() yields None (httpx not installed)."""
+
+    @patch("engine.fda_client._get_httpx", return_value=None)
+    def test_adverse_events_returns_empty(self, _mock):
+        """Line 62."""
+        assert get_adverse_events("metformin") == []
+
+    @patch("engine.fda_client._get_httpx", return_value=None)
+    def test_label_warnings_returns_empty(self, _mock):
+        """Line 110."""
+        assert get_label_warnings("metformin") == []
+
+    @patch("engine.fda_client._get_httpx", return_value=None)
+    def test_drug_recalls_returns_empty(self, _mock):
+        """Line 187."""
+        assert get_drug_recalls("metformin") == []
+
+
+class TestExceptionHandlers:
+    """Cover lines 97-99, 174-176, 225-227: exception paths inside each
+    public function's try/except block."""
+
+    @patch("engine.fda_client._get_httpx")
+    def test_adverse_events_exception_returns_empty(self, mock_httpx):
+        """Lines 97-99: get_adverse_events catches arbitrary exceptions."""
+        mock_mod = mock_httpx.return_value
+        mock_mod.get.side_effect = RuntimeError("network down")
+        assert get_adverse_events("warfarin") == []
+
+    @patch("engine.fda_client._get_httpx")
+    def test_label_warnings_exception_returns_empty(self, mock_httpx):
+        """Lines 174-176: get_label_warnings catches arbitrary exceptions."""
+        mock_mod = mock_httpx.return_value
+        mock_mod.get.side_effect = ConnectionError("timeout")
+        assert get_label_warnings("warfarin") == []
+
+    @patch("engine.fda_client._get_httpx")
+    def test_drug_recalls_exception_returns_empty(self, mock_httpx):
+        """Lines 225-227: get_drug_recalls catches arbitrary exceptions."""
+        mock_mod = mock_httpx.return_value
+        mock_mod.get.side_effect = OSError("DNS failure")
+        assert get_drug_recalls("warfarin") == []
+
+
+class TestLabelWarningsNoResults:
+    """Cover line 128: get_label_warnings when API returns 200 but results
+    list is empty."""
+
+    @respx.mock
+    def test_empty_results_list_returns_empty(self):
+        respx.get("https://api.fda.gov/drug/label.json").mock(
+            return_value=httpx.Response(200, json={"results": []})
+        )
+        alerts = get_label_warnings("saline")
+        assert alerts == []
+
+
+class TestDrugRecallsNon200:
+    """Cover line 201: get_drug_recalls when API returns a non-200 status."""
+
+    @respx.mock
+    def test_non_200_returns_empty(self):
+        respx.get("https://api.fda.gov/drug/enforcement.json").mock(
+            return_value=httpx.Response(503)
+        )
+        alerts = get_drug_recalls("metformin")
+        assert alerts == []

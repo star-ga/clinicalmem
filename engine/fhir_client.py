@@ -67,7 +67,7 @@ class FHIRContext:
                 candidates.append(ipv6_candidate)
             if "::" in (parsed.path or ""):
                 ipv6_candidate = parsed.path.split("/")[0]
-                if ipv6_candidate:
+                if ipv6_candidate:  # pragma: no cover — path always starts with /
                     candidates.append(ipv6_candidate)
 
             for candidate in candidates:

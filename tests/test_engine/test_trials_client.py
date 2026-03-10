@@ -202,3 +202,62 @@ class TestMatchPatientToTrials:
         result = match_patient_to_trials(["Diabetes", "Obesity"])
         nct_ids = [t.nct_id for t in result.matched_trials]
         assert len(nct_ids) == len(set(nct_ids))  # No duplicates
+
+
+# ── search_trials exception handler (lines 154-156) ───────────────────────
+
+class TestSearchTrialsException:
+    """Cover lines 154-156: except Exception handler in search_trials."""
+
+    @respx.mock
+    def test_httpx_exception_returns_empty(self):
+        """Lines 154-156: When httpx.get raises an exception, return empty tuple."""
+        respx.get(f"{CTGOV_BASE}/studies").mock(
+            side_effect=httpx.ConnectError("Connection refused")
+        )
+        trials = search_trials("ExceptionCondition_unique_1")
+        assert trials == ()
+
+    @respx.mock
+    def test_timeout_exception_returns_empty(self):
+        """Lines 154-156: Timeout exception also returns empty."""
+        respx.get(f"{CTGOV_BASE}/studies").mock(
+            side_effect=httpx.ReadTimeout("Read timed out")
+        )
+        trials = search_trials("TimeoutCondition_unique_1")
+        assert trials == ()
+
+    @respx.mock
+    def test_json_decode_error_returns_empty(self):
+        """Lines 154-156: Malformed JSON also caught by except Exception."""
+        respx.get(f"{CTGOV_BASE}/studies").mock(
+            return_value=httpx.Response(200, text="not json at all")
+        )
+        trials = search_trials("JsonErrorCondition_unique_1")
+        assert trials == ()
+
+
+# ── match_patient_to_trials: empty condition string (line 189) ─────────────
+
+class TestMatchPatientEmptyCondition:
+    """Cover line 189: continue when condition is empty string."""
+
+    @respx.mock
+    def test_empty_condition_skipped(self):
+        """Line 189: Empty string conditions in the list are skipped."""
+        respx.get(f"{CTGOV_BASE}/studies").mock(
+            return_value=httpx.Response(200, json={
+                "studies": [_mock_study("NCT99990001", "Real Trial")]
+            })
+        )
+        result = match_patient_to_trials(["", "  ", "Diabetes"])
+        # Only "Diabetes" should be in search_terms (empty strings skipped)
+        assert "Diabetes" in result.search_terms
+        assert "" not in result.search_terms
+        assert result.total_found >= 1
+
+    def test_all_empty_conditions(self):
+        """When all conditions are empty strings, no searches are made."""
+        result = match_patient_to_trials(["", "  ", ""])
+        assert result.total_found == 0
+        assert result.matched_trials == ()

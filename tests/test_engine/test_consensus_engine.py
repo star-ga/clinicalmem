@@ -5,6 +5,7 @@ import os
 import pytest
 import respx
 import httpx
+from unittest.mock import patch, MagicMock
 
 from engine.consensus_engine import (
     _build_prompt,
@@ -375,3 +376,179 @@ class TestVerifyFindingConsensus:
         assert result.total_models == 2
         # One agrees, one failed (treated as disagree)
         assert result.agreement_count == 1
+
+
+# ── Additional coverage for missing lines ──────────────────────────────────
+
+
+class TestGoogleApiErrors:
+    """Cover lines 162 (non-200 from Google) and 165 (no candidates)."""
+
+    @respx.mock
+    async def test_google_non_200_raises(self, monkeypatch):
+        """Line 162: Google API returns non-200 status → RuntimeError."""
+        from engine.consensus_engine import _call_google
+
+        respx.post(
+            url__regex=r"https://generativelanguage\.googleapis\.com/.*"
+        ).mock(return_value=httpx.Response(503))
+
+        with pytest.raises(RuntimeError, match="Gemini-Test returned 503"):
+            await _call_google("prompt", "fake-key", "gemini-test", "Gemini-Test")
+
+    @respx.mock
+    async def test_google_no_candidates_raises(self, monkeypatch):
+        """Line 165: Google API returns 200 but empty candidates → RuntimeError."""
+        from engine.consensus_engine import _call_google
+
+        respx.post(
+            url__regex=r"https://generativelanguage\.googleapis\.com/.*"
+        ).mock(return_value=httpx.Response(200, json={"candidates": []}))
+
+        with pytest.raises(RuntimeError, match="returned no candidates"):
+            await _call_google("prompt", "fake-key", "gemini-test", "Gemini-Test")
+
+
+class TestPerplexityApiError:
+    """Cover line 215: Perplexity returns non-200 status."""
+
+    @respx.mock
+    async def test_perplexity_non_200_raises(self):
+        from engine.consensus_engine import _call_perplexity
+
+        respx.post("https://api.perplexity.ai/chat/completions").mock(
+            return_value=httpx.Response(429)
+        )
+
+        with pytest.raises(RuntimeError, match="Perplexity returned 429"):
+            await _call_perplexity("prompt", "fake-key")
+
+
+class TestAnthropicApiError:
+    """Cover line 239: Anthropic returns non-200 status."""
+
+    @respx.mock
+    async def test_anthropic_non_200_raises(self):
+        from engine.consensus_engine import _call_anthropic
+
+        respx.post("https://api.anthropic.com/v1/messages").mock(
+            return_value=httpx.Response(500)
+        )
+
+        with pytest.raises(RuntimeError, match="Anthropic returned 500"):
+            await _call_anthropic("prompt", "fake-key")
+
+
+class TestPhiDetectorImportFallback:
+    """Cover lines 268-269: ImportError fallback when phi_detector is unavailable."""
+
+    @respx.mock
+    def test_import_error_fallback(self, monkeypatch):
+        """When engine.phi_detector cannot be imported, prompt is built without redaction."""
+        import sys
+
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+
+        agree_json = json.dumps({"agrees": True, "confidence": 0.8, "reasoning": "OK"})
+        respx.post("https://api.openai.com/v1/chat/completions").mock(
+            return_value=httpx.Response(200, json={
+                "choices": [{"message": {"content": agree_json}}]
+            })
+        )
+
+        # Temporarily make phi_detector unimportable
+        original = sys.modules.get("engine.phi_detector")
+        sys.modules["engine.phi_detector"] = None  # Force ImportError
+
+        try:
+            result = verify_finding_consensus_sync("Test finding", [], {})
+            assert result.total_models == 1
+            assert result.verdicts[0].agrees is True
+        finally:
+            if original is not None:
+                sys.modules["engine.phi_detector"] = original
+            else:
+                sys.modules.pop("engine.phi_detector", None)
+
+
+class TestConsensusLevelLow:
+    """Cover line 356 (confidence=0.0 when total==0) and LOW consensus branch (line 343-344)."""
+
+    @respx.mock
+    def test_low_consensus_1_of_3(self, monkeypatch):
+        """1 out of 3 agrees → LOW consensus (lines 343-344)."""
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+        monkeypatch.setenv("GOOGLE_API_KEY", "gk-test")
+
+        agree_json = json.dumps({"agrees": True, "confidence": 0.8, "reasoning": "Valid"})
+        disagree_json = json.dumps({"agrees": False, "confidence": 0.8, "reasoning": "Nope"})
+
+        # OpenAI agrees, both Google models disagree
+        respx.post("https://api.openai.com/v1/chat/completions").mock(
+            return_value=httpx.Response(200, json={
+                "choices": [{"message": {"content": agree_json}}]
+            })
+        )
+        respx.post(
+            url__regex=r"https://generativelanguage\.googleapis\.com/.*"
+        ).mock(
+            return_value=httpx.Response(200, json={
+                "candidates": [{"content": {"parts": [{"text": disagree_json}]}}]
+            })
+        )
+
+        result = verify_finding_consensus_sync("Weak finding", [], {})
+        assert result.total_models == 3
+        assert result.agreement_count == 1
+        assert result.consensus_level == "LOW"
+        assert result.should_report is False
+
+
+class TestConfidenceZeroWhenNoModels:
+    """Cover line 356: confidence defaults to 0.0 when total == 0."""
+
+    def test_no_models_confidence_zero(self):
+        # No API keys → no tasks → total == 0 → confidence = 0.0
+        result = verify_finding_consensus_sync("Test", [], {})
+        assert result.confidence_score == 0.0
+        assert result.total_models == 0
+
+
+class TestSyncWrapperInAsyncContext:
+    """Cover lines 388-394: verify_finding_consensus_sync when already in async loop."""
+
+    async def test_sync_from_async_uses_thread_pool(self, monkeypatch):
+        """When called from inside a running event loop, uses ThreadPoolExecutor."""
+        # No API keys → fast path, but exercises the ThreadPoolExecutor branch
+        result = verify_finding_consensus_sync("Test finding", [], {})
+        assert isinstance(result, ConsensusResult)
+        assert result.consensus_level == "NONE"
+        assert result.total_models == 0
+
+
+class TestNoModelsZeroConfidenceAsync:
+    """Cover line 356: confidence = 0.0 when total == 0.
+
+    The early return at lines 302-312 means this branch is only reachable
+    if tasks is non-empty but all results are excluded (not currently possible
+    in the code). The existing test_no_models_confidence_zero tests the
+    early-return path with confidence_score=0.0. This additional test uses
+    the async function directly with all keys explicitly empty.
+    """
+
+    @pytest.mark.asyncio
+    @patch.dict("os.environ", {
+        "OPENAI_API_KEY": "",
+        "GOOGLE_API_KEY": "",
+        "GEMINI_API_KEY": "",
+        "XAI_API_KEY": "",
+        "ANTHROPIC_API_KEY": "",
+        "PERPLEXITY_API_KEY": "",
+    })
+    async def test_no_models_zero_confidence_async(self):
+        """All API keys empty -> no models -> confidence_score == 0.0."""
+        result = await verify_finding_consensus("test finding", [], {})
+        assert result.confidence_score == 0.0
+        assert result.total_models == 0
+        assert result.consensus_level == "NONE"
+        assert result.should_report is False

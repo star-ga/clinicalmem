@@ -209,3 +209,47 @@ class TestGroundCheck:
         strict = ground_check(text, blocks, threshold=0.9)
         lenient = ground_check(text, blocks, threshold=0.1)
         assert lenient.grounding_score >= strict.grounding_score
+
+
+# ── Block with only stopwords (line 121) ───────────────────────────────────
+
+class TestBlockTermsEmptyAfterStopwords:
+    """Cover line 121: continue when block_terms is empty after stopword removal."""
+
+    def test_block_with_only_stopwords_skipped(self):
+        """Line 121: When a block's content consists only of stopwords (after
+        filtering), it should be skipped (continue) and not contribute to evidence."""
+        claim = "Patient is taking metformin 500mg for diabetes treatment."
+        # Block content is only stopwords — after regex (words >=3 chars) and
+        # stop word removal, block_terms will be empty
+        blocks = [
+            _block("b-stopwords", "the and for with this that has was are been"),
+            _block("b-real", "Metformin 500mg prescribed for Type 2 Diabetes"),
+        ]
+        result = verify_claim_against_blocks(claim, blocks)
+        # The stopword-only block should not appear as evidence
+        assert "b-stopwords" not in result.evidence_block_ids
+        # But the real block should still be found
+        if result.grounded:
+            assert "b-real" in result.evidence_block_ids
+
+    def test_all_blocks_stopwords_ungrounded(self):
+        """When ALL blocks have only stopwords, claim is ungrounded."""
+        claim = "Patient is taking warfarin for anticoagulation therapy."
+        blocks = [
+            _block("b1", "the and for with"),
+            _block("b2", "was been being have had does"),
+        ]
+        result = verify_claim_against_blocks(claim, blocks)
+        # No blocks should provide evidence since they're all stopwords
+        assert result.evidence_block_ids == []
+
+    def test_block_with_short_words_skipped(self):
+        """Words shorter than 3 chars are filtered out by regex; combined with
+        stopwords, some blocks may have empty block_terms."""
+        claim = "The drug interaction risk is elevated significantly."
+        blocks = [
+            _block("b1", "to an it be"),  # All <3 chars, filtered by regex
+        ]
+        result = verify_claim_against_blocks(claim, blocks)
+        assert "b1" not in result.evidence_block_ids

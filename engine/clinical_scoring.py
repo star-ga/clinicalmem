@@ -291,7 +291,7 @@ def _openevidence_check_interactions(
         data = resp.json()
         # OpenEvidence returns a narrative analysis — parse for drug pairs
         analysis_text = data.get("text", "") or data.get("analysis", "") or str(data)
-        if not analysis_text:
+        if not analysis_text:  # pragma: no cover — str(data) never empty
             return []
 
         results = _parse_interaction_narrative(
