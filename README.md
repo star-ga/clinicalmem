@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-356%20passed%20·%2075%25%20coverage-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-356%20passed%20·%2080%25%20coverage-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -186,7 +186,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
-| **Test coverage** | 356 tests, 75% line coverage | Untested |
+| **Test coverage** | 429 tests, 80% line coverage | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ### vs. Commercial Clinical Decision Support
@@ -359,7 +359,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run 356 tests on push
+│   ├── test.yaml               # CI: Run tests on push (429 tests, 80% coverage)
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -374,22 +374,25 @@ clinicalmem/
 
 ## Tests
 
-**356 tests** covering the full clinical safety pipeline:
+**429 tests** covering the full clinical safety pipeline:
 
 ```
-tests/test_engine/test_clinical_scoring.py      — 43 tests (scoring kernels)
+tests/test_engine/test_clinical_scoring.py       — 43 tests (scoring kernels)
 tests/test_engine/test_consensus_engine.py       — 25 tests (6-model LLM consensus)
 tests/test_engine/test_fda_client.py             — 16 tests (openFDA safety alerts)
 tests/test_engine/test_hallucination_detector.py — 26 tests (evidence grounding)
 tests/test_engine/test_integration.py            — 61 tests (engine + FHIR + SSRF)
+tests/test_engine/test_llm_synthesizer.py        — 42 tests (LLM cascade + templates + abstention)
 tests/test_engine/test_phi_detector.py           — 25 tests (PHI detection)
 tests/test_engine/test_rxnorm_client.py          —  8 tests (RxNorm drug normalization)
 tests/test_engine/test_snomed_client.py          — 12 tests (SNOMED CT cross-reactivity)
+tests/test_engine/test_snomed_extended.py        — 19 tests (Snowstorm API + UMLS + FHIR mapping)
 tests/test_engine/test_trials_client.py          — 16 tests (ClinicalTrials.gov matching)
 tests/test_engine/test_umls_mapper.py            —  6 tests (UMLS cross-vocabulary mapping)
 tests/test_engine/test_what_if.py                — 13 tests (what-if medication simulation)
 tests/test_mcp/test_mcp_tools.py                 — 58 tests (all 18 MCP tools)
 tests/test_a2a/test_a2a_tools.py                 — 47 tests (A2A tools + FHIR helpers)
+tests/test_a2a/test_a2a_app.py                   — 12 tests (agent card + middleware + FHIR hook)
 ```
 
 Coverage includes:
@@ -443,8 +446,8 @@ Coverage includes:
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
 | **Six-model LLM consensus** | ~3-5s (all 6 models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
-| **Test suite execution** | ~4s for 356 tests |
-| **Code coverage** | 75% line coverage across engine, MCP server, and A2A agent |
+| **Test suite execution** | ~4s for 429 tests |
+| **Code coverage** | 80% line coverage across engine, MCP server, and A2A agent |
 
 ### Cost Analysis (per patient safety check)
 
