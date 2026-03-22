@@ -1,10 +1,11 @@
 """Generate 3 gallery images for DevPost using nano-banana-pro-preview."""
 import base64
+import os
 import pathlib
 from google import genai
 from google.genai import types
 
-client = genai.Client(api_key="REDACTED_GEMINI_KEY")
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
 
 IMAGES = [
     {
