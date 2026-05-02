@@ -1,0 +1,52 @@
+// flows/ClinicalTrialMatch.flow.mind
+// ClinicalMem — ClinicalTrials.gov eligibility match.
+// Apache-2.0 (see LICENSE)
+//
+// Surfaces active clinical trials matching a patient's condition list
+// and pre-screens eligibility against trial criteria (age, gender,
+// active conditions, exclusion medications).
+//
+//     patient + conditions ─► phi_scan ─► trial_search ─► eligibility_screen ─► rank ─► report
+
+@profile "regulated_online"
+flow ClinicalTrialMatch {
+    input  patient_id:   PatientId
+    input  conditions:   ConditionList
+    input  demographics: PatientDemographics
+    output matches:      TrialMatchReport
+
+    node phi = @native phi_scan(conditions, demographics)
+    invariant phi.safe_for_external == true
+
+    // Query ClinicalTrials.gov for active trials matching condition list
+    node candidates = @native search_clinical_trials(
+        conditions:  conditions,
+        status:      "Recruiting",
+        country:     "US",
+        max_results: 50,
+    )
+
+    // Pre-screen eligibility against age, gender, active conditions,
+    // exclusion medications, and required lab thresholds.
+    node screened = @native eligibility_screen(
+        trials:       candidates,
+        demographics: demographics,
+        conditions:   conditions,
+    )
+    invariant screened.fairness_audit_passed == true   // avoid demographic-bias drift
+
+    // Rank by clinical relevance (LLM-grounded; cites the trial document)
+    node ranked = @llm rank_trial_relevance(
+        trials:    screened,
+        require_citations: true,
+    )
+    invariant ranked.citations_valid == true
+
+    node audit = @native emit_audit_chain(
+        plan_hash: $plan_hash,
+        nodes:     [phi, candidates, screened, ranked],
+        tag:       "TAG_v1",
+    )
+
+    assign matches = @native build_trial_match_report(ranked, audit)
+}

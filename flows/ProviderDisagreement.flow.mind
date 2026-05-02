@@ -1,0 +1,49 @@
+// flows/ProviderDisagreement.flow.mind
+// ClinicalMem — cross-provider contradiction detection.
+// Apache-2.0 (see LICENSE)
+//
+// Catches conflicting care plans across multiple providers. Demo case:
+// cardiologist's BP target <130/80 vs nephrologist's <140/90 for the
+// same patient.
+//
+//     provider_records ─► phi_scan ─► claim_extract ─► contradiction_detect ─► resolution_suggest ─► report
+
+@profile "regulated_online"
+flow ProviderDisagreement {
+    input  patient_id:        PatientId
+    input  provider_records:  ProviderRecordList
+    output disagreements:     DisagreementReport
+
+    node phi = @native phi_scan(provider_records)
+    invariant phi.safe_for_external == true
+
+    // Extract typed clinical claims (BP target, medication regimen,
+    // diagnostic agreement, treatment plan) from each provider record.
+    node claims = @native extract_clinical_claims(provider_records)
+    invariant claims.coverage_ratio >= 0.85
+
+    // Detect harmful contradictions (NOT acceptable specialty nuance).
+    node contradictions = @native detect_contradictions(
+        claims:                claims,
+        nuance_filter:         "specialty_disagreement_v1",
+        severity_threshold:    "moderate",
+    )
+
+    // Suggest resolution strategies (escalate to PCP, request reconciliation,
+    // surface for nurse review).
+    node resolution = @llm suggest_resolution(
+        contradictions: contradictions,
+        require_grounded_in: claims,
+    )
+    invariant resolution.citations_valid == true
+
+    node audit = @native emit_audit_chain(
+        plan_hash: $plan_hash,
+        nodes:     [phi, claims, contradictions, resolution],
+        tag:       "TAG_v1",
+    )
+
+    assign disagreements = @native build_disagreement_report(
+        contradictions, resolution, audit
+    )
+}

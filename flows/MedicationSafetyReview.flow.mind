@@ -1,0 +1,74 @@
+// flows/MedicationSafetyReview.flow.mind
+// ClinicalMem — five-tier drug-interaction safety review.
+// Apache-2.0 (see LICENSE)
+//
+// Catches interactions like NSAID + warfarin → fatal bleeding risk.
+// The flow's content-addressed plan_hash is recorded in the audit
+// chain for every clinical decision; a regulator with this file and
+// the inputs replays the same plan and asserts byte-identical output.
+//
+// Pipeline (left-to-right composition):
+//
+//     medications ─► phi_scan ─► normalize ─► tier1 ─► tier2 ─► tier3 ─► bitnet ─► consensus ─► synthesize ─► report
+//
+// Every `@verify` invariant is enforced at runtime; a violation
+// returns a structured InvariantViolation rather than a possibly-
+// wrong clinical answer. In healthcare, "I don't know" saves lives.
+
+@profile "regulated_online"
+@kernel  "guarded"
+flow MedicationSafetyReview {
+    input  patient_id:   PatientId
+    input  medications:  MedicationList
+    output report:       SafetyReport
+
+    // ───── PHI guard ────────────────────────────────────────────
+    node phi = @native phi_scan(medications)
+    invariant phi.safe_for_external == true
+
+    // ───── Normalize medication names → RxCUI ──────────────────
+    node normalized = @native rxnorm_normalize(medications)
+    invariant normalized.coverage_ratio >= 0.95   // ≥ 95% pairs resolved
+
+    // ───── Tier 1: deterministic table (microseconds) ──────────
+    node tier1 = @native deterministic_table_check(normalized)
+
+    // ───── Tier 2: OpenEvidence (Mayo / Elsevier ClinicalKey AI) ─
+    node tier2 = @native openevidence_lookup(normalized, tier1.uncovered)
+
+    // ───── Tier 3: NIH RxNorm Drug Interaction API ─────────────
+    node tier3 = @native nih_drug_interaction_lookup(normalized, tier2.uncovered)
+
+    // ───── Tier 4.5: BitNet b1.58 ternary classifier ────────────
+    // Q16.16 fixed-point forward; bit-identical across architectures.
+    // FDA SaMD reproducibility primitive: every output carries a
+    // repro_hash that any auditor can re-verify in <1 ms per pair.
+    node bitnet = @native bitnet_ternary_classify(normalized)
+
+    // ───── Tier 4: 6-model US-based LLM consensus ───────────────
+    node consensus = @llm consensus(
+        prior:       [tier1, tier2, tier3, bitnet],
+        models:      ["gpt-5.5", "gemini-3.1-pro", "gemini-3.1-flash-lite",
+                      "grok-4.1", "claude-opus-4.6", "sonar-pro"],
+        majority_or_abstain: true,
+    )
+    invariant consensus.available_models >= 4
+    invariant consensus.majority_or_abstain == true
+
+    // ───── Synthesis (LLM) — explanation grounded in evidence ──
+    node synth = @llm synthesize(
+        findings:    [tier1, tier2, tier3, bitnet, consensus],
+        require_citations: true,
+    )
+    invariant synth.citations_valid == true
+    invariant synth.unsupported_claims == 0
+
+    // ───── Audit chain — every node hash-linked to plan_hash ───
+    node audit = @native emit_audit_chain(
+        plan_hash:   $plan_hash,
+        nodes:       [phi, normalized, tier1, tier2, tier3, bitnet, consensus, synth],
+        tag:         "TAG_v1",
+    )
+
+    assign report = @native build_safety_report(synth, audit)
+}

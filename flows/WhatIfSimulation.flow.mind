@@ -1,0 +1,60 @@
+// flows/WhatIfSimulation.flow.mind
+// ClinicalMem — what-if medication preview.
+// Apache-2.0 (see LICENSE)
+//
+// Lets a clinician simulate adding/removing/substituting a medication
+// before making the change. Runs the full five-tier safety pipeline
+// against the hypothetical regimen and surfaces diffs vs the current
+// regimen.
+//
+// Demo flow: "What if we add aspirin to a patient already on warfarin?"
+//
+//     current + perturbation ─► resolve_target ─► run_review ─► diff ─► report
+
+@profile "regulated_online"
+flow WhatIfSimulation {
+    input  patient_id:    PatientId
+    input  current:       MedicationList
+    input  perturbation:  MedicationPerturbation   // add | remove | substitute
+    output preview:       SafetyDiffReport
+
+    // Resolve the target regimen (apply the perturbation)
+    node target = @native apply_perturbation(current, perturbation)
+    invariant target.well_formed == true
+
+    // Run the five-tier safety review on the hypothetical regimen.
+    // This is the SAME contract as MedicationSafetyReview.flow.mind —
+    // any change there propagates here automatically.
+    node review_current = @flow MedicationSafetyReview(
+        patient_id:  patient_id,
+        medications: current,
+    )
+    node review_target = @flow MedicationSafetyReview(
+        patient_id:  patient_id,
+        medications: target,
+    )
+
+    invariant review_current.report.complete == true
+    invariant review_target.report.complete  == true
+
+    // Diff: which findings appeared / disappeared / changed severity
+    node diff = @native compute_safety_diff(
+        before: review_current.report,
+        after:  review_target.report,
+    )
+
+    // LLM-grounded narrative explaining the diff in plain language
+    node narrative = @llm explain_safety_diff(
+        diff: diff,
+        require_grounded_in: [review_current.report, review_target.report],
+    )
+    invariant narrative.citations_valid == true
+
+    node audit = @native emit_audit_chain(
+        plan_hash: $plan_hash,
+        nodes:     [target, review_current, review_target, diff, narrative],
+        tag:       "TAG_v1",
+    )
+
+    assign preview = @native build_safety_diff_report(diff, narrative, audit)
+}

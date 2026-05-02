@@ -1,0 +1,48 @@
+// flows/LabContraindication.flow.mind
+// ClinicalMem — declining-lab + medication contraindication check.
+// Apache-2.0 (see LICENSE)
+//
+// Catches medications becoming contraindicated as labs trend toward
+// thresholds. Demo case: GFR dropping 45 → 32 over 6 months while
+// patient is on metformin (contraindicated below GFR 30).
+//
+//     medications + labs ─► phi_scan ─► trend_analyze ─► contraindication_match ─► severity_score ─► report
+
+@profile "regulated_online"
+flow LabContraindication {
+    input  patient_id:     PatientId
+    input  medications:    MedicationList
+    input  lab_history:    LabHistoryWindow
+    output contraindications: ContraindicationReport
+
+    node phi = @native phi_scan(medications, lab_history)
+    invariant phi.safe_for_external == true
+
+    // Compute lab trends (linear regression over the window)
+    node trends = @native lab_trend_analyze(
+        history: lab_history,
+        window_months: 6,
+    )
+
+    // Match med-lab contraindication rules (e.g. metformin ⊥ GFR < 30)
+    node matches = @native contraindication_match(
+        medications: medications,
+        trends:      trends,
+        rules_table: "med_lab_contraindication_v1",
+    )
+
+    invariant matches.threshold_proximity_valid == true
+
+    node scored = @native severity_score(
+        matches: matches,
+        severity_table: "lab_proximity_severity_v1",
+    )
+
+    node audit = @native emit_audit_chain(
+        plan_hash: $plan_hash,
+        nodes:     [phi, trends, matches, scored],
+        tag:       "TAG_v1",
+    )
+
+    assign contraindications = @native build_contraindication_report(scored, audit)
+}

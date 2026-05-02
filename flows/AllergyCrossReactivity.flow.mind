@@ -1,0 +1,44 @@
+// flows/AllergyCrossReactivity.flow.mind
+// ClinicalMem — SNOMED CT drug-class cross-reactivity check.
+// Apache-2.0 (see LICENSE)
+//
+// Catches prescriptions that cross-react with documented allergies
+// via the 8-class SNOMED CT hierarchy: penicillin, cephalosporin,
+// sulfonamide, fluoroquinolone, opioid, NSAID, ACE inhibitor, statin.
+//
+// Demo case: amoxicillin prescribed for a patient with documented
+// penicillin anaphylaxis → catch via β-lactam class hierarchy.
+//
+//     medications + allergies ─► phi_scan ─► snomed_resolve ─► class_match ─► severity_score ─► report
+
+@profile "regulated_online"
+flow AllergyCrossReactivity {
+    input  patient_id:    PatientId
+    input  medications:   MedicationList
+    input  allergies:     AllergyList
+    output cross_reacts:  CrossReactivityReport
+
+    node phi = @native phi_scan(medications, allergies)
+    invariant phi.safe_for_external == true
+
+    node med_classes = @native snomed_resolve_drug_classes(medications)
+    node allergy_classes = @native snomed_resolve_allergy_classes(allergies)
+
+    invariant med_classes.coverage_ratio >= 0.90
+    invariant allergy_classes.coverage_ratio >= 0.90
+
+    node matches = @native class_hierarchy_match(med_classes, allergy_classes)
+
+    node scored = @native severity_score(
+        matches:    matches,
+        severity_table: "snomed_class_cross_reactivity_v1",
+    )
+
+    node audit = @native emit_audit_chain(
+        plan_hash: $plan_hash,
+        nodes:     [phi, med_classes, allergy_classes, matches, scored],
+        tag:       "TAG_v1",
+    )
+
+    assign cross_reacts = @native build_cross_reactivity_report(scored, audit)
+}
