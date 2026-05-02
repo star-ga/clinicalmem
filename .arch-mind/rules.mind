@@ -1,0 +1,88 @@
+// ClinicalMem architectural-governance rules
+//
+// Enforced via:
+//   arch-mind sidecar-scan --repo . --lang python --out .arch-mind/last_summary.json
+//   arch-mind check-rules \
+//       --repo . \
+//       --fixture .arch-mind/last_summary.json \
+//       --rules .arch-mind/rules.mind \
+//       --mode enforce
+//
+// Q16.16 fixed-point thresholds in [0, 10000]. Floors are pinned ~5% below
+// the current scan reading; the goal is regression detection, not a re-flag
+// of the present state. Tighten as the architecture matures.
+//
+// ClinicalMem is a Python-first repo (engine/, mcp_server/, a2a_agent/) so
+// the metrics here read against the Python sidecar grammar. The same nine-
+// rule kernel runs across the rest of the MIND ecosystem (rfn-mind, MindLLM,
+// mind-mem, mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind,
+// ***REMOVED***) — see docs/why_mind_mem_v3.md for the cross-repo contract.
+//
+// Copyright 2026 STARGA, Inc. — MIT License (matches the rest of the repo).
+
+[protection]
+module clinicalmem_rules {
+
+    // ─── locked-perfect (must not regress) ──────────────────────────────
+
+    // Acyclicity: a cycle in the engine -> consensus -> synthesis path
+    // would break the audit-chain replay contract. Hard invariant.
+    [arch_rule(acyclicity_q16, eq)]
+    const NO_CYCLES: i32 = 10000
+
+    // ─── stage-appropriate floors ───────────────────────────────────────
+
+    // Currently 9853. 5% slack for WIP additions to the engine surface.
+    [arch_rule(redundancy_q16, ge)]
+    const REDUNDANCY_FLOOR: i32 = 9500
+
+    // Currently 7500. ClinicalMem is Python-first; the metric reads against
+    // the Python sidecar (numerical purity is not a load-bearing concept in
+    // pure Python the way it is in MIND repos). Floor catches a 10-pp drop;
+    // the meaningful purity story for ClinicalMem lives in the Q16.16 audit
+    // preimages emitted by mind-mem's TAG_v1 layer.
+    [arch_rule(q16_determinism_purity, ge)]
+    const PURITY_FLOOR: i32 = 6000
+
+    // Currently 4534. ClinicalMem's symbol distribution is concentrated in
+    // engine/llm_synthesizer.py + engine/consensus_engine.py (the largest
+    // modules); future per-tier extraction (4-tier interaction pipeline ->
+    // 4 modules) will re-balance and lift the floor to 6000.
+    [arch_rule(equality_q16, ge)]
+    const EQUALITY_FLOOR: i32 = 4000
+
+    // Currently 6000 (longest path = 4: server -> consensus -> synthesizer
+    // -> rxnorm). 5% slack.
+    [arch_rule(depth_q16, ge)]
+    const DEPTH_FLOOR: i32 = 5000
+
+    // Currently 6667. ClinicalMem's three top-level packages (engine/,
+    // mcp_server/, a2a_agent/) give it natural modularity; the metric is
+    // honest. Floor catches a regression below this base.
+    [arch_rule(modularity_q16, ge)]
+    const MODULARITY_FLOOR: i32 = 6000
+
+    // ─── observability (currently zero, will lift later) ────────────────
+
+    // Currently 0: governance_kernel_coverage is a [protection] /
+    // [invariant] decoration count, which is a MIND-ecosystem concept that
+    // doesn't translate to Python. Floor 0 today; future MIND-side scoring
+    // kernels (planned in v4.2 if we ship a deterministic ternary classifier
+    // path) will lift this.
+    [arch_rule(governance_kernel_coverage, ge)]
+    const GOVERNANCE_FLOOR: i32 = 0
+
+    // Currently 9600 (no MCP-tool overlap detected across the 18 SHARP-on-
+    // MCP tools and the 13 A2A skills). Keep tight: the design contract is
+    // one-tool-per-public-surface.
+    [arch_rule(mcp_tool_isolation, ge)]
+    const MCP_ISOLATION_FLOOR: i32 = 9500
+
+    // Currently 487. The audit-chain layer in engine/clinical_memory.py
+    // emits hash-chain-bound evidence for every memory write; the metric
+    // counts that surface. Floor 0 today; v4.2's mind-flow integration
+    // (per HACKATHON_PLAN_V2.md item D) will lift this when the per-node
+    // plan_hash chain emits evidence calls from compiled flow nodes.
+    [arch_rule(evidence_chain_density, ge)]
+    const EVIDENCE_FLOOR: i32 = 0
+}

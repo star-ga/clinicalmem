@@ -1,0 +1,67 @@
+name: arch-mind
+
+# ClinicalMem L1 architectural-governance gate.
+#
+# Runs the same nine-rule kernel that gates rfn-mind, MindLLM, mind-mem,
+# mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind, and
+# ***REMOVED*** — the entire STARGA MIND ecosystem.
+#
+# Floors live in `.arch-mind/rules.mind`. A regression on any rule is a
+# release-blocking event; the CI job exits non-zero and blocks merge.
+#
+# This file ships only the workflow definition. arch-mind itself is
+# distributed by STARGA under commercial agreement (see arch-mind/README);
+# the binary used here is the public release published at
+# https://mindlang.dev/install/arch-mind.sh. Rules + scan output are
+# transparent (`.arch-mind/rules.mind` and `.arch-mind/last_summary.json`).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: arch-mind-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    name: L1 governance gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install arch-mind
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Public installer; uses the same toolchain artefacts that gate
+          # the rest of the STARGA MIND ecosystem.
+          curl -fsSL https://mindlang.dev/install/arch-mind.sh | sh
+          echo "$HOME/.arch-mind/bin" >> "$GITHUB_PATH"
+
+      - name: Sidecar scan (Python)
+        run: |
+          arch-mind sidecar-scan \
+              --repo . \
+              --lang python \
+              --out .arch-mind/last_summary.json
+
+      - name: Check rules (enforce)
+        run: |
+          arch-mind check-rules \
+              --repo . \
+              --fixture .arch-mind/last_summary.json \
+              --rules   .arch-mind/rules.mind \
+              --mode    enforce
+
+      - name: Upload scan summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arch-mind-summary
+          path: .arch-mind/last_summary.json
