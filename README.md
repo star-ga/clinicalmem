@@ -16,6 +16,9 @@
   <a href="#a2a-agent"><img src="https://img.shields.io/badge/protocol-A2A-F97316?style=flat-square" alt="A2A"></a>
   <a href="https://github.com/star-ga/mind-mem"><img src="https://img.shields.io/badge/powered%20by-mind--mem-00A67E?style=flat-square" alt="mind-mem"></a>
   <a href="#six-layer-safety-pipeline"><img src="https://img.shields.io/badge/safety-6%20layers-DC2626?style=flat-square" alt="Safety"></a>
+  <a href="docs/why_bitnet_b158.md"><img src="https://img.shields.io/badge/BitNet%20b1.58-bit--identical-blueviolet?style=flat-square" alt="BitNet b1.58"></a>
+  <a href="docs/why_mind_mem_v3.md"><img src="https://img.shields.io/badge/HIPAA-SQLCipher%20at--rest-success?style=flat-square" alt="HIPAA-compatible at-rest encryption"></a>
+  <a href=".arch-mind/rules.mind"><img src="https://img.shields.io/badge/arch--mind-9%2F9%20rules-2ea44f?style=flat-square" alt="arch-mind L1 governance gate"></a>
   <a href="https://app.promptopinion.ai/marketplace"><img src="https://img.shields.io/badge/Prompt%20Opinion-Marketplace-FF6B35?style=flat-square" alt="Marketplace"></a>
 </p>
 
@@ -89,7 +92,7 @@ Plus 2 bonus findings discovered autonomously:
               |   (BM25 + Vector)    (Scoring)              |
               |                                             |
               |   Drug Interactions  LLM Synthesizer        |
-              |   (4-tier pipeline)  (evidence-cited)       |
+              |   (5-tier pipeline)  (evidence-cited)       |
               |                                             |
               |   RxNorm Client      SNOMED CT Client       |
               |   (drug normalize)   (allergy hierarchy)    |
@@ -135,7 +138,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 |------|---------|
 | `store_clinical_observation` | Store clinical note for patient |
 | `recall_patient_context` | Hybrid search over clinical memory |
-| `check_medication_conflicts` | Drug interaction detection (4-tier) |
+| `check_medication_conflicts` | Drug interaction detection (5-tier) |
 | `check_allergy_conflicts` | Allergy cross-reaction alerts |
 | `get_treatment_dependencies` | Condition-medication dependency map |
 | `get_clinical_audit_trail` | Tamper-proof audit chain |
@@ -176,7 +179,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 
 | Capability | ClinicalMem | Typical Healthcare AI |
 |-----------|-------------|----------------------|
-| **Drug interactions** | 4-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Six-model consensus | Hardcoded lookup table |
+| **Drug interactions** | 5-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Six-model consensus + **BitNet b1.58 ternary classifier (bit-identical Q16.16 forward, FDA-grade reproducibility)** | Hardcoded lookup table |
 | **LLM verification** | 6 US-based models (GPT-5.5, Gemini 3.1 Pro, Grok 4.1, Claude Opus 4.6, Perplexity Sonar, Gemini Flash) | Single model, no fallback |
 | **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard), openFDA, ClinicalTrials.gov | None |

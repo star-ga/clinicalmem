@@ -10,10 +10,10 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 
 - **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
 - **Six-Model US-Based LLM Consensus** — Drug interaction findings are verified by 6 US-based LLMs in parallel: OpenAI GPT-5.5, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Majority consensus required for high-confidence clinical verdicts
-- **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) RxNorm REST API — resolves drug names to RxCUI identifiers, normalizes medication lists, and checks pairwise interactions via the NIH Drug Interaction API (the same federal database used by Epic, Cerner, and all certified EHRs), (4) Six-model LLM consensus for remaining pairs with majority voting
+- **Five-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) RxNorm REST API — resolves drug names to RxCUI identifiers, normalizes medication lists, and checks pairwise interactions via the NIH Drug Interaction API (the same federal database used by Epic, Cerner, and all certified EHRs), (4) Six-model LLM consensus for remaining pairs with majority voting, **(4.5) BitNet b1.58 ternary classifier — pure-integer Q16.16 forward pass with bit-identical output across every architecture (ARM, x86_64, CUDA, NPU). The reproducibility layer the FDA's 2024 SaMD guidance expects.**
 - **SNOMED CT Allergy Cross-Reactivity** — 8 drug class hierarchies (penicillin, cephalosporin, sulfonamide, fluoroquinolone, opioid, NSAID, ACE inhibitor, statin) with alias expansion. Catches prescriptions that cross-react with known allergies
 - **UMLS Metathesaurus Crosswalk** — Maps between ICD-10, SNOMED CT, LOINC, and RxNorm vocabularies using CUI-based resolution
-- **What-If Medication Simulation** — Clinicians can simulate adding, removing, or substituting medications to preview safety outcomes before making changes. Runs the full four-tier pipeline on hypothetical medication lists
+- **What-If Medication Simulation** — Clinicians can simulate adding, removing, or substituting medications to preview safety outcomes before making changes. Runs the full five-tier pipeline on hypothetical medication lists
 - **FDA Safety Alert Integration** — Queries the openFDA Drug Enforcement and Drug Event APIs for active recalls, safety alerts, and adverse event signals for patient medications
 - **Clinical Trial Matching** — Searches ClinicalTrials.gov for active trials matching patient conditions, with eligibility pre-screening based on age, gender, and active conditions
 - **PHI Detection Guard** — Scans free-text clinical notes for Protected Health Information (SSN, MRN, phone, email, dates of birth, addresses) before storage, preventing accidental PHI leakage into the memory layer
@@ -35,7 +35,7 @@ Sarah is a 67-year-old with Type 2 Diabetes, Hypertension, CKD Stage 3b, and Atr
 
 ClinicalMem is built on two open-source STARGA technologies:
 
-1. **mind-mem** (v1.9.0) — Our persistent memory system for coding agents, adapted for clinical data. Provides hybrid BM25 + vector search, contradiction detection, causal dependency graphs, and hash-chain audit logging.
+1. **mind-mem** (v3.x) — Our persistent memory system for AI agents, adapted for clinical data. Provides hybrid BM25 + vector + RRF search, contradiction detection, causal dependency graphs, **SQLCipher at-rest encryption (HIPAA-compatible)**, **TAG_v1 audit-integrity preimages with Q16.16 fixed-point scoring**, and **tier-decay (TTL/LRU) for clinical-memory ageing**. The audit chain is replayable against the canonical `mm verify-chain` reference verifier.
 
 2. **MIND Lang Scoring Kernels** — Pure Python implementations of three MIND Lang kernels:
    - `abstention.mind` → Confidence gating (decides when to abstain)
@@ -44,7 +44,7 @@ ClinicalMem is built on two open-source STARGA technologies:
 
 ### Architecture
 
-- **Shared Engine** (`engine/`) — 13 modules: FHIR R4 client, clinical memory, scoring kernels, LLM synthesizer, RxNorm client, SNOMED CT client, UMLS Metathesaurus mapper, consensus engine (6 US-based LLMs), FDA client, clinical trials client, what-if simulator, PHI detector, hallucination detector
+- **Shared Engine** (`engine/`) — 14 modules: FHIR R4 client, clinical memory, scoring kernels, LLM synthesizer, RxNorm client, SNOMED CT client, UMLS Metathesaurus mapper, consensus engine (6 US-based LLMs), FDA client, clinical trials client, what-if simulator, PHI detector, hallucination detector, **BitNet b1.58 ternary classifier (Q16.16 fixed-point, bit-identical across architectures)**
 - **MCP Server** (`mcp_server/`) — FastMCP 2.x with Streamable HTTP transport, 18 SHARP-on-MCP tools
 - **A2A Agent** (`a2a_agent/`) — Google ADK agent with 13 clinical tools, AgentCard, API key middleware
 
@@ -56,6 +56,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 2. **Detection Layer 2** (OpenEvidence API) — For medication pairs not in the deterministic table, ClinicalMem queries OpenEvidence — the same medical AI engine powering Elsevier's ClinicalKey AI, developed with Mayo Clinic.
 3. **Detection Layer 3** (RxNorm + NIH Drug Interaction API) — Resolves drug names to RxCUI identifiers via the RxNorm REST API, normalizes medication lists, then checks pairwise interactions through the NIH Drug Interaction API — the same federal database used by Epic, Cerner, and all certified EHR systems. Free, no API key required, authoritative.
 4. **Detection Layer 4** (Six-Model LLM Consensus) — Verifies findings across 6 US-based LLMs in parallel: OpenAI GPT-5.5, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Requires majority consensus for clinical verdicts.
+4.5. **Detection Layer 4.5** (BitNet b1.58 Ternary Classifier) — A clean-room Python implementation of the BitNet b1.58 architecture (Ma et al., arXiv:2402.17764). Pure-integer Q16.16 fixed-point forward pass over ternary weights ∈ {-1, 0, +1} — no multiplication, only addition and subtraction. Output is **bit-identical across ARM, x86_64, CUDA, and NPU targets** — the reproducibility the FDA's 2024 SaMD guidance expects. Each classification carries a `repro_hash` (SHA-256 over the canonical encoding of feature_hash, logits_q16, severity, weights_id) that any auditor with `engine/bitnet_classifier.py` and the 19 KB ternary weights bundle can re-verify in &lt; 1 ms per pair, no proprietary toolchain required.
 5. **Synthesis Layer** (Medical LLM Cascade) — Generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
 6. **Abstention Gate** — When evidence is insufficient, the system refuses to generate a narrative. In healthcare, "I don't know" saves lives.
 
