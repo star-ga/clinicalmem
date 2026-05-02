@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="#tests"><img src="https://img.shields.io/badge/tests-771%20passed%20·%20100%25%20coverage-brightgreen?style=flat-square" alt="Tests"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
   <a href="#a2a-agent"><img src="https://img.shields.io/badge/protocol-A2A-F97316?style=flat-square" alt="A2A"></a>
@@ -202,7 +202,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | **Audit trail** | SHA-256 Merkle chain | Database logs | Database logs | None |
 | **Safe abstention** | Built-in abstention gate | N/A | N/A | N/A |
 | **What-if simulation** | Digital twin | Limited | None | None |
-| **Open source** | MIT license | No | No | No |
+| **Open source** | Apache-2.0 license (with patent grant) | No | No | No |
 | **Hallucination detection** | Evidence grounding validation | N/A | N/A | N/A |
 
 > **Note**: ClinicalMem is a research prototype, not a replacement for FDA-cleared commercial systems. This comparison highlights architectural differences in approach.
@@ -371,7 +371,7 @@ clinicalmem/
 ├── Dockerfile.a2a              # A2A Agent container
 ├── docker-compose.yml          # Local development stack
 ├── pyproject.toml              # Python project config
-├── LICENSE                     # MIT License
+├── LICENSE                     # Apache-2.0 License
 └── NOTICE.md                   # Attribution notice
 ```
 
@@ -562,6 +562,6 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 
 ## License
 
-MIT &mdash; see [LICENSE](LICENSE)
+Apache-2.0 &mdash; see [LICENSE](LICENSE). Includes the explicit patent grant clause that healthcare procurement and regulatory teams require for hospital deployment.
 
 Built on [mind-mem](https://github.com/star-ga/mind-mem) (Apache 2.0) by [STARGA Inc.](https://star.ga)

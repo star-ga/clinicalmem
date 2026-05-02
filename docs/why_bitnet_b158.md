@@ -35,7 +35,7 @@ of two floats.
 ### Implementation scope
 
 The clean-room Python implementation in `engine/bitnet_classifier.py`
-(MIT-licensed, bundled with the rest of ClinicalMem) implements:
+(Apache-2.0 licensed, bundled with the rest of ClinicalMem) implements:
 
 - **Q16.16 fixed-point arithmetic** in pure Python integers (no `numpy`,
   no `torch`, no `jax`). Same bit-pattern on every machine.

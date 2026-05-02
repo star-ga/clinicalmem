@@ -29,13 +29,13 @@ accuracy: bit-identical integer arithmetic across hardware.
 
 Public scope
 ────────────
-This file is MIT-licensed alongside the rest of ClinicalMem. It does NOT
+This file is Apache-2.0 licensed alongside the rest of ClinicalMem. It does NOT
 vendor any source from the STARGA proprietary toolchain (MindLLM,
 rfn-mind, mind-runtime, mind-flow are commercial-licensed and live in
 private repositories). The BitNet b1.58 architecture is described in the
 public arXiv paper above; this file implements it in pure Python.
 
-Copyright 2026 STARGA, Inc. — MIT License.
+Copyright 2026 STARGA, Inc. — Apache-2.0 License.
 """
 from __future__ import annotations
 
