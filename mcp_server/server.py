@@ -917,7 +917,7 @@ def consensus_verify_finding(
     """
     Multi-LLM consensus verification for critical clinical safety findings.
 
-    Sends the finding to up to 6 independent US-based LLMs in parallel (GPT-5.4,
+    Sends the finding to up to 6 independent US-based LLMs in parallel (GPT-5.5,
     Gemini 3.1 Pro, Gemini 3.1 Flash, Grok 4.1, Claude Opus 4.6, Perplexity Sonar) and requires >=2/3 agreement
     before confirming. Reduces hallucination risk through architectural diversity.
 

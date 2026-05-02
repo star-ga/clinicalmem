@@ -9,7 +9,7 @@ Today's clinical AI agents hallucinate. They forget patient history between conv
 ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to verified clinical evidence:
 
 - **Persistent Clinical Memory** — Ingests FHIR R4 patient data and stores it as searchable memory blocks using mind-mem's hybrid BM25 + vector + RRF fusion retrieval
-- **Six-Model US-Based LLM Consensus** — Drug interaction findings are verified by 6 US-based LLMs in parallel: OpenAI GPT-5.4, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Majority consensus required for high-confidence clinical verdicts
+- **Six-Model US-Based LLM Consensus** — Drug interaction findings are verified by 6 US-based LLMs in parallel: OpenAI GPT-5.5, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Majority consensus required for high-confidence clinical verdicts
 - **Four-Tier Drug Interaction Detection** — (1) Deterministic table catches known pairs in microseconds, (2) OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI) for clinically authoritative evidence-grounded detection, (3) RxNorm REST API — resolves drug names to RxCUI identifiers, normalizes medication lists, and checks pairwise interactions via the NIH Drug Interaction API (the same federal database used by Epic, Cerner, and all certified EHRs), (4) Six-model LLM consensus for remaining pairs with majority voting
 - **SNOMED CT Allergy Cross-Reactivity** — 8 drug class hierarchies (penicillin, cephalosporin, sulfonamide, fluoroquinolone, opioid, NSAID, ACE inhibitor, statin) with alias expansion. Catches prescriptions that cross-react with known allergies
 - **UMLS Metathesaurus Crosswalk** — Maps between ICD-10, SNOMED CT, LOINC, and RxNorm vocabularies using CUI-based resolution
@@ -55,7 +55,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 1. **Detection Layer 1** (Deterministic) — Rule-based safety rails catch known drug interactions, allergy conflicts, lab contraindications, and provider disagreements. Microsecond response, never hallucinate.
 2. **Detection Layer 2** (OpenEvidence API) — For medication pairs not in the deterministic table, ClinicalMem queries OpenEvidence — the same medical AI engine powering Elsevier's ClinicalKey AI, developed with Mayo Clinic.
 3. **Detection Layer 3** (RxNorm + NIH Drug Interaction API) — Resolves drug names to RxCUI identifiers via the RxNorm REST API, normalizes medication lists, then checks pairwise interactions through the NIH Drug Interaction API — the same federal database used by Epic, Cerner, and all certified EHR systems. Free, no API key required, authoritative.
-4. **Detection Layer 4** (Six-Model LLM Consensus) — Verifies findings across 6 US-based LLMs in parallel: OpenAI GPT-5.4, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Requires majority consensus for clinical verdicts.
+4. **Detection Layer 4** (Six-Model LLM Consensus) — Verifies findings across 6 US-based LLMs in parallel: OpenAI GPT-5.5, Google Gemini 3.1 Pro, Google Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, and Perplexity Sonar Reasoning Pro. Requires majority consensus for clinical verdicts.
 5. **Synthesis Layer** (Medical LLM Cascade) — Generates patient-specific clinical explanations from detected findings, citing evidence blocks by ID. The LLM never invents facts — it explains what the detection layers found.
 6. **Abstention Gate** — When evidence is insufficient, the system refuses to generate a narrative. In healthcare, "I don't know" saves lives.
 
@@ -83,7 +83,7 @@ ClinicalMem integrates three NIH terminology services for standardized clinical 
 
 ## Accomplishments that we're proud of
 
-- **Six-model US-based LLM consensus** — Drug interaction verdicts verified by GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, and Perplexity Sonar Pro in parallel. No single model can hallucinate a finding into production.
+- **Six-model US-based LLM consensus** — Drug interaction verdicts verified by GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, and Perplexity Sonar Pro in parallel. No single model can hallucinate a finding into production.
 - **What-if medication simulation** — Clinicians can preview safety outcomes of medication changes before making them — like a flight simulator for prescriptions.
 - **FDA safety alert integration** — Real-time queries to openFDA for active recalls and adverse event signals on patient medications.
 - **Clinical trial matching** — Automatically finds relevant active trials on ClinicalTrials.gov for patient conditions with eligibility pre-screening.
@@ -131,6 +131,6 @@ ClinicalMem integrates three NIH terminology services for standardized clinical 
 - OpenEvidence API (Mayo Clinic / Elsevier ClinicalKey AI)
 - openFDA API (drug safety alerts and adverse events)
 - ClinicalTrials.gov API (clinical trial matching)
-- OpenAI GPT-5.4, Google Gemini 3.1 Pro, Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, Perplexity Sonar Reasoning Pro (six-model consensus)
+- OpenAI GPT-5.5, Google Gemini 3.1 Pro, Gemini 3.1 Flash Lite, xAI Grok 4.1, Anthropic Claude Opus 4.6, Perplexity Sonar Reasoning Pro (six-model consensus)
 - Docker + Azure Container Apps (deployment)
 - Cloudflare Pages (demo dashboard)

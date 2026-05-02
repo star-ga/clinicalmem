@@ -46,7 +46,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 | Capability | Description |
 |-----------|-------------|
 | **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (drug normalization) &rarr; Six-model LLM consensus |
-| **Six-Model LLM Consensus** | GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar &mdash; all US-based |
+| **Six-Model LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar &mdash; all US-based |
 | **Allergy Cross-Reaction Alerts** | SNOMED CT drug class hierarchy with 8 classes + alias expansion + cross-class detection |
 | **UMLS Cross-Vocabulary Mapping** | ICD-10 &harr; SNOMED CT &harr; LOINC &harr; RxNorm via UMLS Metathesaurus |
 | **What-If Medication Simulation** | Preview safety outcomes of medication changes before making them |
@@ -123,7 +123,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 1 | **Deterministic Table** | Rule-based | < 1ms |
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
-| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar | ~3s |
+| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar | ~3s |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
@@ -177,7 +177,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | Capability | ClinicalMem | Typical Healthcare AI |
 |-----------|-------------|----------------------|
 | **Drug interactions** | 4-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Six-model consensus | Hardcoded lookup table |
-| **LLM verification** | 6 US-based models (GPT-5.4, Gemini 3.1 Pro, Grok 4.1, Claude Opus 4.6, Perplexity Sonar, Gemini Flash) | Single model, no fallback |
+| **LLM verification** | 6 US-based models (GPT-5.5, Gemini 3.1 Pro, Grok 4.1, Claude Opus 4.6, Perplexity Sonar, Gemini Flash) | Single model, no fallback |
 | **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard), openFDA, ClinicalTrials.gov | None |
 | **What-if simulation** | Digital twin for medication change preview | None |
@@ -428,7 +428,7 @@ Coverage includes:
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
 | **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Six-model LLM consensus |
 | **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
-| **LLM Consensus** | GPT-5.4, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar (all US-based) |
+| **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar (all US-based) |
 | **FDA** | [openFDA](https://open.fda.gov/) drug safety alerts, recalls, adverse events |
 | **Clinical Trials** | [ClinicalTrials.gov](https://clinicaltrials.gov/) API v2 |
 | **MCP** | [FastMCP 2.x](https://github.com/jlowin/fastmcp) with SHARP-on-MCP headers |

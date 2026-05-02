@@ -430,7 +430,7 @@ def _call_openai_json(prompt: str, api_key: str) -> str | None:
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {api_key}"},
             json={
-                "model": "gpt-5.4",
+                "model": "gpt-5.5",
                 "messages": [
                     {
                         "role": "system",
@@ -495,7 +495,7 @@ def _llm_check_interactions(
     Tries models in order of clinical strength, using whichever API keys
     are available. Each model uses the same structured prompt.
 
-    Cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite
+    Cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite
     """
     import json
     import logging
@@ -529,7 +529,7 @@ JSON array:"""
     # Build model cascade based on available API keys
     attempts: list[tuple[str, callable]] = []
     if openai_key:
-        attempts.append(("OpenAI-GPT-5.4", lambda: _call_openai_json(prompt, openai_key)))
+        attempts.append(("OpenAI-GPT-5.5", lambda: _call_openai_json(prompt, openai_key)))
     if google_key:
         attempts.append(("Gemini-3.1-Pro", lambda: _call_google_json(prompt, google_key, "gemini-3.1-pro-preview")))
         attempts.append(("Gemini-3.1-Flash-Lite", lambda: _call_google_json(prompt, google_key, "gemini-3.1-flash-lite-preview")))

@@ -36,7 +36,7 @@ class TestCallMedicalLlmSync:
         mock_post.return_value = mock_resp
         text, model = _call_medical_llm_sync("test", "system")
         assert text == "LLM response text"
-        assert model == "OpenAI-GPT-5.4"
+        assert model == "OpenAI-GPT-5.5"
 
     @patch("httpx.post")
     @patch.dict("os.environ", {"OPENAI_API_KEY": "", "GOOGLE_API_KEY": "key"})
@@ -134,19 +134,19 @@ class TestExplainConflict:
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_llm_returns_abstain(self, mock_llm):
-        mock_llm.return_value = ("ABSTAIN: Insufficient data", "OpenAI-GPT-5.4")
+        mock_llm.return_value = ("ABSTAIN: Insufficient data", "OpenAI-GPT-5.5")
         conflict = {"type": "test", "severity": "high", "description": "test"}
         patient = {"conditions": []}
         evidence = [{"block_id": "b1"}, {"block_id": "b2"}, {"block_id": "b3"}]
         result = explain_conflict(conflict, patient, evidence)
         assert result.abstained is True
-        assert result.model_used == "OpenAI-GPT-5.4"
+        assert result.model_used == "OpenAI-GPT-5.5"
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_llm_success_with_citations(self, mock_llm):
         mock_llm.return_value = (
             "Patient has warfarin allergy conflict [b1] and bleeding risk [b2].",
-            "OpenAI-GPT-5.4",
+            "OpenAI-GPT-5.5",
         )
         conflict = {"type": "allergy_medication_conflict", "severity": "critical", "description": "test"}
         patient = {"conditions": []}
@@ -156,7 +156,7 @@ class TestExplainConflict:
         ]
         result = explain_conflict(conflict, patient, evidence)
         assert result.abstained is False
-        assert result.model_used == "OpenAI-GPT-5.4"
+        assert result.model_used == "OpenAI-GPT-5.5"
         assert len(result.evidence_citations) == 2
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
@@ -188,7 +188,7 @@ class TestGenerateClinicalHandoff:
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_llm_success(self, mock_llm):
-        mock_llm.return_value = ("Full handoff note [b1] [b2]", "OpenAI-GPT-5.4")
+        mock_llm.return_value = ("Full handoff note [b1] [b2]", "OpenAI-GPT-5.5")
         evidence = [{"block_id": f"b{i}"} for i in range(5)]
         result = generate_clinical_handoff({}, [], {}, evidence)
         assert result.abstained is False
@@ -260,7 +260,7 @@ class TestCallMedicalLlmAsync:
             text, model = await _call_medical_llm_async("prompt", "system")
 
         assert text == "Async OpenAI answer"
-        assert model == "OpenAI-GPT-5.4"
+        assert model == "OpenAI-GPT-5.5"
 
     @patch.dict(
         "os.environ",
@@ -561,14 +561,14 @@ class TestExplainConflictPhiDetectorImport:
         """Lines 374-375: phi_detector missing, LLM still returns a good response."""
         mock_llm.return_value = (
             "Clinical concern [ev1] due to bleeding risk.",
-            "OpenAI-GPT-5.4",
+            "OpenAI-GPT-5.5",
         )
         conflict = {"type": "drug_interaction", "severity": "critical", "description": "test"}
         patient = {"conditions": []}
         evidence = [{"block_id": "ev1", "content": "data"}]
         result = explain_conflict(conflict, patient, evidence)
         assert result.abstained is False
-        assert result.model_used == "OpenAI-GPT-5.4"
+        assert result.model_used == "OpenAI-GPT-5.5"
         assert len(result.evidence_citations) == 1
 
 

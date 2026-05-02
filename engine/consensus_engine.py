@@ -5,7 +5,7 @@ on the same clinical finding and calculates an agreement score. Only findings
 with ≥2/3 agreement are reported as verified.
 
 Models (used when API keys are available — all US-based):
-- OpenAI GPT-5.4 (clinical validation, 260 physicians, HIPAA BAA)
+- OpenAI GPT-5.5 (clinical validation, 260 physicians, HIPAA BAA)
 - Google Gemini 3.1 Pro (flagship reasoning, 1M context)
 - Google Gemini 3.1 Flash Lite (fast cost-efficient reasoning)
 - xAI Grok 4.1 (fast reasoning, 2M context)
@@ -126,13 +126,13 @@ _SYSTEM_MSG = "You are a clinical safety verification assistant. Respond ONLY wi
 
 
 async def _call_openai(prompt: str, api_key: str) -> LLMVerdict:
-    """Call OpenAI GPT-5.4 for verification."""
+    """Call OpenAI GPT-5.5 for verification."""
     async with httpx.AsyncClient(timeout=10) as client:
         resp = await client.post(
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {api_key}"},
             json={
-                "model": "gpt-5.4",
+                "model": "gpt-5.5",
                 "messages": [
                     {"role": "system", "content": _SYSTEM_MSG},
                     {"role": "user", "content": prompt},
@@ -144,7 +144,7 @@ async def _call_openai(prompt: str, api_key: str) -> LLMVerdict:
         if resp.status_code != 200:
             raise RuntimeError(f"OpenAI returned {resp.status_code}")
         text = resp.json()["choices"][0]["message"]["content"]
-        return _parse_verdict(text, "OpenAI-GPT-5.4")
+        return _parse_verdict(text, "OpenAI-GPT-5.5")
 
 
 async def _call_google(prompt: str, api_key: str, model_id: str, label: str) -> LLMVerdict:
@@ -278,7 +278,7 @@ async def verify_finding_consensus(
 
     # Tier 1: Clinical-validated models
     if openai_key:
-        tasks.append(("OpenAI-GPT-5.4", _call_openai(prompt, openai_key)))
+        tasks.append(("OpenAI-GPT-5.5", _call_openai(prompt, openai_key)))
     if google_key:
         tasks.append(("Gemini-3.1-Pro", _call_google(
             prompt, google_key, "gemini-3.1-pro-preview", "Gemini-3.1-Pro",

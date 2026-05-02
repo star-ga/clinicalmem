@@ -174,7 +174,7 @@ class TestCallMedicalLlmSync:
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}, clear=True):
             result, model = _call_medical_llm_sync("test", "system")
             assert result == "Clinical analysis: [ev-001] shows risk."
-            assert model == "OpenAI-GPT-5.4"
+            assert model == "OpenAI-GPT-5.5"
 
     @patch("httpx.post")
     def test_openai_failure_falls_to_gemini(self, mock_post):
@@ -281,19 +281,19 @@ class TestExplainConflict:
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_llm_success_with_citations(self, mock_llm):
-        mock_llm.return_value = ("Risk: [ev-001] warfarin + [ev-002] ibuprofen.", "OpenAI-GPT-5.4")
+        mock_llm.return_value = ("Risk: [ev-001] warfarin + [ev-002] ibuprofen.", "OpenAI-GPT-5.5")
         result = explain_conflict(CONFLICT, PATIENT_CTX, EVIDENCE_BLOCKS)
         assert result.abstained is False
-        assert result.model_used == "OpenAI-GPT-5.4"
+        assert result.model_used == "OpenAI-GPT-5.5"
         assert len(result.evidence_citations) == 2
         assert result.confidence_score == 1.0
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_llm_abstains(self, mock_llm):
-        mock_llm.return_value = ("ABSTAIN: Insufficient evidence.", "OpenAI-GPT-5.4")
+        mock_llm.return_value = ("ABSTAIN: Insufficient evidence.", "OpenAI-GPT-5.5")
         result = explain_conflict(CONFLICT, PATIENT_CTX, EVIDENCE_BLOCKS)
         assert result.abstained is True
-        assert result.model_used == "OpenAI-GPT-5.4"
+        assert result.model_used == "OpenAI-GPT-5.5"
 
     @patch("engine.llm_synthesizer._call_medical_llm_sync")
     def test_citations_only_valid_block_ids(self, mock_llm):

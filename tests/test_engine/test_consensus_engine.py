@@ -344,7 +344,7 @@ class TestVerifyFindingConsensus:
         assert result.consensus_level == "HIGH"
         assert result.should_report is True
         models = {v.model for v in result.verdicts}
-        assert "OpenAI-GPT-5.4" in models
+        assert "OpenAI-GPT-5.5" in models
         assert "Gemini-3.1-Pro" in models
         assert "xAI-Grok-4.1" in models
         assert "Anthropic-Claude-Opus-4.6" in models

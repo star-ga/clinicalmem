@@ -355,7 +355,7 @@ Agent: Google ADK | Model: gemini-2.5-flash | Protocol: A2A
 | `clinical_memory.py` | Core memory engine — block storage, recall, ingestion, audit chain |
 | `clinical_scoring.py` | MIND Lang kernels — abstention, importance, adversarial |
 | `fhir_client.py` | FHIR R4 client — patient data retrieval |
-| `llm_synthesizer.py` | Medical LLM cascade — GPT-5.4 → MedGemma → Gemini Flash |
+| `llm_synthesizer.py` | Medical LLM cascade — GPT-5.5 → MedGemma → Gemini Flash |
 | `rxnorm_client.py` | RxNorm REST API — drug name → RxCUI, pairwise interactions |
 | `snomed_client.py` | SNOMED CT — allergy → drug class hierarchies (8 classes) |
 | `umls_mapper.py` | UMLS Metathesaurus — ICD-10 ↔ SNOMED CT ↔ LOINC ↔ RxNorm |

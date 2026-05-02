@@ -129,7 +129,7 @@ Cite evidence blocks by [block_id] for every clinical claim."""
 
 
 async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None, str]:
-    """Async medical LLM cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite."""
+    """Async medical LLM cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite."""
     openai_key = os.environ.get("OPENAI_API_KEY")
     google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
@@ -148,7 +148,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                     "https://api.openai.com/v1/chat/completions",
                     headers={"Authorization": f"Bearer {openai_key}"},
                     json={
-                        "model": "gpt-5.4",
+                        "model": "gpt-5.5",
                         "messages": [
                             {"role": "system", "content": system},
                             {"role": "user", "content": prompt},
@@ -161,7 +161,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                     data = resp.json()
                     text = data["choices"][0]["message"]["content"]
                     if text:
-                        return text, "OpenAI-GPT-5.4"
+                        return text, "OpenAI-GPT-5.5"
                 else:
                     logger.info("OpenAI returned %d, trying next", resp.status_code)
             except Exception as e:
@@ -203,7 +203,7 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
 
 def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
     """
-    Call medical LLM with cascade: OpenAI GPT-5.4 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite.
+    Call medical LLM with cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite.
 
     Uses whichever API keys are available. OpenAI has the strongest clinical
     validation (260 physicians, HIPAA BAA). Gemini 3.1 Pro is Google's most
@@ -229,7 +229,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                 "https://api.openai.com/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openai_key}"},
                 json={
-                    "model": "gpt-5.4",
+                    "model": "gpt-5.5",
                     "messages": [
                         {"role": "system", "content": system},
                         {"role": "user", "content": prompt},
@@ -243,7 +243,7 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                 data = resp.json()
                 text = data["choices"][0]["message"]["content"]
                 if text:
-                    return text, "OpenAI-GPT-5.4"
+                    return text, "OpenAI-GPT-5.5"
             else:
                 logger.info("OpenAI returned %d, trying next model", resp.status_code)
         except Exception as e:
@@ -374,7 +374,7 @@ def explain_conflict(
     except ImportError:
         pass
 
-    # Try LLM synthesis (GPT-5.4 → Gemini 3.1 Pro → Gemini Flash cascade)
+    # Try LLM synthesis (GPT-5.5 → Gemini 3.1 Pro → Gemini Flash cascade)
     llm_response, model_used = _call_medical_llm_sync(prompt, _SYSTEM_PROMPT)
 
     if llm_response and "ABSTAIN" not in llm_response:
