@@ -158,17 +158,30 @@ clinical decision on any device, decades later.
 | 21 CFR Part 11 audit export | ✅ Live | `engine/audit_export_part11.py` |
 | PCCP regression harness | ✅ Live | `scripts/run_clinical_regression_eval.py` |
 | Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash 6c6fb3ea…5846) |
-| Federation **mock** transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
-| Federation **live** transport (mind-mem MIC@2/MAP/binary) | ⏳ In flight by upstream mind-mem team | Will land in mind-mem v3.x release |
+| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.8.14` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
+| Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
+| Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ In flight by upstream mind-mem team — `memory_mesh` core ships in v3.8.14, transport adapter targets v3.9 | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
 | MCP server (18 tools) | ✅ Live | `mcp_server*.py` deployed on Azure Container Apps |
 | A2A agent (13 skills) | ✅ Live | `a2a_agent/` deployed on Azure Container Apps |
 
-The mock transport is a faithful in-process simulation: same canonical
-preimage encoding, same Ed25519 + X25519 + ChaCha20-Poly1305 cryptographic
-primitives, same TAG_v1 audit chain. When the live mind-mem MIC@2/MAP/binary
-transport ships, swapping the transport call in
-`flows/JointMemoryFederation.flow.mind::mind_mem_publish` is the only
-client-side change required.
+The control plane (peer registry, 7 sync scopes, per-scope conflict
+resolution, sync audit log, governance pub/sub fan-out) is now LIVE
+against `mind-mem v3.8.14`'s `MemoryMesh` and `EventFanout`. Every
+publish, ingest, and PHI quarantine in the federation demo writes a
+`SyncEvent` to the local mesh and broadcasts a structured event on the
+fanout stream — observable end-to-end in the demo's stdout and in the
+9 dedicated unit tests under
+`tests/test_engine/test_federation_transport.py`.
+
+The mock wire transport (in-process queue) remains in place pending
+the v3.9 cross-machine adapter. It is a faithful simulation of the
+live path: same canonical preimage encoding, same Ed25519 + X25519 +
+ChaCha20-Poly1305 cryptographic primitives, same TAG_v1 audit chain,
+same MemoryMesh sync bookkeeping. When the live HTTP/gRPC adapter
+ships, the only change is the wire layer beneath the
+`record_publish_event` / `record_ingest_event` calls — every layer
+above (the 21 typed invariants, the cryptographic envelope, the mesh
+audit log, the fanout stream) stays bit-identical.
 
 ---
 

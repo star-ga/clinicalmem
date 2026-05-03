@@ -41,6 +41,20 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 from cryptography.exceptions import InvalidSignature
 
+# Make the engine package importable when this script is run directly.
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from engine.federation_transport import (  # noqa: E402
+    make_default_fanout,
+    make_site_mesh,
+    record_ingest_event,
+    record_publish_event,
+    record_quarantine_event,
+    register_clinical_peer,
+)
+from mind_mem.event_fanout import EventFanout  # noqa: E402
+from mind_mem.memory_mesh import MemoryMesh  # noqa: E402
+
 # ── colorama for ANSI output ──────────────────────────────────────────────────
 try:
     import colorama
@@ -253,6 +267,9 @@ class SiteState:
     memory_store: dict[str, LocalKnowledge] = field(default_factory=dict)
     audit_log: list[dict[str, Any]] = field(default_factory=list)
     revoked_epochs: set[int] = field(default_factory=set)
+    # mind-mem v3.8.14 control plane: peer registry + 7 sync scopes +
+    # per-scope conflict-resolution policy + append-only sync audit log.
+    mesh: MemoryMesh = field(default_factory=make_site_mesh)
 
 
 # ── Site factory ──────────────────────────────────────────────────────────────
@@ -314,6 +331,8 @@ def egress(
     site: SiteState,
     finding: ClinicalFinding,
     transport: MockTransport,
+    fanout: EventFanout | None = None,
+    peer_id: str | None = None,
 ) -> FederatedRecord | None:
     """
     Run the JointMemoryFederation egress path:
@@ -379,6 +398,20 @@ def egress(
             _sha256_hex(json.dumps(stripped_payload, sort_keys=True).encode()),
             {"lane": lane},
         )
+        # Reflect quarantine in the mind-mem MemoryMesh sync audit log
+        # and broadcast a structured event_fanout entry (governance-gated
+        # scope, conflicts_resolved=1) so external observers see the rejection.
+        if fanout is not None and peer_id is not None:
+            record_quarantine_event(
+                site.mesh,
+                fanout,
+                peer_id=peer_id,
+                reason="egress_phi_quarantine",
+                payload_summary={
+                    "drug_pair": f"{finding.drug_a}+{finding.drug_b}",
+                    "lane": lane,
+                },
+            )
         return None
     # lane == clinical_knowledge: invariant satisfied trivially (not phi_lane)
     _pass(5, "lane=clinical_knowledge → phi_lane check satisfied")
@@ -430,6 +463,29 @@ def egress(
     # ── Emit over mock transport ──────────────────────────────────────────────
     transport.publish(record)
     print(f"\n  {GREEN}→ Record published to mock transport (queue depth = 1){RESET}")
+
+    # mind-mem v3.8.14 control plane: log the sync event in the local
+    # MemoryMesh and fan out a clinicalmem.federation.publish event so
+    # observers (Redis Stream / Kafka / custom adapter) can mirror the
+    # exchange. The wire bytes themselves still go over MockTransport;
+    # production swaps in HTTP/gRPC/QUIC.
+    if fanout is not None and peer_id is not None:
+        receipt = record_publish_event(
+            site.mesh,
+            fanout,
+            peer_id=peer_id,
+            payload_summary={
+                "drug_pair": f"{record.drug_a}+{record.drug_b}",
+                "severity": record.severity,
+                "signer_id": record.signer_id,
+            },
+            semantic_idempotency_hash=preimage_hash,
+            transport_dedup_hash=preimage_hash,
+        )
+        print(
+            f"  {DIM}mesh.log_sync → {receipt.scope.value} scope, "
+            f"governance-gated peer {receipt.peer_id}{RESET}"
+        )
     return record
 
 
@@ -440,6 +496,8 @@ def ingress(
     record: FederatedRecord,
     peer_public_key: Ed25519PublicKey,
     peer_signatures: list[FederatedRecord],
+    fanout: EventFanout | None = None,
+    peer_id: str | None = None,
 ) -> LocalKnowledge:
     """
     Run the JointMemoryFederation ingress path:
@@ -540,6 +598,29 @@ def ingress(
     _info("  evidence_grade", str(has_quorum))
     _info("  audit_hash",     audit_entry["entry_hash"][:32] + "...")
 
+    # mind-mem v3.8.14 control plane: record the ingest in the local
+    # MemoryMesh sync audit log + broadcast on event_fanout. The mesh's
+    # per-scope conflict-resolution policy (governance_gated for
+    # SEMANTIC + GOVERNANCE) is what the severity-quorum gate
+    # (invariant 16 above) enforces at runtime.
+    if fanout is not None and peer_id is not None:
+        receipt = record_ingest_event(
+            site.mesh,
+            fanout,
+            peer_id=peer_id,
+            payload_summary={
+                "drug_pair": f"{record.drug_a}+{record.drug_b}",
+                "severity": record.severity,
+                "tier": effective_tier,
+                "evidence_grade": has_quorum,
+                "from_signer": record.signer_id,
+            },
+        )
+        print(
+            f"  {DIM}mesh.log_sync → {receipt.scope.value} scope, "
+            f"peer {receipt.peer_id} (conflicts_resolved={receipt.conflicts_resolved}){RESET}"
+        )
+
     return local_record
 
 
@@ -599,11 +680,30 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
     site_b = _make_site("Mayo Clinic",   "MAYO-001")
     transport = MockTransport()
 
+    # Cross-site mind-mem v3.8.14 control plane:
+    #   * each site owns a MemoryMesh (peer registry + 7 scopes + audit log)
+    #   * a single shared EventFanout broadcasts every publish/ingest/quarantine
+    fanout = make_default_fanout()
+    register_clinical_peer(
+        site_a.mesh,
+        peer_id=site_b.site_id,
+        endpoint="inproc://mock-transport/mayo",
+    )
+    register_clinical_peer(
+        site_b.mesh,
+        peer_id=site_a.site_id,
+        endpoint="inproc://mock-transport/mgh",
+    )
+
     print(f"  {CYAN}Site A:{RESET} {site_a.name} ({site_a.site_id})")
     print(f"         Ed25519 pubkey: {site_a.public_key.public_bytes_raw().hex()[:32]}...")
     print(f"  {CYAN}Site B:{RESET} {site_b.name} ({site_b.site_id})")
     print(f"         Ed25519 pubkey: {site_b.public_key.public_bytes_raw().hex()[:32]}...")
     print(f"  {CYAN}Transport:{RESET} in-process Python queue (mock MIC@2 / MAP / binary)")
+    print(
+        f"  {CYAN}Control plane:{RESET} mind-mem v3.8.14 MemoryMesh "
+        f"+ EventFanout (peers: {len(site_a.mesh.peers())}↔{len(site_b.mesh.peers())})"
+    )
 
     # ── Site A: discover the finding ──────────────────────────────────────────
     _stage("SITE A: Layer 1-4 Pipeline — discover drug interaction")
@@ -648,7 +748,7 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
         )
 
     # ── Egress ────────────────────────────────────────────────────────────────
-    emitted = egress(site_a, finding, transport)
+    emitted = egress(site_a, finding, transport, fanout=fanout, peer_id=site_b.site_id)
 
     if phi_test:
         assert emitted is None, "PHI test: expected egress to return None (quarantined)"
@@ -668,6 +768,8 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
         received,
         peer_public_key=site_a.public_key,
         peer_signatures=[],   # 0-of-5 concurring → low tier by quorum gate
+        fanout=fanout,
+        peer_id=site_a.site_id,
     )
 
     # ── Summary ───────────────────────────────────────────────────────────────
@@ -682,6 +784,19 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
 
     # ── Audit reconciliation ──────────────────────────────────────────────────
     hash_a, hash_b = _reconcile_audit_chains(site_a, site_b)
+
+    # ── mind-mem MemoryMesh status ────────────────────────────────────────────
+    _stage("MIND-MEM v3.8.14 CONTROL PLANE — MemoryMesh status")
+    status_a = site_a.mesh.status()
+    status_b = site_b.mesh.status()
+    _info(f"{site_a.name} mesh peers", str(status_a["peer_count"]))
+    _info(f"{site_a.name} mesh events_logged", str(status_a["events_logged"]))
+    _info(f"{site_b.name} mesh peers", str(status_b["peer_count"]))
+    _info(f"{site_b.name} mesh events_logged", str(status_b["events_logged"]))
+    print(
+        f"\n  {DIM}(every entry above flowed through both the local mesh's sync "
+        f"audit log and the EventFanout → LoggingPublisher stream){RESET}"
+    )
 
     # ── Final invariant count ─────────────────────────────────────────────────
     _stage("FINAL SUMMARY")
