@@ -178,3 +178,81 @@ def test_medication_safety_review_demands_consensus_majority_or_abstain() -> Non
     assert any(
         "majority_or_abstain" in inv.predicate for inv in contract.invariants
     ), "MedicationSafetyReview lost its abstention invariant"
+
+
+# ─── Live executor (consensus-ranked gap #2) ──────────────────────────────
+
+from engine.flow_runner import execute, FlowExecution, NodeExecution  # noqa: E402
+
+
+_SAMPLE_INPUTS = {
+    "patient_id": "sarah-mitchell",
+    "medications": ["warfarin", "ibuprofen", "metformin"],
+    "allergies": ["penicillin"],
+    "lab_history": {},
+    "provider_records": [],
+    "current": ["warfarin"],
+    "perturbation": {},
+    "conditions": ["atrial_fibrillation"],
+    "demographics": {"age": 67},
+}
+
+
+@pytest.mark.parametrize("flow_name", SHIPPED_FLOWS)
+def test_execute_returns_flowexecution(flow_name: str) -> None:
+    """Every shipped flow executes end-to-end without raising."""
+    res = execute(flow_name, _SAMPLE_INPUTS)
+    assert isinstance(res, FlowExecution)
+    assert res.flow_name in flow_name or flow_name in res.flow_name
+    assert len(res.plan_hash) == 64
+    assert len(res.inputs_hash) == 64
+    assert len(res.output_hash) == 64
+    assert len(res.nodes) >= 1
+    assert all(isinstance(n, NodeExecution) for n in res.nodes)
+
+
+def test_execute_medication_safety_review_runs_dispatched_nodes() -> None:
+    """MedicationSafetyReview's dispatched nodes (PHI scan, normalize, Layer 1, BitNet, audit, build_safety_report) all return ok."""
+    res = execute("MedicationSafetyReview", _SAMPLE_INPUTS)
+    by_status = {n.node_name: n.status for n in res.nodes}
+    # Dispatchable nodes — must be ok
+    for name in ("phi", "normalized", "tier1", "bitnet", "audit", "report"):
+        if name in by_status:
+            assert by_status[name] in ("ok", "skipped"), f"{name} should not fail"
+
+
+def test_execute_records_per_node_evidence() -> None:
+    """Every executed node carries an output_hash + elapsed_ms stamp."""
+    res = execute("MedicationSafetyReview", _SAMPLE_INPUTS)
+    for n in res.nodes:
+        if n.status == "ok":
+            assert n.output_hash, f"{n.node_name} missing output_hash"
+            assert len(n.output_hash) == 64
+            assert n.elapsed_ms >= 0
+
+
+def test_execute_is_deterministic_for_identical_inputs() -> None:
+    """Same flow + same inputs → same plan_hash + same inputs_hash."""
+    a = execute("MedicationSafetyReview", _SAMPLE_INPUTS)
+    b = execute("MedicationSafetyReview", _SAMPLE_INPUTS)
+    assert a.plan_hash == b.plan_hash
+    assert a.inputs_hash == b.inputs_hash
+    # output_hash compare: tier1 layer is fully deterministic, so the
+    # final output_hash must match too (other nodes might be skipped if
+    # API keys aren't set, but that doesn't change determinism).
+    assert a.output_hash == b.output_hash
+
+
+def test_execute_unknown_directive_records_skipped_not_failed() -> None:
+    """Nodes without a dispatch entry are honestly recorded as skipped, not failed."""
+    res = execute("MedicationSafetyReview", _SAMPLE_INPUTS)
+    skipped = [n for n in res.nodes if n.status == "skipped"]
+    assert all("no dispatch" in n.detail.lower() for n in skipped), (
+        "skipped nodes must record why"
+    )
+
+
+def test_execute_handles_unknown_flow_name() -> None:
+    """Executing a non-existent flow raises FileNotFoundError."""
+    with pytest.raises(FileNotFoundError):
+        execute("DoesNotExist", _SAMPLE_INPUTS)

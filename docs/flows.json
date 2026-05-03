@@ -48,6 +48,10 @@
       {
         "name": "audit",
         "directive": "@native"
+      },
+      {
+        "name": "cross_reacts",
+        "directive": "@native"
       }
     ],
     "invariant_count": 3,
@@ -104,6 +108,10 @@
       {
         "name": "audit",
         "directive": "@native"
+      },
+      {
+        "name": "matches",
+        "directive": "@native"
       }
     ],
     "invariant_count": 3,
@@ -159,6 +167,10 @@
       },
       {
         "name": "audit",
+        "directive": "@native"
+      },
+      {
+        "name": "contraindications",
         "directive": "@native"
       }
     ],
@@ -227,6 +239,10 @@
       {
         "name": "audit",
         "directive": "@native"
+      },
+      {
+        "name": "report",
+        "directive": "@native"
       }
     ],
     "invariant_count": 6,
@@ -281,6 +297,10 @@
       },
       {
         "name": "audit",
+        "directive": "@native"
+      },
+      {
+        "name": "disagreements",
         "directive": "@native"
       }
     ],
@@ -341,6 +361,10 @@
       },
       {
         "name": "audit",
+        "directive": "@native"
+      },
+      {
+        "name": "preview",
         "directive": "@native"
       }
     ],
