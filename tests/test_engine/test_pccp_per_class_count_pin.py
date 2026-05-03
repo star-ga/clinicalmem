@@ -1,0 +1,87 @@
+"""Pin the per-class PCCP cohort counts displayed on the dashboard.
+
+The BitNet sparkline on `docs/demo.html` shows per-class recall
+labels of the form `100% · N / N` for each severity class. Those
+N values are the count of pairs in the live OpenEvidence cache for
+each class.
+
+Iter-30/31 audit caught FOUR such labels going stale across cohort
+growth (iter-19 added pt-013, iter-9 added 5 cache entries before
+that). This test pins the per-class counts so any future cache
+growth fails the gate until the labels are updated.
+
+Pinned values (iter 32):
+
+  contraindicated: 17 (was 14 → 15 → 16 → 17 across cohort growth)
+  serious        : 66 (was 64 → 66 — sparkline lagged)
+  moderate       : 22 (was 20 → 22 — sparkline lagged)
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+_CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
+_DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
+
+_EXPECTED_CONTRAINDICATED = 17
+_EXPECTED_SERIOUS = 66
+_EXPECTED_MODERATE = 22
+
+
+def _live_counts() -> dict[str, int]:
+    cache = json.loads(_CACHE.read_text())
+    counts: dict[str, int] = {}
+    for it in cache:
+        sev = (it.get("severity") or "").lower()
+        counts[sev] = counts.get(sev, 0) + 1
+    return counts
+
+
+def test_live_per_class_counts_match_pinned():
+    counts = _live_counts()
+    assert counts.get("contraindicated", 0) == _EXPECTED_CONTRAINDICATED, (
+        f"contraindicated count drifted: live={counts.get('contraindicated', 0)}, "
+        f"pinned={_EXPECTED_CONTRAINDICATED}. Update both this constant AND "
+        f"the demo.html sparkline label '100% · N / N' for the contraindicated bar."
+    )
+    assert counts.get("serious", 0) == _EXPECTED_SERIOUS, (
+        f"serious count drifted: live={counts.get('serious', 0)}, "
+        f"pinned={_EXPECTED_SERIOUS}"
+    )
+    assert counts.get("moderate", 0) == _EXPECTED_MODERATE, (
+        f"moderate count drifted: live={counts.get('moderate', 0)}, "
+        f"pinned={_EXPECTED_MODERATE}"
+    )
+
+
+def test_dashboard_sparkline_displays_pinned_counts():
+    html = _DEMO_HTML.read_text()
+    expected = (
+        f"100% · {_EXPECTED_CONTRAINDICATED} / {_EXPECTED_CONTRAINDICATED}",
+        f"100% · {_EXPECTED_SERIOUS} / {_EXPECTED_SERIOUS}",
+        f"100% · {_EXPECTED_MODERATE} / {_EXPECTED_MODERATE}",
+    )
+    for label in expected:
+        assert label in html, (
+            f"docs/demo.html BitNet sparkline must display {label!r} "
+            f"(matches the live cache count)"
+        )
+
+
+def test_no_stale_per_class_counts_remain():
+    """Old per-class counts must not linger after cohort growth."""
+    historical = (
+        ("contraindicated", "100% · 14 / 14"),
+        ("contraindicated", "100% · 15 / 15"),
+        ("contraindicated", "100% · 16 / 16"),
+        ("serious", "100% · 64 / 64"),
+        ("moderate", "100% · 20 / 20"),
+    )
+    html = _DEMO_HTML.read_text()
+    for label, stale in historical:
+        assert stale not in html, (
+            f"Stale {label} sparkline label {stale!r} still in docs/demo.html "
+            f"— replace with the live count."
+        )
