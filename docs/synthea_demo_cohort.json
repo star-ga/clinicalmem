@@ -3853,6 +3853,340 @@
         },
         "effectiveDateTime": "2026-03-28"
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-013a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1026967913"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Brennan",
+            "given": [
+              "Eamon"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-013b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1879783169"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Park",
+            "given": [
+              "Hyun-Jin"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-013",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Hawthorne",
+            "given": [
+              "Walter",
+              "Reginald"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1955-08-26",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "3401 Maple Ridge Drive"
+            ],
+            "city": "Asheville",
+            "state": "NC",
+            "postalCode": "28801",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-013"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-013a",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "194828000",
+              "display": "Angina pectoris"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I20.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2021-11-04"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-013b",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "8510008",
+              "display": "Erectile dysfunction"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N52.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2023-05-18"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-013c",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I10"
+            }
+          ]
+        },
+        "onsetDateTime": "2018-02-22"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-013a",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-013a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "4917",
+              "display": "isosorbide mononitrate"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "30 mg orally once daily (extended-release)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 30,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-013b",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-013b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "33216",
+              "display": "sildenafil"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "50 mg orally as needed (PRN)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 50,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-013a",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/synthea-pt-013"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure panel"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 138,
+              "unit": "mmHg"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 86,
+              "unit": "mmHg"
+            }
+          }
+        ],
+        "effectiveDateTime": "2026-04-19"
+      }
     }
   ]
 }

@@ -1671,5 +1671,23 @@
     "retrieved_at": "2026-05-03",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-9"
+  },
+  {
+    "drug_a": "sildenafil",
+    "drug_b": "isosorbide mononitrate",
+    "drug_pair_canonical": [
+      "isosorbide mononitrate",
+      "sildenafil"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "PDE5 inhibitors (sildenafil, tadalafil, vardenafil) potentiate the vasodilatory effect of organic nitrates (nitroglycerin, isosorbide mononitrate, isosorbide dinitrate) by blocking cGMP degradation. Co-administration causes severe, refractory hypotension; cases have been fatal. The FDA Viagra/Revatio labelling, the 2013 ACCF/AHA stable ischaemic heart disease guideline, and the 2019 ESC unstable angina/NSTEMI guideline all designate this combination an absolute contraindication. Window: at least 24 hours between sildenafil and any nitrate (longer for tadalafil \u2014 48 hours). Emergency nitrate use (acute MI in the field) is contraindicated for 24h+ after PDE5; alternatives include \u03b2-blockers and morphine for analgesia.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020895s039s042lbl.pdf",
+      "https://www.ahajournals.org/doi/10.1161/CIR.0b013e3182776f83",
+      "https://academic.oup.com/eurheartj/article/41/3/407/5556137"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-19"
   }
 ]
