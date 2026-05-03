@@ -19,7 +19,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 1. **6-layer clinical safety pipeline** with a Q16.16 ternary anchor
    at Layer 4.5. Layer 4.5's job is *deterministic verification*, not
    headline accuracy: same SHA-256 `repro_hash` on any chip in
-   healthcare. Bundle is 8,517 ternary parameters / 19 KB.
+   healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
 2. **Recall gate (PCCP):** **100% on contraindicated**, 100% major /
    serious / moderate, on a 105-pair OpenEvidence-cited cohort.
    Every pair is evidence-backed (FDA labels + ACC/AHA + EULAR +
@@ -95,7 +95,7 @@ artifact. Audit map:
 |---|---|
 | `100% recall · contraindicated · 16/16` | `docs/openevidence_cache.json` (104 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
 | `0 / 8 FP · precision = 1.0` | `docs/negative_control_cohort.json` (8 entries) → `scripts/run_negative_control_eval.py --json` |
-| `8,517 ternary weights / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py` |
+| `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain) |
 | `Federation control plane LIVE — mind-mem v3.8.14 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |

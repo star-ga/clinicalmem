@@ -50,7 +50,7 @@ output : 5 units (severity logits) · ternary linear · Q16.16 bias · argmax
 | `major` | 3 | Avoid concomitant use unless benefit > risk |
 | `contraindicated` | 4 | Do not co-administer; documented harm |
 
-Total parameters: `128 × 64 + 64 × 5 + 64 + 5 = 8,517`. Ternary weights
+Total parameters: `128 × 64 + 64 × 5 + 64 + 5 = 8,581` (8,512 ternary weights + 69 Q16.16 biases). Ternary weights
 encode losslessly in 2 bits → ~2.1 KB raw weights + ~280 B for biases =
 ~2.4 KB on the wire. JSON serialisation inflates that to ~19 KB.
 

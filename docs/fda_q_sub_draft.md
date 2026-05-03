@@ -304,7 +304,7 @@ claim asserted in Question (a):
   BLAKE2b-derived per-drug encodings).
 - Hidden layer: 64 units, ternary linear, Q16.16 bias, integer ReLU.
 - Output: 5 logit units, ternary linear, Q16.16 bias, argmax over integers.
-- Total parameters: 8,517 (ternary: ~2.1 KB raw; JSON serialization: ~19 KB).
+- Total parameters: 8,581 (8,512 ternary weights + 69 Q16.16 biases; ternary weights ~2.1 KB raw; JSON serialization: ~19 KB).
 - No floating-point arithmetic in the forward pass. All multiply-accumulate
   operations are 32-bit integer; no saturation arithmetic is used.
 

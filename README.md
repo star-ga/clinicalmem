@@ -127,7 +127,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
 | 4 | **Multi-LLM Consensus** | 5 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar | ~3s |
-| 4.5 | **BitNet b1.58 reproducibility primitive** | **High-precision deterministic veto + audit-replay anchor** (NOT a primary classifier — primary recall comes from layers 1-4). 8,517 ternary weights; **bit-identical Q16.16 forward pass across CPU/GPU/NPU**; **85.7% precision on the safety-critical `contraindicated` class**. Every output carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms`. Trained on 3,247-pair clinical-pharmacology corpus. | < 1ms |
+| 4.5 | **BitNet b1.58 reproducibility primitive** | **High-precision deterministic veto + audit-replay anchor** (NOT a primary classifier — primary recall comes from layers 1-4). 8,512 ternary weights + 69 Q16.16 biases (8,581 total parameters); **bit-identical Q16.16 forward pass across CPU/GPU/NPU**; **85.7% precision on the safety-critical `contraindicated` class**. Every output carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms`. Trained on 3,247-pair clinical-pharmacology corpus. | < 1ms |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
