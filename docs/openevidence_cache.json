@@ -9,7 +9,7 @@
       "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1847613/",
       "https://www.ncbi.nlm.nih.gov/pubmed/17353492"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -22,7 +22,7 @@
       "https://gut.bmj.com/content/67/7/1382",
       "https://www.ncbi.nlm.nih.gov/pubmed/29101258"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -35,7 +35,7 @@
       "https://www.ncbi.nlm.nih.gov/pubmed/16638293",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019842s048lbl.pdf"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -48,7 +48,7 @@
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/009218s107lbl.pdf",
       "https://www.ncbi.nlm.nih.gov/pubmed/18287551"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -61,7 +61,7 @@
       "https://www.acr.org/Clinical-Resources/Contrast-Manual",
       "https://www.ncbi.nlm.nih.gov/pubmed/28025645"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -74,7 +74,7 @@
       "https://www.ncbi.nlm.nih.gov/pubmed/19546408",
       "https://www.ncbi.nlm.nih.gov/books/NBK482348/"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -82,12 +82,12 @@
     "drug_b": "spironolactone",
     "drug_pair_canonical": ["lisinopril", "spironolactone"],
     "severity": "moderate",
-    "clinical_summary": "The combination of an ACE inhibitor (lisinopril) and an aldosterone antagonist (spironolactone) creates additive potassium retention; while evidence-based for heart failure with reduced ejection fraction (RALES trial, NEJM 1999), hyperkalaemia necessitating hospitalisation occurred in 2% of controlled trial patients versus substantially higher rates in real-world post-approval surveillance. Prescribers should confirm baseline eGFR and serum potassium are acceptable, begin with low spironolactone doses (12.5–25 mg/day), and recheck electrolytes at 1 and 4 weeks after initiation.",
+    "clinical_summary": "The combination of an ACE inhibitor (lisinopril) and an aldosterone antagonist (spironolactone) creates additive potassium retention; while evidence-based for heart failure with reduced ejection fraction (RALES trial, NEJM 1999), hyperkalaemia necessitating hospitalisation occurred in 2% of controlled trial patients versus substantially higher rates in real-world post-approval surveillance. Prescribers should confirm baseline eGFR and serum potassium are acceptable, begin with low spironolactone doses (12.5-25 mg/day), and recheck electrolytes at 1 and 4 weeks after initiation.",
     "evidence_urls": [
       "https://www.nejm.org/doi/full/10.1056/NEJM199909023411001",
       "https://www.ncbi.nlm.nih.gov/pubmed/15187148"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -100,7 +100,7 @@
       "https://www.ncbi.nlm.nih.gov/pubmed/8789925",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/018817s032lbl.pdf"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -113,7 +113,7 @@
       "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-new-restrictions-contraindications-and-dose-limitations-zocor",
       "https://www.ncbi.nlm.nih.gov/pubmed/12088592"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -121,12 +121,12 @@
     "drug_b": "tramadol",
     "drug_pair_canonical": ["fluoxetine", "tramadol"],
     "severity": "serious",
-    "clinical_summary": "Fluoxetine inhibits serotonin reuptake (SSRI) while tramadol has weak serotonergic and noradrenergic reuptake inhibition in addition to its opioid effect; combined use can precipitate serotonin syndrome, characterised by hyperthermia, autonomic instability, neuromuscular abnormalities, and altered mental status — a medical emergency with reported fatalities (Isbister et al., Med J Aust 2004). Fluoxetine also potently inhibits CYP2D6, the main enzyme responsible for tramadol conversion to its active O-desmethyl metabolite, further complicating the pharmacokinetic profile. The combination should generally be avoided; if co-prescribing is unavoidable, start with the lowest tramadol dose and counsel patients on early serotonin syndrome warning signs.",
+    "clinical_summary": "Fluoxetine inhibits serotonin reuptake (SSRI) while tramadol has weak serotonergic and noradrenergic reuptake inhibition in addition to its opioid effect; combined use can precipitate serotonin syndrome, characterised by hyperthermia, autonomic instability, neuromuscular abnormalities, and altered mental status (Isbister et al., Med J Aust 2004). Fluoxetine also potently inhibits CYP2D6, the main enzyme responsible for tramadol conversion to its active O-desmethyl metabolite, further complicating the pharmacokinetic profile. The combination should generally be avoided; if co-prescribing is unavoidable, start with the lowest tramadol dose and counsel patients on early serotonin syndrome warning signs.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/14705987",
       "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6545928/"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -134,12 +134,12 @@
     "drug_b": "tizanidine",
     "drug_pair_canonical": ["ciprofloxacin", "tizanidine"],
     "severity": "contraindicated",
-    "clinical_summary": "Ciprofloxacin is a potent inhibitor of CYP1A2, the principal enzyme responsible for tizanidine metabolism; co-administration produces a five-fold or greater increase in tizanidine plasma AUC, resulting in dangerous hypotension, excessive sedation, and psychomotor impairment — severe enough to be listed as a contraindication in both the FDA-approved tizanidine label and the ciprofloxacin prescribing information (Granfors et al., Clin Pharmacol Ther 2004). Prescribers must not co-prescribe these agents; if a fluoroquinolone is required during tizanidine therapy, levofloxacin (minimal CYP1A2 inhibition) is the preferred alternative.",
+    "clinical_summary": "Ciprofloxacin is a potent inhibitor of CYP1A2, the principal enzyme responsible for tizanidine metabolism; co-administration produces a five-fold or greater increase in tizanidine plasma AUC, resulting in dangerous hypotension, excessive sedation, and psychomotor impairment listed as a contraindication in both the FDA-approved tizanidine label and the ciprofloxacin prescribing information (Granfors et al., Clin Pharmacol Ther 2004). Prescribers must not co-prescribe these agents; if a fluoroquinolone is required during tizanidine therapy, levofloxacin (minimal CYP1A2 inhibition) is the preferred alternative.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/14691604",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020780s012lbl.pdf"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -147,12 +147,12 @@
     "drug_b": "trimethoprim",
     "drug_pair_canonical": ["methotrexate", "trimethoprim"],
     "severity": "serious",
-    "clinical_summary": "Both methotrexate and trimethoprim are dihydrofolate reductase (DHFR) inhibitors; their combination produces additive or synergistic antifolate toxicity, manifesting as severe myelosuppression (pancytopenia), mucositis, and hepatotoxicity — including deaths documented in post-marketing case reports and systematic reviews (Thomas et al., Clin Infect Dis 1998). Trimethoprim also competes with methotrexate for renal tubular secretion, further elevating methotrexate plasma concentrations. This combination is generally contraindicated or requires specialist haematological supervision with leucovorin rescue protocols and intensive haematological monitoring.",
+    "clinical_summary": "Both methotrexate and trimethoprim are dihydrofolate reductase (DHFR) inhibitors; their combination produces additive or synergistic antifolate toxicity, manifesting as severe myelosuppression (pancytopenia), mucositis, and hepatotoxicity including deaths documented in post-marketing case reports and systematic reviews (Thomas et al., Clin Infect Dis 1998). Trimethoprim also competes with methotrexate for renal tubular secretion, further elevating methotrexate plasma concentrations. This combination is generally contraindicated or requires specialist haematological supervision with leucovorin rescue protocols and intensive haematological monitoring.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/9524841",
       "https://www.ncbi.nlm.nih.gov/pubmed/23508423"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -165,7 +165,7 @@
       "https://www.ncbi.nlm.nih.gov/pubmed/19530233",
       "https://www.ncbi.nlm.nih.gov/books/NBK526054/"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -178,7 +178,7 @@
       "https://www.acr.org/Clinical-Resources/Contrast-Manual",
       "https://www.ema.europa.eu/en/documents/scientific-guideline/guideline-clinical-evaluation-pharmacokinetics-medicinal-products-renal-impairment_en.pdf"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   },
   {
@@ -186,12 +186,1091 @@
     "drug_b": "grapefruit",
     "drug_pair_canonical": ["atorvastatin", "grapefruit"],
     "severity": "moderate",
-    "clinical_summary": "Grapefruit and grapefruit juice contain furanocoumarins (principally bergamottin and 6',7'-dihydroxybergamottin) that irreversibly inhibit intestinal CYP3A4; since atorvastatin undergoes significant first-pass CYP3A4 metabolism, large quantities of grapefruit juice (>1.2 L/day) can increase atorvastatin AUC by approximately 83% (Lilja et al., Clin Pharmacol Ther 1999), raising myopathy risk. Unlike simvastatin or lovastatin (where grapefruit interaction is more pronounced), the clinical significance for atorvastatin is considered moderate; FDA labelling recommends limiting grapefruit juice consumption rather than complete avoidance, with counselling focusing on high-quantity regular use.",
+    "clinical_summary": "Grapefruit and grapefruit juice contain furanocoumarins (principally bergamottin and 6',7'-dihydroxybergamottin) that irreversibly inhibit intestinal CYP3A4; since atorvastatin undergoes significant first-pass CYP3A4 metabolism, large quantities of grapefruit juice (>1.2 L/day) can increase atorvastatin AUC by approximately 83% (Lilja et al., Clin Pharmacol Ther 1999), raising myopathy risk. Unlike simvastatin or lovastatin (where grapefruit interaction is more pronounced), the clinical significance for atorvastatin is considered moderate; FDA labelling recommends limiting grapefruit juice consumption rather than complete avoidance.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/10065673",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020702s056lbl.pdf"
     ],
-    "retrieved_at": "2026-05-02",
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "clarithromycin",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["clarithromycin", "simvastatin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Clarithromycin is a potent CYP3A4 inhibitor; co-administration with simvastatin increases simvastatin AUC up to 10-fold, dramatically elevating the risk of myopathy and life-threatening rhabdomyolysis. The FDA simvastatin label contraindicates co-administration with strong CYP3A4 inhibitors including clarithromycin; simvastatin must be withheld during any clarithromycin course, and prescribers should use a CYP3A4-independent statin (rosuvastatin, pravastatin) if antibiotic therapy overlaps with chronic statin use (FDA Drug Safety Communication 2011).",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-new-restrictions-contraindications-and-dose-limitations-zocor",
+      "https://www.ncbi.nlm.nih.gov/pubmed/21384566"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "clarithromycin",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["clarithromycin", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Clarithromycin inhibits CYP3A4 and CYP1A2 and has been shown in multiple case reports and a large pharmacoepidemiological study (Svanstrom et al., BMJ 2014) to substantially raise warfarin plasma levels and INR, leading to clinically significant bleeding events including haemorrhagic stroke. Patients on warfarin who are prescribed clarithromycin require prompt INR monitoring within 3-5 days of starting the antibiotic, with dose reduction of warfarin anticipated. An alternative macrolide with less CYP inhibition (azithromycin) or a non-macrolide antibiotic should be considered.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/24711470",
+      "https://www.ncbi.nlm.nih.gov/pubmed/25332074"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lithium",
+    "drug_b": "thiazide",
+    "drug_pair_canonical": ["lithium", "thiazide"],
+    "severity": "serious",
+    "clinical_summary": "Thiazide diuretics reduce renal sodium reabsorption, triggering a compensatory increase in proximal tubular sodium and lithium reabsorption; this pharmacodynamic mechanism consistently raises steady-state lithium serum concentrations by 25-50%, precipitating lithium toxicity (nausea, tremor, confusion, cardiac dysrhythmia) even at previously stable doses (Finley et al., Clin Pharmacokinet 1995). Lithium levels should be measured within 4-5 days of any thiazide dose change; if a diuretic is required in a lithium-treated patient, loop diuretics (with appropriate monitoring) are generally preferred over thiazides.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/7614776",
+      "https://www.ncbi.nlm.nih.gov/books/NBK507548/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "hydrochlorothiazide",
+    "drug_b": "lithium",
+    "drug_pair_canonical": ["hydrochlorothiazide", "lithium"],
+    "severity": "serious",
+    "clinical_summary": "Hydrochlorothiazide causes sodium and fluid depletion that reduces lithium renal clearance by 25-40% via compensatory proximal tubular lithium reabsorption (Jefferson, J Clin Psychiatry 2010). Even modest doses of hydrochlorothiazide (12.5-25 mg/day) can elevate lithium to toxic levels in previously stable patients on maintenance therapy. If diuretic therapy is required, lithium levels must be checked within one week of initiation and at any dose change; dose reduction of lithium is typically required.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/20122372",
+      "https://www.ncbi.nlm.nih.gov/pubmed/7614776"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "lithium",
+    "drug_pair_canonical": ["lisinopril", "lithium"],
+    "severity": "serious",
+    "clinical_summary": "ACE inhibitors reduce angiotensin II-mediated aldosterone release, decreasing distal tubular sodium and lithium excretion and raising lithium plasma concentrations; multiple case reports document lithium toxicity (including hospitalisation) shortly after initiating ACE inhibitors in patients on stable lithium therapy (Corcoran et al., J Clin Pharmacol 1987). The interaction is considered a class effect of all ACE inhibitors. Lithium levels should be measured within 5-7 days of initiating ACE inhibitor therapy, and lithium dose reduction should be anticipated.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/3571218",
+      "https://www.ncbi.nlm.nih.gov/pubmed/20122372"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ibuprofen",
+    "drug_b": "lithium",
+    "drug_pair_canonical": ["ibuprofen", "lithium"],
+    "severity": "serious",
+    "clinical_summary": "NSAIDs including ibuprofen inhibit renal prostaglandin synthesis, reducing renal blood flow and GFR; the resulting decrease in renal lithium clearance raises steady-state lithium concentrations by 10-60%, a magnitude sufficient to precipitate lithium toxicity at therapeutic doses (Ragheb, J Clin Psychopharmacol 1990). The interaction is consistent across all non-selective NSAIDs; COX-2 inhibitors also share this risk. Patients on lithium requiring analgesia should be counselled to prefer paracetamol, which lacks this interaction, and serum lithium levels should be checked if any NSAID course is necessary.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2289924",
+      "https://www.ncbi.nlm.nih.gov/books/NBK507548/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "digoxin",
+    "drug_b": "amiodarone",
+    "drug_pair_canonical": ["amiodarone", "digoxin"],
+    "severity": "serious",
+    "clinical_summary": "Amiodarone inhibits both P-glycoprotein (which mediates renal and intestinal digoxin efflux) and possibly CYP3A4-mediated digoxin metabolism, consistently raising digoxin serum concentrations by 70-100% within the first week of co-administration (Scher et al., JACC 1986); this elevation can precipitate digoxin toxicity (bradycardia, AV block, ventricular arrhythmia, nausea, visual disturbances). When amiodarone is initiated in a patient on digoxin, the digoxin dose should empirically be halved, with serum level monitoring at 1 and 4 weeks. Amiodarone's long half-life (40-55 days) means the interaction persists for weeks after amiodarone is stopped.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2869264",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018201s039lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "digoxin",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": ["digoxin", "verapamil"],
+    "severity": "serious",
+    "clinical_summary": "Verapamil inhibits P-glycoprotein-mediated renal tubular secretion and biliary excretion of digoxin, raising digoxin plasma concentrations by 50-75% on average (Pedersen et al., Clin Pharmacol Ther 1981); both drugs also slow AV nodal conduction, creating additive risk for bradycardia, AV block, and cardiac arrest. Digoxin dose should be reduced by 30-50% when verapamil is added, with serum level monitoring. The combination requires ECG monitoring at initiation and whenever doses are changed.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/7249493",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/018817s032lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "digoxin",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["digoxin", "spironolactone"],
+    "severity": "moderate",
+    "clinical_summary": "Spironolactone reduces renal and extrarenal clearance of digoxin by 20-25% (Waldorff et al., Clin Pharmacol Ther 1978), leading to elevated digoxin levels and increased risk of digoxin toxicity, particularly in patients who are already at the upper end of the therapeutic range. Additionally, spironolactone metabolites can cross-react with some digoxin immunoassays, falsely elevating measured digoxin concentrations and complicating therapeutic drug monitoring. Serum digoxin levels and electrolytes should be monitored when spironolactone is added or its dose changed.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/720701",
+      "https://www.ncbi.nlm.nih.gov/pubmed/6146710"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "phenytoin",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["phenytoin", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "The phenytoin-warfarin interaction is bidirectional and complex: phenytoin initially inhibits CYP2C9 and displaces warfarin from albumin (raising free warfarin and INR), but with continued use phenytoin induces CYP2C9 and CYP3A4, ultimately lowering warfarin levels and INR (Levine et al., Ann Pharmacother 2004). Conversely, warfarin may inhibit phenytoin metabolism, raising phenytoin concentrations and toxicity risk. Both drugs have narrow therapeutic windows, and the interaction necessitates intensive INR and phenytoin level monitoring during any co-administration period.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/14742771",
+      "https://www.ncbi.nlm.nih.gov/books/NBK430736/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "phenytoin",
+    "drug_b": "fluconazole",
+    "drug_pair_canonical": ["fluconazole", "phenytoin"],
+    "severity": "serious",
+    "clinical_summary": "Fluconazole is a potent inhibitor of CYP2C9, the primary enzyme metabolising phenytoin; co-administration increases phenytoin plasma levels by a mean of 75% (Blum et al., Ann Intern Med 1991), substantially raising the risk of phenytoin toxicity (nystagmus, ataxia, diplopia, cognitive impairment). Phenytoin levels should be measured within 5-7 days of starting fluconazole and the phenytoin dose reduced empirically; the interaction persists for the duration of fluconazole therapy due to its mechanism-based inhibition.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2052580",
+      "https://www.ncbi.nlm.nih.gov/pubmed/9040579"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "theophylline",
+    "drug_b": "ciprofloxacin",
+    "drug_pair_canonical": ["ciprofloxacin", "theophylline"],
+    "severity": "serious",
+    "clinical_summary": "Ciprofloxacin is a potent inhibitor of CYP1A2, the principal enzyme metabolising theophylline; co-administration raises theophylline AUC by 50-90%, leading to theophylline toxicity (nausea, seizures, cardiac arrhythmias) at previously well-tolerated doses (Schwartz et al., Antimicrob Agents Chemother 1988). Theophylline serum concentration should be measured before starting ciprofloxacin and again within 2-3 days; empirical dose reduction of 30-50% is commonly required. If a fluoroquinolone is necessary in a patient on theophylline, levofloxacin or moxifloxacin (minimal CYP1A2 inhibition) are preferred alternatives.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/3190429",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8297218"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "cyclosporine",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["cyclosporine", "simvastatin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Cyclosporine is an inhibitor of both CYP3A4 and organic anion-transporting polypeptides (OATP1B1/1B3) that mediate hepatic uptake of statins; co-administration with simvastatin raises simvastatin acid AUC by approximately 8-fold, dramatically elevating the risk of severe myopathy and rhabdomyolysis (Ichimaru et al., Drug Metab Pharmacokinet 2001). The simvastatin FDA label contraindicates co-administration with cyclosporine; if a statin is necessary in transplant patients receiving cyclosporine, the lowest effective dose of pravastatin or fluvastatin (less susceptible to this interaction) should be used.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/11535947",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "cyclosporine",
+    "drug_b": "nsaid",
+    "drug_pair_canonical": ["cyclosporine", "nsaid"],
+    "severity": "serious",
+    "clinical_summary": "NSAIDs and cyclosporine both exert nephrotoxic effects via distinct mechanisms (cyclosporine through renal afferent arteriolar vasoconstriction; NSAIDs through prostaglandin-mediated reduction in GFR); their combination markedly increases the risk of acute kidney injury, particularly in transplant recipients who often already have reduced renal reserve (Branthwaite and Nagington, BMJ 1986). Renal function (serum creatinine, BUN, GFR) and cyclosporine trough levels should be closely monitored if NSAID use cannot be avoided. Paracetamol is the preferred analgesic alternative in cyclosporine-treated patients.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/3089510",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18587395"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "fluconazole",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["fluconazole", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Fluconazole potently inhibits CYP2C9, the principal enzyme metabolising the pharmacologically active S-warfarin enantiomer, and also inhibits CYP3A4; a single 150 mg dose of fluconazole can increase warfarin AUC by approximately 44% and double the INR in some patients (Touchette et al., Ann Pharmacother 1992). Even short courses of oral fluconazole (for vaginal candidiasis) have caused serious bleeding events in patients on stable warfarin. INR should be checked within 3-5 days of starting any azole antifungal, and empirical warfarin dose reduction is often required.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/1605044",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8304395"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ssri",
+    "drug_b": "tramadol",
+    "drug_pair_canonical": ["ssri", "tramadol"],
+    "severity": "serious",
+    "clinical_summary": "SSRIs inhibit serotonin reuptake; tramadol independently inhibits serotonin and norepinephrine reuptake in addition to its opioid receptor activity. Combined serotonergic stimulation can trigger serotonin syndrome, a potentially life-threatening condition characterised by hyperthermia, autonomic instability, clonus, and hyperreflexia (Boyer and Shannon, NEJM 2005). Multiple SSRIs (fluoxetine, paroxetine) also inhibit CYP2D6-mediated tramadol metabolism, raising tramadol plasma levels. As a class, SSRIs should be co-prescribed with tramadol only when clinically necessary, at the lowest effective tramadol dose, with explicit patient counselling.",
+    "evidence_urls": [
+      "https://www.nejm.org/doi/full/10.1056/NEJMra041867",
+      "https://www.ncbi.nlm.nih.gov/pubmed/14705987"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "sertraline",
+    "drug_b": "tramadol",
+    "drug_pair_canonical": ["sertraline", "tramadol"],
+    "severity": "serious",
+    "clinical_summary": "Sertraline is an SSRI that inhibits serotonin reuptake transporter (SERT) and weakly inhibits CYP2D6; tramadol is a dual serotonin/norepinephrine reuptake inhibitor with opioid activity. Additive serotonergic stimulation from the combination increases risk of serotonin syndrome (FDA Drug Safety Communication 2011). Case reports and pharmacovigilance databases document serotonin syndrome at standard therapeutic doses of both drugs. Prescribers should weigh alternatives such as paracetamol or low-dose opioids without serotonergic activity.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-serious-cns-reactions-possible-when-antibiotic-linezolid-or",
+      "https://www.ncbi.nlm.nih.gov/pubmed/22170145"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "phenelzine",
+    "drug_b": "sertraline",
+    "drug_pair_canonical": ["phenelzine", "sertraline"],
+    "severity": "contraindicated",
+    "clinical_summary": "Phenelzine is an irreversible, non-selective MAOI; combining it with any SSRI including sertraline creates severe and potentially fatal serotonin syndrome due to massive serotonin accumulation. The FDA sertraline labelling contraindicates co-administration with MAOIs and mandates a 14-day washout period after stopping an MAOI before initiating sertraline (and a 14-day washout in reverse). Even brief overlaps have caused fatalities. This contraindication is absolute.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/019839s089lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8421606"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "fluoxetine",
+    "drug_b": "phenelzine",
+    "drug_pair_canonical": ["fluoxetine", "phenelzine"],
+    "severity": "contraindicated",
+    "clinical_summary": "The combination of fluoxetine (SSRI) and phenelzine (irreversible MAOI) is absolutely contraindicated due to risk of fatal serotonin syndrome characterised by hyperthermia, cardiovascular collapse, seizures, and death; documented fatalities exist (Feighner et al., J Clin Psychiatry 1990). Fluoxetine's exceptionally long half-life (and active metabolite norfluoxetine with t1/2 of 4-16 days) mandates a 5-week washout period after fluoxetine discontinuation before starting any MAOI. This is the longest required washout of any antidepressant.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2198420",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018936s103lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "opioid",
+    "drug_b": "benzodiazepine",
+    "drug_pair_canonical": ["benzodiazepine", "opioid"],
+    "severity": "serious",
+    "clinical_summary": "Combined use of opioids and benzodiazepines carries an FDA black box warning for respiratory depression, sedation, coma, and death; a 2017 retrospective study (Park et al., BMJ 2015) found a 3.86-fold increase in overdose mortality among patients co-prescribed opioids and benzodiazepines versus opioids alone. The combination should be reserved for patients for whom alternative treatments are inadequate; when co-prescribed, doses should be limited to the lowest effective levels, duration minimised, and patients counselled on overdose risk and naloxone availability.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-warns-about-serious-risks-and-death-when-combining-opioid-pain",
+      "https://www.ncbi.nlm.nih.gov/pubmed/26063447"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "morphine",
+    "drug_b": "lorazepam",
+    "drug_pair_canonical": ["lorazepam", "morphine"],
+    "severity": "serious",
+    "clinical_summary": "Morphine and lorazepam individually depress CNS and respiratory function through distinct mechanisms (mu-opioid receptor agonism and GABA-A potentiation respectively); their combination produces supra-additive CNS and respiratory depression. Population pharmacokinetic studies and clinical case series document fatal respiratory depression at doses that would individually be well-tolerated. This combination carries the FDA opioid-benzodiazepine black box warning and should be avoided except in palliative or intensive care settings with continuous respiratory monitoring.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-warns-about-serious-risks-and-death-when-combining-opioid-pain",
+      "https://www.ncbi.nlm.nih.gov/pubmed/26063447"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "gemfibrozil",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["gemfibrozil", "simvastatin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Gemfibrozil inhibits OATP1B1-mediated hepatic uptake of simvastatin acid and CYP2C8-mediated metabolism of simvastatin, raising simvastatin AUC approximately 1.9-fold and substantially increasing rhabdomyolysis risk (FDA 2002 labelling update). The combination of a fibrate and simvastatin is contraindicated in the simvastatin prescribing information. If combination lipid-lowering therapy is needed, fenofibrate (which has a lower rhabdomyolysis interaction risk with statins compared to gemfibrozil) combined with pravastatin or rosuvastatin is preferred.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/12184931"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "gemfibrozil",
+    "drug_b": "rosuvastatin",
+    "drug_pair_canonical": ["gemfibrozil", "rosuvastatin"],
+    "severity": "serious",
+    "clinical_summary": "Gemfibrozil inhibits OATP1B1 transport of rosuvastatin acid into hepatocytes, raising rosuvastatin AUC approximately 2-fold; while less pronounced than the simvastatin interaction, the elevated rosuvastatin exposure increases the risk of myopathy and rhabdomyolysis. The rosuvastatin FDA label recommends limiting the dose to 10 mg/day when co-administered with gemfibrozil and notes that the combination should be avoided unless the benefits clearly outweigh the risks. Fenofibrate is a safer alternative fibrate for combination therapy with rosuvastatin.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021366s022lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/12184931"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ace inhibitor",
+    "drug_b": "arb",
+    "drug_pair_canonical": ["ace inhibitor", "arb"],
+    "severity": "serious",
+    "clinical_summary": "Dual RAAS blockade combining an ACE inhibitor with an ARB was tested in the ONTARGET trial (Yusuf et al., NEJM 2008) which found no additional cardiovascular benefit but a significant increase in hypotension, hyperkalaemia, and acute kidney injury requiring dialysis compared to either agent alone. Current ACC/AHA guidelines specifically recommend against routine dual RAAS blockade in the general population; the combination may only be considered in narrow specialist-supervised circumstances with intensive renal and electrolyte monitoring.",
+    "evidence_urls": [
+      "https://www.nejm.org/doi/full/10.1056/NEJMoa0801317",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18378520"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "losartan",
+    "drug_pair_canonical": ["lisinopril", "losartan"],
+    "severity": "serious",
+    "clinical_summary": "Co-prescribing lisinopril (ACE inhibitor) and losartan (ARB) constitutes dual RAAS blockade; the ONTARGET trial demonstrated this combination significantly increases risk of hypotension, hyperkalaemia, and acute kidney injury requiring dialysis (creatinine doubling: 13.5% vs 10.2% with monotherapy). ACC/AHA hypertension guidelines (2017) specifically advise against dual RAAS blockade. This combination should be avoided; if a second agent is needed, add amlodipine or a thiazide diuretic (not another RAAS agent) per guideline-directed therapy.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/18378520",
+      "https://www.ncbi.nlm.nih.gov/pubmed/29146535"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "metoprolol",
+    "drug_b": "diltiazem",
+    "drug_pair_canonical": ["diltiazem", "metoprolol"],
+    "severity": "serious",
+    "clinical_summary": "Diltiazem is a non-dihydropyridine calcium channel blocker that, like verapamil, slows sinoatrial node automaticity and AV nodal conduction; combined with beta-blocker metoprolol (which independently slows AV conduction via beta-1 blockade), the result is additive risk of severe bradycardia, heart block, and haemodynamic compromise. Diltiazem also inhibits CYP3A4, modestly raising metoprolol plasma levels. Oral combination may be required in selected patients with refractory atrial fibrillation but demands close haemodynamic and ECG monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8789925",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018817s038lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amiodarone",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["amiodarone", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Amiodarone and its active metabolite desethylamiodarone are potent inhibitors of CYP2C9 and CYP3A4; consistent data from pharmacokinetic studies show amiodarone raises warfarin AUC by 30-50% and INR by similar margins (Fonrose et al., Clin Pharmacol Ther 2004). Because amiodarone's half-life exceeds 40 days, the interaction persists for weeks to months after discontinuation, requiring sustained INR monitoring. The warfarin dose typically requires a 25-50% reduction when amiodarone is initiated; INR should be checked weekly during initiation.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/14691603",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018201s039lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ondansetron",
+    "drug_b": "amiodarone",
+    "drug_pair_canonical": ["amiodarone", "ondansetron"],
+    "severity": "serious",
+    "clinical_summary": "Both amiodarone and ondansetron independently prolong the cardiac QT interval through potassium channel (hERG/IKr) blockade; their combination produces additive QTc prolongation and substantially increases the risk of torsades de pointes, a polymorphic ventricular tachycardia that can degenerate into ventricular fibrillation (FDA ondansetron Safety Communication 2011). Risk is amplified by hypokalaemia, hypomagnesaemia, bradycardia, or congenital long-QT syndrome. Baseline and follow-up ECG monitoring is essential; alternative antiemetics should be used in patients on amiodarone.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/updated-information-qt-prolongation-cardiac-arrhythmia-and-warning-for-zofran-ondansetron",
+      "https://www.ncbi.nlm.nih.gov/pubmed/21892354"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "methotrexate",
+    "drug_b": "naproxen",
+    "drug_pair_canonical": ["methotrexate", "naproxen"],
+    "severity": "serious",
+    "clinical_summary": "NSAIDs including naproxen impair renal prostaglandin synthesis and reduce GFR, decreasing renal tubular secretion of methotrexate and raising its plasma concentrations; this pharmacokinetic interaction has been documented as a cause of methotrexate toxicity (pancytopenia, hepatotoxicity, mucositis) including fatalities, particularly with weekly high-dose methotrexate regimens (Thyss et al., Lancet 1986). Weekly low-dose methotrexate for rheumatoid arthritis or psoriasis can also be affected. Concurrent NSAIDs should be avoided where possible; full blood counts and renal function must be monitored when co-prescription is unavoidable.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2869231",
+      "https://www.ncbi.nlm.nih.gov/pubmed/3090271"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "methotrexate",
+    "drug_b": "omeprazole",
+    "drug_pair_canonical": ["methotrexate", "omeprazole"],
+    "severity": "moderate",
+    "clinical_summary": "PPIs including omeprazole inhibit renal tubular secretion of methotrexate (via inhibition of H+/K+-ATPase proton pump activity in the proximal tubule and possible OAT transporter competition), reducing methotrexate clearance; this interaction is most clinically significant at high-dose methotrexate regimens (>200 mg/m2) used in oncology, where delayed clearance increases exposure to toxic levels (Suzuki et al., J Clin Pharmacol 2009). At low weekly doses for inflammatory conditions, the interaction is generally of modest clinical significance but warrants awareness. Routine methotrexate level monitoring is recommended in patients on PPIs receiving high-dose methotrexate.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/19017883",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18040010"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "furosemide",
+    "drug_b": "nsaid",
+    "drug_pair_canonical": ["furosemide", "nsaid"],
+    "severity": "moderate",
+    "clinical_summary": "NSAIDs inhibit prostaglandin-mediated renal afferent arteriolar dilation and reduce tubular sensitivity to loop diuretics such as furosemide, blunting the natriuretic and diuretic response by up to 50%; this pharmacodynamic antagonism can cause fluid retention, oedema, and haemodynamic deterioration in patients with heart failure or cirrhosis who are dependent on prostaglandins to maintain renal perfusion (Brater, Clin Pharmacokinet 1998). NSAIDs also increase the risk of NSAID-induced AKI in the setting of pre-existing diuretic-induced volume depletion (the 'triple whammy' of diuretic + ACE inhibitor + NSAID). Avoidance of NSAIDs is strongly preferred in patients on loop diuretics.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9554931",
+      "https://www.ncbi.nlm.nih.gov/pubmed/24751960"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "nsaid",
+    "drug_pair_canonical": ["lisinopril", "nsaid"],
+    "severity": "moderate",
+    "clinical_summary": "The combination of an ACE inhibitor, a diuretic, and an NSAID constitutes the 'triple whammy' that significantly raises the risk of acute kidney injury: ACE inhibitors blunt angiotensin II-mediated efferent arteriolar vasoconstriction; NSAIDs block prostaglandin-mediated afferent arteriolar dilation; diuretics reduce circulating volume. Even the two-drug ACE inhibitor + NSAID combination carries a 2-fold AKI risk in retrospective analyses (Lapi et al., BMJ 2013). Renal function should be checked within 1-2 weeks of adding any NSAID to an ACE inhibitor regimen.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/23393082",
+      "https://www.ncbi.nlm.nih.gov/pubmed/17909197"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "apixaban",
+    "drug_b": "nsaid",
+    "drug_pair_canonical": ["apixaban", "nsaid"],
+    "severity": "serious",
+    "clinical_summary": "Direct oral anticoagulants (DOACs) such as apixaban carry a major bleeding risk that is amplified by any antiplatelet or NSAID co-medication; a retrospective cohort study (Loke et al., BMJ 2012) and DOAC clinical trial subgroup analyses confirm that NSAID co-use with DOACs increases major bleeding risk by approximately 50%. Unlike warfarin, DOAC-NSAID interactions are primarily pharmacodynamic (additive haemostasis impairment) without a ready reversal endpoint such as INR; bleeding risk monitoring relies on clinical vigilance. Paracetamol is preferred for analgesia in patients on apixaban.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/22886016",
+      "https://www.ncbi.nlm.nih.gov/pubmed/23907408"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "clopidogrel",
+    "drug_b": "omeprazole",
+    "drug_pair_canonical": ["clopidogrel", "omeprazole"],
+    "severity": "moderate",
+    "clinical_summary": "Clopidogrel is a prodrug requiring CYP2C19-mediated bioactivation to its active thiol metabolite; omeprazole (and esomeprazole) are moderate-to-potent inhibitors of CYP2C19, reducing clopidogrel active metabolite AUC by 40-50% (Gilard et al., JACC 2008) and impairing platelet inhibition. The FDA issued a drug safety communication warning against co-prescribing clopidogrel with omeprazole. If gastroprotection is required in a clopidogrel-treated patient, pantoprazole or rabeprazole (weaker CYP2C19 inhibitors) are preferred alternatives.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-reduced-effectiveness-plavix-clopidogrel-patients-who-are-poor",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18242516"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "clopidogrel",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["clopidogrel", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Combined antiplatelet therapy (clopidogrel) and anticoagulation (warfarin) is sometimes prescribed after coronary stent implantation in patients with atrial fibrillation (triple therapy); however, the WOEST trial (Dewilde et al., Lancet 2013) showed that dual therapy (warfarin + clopidogrel without aspirin) substantially reduced bleeding without increasing thrombotic events versus triple therapy. Dual therapy with warfarin plus clopidogrel still carries a significant major bleeding hazard versus warfarin monotherapy, requiring explicit risk-benefit documentation and duration limitation. INR target may need to be narrowed (e.g. 2.0-2.5) in this setting.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/23415013",
+      "https://www.ncbi.nlm.nih.gov/pubmed/23332153"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "rivaroxaban",
+    "drug_b": "nsaid",
+    "drug_pair_canonical": ["nsaid", "rivaroxaban"],
+    "severity": "serious",
+    "clinical_summary": "Rivaroxaban (a direct factor Xa inhibitor) and NSAIDs independently impair haemostasis through different mechanisms; their co-administration is associated with a clinically meaningful increase in bleeding risk including gastrointestinal haemorrhage. Analyses from the ROCKET AF trial and post-marketing data confirm that concurrent NSAID use in rivaroxaban-treated patients significantly increases major GI bleeding. As with other DOACs, paracetamol is the preferred analgesic. If NSAID therapy is unavoidable, dose minimisation, gastroprotection with PPI, and heightened clinical bleeding vigilance are necessary.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/22886016",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/202439s001lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "sulfamethoxazole",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["sulfamethoxazole", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Sulfamethoxazole (a sulfonamide component of co-trimoxazole/TMP-SMX) inhibits CYP2C9, the principal enzyme metabolising S-warfarin, and also reduces gut flora-mediated vitamin K synthesis; combined, these mechanisms elevate warfarin plasma levels and INR substantially. Multiple case reports and a pharmacoepidemiological study (Fischer et al., Arch Intern Med 2010) demonstrate a significantly elevated risk of over-anticoagulation and bleeding events when co-trimoxazole is prescribed to warfarin-treated patients. INR should be checked within 3-5 days of starting TMP-SMX, and warfarin dose reduction is typically required.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/20385853",
+      "https://www.ncbi.nlm.nih.gov/pubmed/19636039"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "glipizide",
+    "drug_b": "fluconazole",
+    "drug_pair_canonical": ["fluconazole", "glipizide"],
+    "severity": "serious",
+    "clinical_summary": "Fluconazole inhibits CYP2C9, the principal enzyme metabolising glipizide and most sulfonylureas; this pharmacokinetic interaction substantially raises sulfonylurea AUC and duration of action, increasing the risk of prolonged, severe hypoglycaemia (Rowe et al., Diabetes Care 1993). The hypoglycaemic effect can be dramatically amplified even with a single-dose 150 mg fluconazole, requiring patients to increase blood glucose monitoring frequency during concurrent therapy. Alternative antifungal agents (topical azoles, terbinafine) should be considered in sulfonylurea-treated patients.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8300543",
+      "https://www.ncbi.nlm.nih.gov/pubmed/7875827"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "glipizide",
+    "drug_b": "ciprofloxacin",
+    "drug_pair_canonical": ["ciprofloxacin", "glipizide"],
+    "severity": "moderate",
+    "clinical_summary": "Fluoroquinolone antibiotics including ciprofloxacin are associated with clinically significant dysglycaemia (both hypoglycaemia and hyperglycaemia) in patients taking sulfonylureas; the proposed mechanism involves ciprofloxacin's stimulation of insulin secretion via pancreatic KATP channel blockade, which augments the sulfonylurea effect and can cause profound hypoglycaemia. The FDA fluoroquinolone class label includes a warning about blood glucose perturbations; patients on sulfonylureas requiring ciprofloxacin should increase blood glucose monitoring frequency, particularly in the first 2-3 days.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/18039834",
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-advises-restricting-fluoroquinolone-antibiotic-use-certain"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "omeprazole",
+    "drug_b": "ppi long-term",
+    "drug_pair_canonical": ["omeprazole", "ppi long-term"],
+    "severity": "moderate",
+    "clinical_summary": "Long-term PPI use (>1 year) is associated with hypomagnesaemia (risk begins after approximately 3 months, becomes clinically significant after 1 year), vitamin B12 deficiency due to impaired acid-mediated intrinsic factor-independent absorption, increased risk of Clostridioides difficile infection, and in elderly patients, an associated (though debated causal) risk of hip, wrist, and vertebral fractures. The 2023 AGS Beers Criteria explicitly flags chronic PPI use without documented indication as potentially inappropriate for older adults. De-escalation to H2-receptor antagonists should be attempted periodically.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/22782030",
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "benzodiazepine",
+    "drug_b": "elderly",
+    "drug_pair_canonical": ["benzodiazepine", "elderly"],
+    "severity": "serious",
+    "clinical_summary": "The 2023 AGS Beers Criteria rate benzodiazepines (all subtypes including short-acting) as potentially inappropriate medications in older adults; this population has reduced hepatic oxidative metabolism, higher adipose-to-lean tissue ratio (increasing volume of distribution), and greater CNS sensitivity to GABA-A potentiation, resulting in exaggerated sedation, cognitive impairment, psychomotor slowing, and an approximately 2-fold increase in fall and hip fracture risk. Meta-analyses (Donnelly et al., BMJ 2017) confirm sustained impairment even after weeks of regular use. Cognitive behavioural therapy and non-pharmacological sleep interventions are first-line alternatives.",
+    "evidence_urls": [
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
+      "https://www.ncbi.nlm.nih.gov/pubmed/28276558"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amitriptyline",
+    "drug_b": "elderly",
+    "drug_pair_canonical": ["amitriptyline", "elderly"],
+    "severity": "serious",
+    "clinical_summary": "Amitriptyline (a tricyclic antidepressant) has potent anticholinergic, antihistaminic, and alpha-adrenergic blocking properties that are particularly harmful in older adults: anticholinergic effects cause urinary retention, constipation, cognitive impairment, and delirium; orthostatic hypotension increases fall risk; cardiac conduction effects (QTc prolongation, bundle branch block) raise arrhythmia risk. The 2023 AGS Beers Criteria list amitriptyline as explicitly inappropriate in older adults regardless of indication. SSRIs or SNRIs at the lowest effective dose are preferred for depression; duloxetine or gabapentin for neuropathic pain.",
+    "evidence_urls": [
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
+      "https://www.ncbi.nlm.nih.gov/pubmed/27689985"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "diphenhydramine",
+    "drug_b": "elderly",
+    "drug_pair_canonical": ["diphenhydramine", "elderly"],
+    "severity": "serious",
+    "clinical_summary": "Diphenhydramine is a first-generation antihistamine with high anticholinergic activity listed on both the 2023 AGS Beers Criteria and the Anticholinergic Cognitive Burden (ACB) scale as strongly anticholinergic; in older adults it causes sedation, confusion, delirium, urinary retention, and impaired psychomotor performance — all of which contribute to fall and fracture risk. Chronic use for insomnia carries FDA safety communication warnings. Loratadine or cetirizine (second-generation, low ACB) should be used for allergic conditions; melatonin or low-dose doxepin for sleep in older adults.",
+    "evidence_urls": [
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
+      "https://www.ncbi.nlm.nih.gov/pubmed/27027748"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "nsaid",
+    "drug_b": "ckd",
+    "drug_pair_canonical": ["ckd", "nsaid"],
+    "severity": "serious",
+    "clinical_summary": "NSAIDs inhibit prostaglandin-mediated afferent arteriolar dilation which is essential for maintaining GFR in patients with chronic kidney disease (CKD); in this population, NSAID use is associated with acute-on-chronic kidney injury, accelerated CKD progression, fluid retention, and worsening hypertension and heart failure. The 2023 AGS Beers Criteria designate all oral non-COX-2-selective NSAIDs as potentially inappropriate in patients with CKD stage 4+ (eGFR <30 mL/min). KDIGO guidelines recommend avoiding NSAIDs when eGFR is below 30 mL/min and using them with caution between 30-60 mL/min.",
+    "evidence_urls": [
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
+      "https://www.ncbi.nlm.nih.gov/pubmed/25394990"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "metformin",
+    "drug_b": "renal impairment",
+    "drug_pair_canonical": ["metformin", "renal impairment"],
+    "severity": "contraindicated",
+    "clinical_summary": "Metformin is renally cleared (t1/2 increases dramatically as GFR falls) and accumulates in renal impairment; reduced clearance raises the risk of metformin-associated lactic acidosis (MALA), a rare but high-mortality complication (>50%). FDA labelling contraindicates metformin at eGFR <30 mL/min; it should not be initiated at eGFR 30-45 mL/min and should be used cautiously in this range with dose reduction if already established. GFR should be monitored at least annually in all metformin-treated patients and more frequently in the elderly.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/21801101"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "propranolol",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": ["propranolol", "verapamil"],
+    "severity": "serious",
+    "clinical_summary": "Propranolol (non-selective beta-blocker) and verapamil (non-DHP calcium channel blocker) both suppress sinoatrial and AV nodal conduction; their combination carries a risk of fatal bradycardia, complete heart block, and acute decompensated heart failure that has resulted in cardiac arrests after intravenous administration and haemodynamic deterioration with oral therapy. Case fatalities with IV verapamil in patients on oral beta-blockers are well documented (Winniford et al., Circulation 1982). Oral co-prescription is occasionally used for refractory SVT under specialist supervision with continuous monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/7093147",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8789925"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "atenolol",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": ["atenolol", "verapamil"],
+    "severity": "serious",
+    "clinical_summary": "Atenolol (cardioselective beta-1 blocker) and verapamil (non-DHP CCB) independently depress AV nodal and sinoatrial conduction; combined oral therapy is associated with symptomatic bradycardia, first- to third-degree AV block, and haemodynamic compromise. Unlike propranolol, atenolol does not undergo significant hepatic metabolism and is renally cleared, but the pharmacodynamic interaction with verapamil is equally clinically significant regardless of pharmacokinetic differences. ECG monitoring should accompany any trial of combined oral therapy.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8789925",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/018817s032lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "carvedilol",
+    "drug_b": "diltiazem",
+    "drug_pair_canonical": ["carvedilol", "diltiazem"],
+    "severity": "serious",
+    "clinical_summary": "Carvedilol is a non-selective beta-blocker with alpha-1 blocking properties metabolised predominantly by CYP2D6 and CYP2C9; diltiazem inhibits CYP3A4 and slows AV nodal conduction independently. Co-administration produces both pharmacodynamic (additive AV nodal suppression, bradycardia, hypotension) and pharmacokinetic interactions. In heart failure patients where both agents might be co-prescribed, haemodynamic and cardiac rhythm monitoring is essential, and dose titration should be slow with starting doses at the lower end of the therapeutic range.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/12588668",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018817s038lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "itraconazole",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["itraconazole", "simvastatin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Itraconazole is among the most potent CYP3A4 inhibitors in clinical use; co-administration with simvastatin increases simvastatin AUC by approximately 10-fold, causing a massive increase in plasma statin exposure that substantially raises the risk of severe myopathy and rhabdomyolysis (Neuvonen et al., Drug Saf 1998). The simvastatin label contraindicates concomitant use with strong CYP3A4 inhibitors including all azole antifungals except fluconazole and isavuconazole. Simvastatin should be withheld for the duration of itraconazole therapy; rosuvastatin or pravastatin are safer alternatives.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9648032",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ketoconazole",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["ketoconazole", "simvastatin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Ketoconazole is a prototypical potent CYP3A4 and P-gp inhibitor used as a positive control in drug interaction studies; co-administration with simvastatin raises simvastatin AUC by >10-fold (Neuvonen and Jalava, Clin Pharmacol Ther 1996), dramatically increasing myopathy and rhabdomyolysis risk. The FDA simvastatin label explicitly contraindicates concomitant use with ketoconazole. Oral ketoconazole itself carries FDA hepatotoxicity warnings limiting its systemic use; topical ketoconazole at standard doses does not produce clinically significant systemic absorption.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8894423",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "spironolactone",
+    "drug_b": "eplerenone",
+    "drug_pair_canonical": ["eplerenone", "spironolactone"],
+    "severity": "moderate",
+    "clinical_summary": "Spironolactone and eplerenone are both mineralocorticoid receptor antagonists (potassium-sparing diuretics); co-prescribing two agents from the same class serves no additional therapeutic purpose and doubles the risk of hyperkalaemia and hormonal adverse effects (gynaecomastia from spironolactone). Combination should be avoided as there is no evidence-based indication; if one agent is insufficient, dose optimisation of the single agent or addition of a loop diuretic is preferred, with careful electrolyte monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/books/NBK554429/",
+      "https://www.ncbi.nlm.nih.gov/pubmed/15187148"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "potassium chloride",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["potassium chloride", "spironolactone"],
+    "severity": "serious",
+    "clinical_summary": "Spironolactone inhibits aldosterone-mediated renal potassium excretion; adding supplemental potassium chloride creates additive potassium retention that substantially increases the risk of hyperkalaemia, including life-threatening cardiac dysrhythmias (Hollenberg, J Hypertens 2003). Routine potassium supplementation is generally contraindicated when a potassium-sparing diuretic is already prescribed, unless serum potassium is documented to be below 3.5 mEq/L despite the aldosterone antagonist. Electrolyte monitoring at 1-2 week intervals after starting or changing either agent is essential.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/12571432",
+      "https://www.ncbi.nlm.nih.gov/pubmed/19546408"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "potassium chloride",
+    "drug_b": "lisinopril",
+    "drug_pair_canonical": ["lisinopril", "potassium chloride"],
+    "severity": "moderate",
+    "clinical_summary": "Lisinopril (ACE inhibitor) reduces angiotensin II-mediated aldosterone secretion, impairing renal potassium excretion; supplemental potassium chloride in this setting can precipitate clinically significant hyperkalaemia. The RALES trial and real-world pharmacovigilance data show that inappropriately monitored potassium supplementation in ACE inhibitor-treated patients — particularly those with diabetes or CKD — is a common and preventable cause of hyperkalaemia-related hospitalisations. Serum potassium and renal function should be checked within 1 week of initiating or dose-changing potassium supplementation.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/19546408",
+      "https://www.ncbi.nlm.nih.gov/books/NBK482348/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "enalapril",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["enalapril", "spironolactone"],
+    "severity": "moderate",
+    "clinical_summary": "Enalapril (ACE inhibitor) and spironolactone (potassium-sparing diuretic) each independently impair renal potassium excretion; their combination is evidence-based for HFrEF but requires rigorous hyperkalaemia monitoring. The post-RALES real-world experience showed a nearly 4-fold increase in hyperkalaemia hospitalisations when prescribing of this combination rose dramatically in the early 2000s (Juurlink et al., NEJM 2004). Serum potassium and renal function must be checked at 1, 4, and 12 weeks after initiation, with dose adjustment if potassium exceeds 5.0 mEq/L.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/15152060",
+      "https://www.nejm.org/doi/full/10.1056/NEJM199909023411001"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "valsartan",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["spironolactone", "valsartan"],
+    "severity": "moderate",
+    "clinical_summary": "Valsartan (ARB) blocks AT1 receptors reducing angiotensin II-mediated aldosterone release; spironolactone directly antagonises aldosterone at the mineralocorticoid receptor. Both mechanisms reduce renal potassium excretion, and their combination creates significant hyperkalaemia risk comparable to the ACE inhibitor + spironolactone combination. The TOPCAT trial demonstrated that in patients with preserved ejection fraction heart failure, spironolactone + renin-angiotensin blockade required vigilant potassium monitoring. Potassium levels should be checked within 1 week of initiating the combination.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/18378520",
+      "https://www.ncbi.nlm.nih.gov/pubmed/19546408"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "erythromycin",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["erythromycin", "simvastatin"],
+    "severity": "serious",
+    "clinical_summary": "Erythromycin inhibits CYP3A4 via mechanism-based (auto-induced) inhibition; co-administration raises simvastatin AUC by approximately 6-fold, substantially increasing myopathy and rhabdomyolysis risk. The FDA simvastatin label recommends temporary suspension of simvastatin during any erythromycin course; the interaction also applies to clarithromycin and telithromycin but not azithromycin (a macrolide with minimal CYP3A4 inhibition). Azithromycin is the preferred macrolide alternative when a statin cannot be withheld.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9548985",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "warfarin",
+    "drug_b": "erythromycin",
+    "drug_pair_canonical": ["erythromycin", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Erythromycin inhibits CYP3A4 and CYP1A2, reduces gut flora vitamin K production, and can modulate warfarin protein binding; together these mechanisms raise warfarin plasma levels and INR, with multiple case reports of major bleeding events occurring within the first week of erythromycin co-prescription. Large pharmacoepidemiological studies confirm a significantly increased bleeding hospitalisation rate. INR should be measured within 3-5 days of starting erythromycin in patients on warfarin, and dose reduction should be anticipated.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9040579",
+      "https://www.ncbi.nlm.nih.gov/pubmed/25332074"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "apixaban",
+    "drug_b": "fluconazole",
+    "drug_pair_canonical": ["apixaban", "fluconazole"],
+    "severity": "serious",
+    "clinical_summary": "Apixaban is metabolised primarily by CYP3A4 and P-glycoprotein; fluconazole inhibits both CYP3A4 and CYP2C9 (apixaban minor pathway), raising apixaban AUC by approximately 1.5-fold according to population pharmacokinetic modelling and clinical DDI studies (Bristol-Myers Squibb prescribing information). The combination increases bleeding risk in anticoagulated patients. The apixaban FDA label recommends a 50% dose reduction when combined with strong dual CYP3A4/P-gp inhibitors; azole antifungals should be used with caution, and topical formulations preferred for superficial fungal infections.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/202155s012lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/25741067"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "methotrexate",
+    "drug_b": "sulfamethoxazole",
+    "drug_pair_canonical": ["methotrexate", "sulfamethoxazole"],
+    "severity": "serious",
+    "clinical_summary": "Sulfamethoxazole (as the TMP-SMX combination) shares antifolate activity with methotrexate through DHFR inhibition and additionally impairs methotrexate renal tubular secretion (competing at the same OAT transporters); the combined antifolate effect plus elevated methotrexate exposure significantly raises the risk of bone marrow suppression, pancytopenia, and mucositis. This interaction closely parallels the methotrexate-trimethoprim interaction and is a reason the full TMP-SMX combination is generally contraindicated with methotrexate therapy. Leucovorin rescue and haematological monitoring are required if co-administration cannot be avoided.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9524841",
+      "https://www.ncbi.nlm.nih.gov/pubmed/23508423"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "haloperidol",
+    "drug_b": "methadone",
+    "drug_pair_canonical": ["haloperidol", "methadone"],
+    "severity": "serious",
+    "clinical_summary": "Both haloperidol and methadone independently block the cardiac hERG potassium channel (IKr), prolonging the QT interval; their combination produces additive QTc prolongation that significantly increases risk of torsades de pointes and sudden cardiac death, a risk amplified by hypokalaemia, hypomagnesaemia, or bradycardia (Justo and Zeltser, Drug Saf 2006). Methadone is among the most QT-prolonging drugs at therapeutic doses; co-prescribing haloperidol requires baseline ECG, repeat ECG at 2-4 weeks, and correction of electrolyte abnormalities. The Credible Meds (AzCERT) risk classification rates both drugs as 'Known Risk' for torsades.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/16536635",
+      "https://crediblemeds.org/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "azithromycin",
+    "drug_b": "amiodarone",
+    "drug_pair_canonical": ["amiodarone", "azithromycin"],
+    "severity": "serious",
+    "clinical_summary": "Azithromycin, despite minimal CYP3A4 inhibition, directly blocks cardiac IKr (hERG) channels and prolongs the QT interval; amiodarone is one of the most potent IKr blockers in clinical use. Their combination produces additive QTc prolongation with documented risk of torsades de pointes and sudden death (Svanstrom et al., BMJ 2014 confirmed a 73% increase in cardiovascular death with azithromycin in high-risk patients). Baseline and 48-72 hour follow-up ECG monitoring are essential when azithromycin is prescribed in a patient receiving amiodarone. Alternative antibiotics without QT-prolonging activity should be used when feasible.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/24711470",
+      "https://www.ncbi.nlm.nih.gov/pubmed/21892354"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "digoxin",
+    "drug_b": "furosemide",
+    "drug_pair_canonical": ["digoxin", "furosemide"],
+    "severity": "moderate",
+    "clinical_summary": "Furosemide causes renal potassium and magnesium wasting; hypokalaemia and hypomagnesaemia markedly increase myocardial sensitivity to digoxin toxicity by reducing Na+/K+-ATPase pump activity, the very target of digoxin action. Even serum digoxin concentrations within the accepted therapeutic range (0.5-0.9 ng/mL) can cause arrhythmias if accompanied by diuretic-induced electrolyte depletion. Serum potassium and magnesium should be maintained within normal limits in all patients on digoxin receiving loop diuretics; potassium supplementation or a potassium-sparing diuretic may be required.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2869264",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018201s039lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "zolpidem",
+    "drug_b": "elderly",
+    "drug_pair_canonical": ["elderly", "zolpidem"],
+    "severity": "serious",
+    "clinical_summary": "Zolpidem (a z-drug acting on the same GABA-A receptor complex as benzodiazepines) is listed in the 2023 AGS Beers Criteria as potentially inappropriate for older adults; pharmacokinetic studies show extended half-life and AUC in elderly due to reduced hepatic clearance, producing prolonged sedation, psychomotor impairment, falls, hip fractures, and complex sleep behaviours (sleep-walking, sleep-driving). The FDA requires a lower starting dose in women and cautions against doses exceeding 5 mg in both sexes due to next-morning impairment. Cognitive behavioural therapy for insomnia (CBTi) is the evidence-based first-line alternative.",
+    "evidence_urls": [
+      "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-approves-new-label-changes-and-dosing-zolpidem-products"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "dabigatran",
+    "drug_b": "ketoconazole",
+    "drug_pair_canonical": ["dabigatran", "ketoconazole"],
+    "severity": "serious",
+    "clinical_summary": "Dabigatran is a P-glycoprotein (P-gp) substrate excreted predominantly by renal tubular secretion; ketoconazole is a potent inhibitor of P-gp, raising dabigatran AUC by approximately 2-fold and Cmax by 1.7-fold (Kasprowicz et al., Eur J Clin Pharmacol 2012), substantially increasing major bleeding risk. The dabigatran FDA label recommends avoiding co-administration with P-gp inhibitors in patients with moderate to severe renal impairment. In patients with normal renal function, close clinical monitoring for bleeding signs is required if the combination cannot be avoided.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/22836301",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/022512s033lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ibuprofen",
+    "drug_b": "methotrexate",
+    "drug_pair_canonical": ["ibuprofen", "methotrexate"],
+    "severity": "serious",
+    "clinical_summary": "Ibuprofen, like all non-selective NSAIDs, impairs renal prostaglandin-dependent clearance of methotrexate and may compete at the renal OAT3 transporter, raising methotrexate plasma concentrations; this interaction is clinically documented as a cause of methotrexate toxicity including pancytopenia, mucositis, and hepatotoxicity at both oncological and low weekly rheumatological doses (Thyss et al., Lancet 1986). Patients on methotrexate should avoid ibuprofen; paracetamol is the preferred analgesic, and any NSAID use requires full blood count and renal function monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/2869231",
+      "https://www.ncbi.nlm.nih.gov/pubmed/3090271"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "paroxetine",
+    "drug_b": "tramadol",
+    "drug_pair_canonical": ["paroxetine", "tramadol"],
+    "severity": "serious",
+    "clinical_summary": "Paroxetine is among the most potent CYP2D6 inhibitors of all SSRIs; it substantially impairs tramadol bioactivation to its active O-desmethyltramadol metabolite, altering the opioid:serotonergic ratio unpredictably. Simultaneously, the combined serotonin reuptake inhibition from both drugs raises the risk of serotonin syndrome. Case reports document both reduced analgesic efficacy (from impaired opioid activation) and serotonin syndrome episodes from this combination. The FDA serotonin syndrome safety communication lists this as a high-risk combination requiring monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/14705987",
+      "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6545928/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amitriptyline",
+    "drug_b": "fluoxetine",
+    "drug_pair_canonical": ["amitriptyline", "fluoxetine"],
+    "severity": "serious",
+    "clinical_summary": "Fluoxetine is a potent inhibitor of CYP2D6, the primary enzyme metabolising amitriptyline and its active metabolite nortriptyline; co-administration can raise amitriptyline/nortriptyline plasma levels 2-4 fold, precipitating TCA toxicity including QTc prolongation, cardiac conduction abnormalities, anticholinergic delirium, and seizures. The serotonergic contribution of both drugs also raises the risk of serotonin syndrome. TCA plasma level monitoring is essential when an SSRI-TCA combination cannot be avoided; starting at the lowest TCA dose with ECG monitoring is required.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9040579",
+      "https://www.ncbi.nlm.nih.gov/pubmed/7749097"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "nortriptyline",
+    "drug_b": "paroxetine",
+    "drug_pair_canonical": ["nortriptyline", "paroxetine"],
+    "severity": "serious",
+    "clinical_summary": "Paroxetine, the most potent CYP2D6 inhibitor among SSRIs, nearly completely abolishes the metabolism of nortriptyline, which is almost exclusively CYP2D6-dependent; plasma nortriptyline levels can increase 3-5 fold on standard paroxetine doses, producing TCA toxicity (cardiac conduction abnormalities, QTc prolongation, severe anticholinergic effects, seizures). The serotonin syndrome risk is also elevated. If co-prescription is clinically required, nortriptyline should be started at the lowest possible dose with ECG and plasma TCA level monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9040579",
+      "https://www.ncbi.nlm.nih.gov/pubmed/7749097"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "alprazolam",
+    "drug_b": "itraconazole",
+    "drug_pair_canonical": ["alprazolam", "itraconazole"],
+    "severity": "serious",
+    "clinical_summary": "Alprazolam is predominantly metabolised by CYP3A4 to less active metabolites; itraconazole is among the most potent CYP3A4 inhibitors in clinical use. Co-administration raises alprazolam AUC approximately 2.7-fold and prolongs its half-life, producing markedly enhanced and prolonged sedation, psychomotor impairment, and respiratory depression (Yasui et al., Eur J Clin Pharmacol 1998). Alprazolam dose should be substantially reduced (by at least 50%) if the combination cannot be avoided; lorazepam or oxazepam (phase-II conjugation, not CYP3A4-dependent) are safer alternatives in patients requiring antifungal therapy.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9504390",
+      "https://www.ncbi.nlm.nih.gov/pubmed/9840843"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "esomeprazole",
+    "drug_b": "clopidogrel",
+    "drug_pair_canonical": ["clopidogrel", "esomeprazole"],
+    "severity": "moderate",
+    "clinical_summary": "Esomeprazole is a moderate CYP2C19 inhibitor; like omeprazole, it impairs CYP2C19-mediated bioactivation of the clopidogrel prodrug, reducing active metabolite formation and antiplatelet effect. The FDA issued a Drug Safety Communication noting that omeprazole and esomeprazole reduce the platelet inhibitory effect of clopidogrel by approximately 40% and that patients who are poor CYP2C19 metabolisers may derive further reduced benefit. Pantoprazole or rabeprazole are preferred PPIs in clopidogrel-treated patients requiring gastroprotection.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-reduced-effectiveness-plavix-clopidogrel-patients-who-are-poor",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18242516"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "warfarin",
+    "drug_b": "cranberry",
+    "drug_pair_canonical": ["cranberry", "warfarin"],
+    "severity": "moderate",
+    "clinical_summary": "Cranberry juice and cranberry supplements contain flavonoids that inhibit CYP2C9, the main enzyme metabolising S-warfarin; case reports and a pharmacoepidemiological study (Suvarna et al., J R Soc Med 2003) document clinically significant INR elevation in patients on stable warfarin who began consuming cranberry juice regularly. While the interaction magnitude is variable (likely dependent on quantity consumed), the Medicines and Healthcare products Regulatory Agency (MHRA) issued guidance recommending avoidance of large cranberry juice quantities in patients on warfarin. INR monitoring should be increased during periods of regular cranberry consumption.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/12582006",
+      "https://www.ncbi.nlm.nih.gov/pubmed/16131535"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "simvastatin",
+    "drug_b": "grapefruit",
+    "drug_pair_canonical": ["grapefruit", "simvastatin"],
+    "severity": "serious",
+    "clinical_summary": "Grapefruit and its juice irreversibly inhibit intestinal CYP3A4 via furanocoumarin components; simvastatin has high first-pass CYP3A4 extraction in the gut wall, so a single large glass of grapefruit juice (200-250 mL) can increase simvastatin AUC by approximately 3-fold, rising to over 10-fold with 200 mL three times daily (Lilja et al., Clin Pharmacol Ther 1998). This dramatically amplifies myopathy and rhabdomyolysis risk. The FDA simvastatin label specifically warns against consuming large amounts of grapefruit or grapefruit juice. Patients should avoid grapefruit products while taking simvastatin.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9718986",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "felodipine",
+    "drug_b": "grapefruit",
+    "drug_pair_canonical": ["felodipine", "grapefruit"],
+    "severity": "serious",
+    "clinical_summary": "The felodipine-grapefruit interaction is the original discovery that established grapefruit as a clinically relevant CYP3A4 inhibitor (Bailey et al., Lancet 1991); grapefruit juice increases felodipine AUC by a mean of 172%, producing marked vasodilation, reflex tachycardia, hypotension, headache, and flushing at doses that would otherwise be well tolerated. The interaction is highly variable between individuals and grapefruit products but is sufficiently consistent to warrant complete avoidance of grapefruit during felodipine therapy. Amlodipine is a pharmacokinetically safer alternative DHP CCB as it undergoes minimal first-pass metabolism.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/1671429",
+      "https://www.ncbi.nlm.nih.gov/pubmed/10065673"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "apixaban",
+    "drug_b": "aspirin",
+    "drug_pair_canonical": ["apixaban", "aspirin"],
+    "severity": "serious",
+    "clinical_summary": "Combining apixaban (direct factor Xa inhibitor) with aspirin (antiplatelet) produces additive impairment of haemostasis via complementary pathways — factor Xa inhibition and irreversible COX-1-mediated platelet dysfunction; the ARISTOTLE trial subgroup analysis showed significantly higher major bleeding rates with combined anticoagulant + antiplatelet use versus anticoagulant alone. This combination is appropriate after recent ACS or PCI (for a limited defined period) under guideline-directed dual antithrombotic therapy protocols, but requires explicit documentation of indication, duration, and bleeding risk reassessment.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/21870978",
+      "https://www.ncbi.nlm.nih.gov/pubmed/22886016"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amlodipine",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["amlodipine", "simvastatin"],
+    "severity": "moderate",
+    "clinical_summary": "Amlodipine is a moderate CYP3A4 inhibitor at therapeutic doses; co-administration with simvastatin increases simvastatin Cmax by approximately 77% and AUC by approximately 58% (Jacobsen et al., J Clin Pharmacol 2000). The FDA requires a simvastatin dose cap of 20 mg/day when co-administered with amlodipine, as higher simvastatin doses combined with amlodipine were associated with a disproportionate rate of myopathy cases in post-marketing reports. Alternative statins not metabolised by CYP3A4 (pravastatin, rosuvastatin) do not carry this restriction.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-new-restrictions-contraindications-and-dose-limitations-zocor",
+      "https://www.ncbi.nlm.nih.gov/pubmed/10783014"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "losartan",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["losartan", "spironolactone"],
+    "severity": "moderate",
+    "clinical_summary": "Losartan (ARB) reduces angiotensin II-stimulated aldosterone release via AT1 receptor blockade; spironolactone directly antagonises aldosterone at the mineralocorticoid receptor. Both mechanisms impair renal potassium excretion, and their combination significantly increases the risk of hyperkalaemia, particularly in patients with CKD or diabetes. While the combination is sometimes used in resistant hypertension or HFpEF under specialist supervision, it requires renal and electrolyte monitoring at 1, 4, and 12 weeks after initiation. Serum potassium above 5.5 mEq/L should prompt dose reduction or discontinuation.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/15152060",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18378520"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "bisoprolol",
+    "drug_b": "diltiazem",
+    "drug_pair_canonical": ["bisoprolol", "diltiazem"],
+    "severity": "serious",
+    "clinical_summary": "Bisoprolol (highly cardioselective beta-1 blocker) and diltiazem (non-DHP CCB) both slow sinoatrial node automaticity and atrioventricular nodal conduction through complementary mechanisms (beta-1 adrenoreceptor blockade and L-type calcium channel blockade respectively); their combination carries a risk of significant bradycardia, AV block, and haemodynamic compromise. Diltiazem also inhibits CYP3A4, modestly increasing bisoprolol plasma exposure. In clinical practice, this combination is occasionally used for rate control in atrial fibrillation that is refractory to either agent alone, requiring careful dose titration and ECG monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8789925",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018817s038lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "sotalol",
+    "drug_b": "azithromycin",
+    "drug_pair_canonical": ["azithromycin", "sotalol"],
+    "severity": "serious",
+    "clinical_summary": "Sotalol has both beta-blocking and class III antiarrhythmic properties; it prolongs cardiac repolarisation (QTc) by blocking IKr. Azithromycin independently blocks hERG/IKr channels; the combination produces additive QTc prolongation and substantially increases the risk of torsades de pointes and sudden cardiac death. The FDA azithromycin safety communication (2013) specifically highlights risk in patients with known QTc prolongation, hypokalaemia, or hypomagnesaemia. Azithromycin should be avoided in patients on sotalol; alternative antibiotics without QT effects (amoxicillin, doxycycline) should be used.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/azithromycin-zithromax-or-zmax-and-risk-potentially-fatal-heart-rhythms",
+      "https://www.ncbi.nlm.nih.gov/pubmed/23750114"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "venlafaxine",
+    "drug_b": "maoi",
+    "drug_pair_canonical": ["maoi", "venlafaxine"],
+    "severity": "contraindicated",
+    "clinical_summary": "Venlafaxine is a serotonin-norepinephrine reuptake inhibitor (SNRI); combined with any MAOI (phenelzine, tranylcypromine, isocarboxazid, selegiline), it produces massive serotonin and norepinephrine accumulation resulting in severe serotonin syndrome and hypertensive crisis with documented fatalities. The FDA venlafaxine label carries a black box contraindication against concurrent MAOI use and mandates a 7-day washout after stopping venlafaxine before starting an MAOI, and a 14-day washout after stopping an MAOI before starting venlafaxine. This is an absolute contraindication with no dose or monitoring workaround.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/020151s069lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8421606"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "tramadol",
+    "drug_b": "maoi",
+    "drug_pair_canonical": ["maoi", "tramadol"],
+    "severity": "contraindicated",
+    "clinical_summary": "Tramadol is a serotonin and norepinephrine reuptake inhibitor in addition to its opioid activity; combined with MAOIs (including linezolid and methylene blue which have MAOI properties), it produces severe serotonin syndrome and the specific opioid-MAOI reaction seen with meperidine. The FDA tramadol label contraindicates this combination and mandates a 14-day washout after stopping any MAOI before starting tramadol. Serotonin syndrome from this combination can be life-threatening with rapidly evolving hyperthermia, rigidity, and cardiovascular collapse.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020281s048lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/14705987"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amitriptyline",
+    "drug_b": "phenelzine",
+    "drug_pair_canonical": ["amitriptyline", "phenelzine"],
+    "severity": "contraindicated",
+    "clinical_summary": "Tricyclic antidepressants (TCAs) including amitriptyline combined with MAOIs produce a dangerous hypertensive crisis (via noradrenergic excess from both MAOI inhibition of norepinephrine breakdown and TCA norepinephrine reuptake inhibition) as well as serotonin syndrome. Case fatalities exist; the FDA amitriptyline label contraindicates co-administration with MAOIs or use within 2 weeks of stopping an MAOI. A 14-day washout after stopping amitriptyline is required before starting an MAOI. This is a well-established absolute contraindication.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/012053s050lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/8421606"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "fentanyl",
+    "drug_b": "midazolam",
+    "drug_pair_canonical": ["fentanyl", "midazolam"],
+    "severity": "serious",
+    "clinical_summary": "Fentanyl (opioid mu-receptor agonist) and midazolam (benzodiazepine GABA-A potentiator) produce synergistic CNS and respiratory depression; this combination carries an FDA black box warning and is a common cause of procedure-related respiratory arrest when both agents are administered for sedation without adequate monitoring. Multiple adverse event analyses confirm that sedation complications escalate disproportionately when both agents are combined. Use in procedural sedation requires continuous monitoring of oxygen saturation, end-tidal CO2, and airway patency, with resuscitation equipment immediately available.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-warns-about-serious-risks-and-death-when-combining-opioid-pain",
+      "https://www.ncbi.nlm.nih.gov/pubmed/26063447"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "hydrocodone",
+    "drug_b": "alprazolam",
+    "drug_pair_canonical": ["alprazolam", "hydrocodone"],
+    "severity": "serious",
+    "clinical_summary": "Hydrocodone is a CYP3A4/2D6-metabolised opioid; alprazolam is a CYP3A4-metabolised benzodiazepine. Their combination produces additive CNS and respiratory depression carrying the FDA black box warning for opioid-benzodiazepine co-administration. Analysis of opioid overdose deaths shows benzodiazepines are present in over 30% of cases; the opioid-benzodiazepine combination substantially increases overdose fatality risk. Prescribers should avoid this combination where possible; when medically necessary, doses should be limited and patients counselled on risks and naloxone availability.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-fda-warns-about-serious-risks-and-death-when-combining-opioid-pain",
+      "https://www.ncbi.nlm.nih.gov/pubmed/26063447"
+    ],
+    "retrieved_at": "2026-05-03",
     "source": "CACHED"
   }
 ]

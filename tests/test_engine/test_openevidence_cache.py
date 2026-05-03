@@ -115,7 +115,7 @@ class TestLookupCached:
     def test_entry_has_retrieved_at(self):
         entry = lookup_cached("warfarin", "aspirin")
         assert entry is not None
-        assert entry.retrieved_at == "2026-05-02"
+        assert entry.retrieved_at == "2026-05-03"
 
     def test_metformin_contrast_dye_is_contraindicated(self):
         entry = lookup_cached("metformin", "contrast dye")
@@ -199,7 +199,7 @@ class TestOpenEvidenceCheckInteractionsCacheFallback:
         results = _openevidence_check_interactions(
             ["warfarin", "ibuprofen"], already_found=set()
         )
-        assert any("2026-05-02" in r.description for r in results)
+        assert any("2026-05-03" in r.description for r in results)
 
     def test_cached_result_severity_is_non_empty(self, monkeypatch):
         self._unset_api_key(monkeypatch)
