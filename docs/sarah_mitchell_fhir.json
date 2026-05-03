@@ -16,7 +16,94 @@
         "gender": "female",
         "birthDate": "1959-03-12",
         "deceasedBoolean": false,
-        "address": [{"city": "Boston", "state": "MA", "country": "US"}]
+        "address": [{"city": "Boston", "state": "MA", "country": "US"}],
+        "generalPractitioner": [
+          {"reference": "Practitioner/prac-pcp"}
+        ]
+      }
+    },
+    {
+      "fullUrl": "Practitioner/prac-pcp",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "prac-pcp",
+        "identifier": [{
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "1431602063",
+          "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "NPI", "display": "National Provider Identifier"}]}
+        }],
+        "name": [{"family": "Patel", "given": ["Anita"], "suffix": ["MD"]}],
+        "qualification": [{
+          "code": {
+            "coding": [{"system": "http://nucc.org/provider-taxonomy", "code": "207R00000X", "display": "Internal Medicine"}],
+            "text": "Internal Medicine — Primary Care Physician"
+          }
+        }],
+        "address": [{"city": "Boston", "state": "MA", "country": "US"}],
+        "_meta": {"npi_source": "DEMO_LUHN_GENERATED — not a real CMS-issued NPI"}
+      }
+    },
+    {
+      "fullUrl": "Practitioner/prac-cardio",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "prac-cardio",
+        "identifier": [{
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "1642442994",
+          "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "NPI", "display": "National Provider Identifier"}]}
+        }],
+        "name": [{"family": "Liu", "given": ["James"], "suffix": ["MD", "FACC"]}],
+        "qualification": [{
+          "code": {
+            "coding": [{"system": "http://nucc.org/provider-taxonomy", "code": "207RC0000X", "display": "Cardiovascular Disease"}],
+            "text": "Cardiology — Cardiovascular Disease"
+          }
+        }],
+        "address": [{"city": "Boston", "state": "MA", "country": "US"}],
+        "_meta": {"npi_source": "DEMO_LUHN_GENERATED — not a real CMS-issued NPI"}
+      }
+    },
+    {
+      "fullUrl": "Practitioner/prac-nephro",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "prac-nephro",
+        "identifier": [{
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "1040623971",
+          "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "NPI", "display": "National Provider Identifier"}]}
+        }],
+        "name": [{"family": "Santos", "given": ["Maria"], "suffix": ["MD"]}],
+        "qualification": [{
+          "code": {
+            "coding": [{"system": "http://nucc.org/provider-taxonomy", "code": "207RN0300X", "display": "Nephrology"}],
+            "text": "Nephrology"
+          }
+        }],
+        "address": [{"city": "Boston", "state": "MA", "country": "US"}],
+        "_meta": {"npi_source": "DEMO_LUHN_GENERATED — not a real CMS-issued NPI"}
+      }
+    },
+    {
+      "fullUrl": "Practitioner/prac-er",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "prac-er",
+        "identifier": [{
+          "system": "http://hl7.org/fhir/sid/us-npi",
+          "value": "1857610905",
+          "type": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0203", "code": "NPI", "display": "National Provider Identifier"}]}
+        }],
+        "name": [{"family": "O'Connor", "given": ["Kevin"], "suffix": ["MD"]}],
+        "qualification": [{
+          "code": {
+            "coding": [{"system": "http://nucc.org/provider-taxonomy", "code": "207P00000X", "display": "Emergency Medicine"}],
+            "text": "Emergency Medicine"
+          }
+        }],
+        "address": [{"city": "Boston", "state": "MA", "country": "US"}],
+        "_meta": {"npi_source": "DEMO_LUHN_GENERATED — not a real CMS-issued NPI"}
       }
     },
     {
@@ -106,6 +193,7 @@
         "resourceType": "MedicationStatement",
         "id": "med-warfarin",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "informationSource": {"reference": "Practitioner/prac-cardio"},
         "status": "active",
         "medicationCodeableConcept": {
           "coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "11289", "display": "warfarin"}],
@@ -119,6 +207,7 @@
         "resourceType": "MedicationStatement",
         "id": "med-metformin",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "informationSource": {"reference": "Practitioner/prac-pcp"},
         "status": "active",
         "medicationCodeableConcept": {
           "coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "6809", "display": "metformin"}],
@@ -132,6 +221,7 @@
         "resourceType": "MedicationStatement",
         "id": "med-lisinopril",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "informationSource": {"reference": "Practitioner/prac-nephro"},
         "status": "active",
         "medicationCodeableConcept": {
           "coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "29046", "display": "lisinopril"}],
@@ -145,13 +235,14 @@
         "resourceType": "MedicationStatement",
         "id": "med-ibuprofen",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "informationSource": {"reference": "Practitioner/prac-er"},
         "status": "active",
         "dateAsserted": "2026-05-01",
         "medicationCodeableConcept": {
           "coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "5640", "display": "ibuprofen"}],
           "text": "Ibuprofen 600mg PO TID PRN knee pain (ER, NEW)"
         },
-        "note": [{"text": "Prescribed by ER physician 2026-05-01 for acute knee pain. Anticoagulation status not reviewed."}]
+        "note": [{"text": "Prescribed by ER physician (NPI 1857610905) 2026-05-01 for acute knee pain. Anticoagulation status not reviewed."}]
       }
     },
     {
@@ -190,13 +281,14 @@
         "resourceType": "Observation",
         "id": "bp-cardiology-target",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "performer": [{"reference": "Practitioner/prac-cardio"}],
         "status": "final",
         "category": [{"coding": [{"code": "vital-signs"}]}],
         "code": {
           "coding": [{"system": "http://loinc.org", "code": "85354-9"}],
           "text": "Blood pressure target — Cardiologist"
         },
-        "note": [{"text": "Cardiologist target <130/80 mmHg (per JNC 8 for AFib + CKD)."}]
+        "note": [{"text": "Cardiologist target <130/80 mmHg (per JNC 8 for AFib + CKD). Source: Practitioner/prac-cardio (NPI 1642442994)."}]
       }
     },
     {
@@ -205,13 +297,14 @@
         "resourceType": "Observation",
         "id": "bp-nephrology-target",
         "subject": {"reference": "Patient/sarah-mitchell"},
+        "performer": [{"reference": "Practitioner/prac-nephro"}],
         "status": "final",
         "category": [{"coding": [{"code": "vital-signs"}]}],
         "code": {
           "coding": [{"system": "http://loinc.org", "code": "85354-9"}],
           "text": "Blood pressure target — Nephrologist"
         },
-        "note": [{"text": "Nephrologist target <140/90 mmHg (per ACC/AHA 2017 for proteinuric CKD without diabetes)."}]
+        "note": [{"text": "Nephrologist target <140/90 mmHg (per ACC/AHA 2017 for proteinuric CKD without diabetes). Source: Practitioner/prac-nephro (NPI 1040623971)."}]
       }
     }
   ]

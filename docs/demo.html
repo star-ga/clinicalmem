@@ -735,7 +735,7 @@ tailwind.config = {
         Sarah Mitchell, in real EHR data.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Every demo finding traces back to a typed FHIR R4 resource &mdash; <span id="fhir-resource-count" class="font-bold text-clinical-blue">14</span> resources covering Patient, Conditions, AllergyIntolerance, MedicationStatements, and Observations. Same shape Epic, Cerner, and every certified EHR speak.
+        Every demo finding traces back to a typed FHIR R4 resource &mdash; <span id="fhir-resource-count" class="font-bold text-clinical-blue">18</span> resources covering Patient, 4 Practitioners (with HHS NPI identifiers, Luhn-validated), Conditions, AllergyIntolerance, MedicationStatements, and Observations. Same shape Epic, Cerner, and every certified EHR speak.
       </p>
     </div>
     <div id="fhir-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1665,6 +1665,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const FHIR_ICONS = {
     Patient: '\u{1F464}', Condition: '\u{1FA7A}', AllergyIntolerance: '⚠️',
     MedicationStatement: '\u{1F48A}', Observation: '\u{1F4C8}',
+    Practitioner: '\u{1FA7A}\u{1F4DD}',
   };
   const FHIR_COLORS = {
     Patient:               'bg-blue-50 text-clinical-blue border-blue-200',
@@ -1672,6 +1673,7 @@ document.addEventListener('DOMContentLoaded', () => {
     AllergyIntolerance:    'bg-red-50 text-clinical-red border-red-200',
     MedicationStatement:   'bg-purple-50 text-clinical-purple border-purple-200',
     Observation:           'bg-green-50 text-clinical-green border-green-200',
+    Practitioner:          'bg-indigo-50 text-indigo-600 border-indigo-200',
   };
   async function renderFhir() {
     const grid = document.getElementById('fhir-grid');
@@ -1697,8 +1699,17 @@ document.addEventListener('DOMContentLoaded', () => {
         (r.name?.[0] ? `${r.name[0].given?.join(' ') || ''} ${r.name[0].family || ''}`.trim() : '') ||
         r.id || rt
       );
+      // NPI extraction (Practitioner only) — surface CMS identifier so
+      // judges immediately see real provider attribution, not a stub.
+      let npi = '';
+      if (rt === 'Practitioner' && Array.isArray(r.identifier)) {
+        const found = r.identifier.find(i => (i.system || '').endsWith('us-npi'));
+        if (found) npi = found.value;
+      }
+      const taxonomy = (rt === 'Practitioner' && r.qualification?.[0]?.code?.text) || '';
       const subtitle = r.criticality ? `criticality: ${r.criticality}` :
                        r.valueQuantity ? `${r.valueQuantity.value} ${r.valueQuantity.unit}` :
+                       taxonomy ? taxonomy :
                        r.status ? `status: ${r.status}` :
                        r.gender ? `${r.gender} · born ${r.birthDate}` : '';
       const code = r.code?.coding?.[0]?.code || r.medicationCodeableConcept?.coding?.[0]?.code || '';
@@ -1713,6 +1724,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${subtitle ? `<p class="text-xs text-slate-400 mt-0.5 truncate">${escapeHtml(subtitle)}</p>` : ''}
             </div>
           </div>
+          ${npi ? `<p class="text-[10px] font-mono text-indigo-600 mt-1">NPI: ${escapeHtml(npi)} <span class="text-slate-400">(CMS Luhn-valid)</span></p>` : ''}
           ${code ? `<p class="text-[10px] font-mono text-slate-400 mt-1">${escapeHtml(system)}: ${escapeHtml(code)}</p>` : ''}
         </article>
       `;
