@@ -2,6 +2,14 @@
 // ClinicalMem — federated joint clinical memory across multiple sites.
 // Apache-2.0 (see LICENSE)
 //
+// Runnable proof (mock transport):
+//   python3 scripts/federation_mock_demo.py
+//
+//   Simulates 2 in-process ClinicalMem sites (Mass General + Mayo Clinic)
+//   federating a warfarin+ibuprofen severity finding end-to-end. All 16
+//   typed invariants are exercised; exit code 0 = contract satisfied.
+//   For the PHI-gate path: python3 scripts/federation_mock_demo.py --phi-test
+//
 // What this contract guarantees:
 //
 //   PHI (patient names, DOB, MRN, clinical notes, FHIR bundles) NEVER

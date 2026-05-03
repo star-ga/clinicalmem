@@ -141,10 +141,64 @@ records for every federation event — auditors detect drift bit-by-bit.
   feature using FedAvg or DP-SGD, but the v1 contract just propagates
   trained-weights bundles and per-pair classifications.
 
+## Live demo (mock transport)
+
+The real MIC@2 / MAP / binary transport is in active development.
+Until it ships, judges and reviewers can run the federation
+**end-to-end in a single process** using the mock-transport demo:
+
+```bash
+python3 scripts/federation_mock_demo.py
+```
+
+The script spawns two in-process ClinicalMem sites (Mass General and
+Mayo Clinic), each with a freshly generated Ed25519 keypair. Site A
+discovers warfarin + ibuprofen via the Layer 1 deterministic table,
+runs it through the full egress path (classify → phi_strip → stamp →
+sign → emit), and Site B receives it over an in-process Python queue,
+running the full ingress path (verify → freshness_window →
+phi_recheck → tier_clamp → quorum → ingest).
+
+Expected output (abbreviated):
+
+```
+══════════════════════════════════════════════════════════════════════
+  ClinicalMem — 2-Node Federation Mock Demo
+  JointMemoryFederation.flow.mind  ·  plan_hash: f2986d0736c3fd4c...
+══════════════════════════════════════════════════════════════════════
+
+  ✓ INVARIANT 01 PASS  classify.lane in [clinical_knowledge, phi_lane]
+  ✓ INVARIANT 02 PASS  scrubbed.has_phi == false
+  ...
+  ✓ INVARIANT 16 PASS  quorum.has_concurring_signatures or quorum.tier <= 1
+
+  AUDIT CHAIN MATCH — bit-identical canonical encoding
+  Site A hash: 39788b9c83826ce39e8b69c9aa2586e3b7b550487ca0a37c8ef3bd505fc663b4
+  Site B hash: 39788b9c83826ce39e8b69c9aa2586e3b7b550487ca0a37c8ef3bd505fc663b4
+
+  All 16 JointMemoryFederation.flow.mind invariants: PASS
+  FEDERATION DEMO COMPLETE — exit 0
+```
+
+The two audit-chain hashes match because the canonical preimage is
+TAG_v1 NUL-separated with lexicographically-sorted fields — the
+encoding is deterministic, so both sites hash the same bytes.
+
+To exercise the PHI gate (finding quarantined before transport):
+
+```bash
+python3 scripts/federation_mock_demo.py --phi-test
+```
+
+The demo is a permanent teaching and audit artifact; it remains
+runnable and meaningful after the real transport ships.
+
 ## Status
 
 - `flows/JointMemoryFederation.flow.mind` — **shipped** (typed
-  contract, 6 invariants, plan_hash `d96173f3...31d2`)
+  contract, 16 invariants, plan_hash `cb29324f…46c6`)
+- `scripts/federation_mock_demo.py` — **shipped** (end-to-end
+  runnable proof of the contract; mock in-process transport)
 - `mind-mem` MIC@2 / MAP / binary multi-machine transport —
   **in active development** by the upstream mind-mem team
 - ClinicalMem federation client wiring — pending mind-mem v3.x
