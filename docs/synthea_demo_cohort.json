@@ -4,51 +4,160 @@
   "type": "collection",
   "meta": {
     "lastUpdated": "2026-05-03T12:00:00Z",
-    "profile": ["http://hl7.org/fhir/StructureDefinition/Bundle"],
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/Bundle"
+    ],
     "_synthetic": "Synthea-style synthetic patient cohort. NO real patient data. Generated for ClinicalMem hackathon demo (Apache-2.0). All names, DOBs, addresses, NPIs, and identifiers are entirely fictional. NPIs generated via CMS Luhn algorithm with deterministic seed strings; marked npi_source=DEMO_LUHN_GENERATED."
   },
   "entry": [
-
     {
       "_conflict_type": "warfarin_plus_nsaid_bleeding",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-001",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Okafor", "given": ["Raymond", "Chibuike"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Okafor",
+            "given": [
+              "Raymond",
+              "Chibuike"
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1948-03-14",
-        "address": [{"use": "home", "line": ["812 Elm Street"], "city": "Springfield", "state": "IL", "postalCode": "62701", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-001"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "812 Elm Street"
+            ],
+            "city": "Springfield",
+            "state": "IL",
+            "postalCode": "62701",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-001"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-001a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1515215998"}],
-        "name": [{"use": "official", "family": "Abernathy", "given": ["Grace"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1515215998"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Abernathy",
+            "given": [
+              "Grace"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-001b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1561453410"}],
-        "name": [{"use": "official", "family": "Tran", "given": ["Michael"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1561453410"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Tran",
+            "given": [
+              "Michael"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-001a",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "49436004", "display": "Atrial fibrillation"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I48.91"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I48.91"
+            }
+          ]
+        },
         "onsetDateTime": "2019-06-20"
       }
     },
@@ -56,9 +165,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-001b",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "57676002", "display": "Joint pain"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "M25.50"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "57676002",
+              "display": "Joint pain"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M25.50"
+            }
+          ]
+        },
         "onsetDateTime": "2022-11-05"
       }
     },
@@ -66,9 +196,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-001c",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "38341003", "display": "Hypertension"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I10"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I10"
+            }
+          ]
+        },
         "onsetDateTime": "2015-03-01"
       }
     },
@@ -76,103 +227,305 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-001a",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-001a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-001a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "11289", "display": "warfarin"}]},
-        "dosage": [{"text": "5 mg orally once daily", "doseAndRate": [{"doseQuantity": {"value": 5, "unit": "mg"}}]}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "11289",
+              "display": "warfarin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "5 mg orally once daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 5,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-001b",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-001b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-001b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-28",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "5640", "display": "ibuprofen"}]},
-        "dosage": [{"text": "400 mg orally three times daily as needed for joint pain"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "5640",
+              "display": "ibuprofen"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "400 mg orally three times daily as needed for joint pain"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-001c",
-        "subject": {"reference": "Patient/synthea-pt-001"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-001a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-001a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "29046", "display": "lisinopril"}]},
-        "dosage": [{"text": "10 mg orally once daily"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "29046",
+              "display": "lisinopril"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "10 mg orally once daily"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-001a",
-        "subject": {"reference": "Patient/synthea-pt-001"},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6301-6", "display": "INR in Platelet poor plasma by Coagulation assay"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-20",
-        "valueQuantity": {"value": 2.3, "unit": "INR"}
+        "valueQuantity": {
+          "value": 2.3,
+          "unit": "INR"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-001b",
-        "subject": {"reference": "Patient/synthea-pt-001"},
+        "subject": {
+          "reference": "Patient/synthea-pt-001"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6301-6", "display": "INR in Platelet poor plasma by Coagulation assay"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6301-6",
+              "display": "INR in Platelet poor plasma by Coagulation assay"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-05-01",
-        "valueQuantity": {"value": 3.8, "unit": "INR", "_note": "INR elevated after ibuprofen initiated"}
+        "valueQuantity": {
+          "value": 3.8,
+          "unit": "INR",
+          "_note": "INR elevated after ibuprofen initiated"
+        }
       }
     },
-
     {
       "_conflict_type": "penicillin_allergy_amoxicillin_cross_reactivity",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-002",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Kowalski", "given": ["Sandra", "Marie"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Kowalski",
+            "given": [
+              "Sandra",
+              "Marie"
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1975-09-22",
-        "address": [{"use": "home", "line": ["44 Birchwood Drive"], "city": "Columbus", "state": "OH", "postalCode": "43215", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-002"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "44 Birchwood Drive"
+            ],
+            "city": "Columbus",
+            "state": "OH",
+            "postalCode": "43215",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-002"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-002a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1322707989"}],
-        "name": [{"use": "official", "family": "Vasquez", "given": ["Elena"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "DO"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1322707989"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Vasquez",
+            "given": [
+              "Elena"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "DO"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-002b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1329809705"}],
-        "name": [{"use": "official", "family": "Okonkwo", "given": ["Emeka"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1329809705"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Okonkwo",
+            "given": [
+              "Emeka"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "AllergyIntolerance",
         "id": "synthea-allergy-002a",
-        "patient": {"reference": "Patient/synthea-pt-002"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active"}]},
+        "patient": {
+          "reference": "Patient/synthea-pt-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active"
+            }
+          ]
+        },
         "type": "allergy",
-        "category": ["medication"],
+        "category": [
+          "medication"
+        ],
         "criticality": "high",
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "372687004", "display": "Penicillin"}]},
-        "reaction": [{"manifestation": [{"coding": [{"system": "http://snomed.info/sct", "code": "39579001", "display": "Anaphylaxis"}]}]}],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372687004",
+              "display": "Penicillin"
+            }
+          ]
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "39579001",
+                    "display": "Anaphylaxis"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         "onsetDateTime": "2005-08-14"
       }
     },
@@ -180,9 +533,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-002a",
-        "subject": {"reference": "Patient/synthea-pt-002"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "40055000", "display": "Chronic sinusitis"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "J32.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "40055000",
+              "display": "Chronic sinusitis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J32.9"
+            }
+          ]
+        },
         "onsetDateTime": "2023-02-10"
       }
     },
@@ -190,9 +564,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-002b",
-        "subject": {"reference": "Patient/synthea-pt-002"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "195967001", "display": "Asthma"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "J45.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-002"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "195967001",
+              "display": "Asthma"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J45.9"
+            }
+          ]
+        },
         "onsetDateTime": "2010-06-01"
       }
     },
@@ -200,77 +595,229 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-002a",
-        "subject": {"reference": "Patient/synthea-pt-002"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-002b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-002"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-002b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-30",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "723", "display": "amoxicillin"}]},
-        "dosage": [{"text": "500 mg orally three times daily for 10 days (sinusitis)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "723",
+              "display": "amoxicillin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "500 mg orally three times daily for 10 days (sinusitis)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-002b",
-        "subject": {"reference": "Patient/synthea-pt-002"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-002a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-002"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-002a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "209459", "display": "fluticasone nasal"}]},
-        "dosage": [{"text": "2 sprays each nostril once daily"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "209459",
+              "display": "fluticasone nasal"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "2 sprays each nostril once daily"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-002a",
-        "subject": {"reference": "Patient/synthea-pt-002"},
+        "subject": {
+          "reference": "Patient/synthea-pt-002"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33903-1", "display": "Total IgE [Units/volume] in Serum"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33903-1",
+              "display": "Total IgE [Units/volume] in Serum"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-03-15",
-        "valueQuantity": {"value": 320, "unit": "IU/mL"}
+        "valueQuantity": {
+          "value": 320,
+          "unit": "IU/mL"
+        }
       }
     },
-
     {
       "_conflict_type": "declining_gfr_metformin_contraindication",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-003",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Hernandez", "given": ["Carlos", "Alberto"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Hernandez",
+            "given": [
+              "Carlos",
+              "Alberto"
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1956-11-30",
-        "address": [{"use": "home", "line": ["2301 Maple Avenue"], "city": "Phoenix", "state": "AZ", "postalCode": "85001", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-003"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "2301 Maple Avenue"
+            ],
+            "city": "Phoenix",
+            "state": "AZ",
+            "postalCode": "85001",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-003"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-003a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1661427421"}],
-        "name": [{"use": "official", "family": "Patel", "given": ["Nisha"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1661427421"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Patel",
+            "given": [
+              "Nisha"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-003b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1292361494"}],
-        "name": [{"use": "official", "family": "Nakamura", "given": ["Hiroshi"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1292361494"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Nakamura",
+            "given": [
+              "Hiroshi"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-003a",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "44054006", "display": "Type 2 diabetes mellitus"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "E11.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Type 2 diabetes mellitus"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "E11.9"
+            }
+          ]
+        },
         "onsetDateTime": "2008-04-12"
       }
     },
@@ -278,9 +825,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-003b",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "709044004", "display": "Chronic kidney disease stage 3"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "N18.3"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709044004",
+              "display": "Chronic kidney disease stage 3"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N18.3"
+            }
+          ]
+        },
         "onsetDateTime": "2024-01-10"
       }
     },
@@ -288,9 +856,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-003c",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "44054006", "display": "Hypertensive chronic kidney disease"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I12.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Hypertensive chronic kidney disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I12.9"
+            }
+          ]
+        },
         "onsetDateTime": "2020-07-01"
       }
     },
@@ -298,120 +887,340 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-003a",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-003a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-003a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "6809", "display": "metformin"}]},
-        "dosage": [{"text": "1000 mg orally twice daily with meals (started 2008, dose unchanged)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "6809",
+              "display": "metformin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "1000 mg orally twice daily with meals (started 2008, dose unchanged)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-003b",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-003a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-003a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "29046", "display": "lisinopril"}]},
-        "dosage": [{"text": "10 mg orally once daily"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "29046",
+              "display": "lisinopril"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "10 mg orally once daily"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-003c",
-        "subject": {"reference": "Patient/synthea-pt-003"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-003b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-003b"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "283830", "display": "amlodipine"}]},
-        "dosage": [{"text": "5 mg orally once daily"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "283830",
+              "display": "amlodipine"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "5 mg orally once daily"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-003a",
-        "subject": {"reference": "Patient/synthea-pt-003"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-8", "display": "Glomerular filtration rate/1.73 sq M.predicted"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ]
+        },
         "effectiveDateTime": "2025-06-01",
-        "valueQuantity": {"value": 58, "unit": "mL/min/1.73m2", "_note": "CKD stage 3a — metformin still permissible at this eGFR"}
+        "valueQuantity": {
+          "value": 58,
+          "unit": "mL/min/1.73m2",
+          "_note": "CKD stage 3a \u2014 metformin still permissible at this eGFR"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-003b",
-        "subject": {"reference": "Patient/synthea-pt-003"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-8", "display": "Glomerular filtration rate/1.73 sq M.predicted"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-02-01",
-        "valueQuantity": {"value": 41, "unit": "mL/min/1.73m2", "_note": "eGFR now CKD 3b — metformin should not be initiated here; continued use requires dose review"}
+        "valueQuantity": {
+          "value": 41,
+          "unit": "mL/min/1.73m2",
+          "_note": "eGFR now CKD 3b \u2014 metformin should not be initiated here; continued use requires dose review"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-003c",
-        "subject": {"reference": "Patient/synthea-pt-003"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-8", "display": "Glomerular filtration rate/1.73 sq M.predicted"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-28",
-        "valueQuantity": {"value": 33, "unit": "mL/min/1.73m2", "_note": "eGFR declining toward <30 threshold — metformin contraindicated; ClinicalMem alert required"}
+        "valueQuantity": {
+          "value": 33,
+          "unit": "mL/min/1.73m2",
+          "_note": "eGFR declining toward <30 threshold \u2014 metformin contraindicated; ClinicalMem alert required"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-003d",
-        "subject": {"reference": "Patient/synthea-pt-003"},
+        "subject": {
+          "reference": "Patient/synthea-pt-003"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "4548-4", "display": "Hemoglobin A1c/Hemoglobin.total in Blood"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-28",
-        "valueQuantity": {"value": 7.9, "unit": "%"}
+        "valueQuantity": {
+          "value": 7.9,
+          "unit": "%"
+        }
       }
     },
-
     {
       "_conflict_type": "cardiology_vs_nephrology_bp_target_conflict",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-004",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Ogundimu", "given": ["Adaeze", "Ify"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Ogundimu",
+            "given": [
+              "Adaeze",
+              "Ify"
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1965-07-04",
-        "address": [{"use": "home", "line": ["118 Pinecrest Road"], "city": "Atlanta", "state": "GA", "postalCode": "30301", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-004"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "118 Pinecrest Road"
+            ],
+            "city": "Atlanta",
+            "state": "GA",
+            "postalCode": "30301",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-004"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-004a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1704921059"}],
-        "name": [{"use": "official", "family": "Lindqvist", "given": ["Sigrid"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}, "identifier": [{"value": "Cardiology"}]}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1704921059"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Lindqvist",
+            "given": [
+              "Sigrid"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            },
+            "identifier": [
+              {
+                "value": "Cardiology"
+              }
+            ]
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-004b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1066125042"}],
-        "name": [{"use": "official", "family": "Ramirez-Santos", "given": ["Jorge"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}, "identifier": [{"value": "Nephrology"}]}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1066125042"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Ramirez-Santos",
+            "given": [
+              "Jorge"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            },
+            "identifier": [
+              {
+                "value": "Nephrology"
+              }
+            ]
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-004a",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "44784217", "display": "Cardiac arrhythmia"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I49.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44784217",
+              "display": "Cardiac arrhythmia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I49.9"
+            }
+          ]
+        },
         "onsetDateTime": "2021-05-17"
       }
     },
@@ -419,9 +1228,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-004b",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "709044004", "display": "Chronic kidney disease stage 3"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "N18.3"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709044004",
+              "display": "Chronic kidney disease stage 3"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N18.3"
+            }
+          ]
+        },
         "onsetDateTime": "2020-09-01"
       }
     },
@@ -429,9 +1259,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-004c",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "38341003", "display": "Hypertension"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I10"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I10"
+            }
+          ]
+        },
         "onsetDateTime": "2014-01-01"
       }
     },
@@ -439,46 +1290,132 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-004a",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-004a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-004a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "214354", "display": "carvedilol"}]},
-        "dosage": [{"text": "25 mg orally twice daily (Cardiology: target SBP <130 per ACC/AHA 2017)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "214354",
+              "display": "carvedilol"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "25 mg orally twice daily (Cardiology: target SBP <130 per ACC/AHA 2017)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-004b",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-004b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-004b"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "200801", "display": "losartan"}]},
-        "dosage": [{"text": "100 mg orally once daily (Nephrology: renoprotection; target BP <140/90 per KDIGO)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "200801",
+              "display": "losartan"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "100 mg orally once daily (Nephrology: renoprotection; target BP <140/90 per KDIGO)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-004c",
-        "subject": {"reference": "Patient/synthea-pt-004"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-004b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-004b"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "4316", "display": "furosemide"}]},
-        "dosage": [{"text": "40 mg orally once daily"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "4316",
+              "display": "furosemide"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "40 mg orally once daily"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-004a",
-        "subject": {"reference": "Patient/synthea-pt-004"},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "55284-4", "display": "Blood pressure systolic and diastolic"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "55284-4",
+              "display": "Blood pressure systolic and diastolic"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-25",
         "component": [
-          {"code": {"coding": [{"system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure"}]}, "valueQuantity": {"value": 142, "unit": "mmHg"}},
-          {"code": {"coding": [{"system": "http://loinc.org", "code": "8462-4", "display": "Diastolic blood pressure"}]}, "valueQuantity": {"value": 88, "unit": "mmHg"}}
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 142,
+              "unit": "mmHg"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic blood pressure"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 88,
+              "unit": "mmHg"
+            }
+          }
         ]
       }
     },
@@ -486,54 +1423,173 @@
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-004b",
-        "subject": {"reference": "Patient/synthea-pt-004"},
+        "subject": {
+          "reference": "Patient/synthea-pt-004"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-8", "display": "Glomerular filtration rate/1.73 sq M.predicted"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-25",
-        "valueQuantity": {"value": 47, "unit": "mL/min/1.73m2"}
+        "valueQuantity": {
+          "value": 47,
+          "unit": "mL/min/1.73m2"
+        }
       }
     },
-
     {
       "_conflict_type": "ssri_tramadol_serotonin_syndrome",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-005",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Chen", "given": ["Wei-Lin"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Chen",
+            "given": [
+              "Wei-Lin"
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1983-02-17",
-        "address": [{"use": "home", "line": ["700 Harbor View Terrace"], "city": "San Francisco", "state": "CA", "postalCode": "94102", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-005"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "700 Harbor View Terrace"
+            ],
+            "city": "San Francisco",
+            "state": "CA",
+            "postalCode": "94102",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-005"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-005a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1835771514"}],
-        "name": [{"use": "official", "family": "Johansson", "given": ["Erika"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1835771514"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Johansson",
+            "given": [
+              "Erika"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-005b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1622495095"}],
-        "name": [{"use": "official", "family": "Adebayo", "given": ["Funmi"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1622495095"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Adebayo",
+            "given": [
+              "Funmi"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-005a",
-        "subject": {"reference": "Patient/synthea-pt-005"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "35489007", "display": "Depressive disorder"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "F32.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-005"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "35489007",
+              "display": "Depressive disorder"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "F32.9"
+            }
+          ]
+        },
         "onsetDateTime": "2018-03-01"
       }
     },
@@ -541,9 +1597,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-005b",
-        "subject": {"reference": "Patient/synthea-pt-005"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "128139000", "display": "Musculoskeletal pain"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "M79.3"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-005"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "128139000",
+              "display": "Musculoskeletal pain"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M79.3"
+            }
+          ]
+        },
         "onsetDateTime": "2026-04-10"
       }
     },
@@ -551,77 +1628,230 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-005a",
-        "subject": {"reference": "Patient/synthea-pt-005"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-005a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-005"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-005a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "41493", "display": "sertraline"}]},
-        "dosage": [{"text": "100 mg orally once daily (ongoing, stable dose for major depressive disorder)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "41493",
+              "display": "sertraline"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "100 mg orally once daily (ongoing, stable dose for major depressive disorder)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-005b",
-        "subject": {"reference": "Patient/synthea-pt-005"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-005b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-005"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-005b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-28",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "41493", "display": "tramadol"}]},
-        "dosage": [{"text": "50 mg orally every 6 hours as needed for musculoskeletal pain"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "41493",
+              "display": "tramadol"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "50 mg orally every 6 hours as needed for musculoskeletal pain"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-005a",
-        "subject": {"reference": "Patient/synthea-pt-005"},
+        "subject": {
+          "reference": "Patient/synthea-pt-005"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "89204-2", "display": "Patient Health Questionnaire 9 item (PHQ-9) total score"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "89204-2",
+              "display": "Patient Health Questionnaire 9 item (PHQ-9) total score"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-01",
-        "valueQuantity": {"value": 8, "unit": "score", "_note": "PHQ-9 8 = mild depression, stable on sertraline"}
+        "valueQuantity": {
+          "value": 8,
+          "unit": "score",
+          "_note": "PHQ-9 8 = mild depression, stable on sertraline"
+        }
       }
     },
-
     {
       "_conflict_type": "statin_cyp3a4_inhibitor_grapefruit_clarithromycin",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-006",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Whitmore", "given": ["Douglas", "Peter"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Whitmore",
+            "given": [
+              "Douglas",
+              "Peter"
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1959-05-10",
-        "address": [{"use": "home", "line": ["55 Lakewood Boulevard"], "city": "Denver", "state": "CO", "postalCode": "80201", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-006"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "55 Lakewood Boulevard"
+            ],
+            "city": "Denver",
+            "state": "CO",
+            "postalCode": "80201",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-006"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-006a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1972280261"}],
-        "name": [{"use": "official", "family": "Tremblay", "given": ["Marc"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1972280261"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Tremblay",
+            "given": [
+              "Marc"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-006b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1216751994"}],
-        "name": [{"use": "official", "family": "Kim", "given": ["Ji-Young"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1216751994"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Kim",
+            "given": [
+              "Ji-Young"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-006a",
-        "subject": {"reference": "Patient/synthea-pt-006"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "13644009", "display": "Hypercholesterolaemia"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "E78.5"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13644009",
+              "display": "Hypercholesterolaemia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "E78.5"
+            }
+          ]
+        },
         "onsetDateTime": "2013-08-20"
       }
     },
@@ -629,9 +1859,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-006b",
-        "subject": {"reference": "Patient/synthea-pt-006"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "54150009", "display": "Upper respiratory infection"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "J06.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "54150009",
+              "display": "Upper respiratory infection"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J06.9"
+            }
+          ]
+        },
         "onsetDateTime": "2026-04-26"
       }
     },
@@ -639,88 +1890,254 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-006a",
-        "subject": {"reference": "Patient/synthea-pt-006"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-006a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-006a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "36567", "display": "simvastatin"}]},
-        "dosage": [{"text": "40 mg orally once daily at bedtime (long-term lipid-lowering therapy)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "36567",
+              "display": "simvastatin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "40 mg orally once daily at bedtime (long-term lipid-lowering therapy)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-006b",
-        "subject": {"reference": "Patient/synthea-pt-006"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-006b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-006b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-27",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "25078", "display": "clarithromycin"}]},
-        "dosage": [{"text": "500 mg orally twice daily for 7 days (upper respiratory tract infection)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "25078",
+              "display": "clarithromycin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "500 mg orally twice daily for 7 days (upper respiratory tract infection)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-006a",
-        "subject": {"reference": "Patient/synthea-pt-006"},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "2093-3", "display": "Cholesterol [Mass/volume] in Serum or Plasma"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2093-3",
+              "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-02-10",
-        "valueQuantity": {"value": 198, "unit": "mg/dL"}
+        "valueQuantity": {
+          "value": 198,
+          "unit": "mg/dL"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-006b",
-        "subject": {"reference": "Patient/synthea-pt-006"},
+        "subject": {
+          "reference": "Patient/synthea-pt-006"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "2532-0", "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2532-0",
+              "display": "Lactate dehydrogenase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-05-01",
-        "valueQuantity": {"value": 312, "unit": "U/L", "_note": "Elevated LDH — early myopathy signal during clarithromycin-simvastatin overlap"}
+        "valueQuantity": {
+          "value": 312,
+          "unit": "U/L",
+          "_note": "Elevated LDH \u2014 early myopathy signal during clarithromycin-simvastatin overlap"
+        }
       }
     },
-
     {
       "_conflict_type": "lithium_thiazide_toxicity",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-007",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Bakshi", "given": ["Priya", "Anita"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Bakshi",
+            "given": [
+              "Priya",
+              "Anita"
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1971-12-08",
-        "address": [{"use": "home", "line": ["303 Willow Creek Lane"], "city": "Austin", "state": "TX", "postalCode": "73301", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-007"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "303 Willow Creek Lane"
+            ],
+            "city": "Austin",
+            "state": "TX",
+            "postalCode": "73301",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-007"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-007a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1890937356"}],
-        "name": [{"use": "official", "family": "Andersson", "given": ["Lars"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1890937356"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Andersson",
+            "given": [
+              "Lars"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-007b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1983592472"}],
-        "name": [{"use": "official", "family": "Owusu", "given": ["Kwame"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1983592472"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Owusu",
+            "given": [
+              "Kwame"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-007a",
-        "subject": {"reference": "Patient/synthea-pt-007"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "13746004", "display": "Bipolar disorder"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "F31.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "13746004",
+              "display": "Bipolar disorder"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "F31.9"
+            }
+          ]
+        },
         "onsetDateTime": "2001-06-15"
       }
     },
@@ -728,9 +2145,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-007b",
-        "subject": {"reference": "Patient/synthea-pt-007"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "38341003", "display": "Hypertension"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I10"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I10"
+            }
+          ]
+        },
         "onsetDateTime": "2019-10-01"
       }
     },
@@ -738,88 +2176,254 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-007a",
-        "subject": {"reference": "Patient/synthea-pt-007"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-007a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-007a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "6448", "display": "lithium carbonate"}]},
-        "dosage": [{"text": "300 mg orally three times daily (stable serum level 0.8 mEq/L)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "6448",
+              "display": "lithium carbonate"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "300 mg orally three times daily (stable serum level 0.8 mEq/L)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-007b",
-        "subject": {"reference": "Patient/synthea-pt-007"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-007b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-007b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-22",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "5487", "display": "hydrochlorothiazide"}]},
-        "dosage": [{"text": "25 mg orally once daily (hypertension — prescribed without lithium level check)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "5487",
+              "display": "hydrochlorothiazide"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "25 mg orally once daily (hypertension \u2014 prescribed without lithium level check)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-007a",
-        "subject": {"reference": "Patient/synthea-pt-007"},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "3695-6", "display": "Lithium [Moles/volume] in Serum or Plasma"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "3695-6",
+              "display": "Lithium [Moles/volume] in Serum or Plasma"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-05",
-        "valueQuantity": {"value": 0.8, "unit": "mEq/L", "_note": "Stable pre-thiazide"}
+        "valueQuantity": {
+          "value": 0.8,
+          "unit": "mEq/L",
+          "_note": "Stable pre-thiazide"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-007b",
-        "subject": {"reference": "Patient/synthea-pt-007"},
+        "subject": {
+          "reference": "Patient/synthea-pt-007"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "3695-6", "display": "Lithium [Moles/volume] in Serum or Plasma"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "3695-6",
+              "display": "Lithium [Moles/volume] in Serum or Plasma"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-05-01",
-        "valueQuantity": {"value": 1.4, "unit": "mEq/L", "_note": "Toxic elevation after 9 days of hydrochlorothiazide"}
+        "valueQuantity": {
+          "value": 1.4,
+          "unit": "mEq/L",
+          "_note": "Toxic elevation after 9 days of hydrochlorothiazide"
+        }
       }
     },
-
     {
       "_conflict_type": "methotrexate_trimethoprim_bone_marrow",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-008",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Schneider", "given": ["Heinrich"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Schneider",
+            "given": [
+              "Heinrich"
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1962-04-25",
-        "address": [{"use": "home", "line": ["88 Cedar Ridge Road"], "city": "Minneapolis", "state": "MN", "postalCode": "55401", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-008"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "88 Cedar Ridge Road"
+            ],
+            "city": "Minneapolis",
+            "state": "MN",
+            "postalCode": "55401",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-008"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-008a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1746049489"}],
-        "name": [{"use": "official", "family": "Petrov", "given": ["Alexei"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1746049489"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Petrov",
+            "given": [
+              "Alexei"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-008b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1672447129"}],
-        "name": [{"use": "official", "family": "Nwosu", "given": ["Chioma"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1672447129"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Nwosu",
+            "given": [
+              "Chioma"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-008a",
-        "subject": {"reference": "Patient/synthea-pt-008"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "69896004", "display": "Rheumatoid arthritis"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "M06.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "69896004",
+              "display": "Rheumatoid arthritis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M06.9"
+            }
+          ]
+        },
         "onsetDateTime": "2010-11-03"
       }
     },
@@ -827,99 +2431,286 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-008b",
-        "subject": {"reference": "Patient/synthea-pt-008"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "91302008", "display": "Sepsis"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "A41.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "91302008",
+              "display": "Sepsis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "A41.9"
+            }
+          ]
+        },
         "onsetDateTime": "2026-04-29",
-        "_note": "ED diagnosis — empirical TMP-SMX started for suspected UTI"
+        "_note": "ED diagnosis \u2014 empirical TMP-SMX started for suspected UTI"
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-008a",
-        "subject": {"reference": "Patient/synthea-pt-008"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-008a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-008a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "7821", "display": "methotrexate"}]},
-        "dosage": [{"text": "15 mg orally once weekly on Monday (rheumatoid arthritis — stable regimen)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "7821",
+              "display": "methotrexate"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "15 mg orally once weekly on Monday (rheumatoid arthritis \u2014 stable regimen)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-008b",
-        "subject": {"reference": "Patient/synthea-pt-008"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-008b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-008b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-29",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "10829", "display": "trimethoprim-sulfamethoxazole"}]},
-        "dosage": [{"text": "1 DS tablet (160/800 mg) orally twice daily for 7 days — empirical UTI treatment"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "10829",
+              "display": "trimethoprim-sulfamethoxazole"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "1 DS tablet (160/800 mg) orally twice daily for 7 days \u2014 empirical UTI treatment"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-008a",
-        "subject": {"reference": "Patient/synthea-pt-008"},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6690-2", "display": "WBC [#/volume] in Blood by Automated count"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6690-2",
+              "display": "WBC [#/volume] in Blood by Automated count"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-20",
-        "valueQuantity": {"value": 6.2, "unit": "10^3/uL"}
+        "valueQuantity": {
+          "value": 6.2,
+          "unit": "10^3/uL"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-008b",
-        "subject": {"reference": "Patient/synthea-pt-008"},
+        "subject": {
+          "reference": "Patient/synthea-pt-008"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6690-2", "display": "WBC [#/volume] in Blood by Automated count"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6690-2",
+              "display": "WBC [#/volume] in Blood by Automated count"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-05-03",
-        "valueQuantity": {"value": 1.4, "unit": "10^3/uL", "_note": "Severe leukopenia 4 days after TMP-SMX added to methotrexate"}
+        "valueQuantity": {
+          "value": 1.4,
+          "unit": "10^3/uL",
+          "_note": "Severe leukopenia 4 days after TMP-SMX added to methotrexate"
+        }
       }
     },
-
     {
       "_conflict_type": "beta_blocker_non_dhp_ccb_bradycardia",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-009",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Fitzgerald", "given": ["Patrick", "Sean"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Fitzgerald",
+            "given": [
+              "Patrick",
+              "Sean"
+            ]
+          }
+        ],
         "gender": "male",
         "birthDate": "1950-08-16",
-        "address": [{"use": "home", "line": ["19 Cloverfield Way"], "city": "Boston", "state": "MA", "postalCode": "02101", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-009"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "19 Cloverfield Way"
+            ],
+            "city": "Boston",
+            "state": "MA",
+            "postalCode": "02101",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-009"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-009a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1222132668"}],
-        "name": [{"use": "official", "family": "McLaughlin", "given": ["Catherine"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1222132668"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "McLaughlin",
+            "given": [
+              "Catherine"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-009b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1980201762"}],
-        "name": [{"use": "official", "family": "Ibrahim", "given": ["Fatima"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1980201762"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Ibrahim",
+            "given": [
+              "Fatima"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-009a",
-        "subject": {"reference": "Patient/synthea-pt-009"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "84114007", "display": "Heart failure"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I50.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "84114007",
+              "display": "Heart failure"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I50.9"
+            }
+          ]
+        },
         "onsetDateTime": "2020-01-20"
       }
     },
@@ -927,9 +2718,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-009b",
-        "subject": {"reference": "Patient/synthea-pt-009"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "49436004", "display": "Atrial fibrillation"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I48.0"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I48.0"
+            }
+          ]
+        },
         "onsetDateTime": "2022-09-15"
       }
     },
@@ -937,88 +2749,254 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-009a",
-        "subject": {"reference": "Patient/synthea-pt-009"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-009a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-009a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "20352", "display": "metoprolol succinate"}]},
-        "dosage": [{"text": "50 mg orally once daily (HFrEF — guideline-directed therapy)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "20352",
+              "display": "metoprolol succinate"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "50 mg orally once daily (HFrEF \u2014 guideline-directed therapy)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-009b",
-        "subject": {"reference": "Patient/synthea-pt-009"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-009b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-009b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-26",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "11170", "display": "verapamil"}]},
-        "dosage": [{"text": "120 mg orally twice daily (added by non-cardiology for BP control — not reviewed with Cardiology)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "11170",
+              "display": "verapamil"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "120 mg orally twice daily (added by non-cardiology for BP control \u2014 not reviewed with Cardiology)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-009a",
-        "subject": {"reference": "Patient/synthea-pt-009"},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "8867-4", "display": "Heart rate"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-25",
-        "valueQuantity": {"value": 68, "unit": "beats/min", "_note": "Baseline on metoprolol alone"}
+        "valueQuantity": {
+          "value": 68,
+          "unit": "beats/min",
+          "_note": "Baseline on metoprolol alone"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-009b",
-        "subject": {"reference": "Patient/synthea-pt-009"},
+        "subject": {
+          "reference": "Patient/synthea-pt-009"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "8867-4", "display": "Heart rate"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-30",
-        "valueQuantity": {"value": 38, "unit": "beats/min", "_note": "Severe bradycardia 4 days after verapamil added — emergency presentation"}
+        "valueQuantity": {
+          "value": 38,
+          "unit": "beats/min",
+          "_note": "Severe bradycardia 4 days after verapamil added \u2014 emergency presentation"
+        }
       }
     },
-
     {
       "_conflict_type": "ace_inhibitor_potassium_sparing_diuretic_hyperkalemia",
       "resource": {
         "resourceType": "Patient",
         "id": "synthea-pt-010",
-        "meta": {"_synthetic": true},
-        "name": [{"use": "official", "family": "Morales-Vega", "given": ["Isabella"]}],
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Morales-Vega",
+            "given": [
+              "Isabella"
+            ]
+          }
+        ],
         "gender": "female",
         "birthDate": "1944-01-30",
-        "address": [{"use": "home", "line": ["6 Sunridge Circle"], "city": "Miami", "state": "FL", "postalCode": "33101", "country": "US"}],
-        "identifier": [{"system": "http://example.org/synthea/mrn", "value": "SYN-MRN-010"}]
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "6 Sunridge Circle"
+            ],
+            "city": "Miami",
+            "state": "FL",
+            "postalCode": "33101",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-010"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-010a",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1264050091"}],
-        "name": [{"use": "official", "family": "Fontaine", "given": ["Renee"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1264050091"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Fontaine",
+            "given": [
+              "Renee"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Practitioner",
         "id": "synthea-prac-010b",
-        "meta": {"_synthetic": true, "npi_source": "DEMO_LUHN_GENERATED"},
-        "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1074628110"}],
-        "name": [{"use": "official", "family": "Zheng", "given": ["Wei"], "prefix": ["Dr."]}],
-        "qualification": [{"code": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/v2-0360", "code": "MD"}]}}]
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1074628110"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Zheng",
+            "given": [
+              "Wei"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-010a",
-        "subject": {"reference": "Patient/synthea-pt-010"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "84114007", "display": "Heart failure with reduced ejection fraction"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "I50.20"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "84114007",
+              "display": "Heart failure with reduced ejection fraction"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I50.20"
+            }
+          ]
+        },
         "onsetDateTime": "2018-03-12"
       }
     },
@@ -1026,9 +3004,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-010b",
-        "subject": {"reference": "Patient/synthea-pt-010"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "44054006", "display": "Type 2 diabetes mellitus"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "E11.9"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Type 2 diabetes mellitus"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "E11.9"
+            }
+          ]
+        },
         "onsetDateTime": "2005-09-01"
       }
     },
@@ -1036,9 +3035,30 @@
       "resource": {
         "resourceType": "Condition",
         "id": "synthea-cond-010c",
-        "subject": {"reference": "Patient/synthea-pt-010"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active"}]},
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "709044004", "display": "Chronic kidney disease stage 3"}, {"system": "http://hl7.org/fhir/sid/icd-10", "code": "N18.3"}]},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "709044004",
+              "display": "Chronic kidney disease stage 3"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N18.3"
+            }
+          ]
+        },
         "onsetDateTime": "2022-05-01"
       }
     },
@@ -1046,71 +3066,793 @@
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-010a",
-        "subject": {"reference": "Patient/synthea-pt-010"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-010a"},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-010a"
+        },
         "status": "active",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "18867", "display": "enalapril"}]},
-        "dosage": [{"text": "10 mg orally twice daily (HFrEF — guideline-directed medical therapy)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "18867",
+              "display": "enalapril"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "10 mg orally twice daily (HFrEF \u2014 guideline-directed medical therapy)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "MedicationStatement",
         "id": "synthea-med-010b",
-        "subject": {"reference": "Patient/synthea-pt-010"},
-        "informationSource": {"reference": "Practitioner/synthea-prac-010b"},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-010b"
+        },
         "status": "active",
         "dateAsserted": "2026-04-18",
-        "medicationCodeableConcept": {"coding": [{"system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "9997", "display": "spironolactone"}]},
-        "dosage": [{"text": "50 mg orally once daily (prescribed without post-RALES monitoring plan — potassium not rechecked)"}]
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "9997",
+              "display": "spironolactone"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "50 mg orally once daily (prescribed without post-RALES monitoring plan \u2014 potassium not rechecked)"
+          }
+        ]
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-010a",
-        "subject": {"reference": "Patient/synthea-pt-010"},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6298-4", "display": "Potassium [Moles/volume] in Blood"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6298-4",
+              "display": "Potassium [Moles/volume] in Blood"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-15",
-        "valueQuantity": {"value": 4.4, "unit": "mEq/L", "_note": "Baseline pre-spironolactone"}
+        "valueQuantity": {
+          "value": 4.4,
+          "unit": "mEq/L",
+          "_note": "Baseline pre-spironolactone"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-010b",
-        "subject": {"reference": "Patient/synthea-pt-010"},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "6298-4", "display": "Potassium [Moles/volume] in Blood"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6298-4",
+              "display": "Potassium [Moles/volume] in Blood"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-05-02",
-        "valueQuantity": {"value": 6.1, "unit": "mEq/L", "_note": "Severe hyperkalemia 14 days after spironolactone addition — ClinicalMem alert should have fired on Day 1"}
+        "valueQuantity": {
+          "value": 6.1,
+          "unit": "mEq/L",
+          "_note": "Severe hyperkalemia 14 days after spironolactone addition \u2014 ClinicalMem alert should have fired on Day 1"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "Observation",
         "id": "synthea-obs-010c",
-        "subject": {"reference": "Patient/synthea-pt-010"},
+        "subject": {
+          "reference": "Patient/synthea-pt-010"
+        },
         "status": "final",
-        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-8", "display": "Glomerular filtration rate/1.73 sq M.predicted"}]},
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-8",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ]
+        },
         "effectiveDateTime": "2026-04-15",
-        "valueQuantity": {"value": 44, "unit": "mL/min/1.73m2", "_note": "CKD 3b — amplifies hyperkalemia risk with dual RAAS inhibition"}
+        "valueQuantity": {
+          "value": 44,
+          "unit": "mL/min/1.73m2",
+          "_note": "CKD 3b \u2014 amplifies hyperkalemia risk with dual RAAS inhibition"
+        }
       }
     },
     {
       "resource": {
         "resourceType": "AllergyIntolerance",
         "id": "synthea-allergy-010a",
-        "patient": {"reference": "Patient/synthea-pt-010"},
-        "clinicalStatus": {"coding": [{"system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active"}]},
+        "patient": {
+          "reference": "Patient/synthea-pt-010"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active"
+            }
+          ]
+        },
         "type": "allergy",
-        "category": ["medication"],
+        "category": [
+          "medication"
+        ],
         "criticality": "low",
-        "code": {"coding": [{"system": "http://snomed.info/sct", "code": "372687004", "display": "Sulfonamide"}]},
-        "reaction": [{"manifestation": [{"coding": [{"system": "http://snomed.info/sct", "code": "271807003", "display": "Skin rash"}]}]}]
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "372687004",
+              "display": "Sulfonamide"
+            }
+          ]
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "271807003",
+                    "display": "Skin rash"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-011a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1399422850"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Nakamura",
+            "given": [
+              "Sho"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-011b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1170657443"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Vance",
+            "given": [
+              "Imani"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-011",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Vasquez",
+            "given": [
+              "Adelaide",
+              "Renata"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1963-09-22",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "1147 Roosevelt Avenue"
+            ],
+            "city": "Tucson",
+            "state": "AZ",
+            "postalCode": "85701",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-011"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-011a",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "29821000119107",
+              "display": "Chronic tophaceous gout"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M10.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2018-04-11"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-011b",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "34000006",
+              "display": "Crohn's disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "K50.90"
+            }
+          ]
+        },
+        "onsetDateTime": "2014-08-30"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-011c",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "431857002",
+              "display": "Chronic kidney disease stage 2"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N18.2"
+            }
+          ]
+        },
+        "onsetDateTime": "2022-02-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-011a",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-011a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "519",
+              "display": "allopurinol"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "300 mg orally once daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 300,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-011b",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-011b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1256",
+              "display": "azathioprine"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "100 mg orally once daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 100,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-011a",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/synthea-pt-011"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "77147-7",
+              "display": "Glomerular filtration rate"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 78,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/{1.73_m2}"
+        },
+        "effectiveDateTime": "2026-04-12"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-012a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1715485912"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Patel-Shah",
+            "given": [
+              "Anjali"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-012b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1741460053"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Halverson",
+            "given": [
+              "Bjorn"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-012",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Brennan",
+            "given": [
+              "Theodore",
+              "James"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1968-11-04",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "54 Beacon Hill Road"
+            ],
+            "city": "Portland",
+            "state": "ME",
+            "postalCode": "04101",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-012"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-012a",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "414545008",
+              "display": "Coronary arteriosclerosis status post drug-eluting stent"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "Z95.5"
+            }
+          ]
+        },
+        "onsetDateTime": "2025-09-18"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-012b",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "235595009",
+              "display": "Gastroesophageal reflux disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "K21.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2017-03-22"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-012c",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "55822004",
+              "display": "Hyperlipidemia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "E78.5"
+            }
+          ]
+        },
+        "onsetDateTime": "2020-06-08"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-012a",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-012a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "32968",
+              "display": "clopidogrel"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "75 mg orally once daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 75,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-012b",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-012b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "7646",
+              "display": "omeprazole"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "40 mg orally once daily",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 40,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-012a",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/synthea-pt-012"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "13457-7",
+              "display": "LDL Cholesterol (calc)"
+            }
+          ]
+        },
+        "valueQuantity": {
+          "value": 142,
+          "unit": "mg/dL",
+          "system": "http://unitsofmeasure.org",
+          "code": "mg/dL"
+        },
+        "effectiveDateTime": "2026-03-28"
       }
     }
-
   ]
 }

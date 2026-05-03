@@ -23,7 +23,7 @@ The cohort in `synthea_demo_cohort.json` does not meet this definition for the f
 
 ### 1. No Real Individuals
 
-All 10 patients are entirely fictional, computer-generated characters. Their names (e.g., "Raymond Okafor", "Sandra Kowalski"), dates of birth, addresses, and medical histories were constructed solely for demonstration purposes using synthetic identifiers. No real person corresponds to any entry.
+All 12 patients are entirely fictional, computer-generated characters. Their names (e.g., "Raymond Okafor", "Sandra Kowalski", "Adelaide Vasquez"), dates of birth, addresses, and medical histories were constructed solely for demonstration purposes using synthetic identifiers. No real person corresponds to any entry.
 
 ### 2. No Real Protected Health Information (PHI)
 
