@@ -33,7 +33,7 @@ from engine.flow_runner import (  # noqa: E402
     verify_replay,
 )
 
-# All six flows ClinicalMem ships today.
+# All seven flows ClinicalMem ships today.
 SHIPPED_FLOWS: tuple[str, ...] = (
     "MedicationSafetyReview",
     "AllergyCrossReactivity",
@@ -41,6 +41,7 @@ SHIPPED_FLOWS: tuple[str, ...] = (
     "ProviderDisagreement",
     "WhatIfSimulation",
     "ClinicalTrialMatch",
+    "JointMemoryFederation",
 )
 
 

@@ -1,0 +1,106 @@
+// flows/JointMemoryFederation.flow.mind
+// ClinicalMem — federated joint clinical memory across multiple sites.
+// Apache-2.0 (see LICENSE)
+//
+// What this contract guarantees:
+//
+//   PHI (patient names, DOB, MRN, clinical notes, FHIR bundles) NEVER
+//   leaves the originating site. Only de-identified clinical knowledge
+//   propagates — drug-pair severity findings, BitNet activations on novel
+//   pairs, audit-chain witnesses, anonymised provider-disagreement
+//   patterns. The PHI gate is a typed runtime invariant, not a policy.
+//
+// Transport (all patent-pending STARGA technology):
+//
+//   mind-mem v3.x ships the multi-machine networking layer over:
+//     - MAP   (Mind Annotation Protocol)   — patent-pending STARGA
+//     - MIC@2 (Mind Interchange Coding v2) — patent-pending STARGA
+//     - binary framing                     — patent-pending STARGA
+//   ClinicalMem consumes the Apache-2.0 mind-mem dependency and
+//   gets the implicit Apache-2.0 § 3 patent grant for use-as-shipped.
+//
+// Pipeline (left-to-right composition):
+//
+//   local_finding ─► classify ─► phi_scrub ─► sign ─► emit
+//                                                       │
+//                          (over MIC@2 / MAP / binary)  ▼
+//                                              federation_relay
+//                                                       │
+//                                                       ▼
+//   peer_finding  ◄── verify ◄── phi_recheck ◄── ingest ◄┘
+//
+// Every `@verify` invariant is enforced at runtime; a violation
+// returns a structured InvariantViolation rather than emitting a
+// possibly-PHI-tainted record into the federation.
+
+@profile "regulated_distributed"
+@kernel  "guarded_federation"
+flow JointMemoryFederation {
+    input  finding:     ClinicalFinding
+    input  site_key:    Ed25519PrivateKey
+    input  peer_record: FederatedRecord
+    output emitted:     FederatedRecord
+    output ingested:    LocalKnowledge
+
+    // ─── EGRESS PATH (this site → peers) ──────────────────────────
+
+    // 1. Classify the finding into a federation lane.
+    //    `clinical_knowledge` lane = severity verdicts, BitNet outputs,
+    //    audit hashes — propagates freely. `phi_lane` = PHI; never
+    //    leaves the building. The classifier output is the load-bearing
+    //    PHI/non-PHI boundary.
+    node classify = @native federation_classify(finding)
+    invariant classify.lane in ["clinical_knowledge", "phi_lane"]
+
+    // 2. PHI scrubber — independent second-line check on the payload
+    //    before it hits the wire. Any string matching the PHI scanner's
+    //    18 HIPAA Safe Harbor identifiers blocks the emit.
+    node scrubbed = @native phi_strip(classify.payload)
+    invariant scrubbed.has_phi == false
+    invariant scrubbed.identifiers_removed >= 0
+
+    // 3. Reject the entire emit if the lane was `phi_lane`.
+    //    A PHI-classified finding NEVER reaches the federation transport.
+    invariant classify.lane != "phi_lane" or scrubbed.empty == true
+
+    // 4. Sign the de-identified payload with this site's Ed25519 key
+    //    so peers can verify the originator and detect tampering.
+    node signed = @native ed25519_sign(scrubbed.payload, site_key)
+
+    // 5. Emit over mind-mem's patent-pending MAP / MIC@2 / binary
+    //    transport. Cross-site delivery is at-least-once with
+    //    idempotent ingestion at the receiver (deduplicates by
+    //    audit-chain hash).
+    node emitted_record = @flow mind_mem_publish(
+        signed.payload,
+        protocol:        "mic@2",
+        annotation:      "map",
+        framing:         "binary",
+        delivery_class:  "at_least_once",
+    )
+    assign emitted = emitted_record
+
+    // ─── INGRESS PATH (peers → this site) ─────────────────────────
+
+    // 6. Verify the incoming record's Ed25519 signature.
+    node verified = @native ed25519_verify(peer_record)
+    invariant verified.signature_valid == true
+
+    // 7. Re-run the PHI scrubber on the inbound payload — defence in
+    //    depth in case a peer's classifier was misconfigured. Any PHI
+    //    detected here is a federation-level incident; the record is
+    //    quarantined, alert is fired, and the source site's signing
+    //    key is added to the deny-list for review.
+    node inbound_scrub = @native phi_strip(verified.payload)
+    invariant inbound_scrub.has_phi == false
+
+    // 8. Ingest into the local mind-mem store. Tier-decay and
+    //    contradiction detection are mind-mem's existing v3 primitives
+    //    and apply automatically.
+    node local_record = @native mind_mem_ingest(
+        inbound_scrub.payload,
+        provenance:  verified.signer_id,
+        tier:        verified.payload.tier,
+    )
+    assign ingested = local_record
+}

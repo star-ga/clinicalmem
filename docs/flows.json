@@ -124,6 +124,85 @@
     "source": "// flows/ClinicalTrialMatch.flow.mind\n// ClinicalMem \u2014 ClinicalTrials.gov eligibility match.\n// Apache-2.0 (see LICENSE)\n//\n// Surfaces active clinical trials matching a patient's condition list\n// and pre-screens eligibility against trial criteria (age, gender,\n// active conditions, exclusion medications).\n//\n//     patient + conditions \u2500\u25ba phi_scan \u2500\u25ba trial_search \u2500\u25ba eligibility_screen \u2500\u25ba rank \u2500\u25ba report\n\n@profile \"regulated_online\"\nflow ClinicalTrialMatch {\n    input  patient_id:   PatientId\n    input  conditions:   ConditionList\n    input  demographics: PatientDemographics\n    output matches:      TrialMatchReport\n\n    node phi = @native phi_scan(conditions, demographics)\n    invariant phi.safe_for_external == true\n\n    // Query ClinicalTrials.gov for active trials matching condition list\n    node candidates = @native search_clinical_trials(\n        conditions:  conditions,\n        status:      \"Recruiting\",\n        country:     \"US\",\n        max_results: 50,\n    )\n\n    // Pre-screen eligibility against age, gender, active conditions,\n    // exclusion medications, and required lab thresholds.\n    node screened = @native eligibility_screen(\n        trials:       candidates,\n        demographics: demographics,\n        conditions:   conditions,\n    )\n    invariant screened.fairness_audit_passed == true   // avoid demographic-bias drift\n\n    // Rank by clinical relevance (LLM-grounded; cites the trial document)\n    node ranked = @llm rank_trial_relevance(\n        trials:    screened,\n        require_citations: true,\n    )\n    invariant ranked.citations_valid == true\n\n    node audit = @native emit_audit_chain(\n        plan_hash: $plan_hash,\n        nodes:     [phi, candidates, screened, ranked],\n        tag:       \"TAG_v1\",\n    )\n\n    assign matches = @native build_trial_match_report(ranked, audit)\n}\n"
   },
   {
+    "name": "JointMemoryFederation",
+    "plan_hash": "d96173f3ab818418797abd973b41d9c53858d926917fc97efc78e01b2ec031d2",
+    "profile": "regulated_distributed",
+    "kernel": "guarded_federation",
+    "inputs": [
+      {
+        "name": "finding",
+        "type": "ClinicalFinding"
+      },
+      {
+        "name": "site_key",
+        "type": "Ed25519PrivateKey"
+      },
+      {
+        "name": "peer_record",
+        "type": "FederatedRecord"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "emitted",
+        "type": "FederatedRecord"
+      },
+      {
+        "name": "ingested",
+        "type": "LocalKnowledge"
+      }
+    ],
+    "nodes": [
+      {
+        "name": "classify",
+        "directive": "@native"
+      },
+      {
+        "name": "scrubbed",
+        "directive": "@native"
+      },
+      {
+        "name": "signed",
+        "directive": "@native"
+      },
+      {
+        "name": "emitted_record",
+        "directive": "@flow"
+      },
+      {
+        "name": "emitted",
+        "directive": "@native"
+      },
+      {
+        "name": "verified",
+        "directive": "@native"
+      },
+      {
+        "name": "inbound_scrub",
+        "directive": "@native"
+      },
+      {
+        "name": "local_record",
+        "directive": "@native"
+      },
+      {
+        "name": "ingested",
+        "directive": "@native"
+      }
+    ],
+    "invariant_count": 6,
+    "invariants": [
+      "classify.lane in [\"clinical_knowledge\", \"phi_lane\"]",
+      "scrubbed.has_phi == false",
+      "scrubbed.identifiers_removed >= 0",
+      "classify.lane != \"phi_lane\" or scrubbed.empty == true",
+      "verified.signature_valid == true",
+      "inbound_scrub.has_phi == false"
+    ],
+    "source_path": "flows/JointMemoryFederation.flow.mind",
+    "source": "// flows/JointMemoryFederation.flow.mind\n// ClinicalMem \u2014 federated joint clinical memory across multiple sites.\n// Apache-2.0 (see LICENSE)\n//\n// What this contract guarantees:\n//\n//   PHI (patient names, DOB, MRN, clinical notes, FHIR bundles) NEVER\n//   leaves the originating site. Only de-identified clinical knowledge\n//   propagates \u2014 drug-pair severity findings, BitNet activations on novel\n//   pairs, audit-chain witnesses, anonymised provider-disagreement\n//   patterns. The PHI gate is a typed runtime invariant, not a policy.\n//\n// Transport (all patent-pending STARGA technology):\n//\n//   mind-mem v3.x ships the multi-machine networking layer over:\n//     - MAP   (Mind Annotation Protocol)   \u2014 patent-pending STARGA\n//     - MIC@2 (Mind Interchange Coding v2) \u2014 patent-pending STARGA\n//     - binary framing                     \u2014 patent-pending STARGA\n//   ClinicalMem consumes the Apache-2.0 mind-mem dependency and\n//   gets the implicit Apache-2.0 \u00a7 3 patent grant for use-as-shipped.\n//\n// Pipeline (left-to-right composition):\n//\n//   local_finding \u2500\u25ba classify \u2500\u25ba phi_scrub \u2500\u25ba sign \u2500\u25ba emit\n//                                                       \u2502\n//                          (over MIC@2 / MAP / binary)  \u25bc\n//                                              federation_relay\n//                                                       \u2502\n//                                                       \u25bc\n//   peer_finding  \u25c4\u2500\u2500 verify \u25c4\u2500\u2500 phi_recheck \u25c4\u2500\u2500 ingest \u25c4\u2518\n//\n// Every `@verify` invariant is enforced at runtime; a violation\n// returns a structured InvariantViolation rather than emitting a\n// possibly-PHI-tainted record into the federation.\n\n@profile \"regulated_distributed\"\n@kernel  \"guarded_federation\"\nflow JointMemoryFederation {\n    input  finding:     ClinicalFinding\n    input  site_key:    Ed25519PrivateKey\n    input  peer_record: FederatedRecord\n    output emitted:     FederatedRecord\n    output ingested:    LocalKnowledge\n\n    // \u2500\u2500\u2500 EGRESS PATH (this site \u2192 peers) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n    // 1. Classify the finding into a federation lane.\n    //    `clinical_knowledge` lane = severity verdicts, BitNet outputs,\n    //    audit hashes \u2014 propagates freely. `phi_lane` = PHI; never\n    //    leaves the building. The classifier output is the load-bearing\n    //    PHI/non-PHI boundary.\n    node classify = @native federation_classify(finding)\n    invariant classify.lane in [\"clinical_knowledge\", \"phi_lane\"]\n\n    // 2. PHI scrubber \u2014 independent second-line check on the payload\n    //    before it hits the wire. Any string matching the PHI scanner's\n    //    18 HIPAA Safe Harbor identifiers blocks the emit.\n    node scrubbed = @native phi_strip(classify.payload)\n    invariant scrubbed.has_phi == false\n    invariant scrubbed.identifiers_removed >= 0\n\n    // 3. Reject the entire emit if the lane was `phi_lane`.\n    //    A PHI-classified finding NEVER reaches the federation transport.\n    invariant classify.lane != \"phi_lane\" or scrubbed.empty == true\n\n    // 4. Sign the de-identified payload with this site's Ed25519 key\n    //    so peers can verify the originator and detect tampering.\n    node signed = @native ed25519_sign(scrubbed.payload, site_key)\n\n    // 5. Emit over mind-mem's patent-pending MAP / MIC@2 / binary\n    //    transport. Cross-site delivery is at-least-once with\n    //    idempotent ingestion at the receiver (deduplicates by\n    //    audit-chain hash).\n    node emitted_record = @flow mind_mem_publish(\n        signed.payload,\n        protocol:        \"mic@2\",\n        annotation:      \"map\",\n        framing:         \"binary\",\n        delivery_class:  \"at_least_once\",\n    )\n    assign emitted = emitted_record\n\n    // \u2500\u2500\u2500 INGRESS PATH (peers \u2192 this site) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n    // 6. Verify the incoming record's Ed25519 signature.\n    node verified = @native ed25519_verify(peer_record)\n    invariant verified.signature_valid == true\n\n    // 7. Re-run the PHI scrubber on the inbound payload \u2014 defence in\n    //    depth in case a peer's classifier was misconfigured. Any PHI\n    //    detected here is a federation-level incident; the record is\n    //    quarantined, alert is fired, and the source site's signing\n    //    key is added to the deny-list for review.\n    node inbound_scrub = @native phi_strip(verified.payload)\n    invariant inbound_scrub.has_phi == false\n\n    // 8. Ingest into the local mind-mem store. Tier-decay and\n    //    contradiction detection are mind-mem's existing v3 primitives\n    //    and apply automatically.\n    node local_record = @native mind_mem_ingest(\n        inbound_scrub.payload,\n        provenance:  verified.signer_id,\n        tier:        verified.payload.tier,\n    )\n    assign ingested = local_record\n}\n"
+  },
+  {
     "name": "LabContraindication",
     "plan_hash": "0f327e251bcc3fe2912a0bcf5287d4cdd641043c5433e36fe358b65941fdc970",
     "profile": "regulated_online",

@@ -38,6 +38,12 @@ run-demo.sh
 demo-script.md
 deploy.sh
 
+# Hugging Face publication staging — kept private, never tracked.
+# The actual model artifacts live at clinicalmem-bitnet-training/huggingface_repo/
+# and are uploaded to a PRIVATE HF repo when ready (clinicalmem-ddi-bitnet, --private).
+huggingface/
+hf_repo/
+
 # IDE
 .vscode/
 .idea/
