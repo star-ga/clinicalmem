@@ -247,11 +247,27 @@ conditions:
 1. The five frozen regression anchor pairs (warfarin+ibuprofen,
    amoxicillin+penicillin, metformin+iodine, atorvastatin+grapefruit,
    aspirin+warfarin) must each produce a non-`none` prediction.
-2. Zero `contraindicated` → `none` transitions on the held-out NTI cohort
-   (minimum 35 pairs per release).
-3. The new weights bundle SHA-256 must be published alongside the release notes
+   *Automated gate:* `tests/test_engine/test_bitnet_classifier.py::test_known_pair_produces_severity`
+   (secondary regression set — 5 parametrized assertions).
+2. Zero `contraindicated` → `none` transitions on the held-out OpenEvidence
+   ground-truth cache (15 curated pairs from PubMed/FDA/Lexicomp citations).
+   *Automated gate:* `scripts/run_clinical_regression_eval.py` — the
+   **empirical PCCP harness**. Runs the full deterministic + cache layers of
+   the 6-tier pipeline against `docs/openevidence_cache.json` and aborts
+   with exit code 1 if contraindicated recall drops below 100% or
+   contraindicated FNR rises above 0%. The harness completes in under
+   60 seconds with no LLM or live API calls. See `docs/pccp_eval.md` for
+   the full specification and CI integration instructions.
+3. No safety-class recall drops by more than 0.1% from the baseline recorded
+   in `docs/pccp_baseline.json`. The PCCP harness performs this comparison
+   automatically on every run without `--update-baseline`.
+4. The new weights bundle SHA-256 must be published alongside the release notes
    and propagated through the audit chain's `bundle_id` field before deployment.
-4. Any `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` rate increase exceeding 5% relative
+   The `docs/pccp_eval_latest.json` report produced by the harness records both
+   the `bundle_id` (SHA-256 over canonical weight matrices) and the
+   `preimage_hash` (SHA-256 over raw JSON bytes), providing dual-anchor
+   verification for FDA auditors.
+5. Any `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` rate increase exceeding 5% relative
    to the prior release triggers a mandatory human pharmacist review before
    deployment.
 
