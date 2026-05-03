@@ -4187,6 +4187,340 @@
         ],
         "effectiveDateTime": "2026-04-19"
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-014a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1174411375"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Okonkwo",
+            "given": [
+              "Chinwe"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-014b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1989834159"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Holm",
+            "given": [
+              "Stellan"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-014",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Magnussen",
+            "given": [
+              "Henrik",
+              "Olav"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1947-12-03",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "742 Birchwood Lane"
+            ],
+            "city": "Duluth",
+            "state": "MN",
+            "postalCode": "55802",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-014"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-014a",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "197927001",
+              "display": "Recurrent urinary tract infection"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N39.0"
+            }
+          ]
+        },
+        "onsetDateTime": "2024-09-12"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-014b",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "279039007",
+              "display": "Low back pain"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M54.50"
+            }
+          ]
+        },
+        "onsetDateTime": "2019-03-08"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-014c",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "287045000",
+              "display": "Lumbar muscle spasm"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M62.838"
+            }
+          ]
+        },
+        "onsetDateTime": "2022-07-21"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-014a",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-014a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "2551",
+              "display": "ciprofloxacin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "500 mg orally twice daily x 7 days",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 500,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-014b",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-014b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "37418",
+              "display": "tizanidine"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "4 mg orally three times daily PRN",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 4,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-014a",
+        "status": "final",
+        "subject": {
+          "reference": "Patient/synthea-pt-014"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "85354-9",
+              "display": "Blood pressure panel"
+            }
+          ]
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8480-6",
+                  "display": "Systolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 124,
+              "unit": "mmHg"
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "8462-4",
+                  "display": "Diastolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 78,
+              "unit": "mmHg"
+            }
+          }
+        ],
+        "effectiveDateTime": "2026-04-22"
+      }
     }
   ]
 }
