@@ -38,7 +38,9 @@
 flow JointMemoryFederation {
     input  finding:     ClinicalFinding
     input  site_key:    Ed25519PrivateKey
+    input  site_epoch:  KeyEpoch
     input  peer_record: FederatedRecord
+    input  peer_quorum: list<FederatedRecord>
     output emitted:     FederatedRecord
     output ingested:    LocalKnowledge
 
@@ -59,48 +61,97 @@ flow JointMemoryFederation {
     invariant scrubbed.has_phi == false
     invariant scrubbed.identifiers_removed >= 0
 
-    // 3. Reject the entire emit if the lane was `phi_lane`.
+    // 3. Structural FHIR guard — even if the scrubber misses a token,
+    //    any FHIR resource type that holds patient identity is quarantined
+    //    on shape alone, regardless of scrubber result. Defence against
+    //    common-mode failure of phi_strip across both sites.
+    invariant scrubbed.payload.fhir_resource_type not in [
+        "Patient", "Observation", "MedicationStatement",
+        "Encounter", "DocumentReference",
+    ]
+
+    // 4. Reject the entire emit if the lane was `phi_lane`.
     //    A PHI-classified finding NEVER reaches the federation transport.
     invariant classify.lane != "phi_lane" or scrubbed.empty == true
 
-    // 4. Sign the de-identified payload with this site's Ed25519 key
-    //    so peers can verify the originator and detect tampering.
-    node signed = @native ed25519_sign(scrubbed.payload, site_key)
+    // 5. Stamp issued_at + nonce so peers can reject replays and
+    //    enforce a freshness window on receive.
+    node stamped = @native add_issued_at_and_nonce(scrubbed.payload)
+    invariant stamped.has_issued_at == true
+    invariant stamped.has_nonce_128bit == true
 
-    // 5. Emit over mind-mem's patent-pending MAP / MIC@2 / binary
+    // 6. Sign the de-identified, time-stamped payload with this site's
+    //    current key epoch. Receivers can validate against the per-site
+    //    KeyEpoch deny-list to revoke compromised epochs retroactively.
+    node signed = @native ed25519_sign(stamped.payload, site_key, site_epoch)
+    invariant signed.epoch == site_epoch
+    invariant signed.canonical_preimage_schema == "TAG_v1_NUL_separated"
+
+    // 7. Emit over mind-mem's patent-pending MAP / MIC@2 / binary
     //    transport. Cross-site delivery is at-least-once with
     //    idempotent ingestion at the receiver (deduplicates by
-    //    audit-chain hash).
+    //    semantic_idempotency_hash — distinct from transport_dedup_hash).
     node emitted_record = @flow mind_mem_publish(
         signed.payload,
-        protocol:        "mic@2",
-        annotation:      "map",
-        framing:         "binary",
-        delivery_class:  "at_least_once",
+        protocol:                   "mic@2",
+        annotation:                 "map",
+        framing:                    "binary",
+        delivery_class:             "at_least_once",
+        semantic_idempotency_hash:  signed.semantic_hash,
+        transport_dedup_hash:       signed.envelope_hash,
     )
     assign emitted = emitted_record
 
     // ─── INGRESS PATH (peers → this site) ─────────────────────────
 
-    // 6. Verify the incoming record's Ed25519 signature.
+    // 8. Verify the incoming record's Ed25519 signature AND that its
+    //    KeyEpoch is not on the deny-list. A compromised epoch quarantines
+    //    every record signed under it retroactively.
     node verified = @native ed25519_verify(peer_record)
     invariant verified.signature_valid == true
+    invariant verified.key_epoch_revoked == false
 
-    // 7. Re-run the PHI scrubber on the inbound payload — defence in
-    //    depth in case a peer's classifier was misconfigured. Any PHI
-    //    detected here is a federation-level incident; the record is
-    //    quarantined, alert is fired, and the source site's signing
-    //    key is added to the deny-list for review.
+    // 9. Freshness window — reject records older than 5 minutes to close
+    //    the replay attack window. Configurable per deployment.
+    invariant verified.payload.issued_at_seconds_ago <= 300
+    invariant verified.payload.issued_at_seconds_ago >= 0
+
+    // 10. Re-run the PHI scrubber on the inbound payload — defence in
+    //     depth in case a peer's classifier was misconfigured. Any PHI
+    //     detected here is a federation-level incident; the record is
+    //     quarantined, alert is fired, and the peer's KeyEpoch is added
+    //     to the local deny-list for review.
     node inbound_scrub = @native phi_strip(verified.payload)
     invariant inbound_scrub.has_phi == false
 
-    // 8. Ingest into the local mind-mem store. Tier-decay and
-    //    contradiction detection are mind-mem's existing v3 primitives
-    //    and apply automatically.
+    // 11. Tier bounds-check — peer-supplied tier value clamped against
+    //     the local mind-mem tier schema [0..5]. A compromised peer
+    //     cannot force records into the longest-retention bucket.
+    node tier_clamped = @native clamp_tier(verified.payload.tier, min: 0, max: 5)
+    invariant tier_clamped.value >= 0 and tier_clamped.value <= 5
+
+    // 12. Severity quorum gate — for any drug-pair severity verdict,
+    //     accept it as evidence ONLY if at least N-of-M independent
+    //     peers (default 3-of-5) have signed concurring records.
+    //     Single-peer findings are stored at low tier; quorum-confirmed
+    //     findings are promoted to evidence-grade. Prevents bimodal
+    //     verdict clusters across sites.
+    node quorum = @native severity_quorum(
+        candidate:            verified.payload,
+        peer_signatures:      peer_quorum,
+        n_required:           3,
+        m_observed:           5,
+    )
+    invariant quorum.has_concurring_signatures or quorum.tier <= 1
+
+    // 13. Ingest into the local mind-mem store. Tier-decay and
+    //     contradiction detection are mind-mem's existing v3 primitives
+    //     and apply automatically.
     node local_record = @native mind_mem_ingest(
         inbound_scrub.payload,
         provenance:  verified.signer_id,
-        tier:        verified.payload.tier,
+        tier:        tier_clamped.value,
+        evidence_grade: quorum.has_concurring_signatures,
     )
     assign ingested = local_record
 }

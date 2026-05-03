@@ -7,8 +7,11 @@ without requiring the commercial runtime.
 
 Kernel sources: https://github.com/star-ga/mind/tree/main/mind/
 """
+import logging
 import math
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -270,6 +273,9 @@ def check_drug_interactions(
     return sorted(interactions, key=lambda i: i.score, reverse=True)
 
 
+_SAFETY_DOWNGRADE_SEVERITY: set[str] = {"contraindicated", "serious", "major"}
+
+
 def _attach_bitnet_repro_hashes(
     interactions: list[DrugInteraction],
 ) -> list[DrugInteraction]:
@@ -279,33 +285,71 @@ def _attach_bitnet_repro_hashes(
     and {ibuprofen, warfarin} produce the same hash. Failure to load the
     classifier (missing weights bundle, etc.) is recorded as `None` and
     never silently dropped — the audit chain reflects the actual state.
+
+    **Safety-downgrade alerts:** if the upstream pipeline has reported a
+    pair as `contraindicated`, `serious`, or `major` AND the BitNet
+    classifier disagrees by predicting `none` or `minor`, that is a
+    release-blocking signal — the docstring's "Disagreement is a
+    release-blocking event" promise must hold at runtime, not just in
+    tests. We log a structured WARNING with the canonical preimage so
+    the alert is grep-able and the audit chain still records both the
+    upstream verdict and the contradictory BitNet stamp. The upstream
+    severity is never silently downgraded; the safer (more severe)
+    verdict wins.
     """
     try:
-        from engine.bitnet_classifier import classifier_layer
-    except Exception:
+        from engine.bitnet_classifier import classifier_layer, WeightsTamperError
+    except Exception as exc:
+        logger.warning("bitnet_classifier import failed; Layer 4.5 skipped: %s", exc)
         return interactions
 
     stamped: list[DrugInteraction] = []
     for it in interactions:
         try:
             result = classifier_layer(it.drug_a, it.drug_b)
-            stamped.append(
-                DrugInteraction(
-                    drug_a=it.drug_a,
-                    drug_b=it.drug_b,
-                    severity=it.severity,
-                    description=it.description,
-                    score=it.score,
-                    bitnet_severity=result.severity_name,
-                    bitnet_repro_hash=result.repro_hash,
-                    bitnet_weights_id=result.weights_id,
-                )
+        except WeightsTamperError as exc:
+            # Tamper is release-blocking. Re-raise so the caller's
+            # MedicationSafetyReview flow's invariants surface it.
+            logger.error("BITNET_WEIGHTS_TAMPER %s", exc)
+            raise
+        except Exception as exc:
+            # Other classifier failures (missing weights file, malformed
+            # JSON) are recorded as gaps; the upstream interaction stays.
+            logger.warning(
+                "bitnet classifier failed for %s+%s: %s",
+                it.drug_a, it.drug_b, exc,
             )
-        except Exception:
-            # Classifier failure is informative — leave the upstream
-            # interaction in place but mark BitNet fields as None so the
-            # audit-chain entry honestly reflects the gap.
             stamped.append(it)
+            continue
+
+        # Safety-downgrade alert: upstream said this pair is dangerous,
+        # BitNet says it's not. The audit chain records both, but
+        # operators must see this as a WARNING in the live log so they
+        # can investigate the disagreement before any clinical action.
+        upstream_dangerous = it.severity.lower() in _SAFETY_DOWNGRADE_SEVERITY
+        bitnet_safe = result.severity_name in ("none", "minor")
+        if upstream_dangerous and bitnet_safe:
+            logger.warning(
+                "BITNET_SAFETY_DOWNGRADE_DISAGREEMENT pair=%s+%s "
+                "upstream=%s bitnet=%s feature_hash=%s repro_hash=%s "
+                "weights_id=%s — upstream verdict preserved; investigate "
+                "before any clinical action",
+                it.drug_a, it.drug_b, it.severity, result.severity_name,
+                result.feature_hash, result.repro_hash, result.weights_id,
+            )
+
+        stamped.append(
+            DrugInteraction(
+                drug_a=it.drug_a,
+                drug_b=it.drug_b,
+                severity=it.severity,           # upstream verdict preserved
+                description=it.description,
+                score=it.score,
+                bitnet_severity=result.severity_name,
+                bitnet_repro_hash=result.repro_hash,
+                bitnet_weights_id=result.weights_id,
+            )
+        )
     return stamped
 
 

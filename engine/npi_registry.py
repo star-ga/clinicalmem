@@ -143,9 +143,21 @@ def lookup_npi(npi: str, *, timeout: float = 5.0) -> NPIRecord | None:
     params = {"version": _NPPES_VERSION, "number": npi}
     url = f"{_NPPES_BASE}?{urllib.parse.urlencode(params)}"
 
+    # Cap the inbound response at 1 MB. NPPES typical response is ~3-8 KB;
+    # anything larger is either a hostile mirror or a misconfigured CDN
+    # and must NEVER be allowed to OOM the process. Bound BEFORE json.loads.
+    _MAX_RESPONSE_BYTES = 1 * 1024 * 1024  # 1 MB
+
     try:
         with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310 - public API
-            payload = json.loads(resp.read().decode("utf-8"))
+            raw = resp.read(_MAX_RESPONSE_BYTES + 1)
+            if len(raw) > _MAX_RESPONSE_BYTES:
+                logger.warning(
+                    "NPPES response for %s exceeded %d bytes; refusing to parse",
+                    npi, _MAX_RESPONSE_BYTES,
+                )
+                return None
+            payload = json.loads(raw.decode("utf-8"))
     except (OSError, ValueError) as exc:
         logger.info("NPPES lookup failed for %s: %s", npi, exc)
         return None
