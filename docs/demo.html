@@ -1657,7 +1657,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
           <rect x="14" y="20" width="20" height="8" rx="2.4"/>
         </svg>
         <span class="font-display font-bold text-sm text-slate-900">ClinicalMem</span>
-        <span class="text-xs text-slate-400 font-mono">v4.0.0</span>
+        <span class="text-xs text-slate-400 font-mono">v4.1.0</span>
       </div>
       <div class="flex items-center gap-4 text-xs text-slate-400">
         <a href="https://github.com/star-ga/clinicalmem" class="hover:text-slate-900 transition-colors">GitHub</a>
@@ -1666,7 +1666,18 @@ Site B (Mayo Clinic) ingress preimage_hash:
         <a href="https://star.ga" class="font-semibold text-slate-600 hover:text-slate-900 transition-colors">STARGA Inc.</a>
       </div>
     </div>
-    <p class="text-center text-[10px] text-slate-400 mt-6">All patient data is synthetic (FHIR R4 test fixtures). No real patient information is used.</p>
+
+    <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
+    <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
+      <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">811 / 811</span></div>
+      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">99 pairs</span></div>
+      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">12 patients</span></div>
+      <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
+      <div><span class="text-slate-400">verified</span> <span class="text-trust-700">2026-05-03</span></div>
+    </div>
+
+    <p class="text-center text-[10px] text-slate-400 mt-4">All patient data is synthetic (FHIR R4 test fixtures, IRB-exempt under 45 C.F.R. § 46.102(e)(1)). No real patient information is used.</p>
   </div>
 </footer>
 
