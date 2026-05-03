@@ -2,7 +2,10 @@
   {
     "drug_a": "acetaminophen",
     "drug_b": "lisinopril",
-    "drug_pair_canonical": ["acetaminophen", "lisinopril"],
+    "drug_pair_canonical": [
+      "acetaminophen",
+      "lisinopril"
+    ],
     "expected_severity": "none",
     "rationale": "No clinically significant pharmacokinetic or pharmacodynamic interaction. Acetaminophen is metabolised primarily by glucuronidation/sulfation and does not interact with the ACE-I pathway. Routine combination in primary-care hypertension + analgesia.",
     "evidence_urls": [
@@ -11,12 +14,15 @@
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — pipeline should NOT flag (precision test)."
+    "_purpose": "Negative control \u2014 pipeline should NOT flag (precision test)."
   },
   {
     "drug_a": "omeprazole",
     "drug_b": "atorvastatin",
-    "drug_pair_canonical": ["atorvastatin", "omeprazole"],
+    "drug_pair_canonical": [
+      "atorvastatin",
+      "omeprazole"
+    ],
     "expected_severity": "none",
     "rationale": "Both metabolised via CYP3A4 + CYP2C19 but at non-saturating substrate concentrations; clinically no significant interaction. Routinely co-prescribed in CAD + GERD. (Distinct from the clopidogrel + omeprazole interaction, which is mediated by CYP2C19 inhibition specifically affecting clopidogrel's prodrug activation.)",
     "evidence_urls": [
@@ -25,12 +31,15 @@
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — pipeline should NOT flag despite shared CYP3A4/2C19 metabolism."
+    "_purpose": "Negative control \u2014 pipeline should NOT flag despite shared CYP3A4/2C19 metabolism."
   },
   {
     "drug_a": "metformin",
     "drug_b": "acetaminophen",
-    "drug_pair_canonical": ["acetaminophen", "metformin"],
+    "drug_pair_canonical": [
+      "acetaminophen",
+      "metformin"
+    ],
     "expected_severity": "none",
     "rationale": "Metformin is renally excreted unchanged; acetaminophen is hepatically conjugated. No CYP overlap, no transporter conflict, no protein-binding displacement. Standard polypharmacy in T2DM patients with osteoarthritis.",
     "evidence_urls": [
@@ -39,26 +48,32 @@
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — pipeline should NOT flag."
+    "_purpose": "Negative control \u2014 pipeline should NOT flag."
   },
   {
     "drug_a": "albuterol",
     "drug_b": "fluticasone",
-    "drug_pair_canonical": ["albuterol", "fluticasone"],
+    "drug_pair_canonical": [
+      "albuterol",
+      "fluticasone"
+    ],
     "expected_severity": "none",
-    "rationale": "Inhaled β2-agonist (albuterol) plus inhaled corticosteroid (fluticasone) are the two pillars of asthma maintenance + reliever therapy (GINA guideline). The combination is intentional and additive in the desired direction (β2 bronchodilation + ICS anti-inflammatory). Both are local lung delivery with minimal systemic exposure at standard doses.",
+    "rationale": "Inhaled \u03b22-agonist (albuterol) plus inhaled corticosteroid (fluticasone) are the two pillars of asthma maintenance + reliever therapy (GINA guideline). The combination is intentional and additive in the desired direction (\u03b22 bronchodilation + ICS anti-inflammatory). Both are local lung delivery with minimal systemic exposure at standard doses.",
     "evidence_urls": [
       "https://ginasthma.org/wp-content/uploads/2023/07/GINA-2023-Full-report.pdf",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021077s056lbl.pdf"
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — guideline-recommended combination; pipeline should NOT flag."
+    "_purpose": "Negative control \u2014 guideline-recommended combination; pipeline should NOT flag."
   },
   {
     "drug_a": "amlodipine",
     "drug_b": "acetaminophen",
-    "drug_pair_canonical": ["acetaminophen", "amlodipine"],
+    "drug_pair_canonical": [
+      "acetaminophen",
+      "amlodipine"
+    ],
     "expected_severity": "none",
     "rationale": "Amlodipine is a dihydropyridine calcium channel blocker metabolised by CYP3A4; acetaminophen at therapeutic doses is metabolised by sulfation/glucuronidation with minor CYP2E1 contribution. No clinically meaningful interaction. Routine combination in elderly hypertensive patients with osteoarthritis pain.",
     "evidence_urls": [
@@ -67,20 +82,57 @@
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — pipeline should NOT flag."
+    "_purpose": "Negative control \u2014 pipeline should NOT flag."
   },
   {
     "drug_a": "amoxicillin",
     "drug_b": "fluticasone nasal",
-    "drug_pair_canonical": ["amoxicillin", "fluticasone nasal"],
+    "drug_pair_canonical": [
+      "amoxicillin",
+      "fluticasone nasal"
+    ],
     "expected_severity": "none",
-    "rationale": "Oral β-lactam antibiotic plus topical intranasal corticosteroid. Different routes (systemic vs local), different metabolic pathways, no documented interaction. Co-prescribed routinely for sinusitis with bacterial superinfection.",
+    "rationale": "Oral \u03b2-lactam antibiotic plus topical intranasal corticosteroid. Different routes (systemic vs local), different metabolic pathways, no documented interaction. Co-prescribed routinely for sinusitis with bacterial superinfection.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021077s056lbl.pdf",
       "https://www.uptodate.com/contents/major-drug-interactions"
     ],
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-10",
-    "_purpose": "Negative control — matches pt-002 Kowalski cohort design (intentionally clean)."
+    "_purpose": "Negative control \u2014 matches pt-002 Kowalski cohort design (intentionally clean)."
+  },
+  {
+    "drug_a": "clopidogrel",
+    "drug_b": "pantoprazole",
+    "drug_pair_canonical": [
+      "clopidogrel",
+      "pantoprazole"
+    ],
+    "expected_severity": "none",
+    "rationale": "Boundary case \u2014 direct counterpart to the moderate-classified clopidogrel+omeprazole pair. Pantoprazole is a substantially weaker CYP2C19 inhibitor than omeprazole or esomeprazole; the FDA's revised PPI/clopidogrel guidance and the 2010 ACCF/ACG/AHA expert consensus designate pantoprazole and rabeprazole as the preferred PPIs for patients on clopidogrel. The pipeline must distinguish the dangerous PPI (omeprazole) from the safe alternative (pantoprazole) \u2014 a precision test that no overlapping CYP2C19 substrate auto-fires.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/information-clopidogrel-bisulfate-marketed-plavix",
+      "https://pubmed.ncbi.nlm.nih.gov/21126928"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-14",
+    "_purpose": "Boundary case \u2014 same enzyme system as a flagged interaction, but the alternative drug is the safe choice."
+  },
+  {
+    "drug_a": "atorvastatin",
+    "drug_b": "amlodipine",
+    "drug_pair_canonical": [
+      "amlodipine",
+      "atorvastatin"
+    ],
+    "expected_severity": "none",
+    "rationale": "Boundary case \u2014 both are CYP3A4 substrates and routinely co-prescribed in CAD with hypertension. Modest pharmacokinetic interaction at high atorvastatin doses (>80 mg) raises atorvastatin AUC ~18% but is below the threshold for clinical action; the FDA Lipitor labelling does not require dose adjustment up to atorvastatin 80 mg. Tests that the pipeline does not reflex-flag every CYP3A4 substrate overlap \u2014 clinically inert combinations should classify as 'none'.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020702s056lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/12848466"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-14",
+    "_purpose": "Boundary case \u2014 shared CYP3A4 metabolism at non-saturating concentrations; routine CAD/HTN polypharmacy."
   }
 ]
