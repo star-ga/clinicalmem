@@ -978,7 +978,7 @@ tailwind.config = {
 
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 98-pair PCCP regression</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 99-pair PCCP regression</p>
           <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100%, major 100%, serious 100%, moderate as observed in cohort">
             <!-- Axis baseline at 100% (=288) -->
             <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
@@ -986,7 +986,7 @@ tailwind.config = {
             <!-- Contraindicated (n=14) -->
             <rect x="40" y="20" width="272" height="14" rx="2" fill="#dc2626" fill-opacity="0.82"/>
             <text x="8"  y="31" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">contra·indicated</text>
-            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 14 / 14</text>
+            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 15 / 15</text>
             <!-- Major (no class in cohort but recall reported = 1.0) -->
             <rect x="40" y="42" width="272" height="14" rx="2" fill="#FF6B35" fill-opacity="0.78"/>
             <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">major</text>
@@ -1002,7 +1002,7 @@ tailwind.config = {
             <!-- Title -->
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 98-pair cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this.</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 99-pair cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this.</p>
         </div>
       </div>
 
