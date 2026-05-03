@@ -157,7 +157,7 @@ clinical decision on any device, decades later.
 | FHIR R4 SMART-on-FHIR ingress | ✅ Live | `engine/fhir_adapter.py` |
 | 21 CFR Part 11 audit export | ✅ Live | `engine/audit_export_part11.py` |
 | PCCP regression harness | ✅ Live | `scripts/run_clinical_regression_eval.py` |
-| Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash 6c6fb3ea…5846) |
+| Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash cbfaf3e8…4e18b — pinned by `tests/test_scripts/test_federation_plan_hash.py`) |
 | Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.8.14` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
 | Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
 | Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ In flight by upstream mind-mem team — `memory_mesh` core ships in v3.8.14, transport adapter targets v3.9 | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
