@@ -46,11 +46,19 @@ class FHIRContext:
 
         parsed = urlparse(self.url)
         if parsed.scheme not in ("https", "http"):
+            logger.error(
+                "fhir_url_invalid_scheme",
+                extra={"scheme": parsed.scheme, "patient_id": self.patient_id},
+            )
             raise FHIRClientError(f"Invalid FHIR URL scheme: {parsed.scheme}")
         # Strip IPv6 brackets for comparison
         hostname = parsed.hostname or ""
         bare_host = hostname.strip("[]")
         if bare_host in ("localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254", "::1"):
+            logger.error(
+                "fhir_url_blocked_ssrf",
+                extra={"hostname": bare_host, "patient_id": self.patient_id},
+            )
             raise FHIRClientError("FHIR URL must not point to localhost or metadata endpoints")
         if bare_host:
             # Block all RFC 1918 private ranges + link-local + IPv6 private
@@ -103,10 +111,27 @@ class FHIRClient:
             timeout=_FHIR_TIMEOUT,
         )
         if resp.status_code >= 400:
+            logger.warning(
+                "fhir_http_error",
+                extra={
+                    "path": path,
+                    "status": resp.status_code,
+                    "patient_id": self._patient_id,
+                },
+            )
             raise FHIRClientError(
                 f"FHIR HTTP {resp.status_code}: {resp.text[:200]}",
                 status_code=resp.status_code,
             )
+        logger.debug(
+            "fhir_http_ok",
+            extra={
+                "path": path,
+                "status": resp.status_code,
+                "patient_id": self._patient_id,
+                "bytes": len(resp.content),
+            },
+        )
         return resp.json()
 
     def get_patient(self) -> dict:
