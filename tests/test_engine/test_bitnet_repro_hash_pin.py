@@ -56,6 +56,39 @@ def test_warfarin_ibuprofen_repro_hash_matches_pin():
     )
 
 
+def test_warfarin_ibuprofen_severity_label_matches_classifier():
+    """The hero card severity label must match what BitNet actually outputs.
+
+    Iteration-26 discovery: hero displayed CONTRAINDICATED for the pair,
+    but `classify("warfarin", "ibuprofen", weights).severity_name` is
+    `major`. Pin the displayed label so future weight rotations don't
+    silently re-introduce the inflation.
+    """
+    result = _live_classify()
+    assert result.severity_name == "major", (
+        f"Severity label drift: pin expects 'major', live = {result.severity_name!r}. "
+        f"Update the hero card text in docs/demo.html (line near "
+        f"'warfarin <span...>+</span> ibuprofen') to match."
+    )
+    demo_html = (_REPO_ROOT / "docs" / "demo.html").read_text()
+    # Card label uppercased
+    assert ">MAJOR<" in demo_html or ">major<" in demo_html.lower(), (
+        f"docs/demo.html must display the live severity label "
+        f"({result.severity_name.upper()}) in the hero card."
+    )
+    # No stale CONTRAINDICATED label in the hero composition area
+    # (the rest of the page legitimately uses CONTRAINDICATED in the
+    # PCCP severity bars + cohort copy — those reference cache
+    # ground-truth, not the BitNet card's literal output).
+    hero_section = demo_html[demo_html.find("Layer 4.5 · BitNet b1.58"):
+                             demo_html.find("Trust bar")]
+    assert "CONTRAINDICATED" not in hero_section, (
+        "Hero BitNet card still claims CONTRAINDICATED for warfarin + "
+        "ibuprofen, but the live classifier says 'major'. Fix the card "
+        "label so the displayed verdict matches the underlying classifier."
+    )
+
+
 def test_dashboard_displays_pinned_short_form():
     """Dashboard's 16-char repro_hash short form matches the live hash."""
     short = _EXPECTED_REPRO_HASH[:16]
