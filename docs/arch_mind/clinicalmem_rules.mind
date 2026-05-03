@@ -1,0 +1,75 @@
+// arch-mind rules profile for ClinicalMem.
+//
+// Profile: clinicalmem v0.0.1. Thresholds chosen from the hand-rolled
+// fixture summary at docs/arch_mind/clinicalmem.fixture.json
+// (computed 2026-05-03 by inspecting engine/*.py with ast — 21
+// modules, 226 symbols, 17 internal edges, 0 cycles, 21/21 pure
+// modules, 483 decision points, 68 evidence-pattern calls,
+// 18 MCP tools).
+//
+// ClinicalMem is implemented in Python; arch-mind's
+// `governance_kernel_coverage` rule scores `sum_protected_decls /
+// sum_symbols`, but the [protection] marker is MIND-only and not
+// applicable to a Python codebase. Rather than failing on a profile
+// mismatch, this rules file deliberately omits that arch_rule —
+// every other kernel is enforced.
+//
+// Format: see arch-mind/docs/rules.md.
+//
+// Copyright 2026 STARGA, Inc. — Apache-2.0.
+
+[protection]
+module clinicalmem_rules {
+
+    // No dependency cycles. Live scan reports 10000 (Q16: 655360000)
+    // with cyclic_edges=0; strict equality is enforced as an invariant.
+    [arch_rule(acyclicity_q16, eq)]
+    const NO_CYCLES: i32 = 10000
+
+    // 100% intra-package edges (all 17 imports stay inside engine/).
+    // Floor at 9500 leaves ~5% margin if a future cross-package
+    // import lands.
+    [arch_rule(modularity_q16, ge)]
+    const MODULAR_FLOOR: i32 = 9500
+
+    // Dependency depth. Live scan reports 10000 with longest_path=1
+    // (the engine is intentionally flat — bridge modules don't chain).
+    // 9000 floor catches any regression to a 2+ deep chain.
+    [arch_rule(depth_q16, ge)]
+    const DEPTH_FLOOR: i32 = 9000
+
+    // Symbol equality across modules. Live scan reports 9862; floor
+    // 9000 accommodates one outlier.
+    [arch_rule(equality_q16, ge)]
+    const EQUALITY_FLOOR: i32 = 9000
+
+    // Code redundancy. Live scan reports 10000 (no excess); 9000 floor.
+    [arch_rule(redundancy_q16, ge)]
+    const REDUNDANCY_FLOOR: i32 = 9000
+
+    // Q16.16 determinism purity. All 21 modules in engine/ are pure
+    // (no top-level side effects on import). Live scan: 10000.
+    // Floor 9000 accommodates one impure module if added.
+    [arch_rule(q16_determinism_purity, ge)]
+    const PURITY_FLOOR: i32 = 9000
+
+    // Evidence-chain density. Live scan reports 1408 — 68 evidence
+    // calls / 483 decision points = ~14%. This is a known gap;
+    // ClinicalMem's evidence wiring concentrates in the federation
+    // bridge + the audit-export module rather than uniformly across
+    // every decision point. Floor 1000 acknowledges the v0.0.1
+    // baseline; ratchet up as evidence wiring expands into the rest
+    // of the engine.
+    [arch_rule(evidence_chain_density, ge)]
+    const EVIDENCE_FLOOR: i32 = 1000
+
+    // MCP tool isolation. Live scan: 10000 (no measured overlap
+    // across 18 tools). Floor 9500 accommodates two shared deps.
+    [arch_rule(mcp_tool_isolation, ge)]
+    const MCP_ISOLATION_FLOOR: i32 = 9500
+
+    // governance_kernel_coverage intentionally omitted —
+    // sum_protected_decls counts MIND-language [protection] markers,
+    // which don't exist in Python. Re-enable when ClinicalMem ports
+    // any module to .mind.
+}

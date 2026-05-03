@@ -57,19 +57,51 @@ No structural changes recommended. The bridge introduces no new
 governance debt, no MCP-tool overlap, no architectural cycles, and no
 deterministic-purity regressions.
 
-## When this audit re-runs automatically
+## Update — automated scan landed early (2026-05-03)
 
-The arch-mind Phase D tree-sitter sidecar will produce a per-file
-rollup of `engine/federation_transport.py` + `scripts/federation_mock_demo.py`
-into a clinicalmem fixture summary. At that point:
+A hand-rolled fixture summary at
+`docs/arch_mind/clinicalmem.fixture.json` (computed by walking
+`engine/*.py` with the `ast` module) was passed through the
+real `arch-mind scan` + `arch-mind rules` pipeline ahead of the
+Phase D sidecar. Result, against
+`docs/arch_mind/clinicalmem_rules.mind`:
 
-```bash
-arch-mind scan --fixture docs/arch_mind/clinicalmem.fixture.json --out docs/arch_mind/clinicalmem.scan.json
-arch-mind rules --scan docs/arch_mind/clinicalmem.scan.json --rules-mind kernels/arch_mind_clinicalmem_rules.mind
+```
+$ arch-mind rules --rules clinicalmem_rules.mind --scan clinicalmem.scan.json --mode enforce
+rules: 8  scan_metrics: 9
+OK: every rule passed.
 ```
 
-…will replace the manual table above with a chained-evidence run that the
-arch-mind v0.1 commercial gate consumes directly.
+**8 / 8 enforced rules PASS, exit 0.**
+
+Per-kernel scores (from `clinicalmem.scan.json`):
+
+| Kernel | Score (Q16.16) | Floor | Margin |
+|---|---|---|---|
+| `acyclicity_q16` | 655360000 (=10000) | eq 10000 | exact ✅ |
+| `modularity_q16` | 655360000 (=10000) | ge 9500 | +500 ✅ |
+| `depth_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
+| `equality_q16` | 646315314 (≈ 9862) | ge 9000 | +862 ✅ |
+| `redundancy_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
+| `q16_determinism_purity` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
+| `mcp_tool_isolation` | 655360000 (=10000) | ge 9500 | +500 ✅ |
+| `evidence_chain_density` | 92266004 (≈ 1408) | ge 1000 | +408 ⚠️ |
+| `governance_kernel_coverage` | 0 | omitted (MIND-only) | n/a |
+
+Notes:
+- The `evidence_chain_density` floor was deliberately set at 1000
+  (10%) for the v0.0.1 profile. The live ratio is 68 evidence calls
+  / 483 decision points = 14%; evidence wiring concentrates in the
+  federation bridge + audit-export module rather than uniformly
+  across every branch. Ratchet the floor up as evidence wiring
+  expands.
+- `governance_kernel_coverage` is intentionally **omitted from the
+  rules profile** — `sum_protected_decls` counts MIND-language
+  `[protection]` markers, which don't exist in Python. Re-enable
+  when any clinicalmem module is ported to `.mind`.
+- The Phase D tree-sitter sidecar will replace the hand-rolled
+  fixture with an automated rollup; the rules + scan invocation
+  doesn't change.
 
 ---
 
