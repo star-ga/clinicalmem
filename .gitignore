@@ -21,7 +21,9 @@ vo_segment_*.mp3
 # Temporary test files
 test_bundle.json
 sarah_essential.json
-sarah_mitchell_fhir.json
+# Note: docs/sarah_mitchell_fhir.json is the demo bundle and IS tracked (ships
+# with the live dashboard); only the legacy root-level file is ignored.
+/sarah_mitchell_fhir.json
 
 # DevPost artifacts (local only)
 devpost-form-fields.md

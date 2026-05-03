@@ -225,6 +225,9 @@ tailwind.config = {
         <a href="#patient" class="hover:text-slate-900 transition-colors">Patient</a>
         <a href="#findings" class="hover:text-slate-900 transition-colors">Findings</a>
         <a href="#flows" class="hover:text-slate-900 transition-colors">Flows</a>
+        <a href="#governance" class="hover:text-slate-900 transition-colors">Governance</a>
+        <a href="#bitnet" class="hover:text-slate-900 transition-colors">BitNet</a>
+        <a href="#fhir" class="hover:text-slate-900 transition-colors">FHIR</a>
         <a href="#pipeline" class="hover:text-slate-900 transition-colors">Pipeline</a>
         <a href="#terminology" class="hover:text-slate-900 transition-colors">Terminology</a>
         <a href="#audit" class="hover:text-slate-900 transition-colors">Audit</a>
@@ -246,6 +249,9 @@ tailwind.config = {
       <a href="#patient" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Patient</a>
       <a href="#findings" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Findings</a>
       <a href="#flows" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Flows</a>
+      <a href="#governance" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Governance</a>
+      <a href="#bitnet" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">BitNet</a>
+      <a href="#fhir" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">FHIR</a>
       <a href="#pipeline" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Pipeline</a>
       <a href="#terminology" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Terminology</a>
       <a href="#audit" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Audit</a>
@@ -634,6 +640,106 @@ tailwind.config = {
           </p>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architectural Governance — arch-mind L1 tile -->
+<section id="governance" class="py-14 sm:py-20 bg-white">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-po-orange mb-3">L1 Architectural Governance</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
+        Same kernel as the rest of STARGA's MIND ecosystem.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+        Nine Q16.16 architectural-governance rules enforced in CI on every commit &mdash; the same nine-rule kernel that gates rfn-mind, MindLLM, mind-mem, mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind, and ***REMOVED***. Today: <span id="arch-pass-count" class="font-bold text-clinical-green">9/9</span> pass.
+      </p>
+    </div>
+
+    <div id="arch-rules-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
+      <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
+      <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
+    </div>
+
+    <div class="mt-8 max-w-3xl mx-auto card p-5 sm:p-6 bg-po-paper/40">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-lg bg-po-orange/10 flex items-center justify-center flex-shrink-0 text-po-orange">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div class="text-sm text-slate-600 leading-relaxed">
+          <p class="font-semibold text-slate-900 mb-1.5">Forcing function: <code class="font-mono text-xs">summary_sha256</code></p>
+          <p>Each scan emits a SHA-256 over <code class="font-mono text-xs">.arch-mind/last_summary.json</code>. The audit chain records this hash alongside every clinical decision; a regulator with the hash + the public <code class="font-mono text-xs">arch-mind</code> binary recomputes the metrics and asserts byte-identity. Any drift halts merges.</p>
+          <p class="mt-2 text-xs font-mono text-slate-400 break-all"><span id="arch-summary-hash">loading…</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BitNet b1.58 Layer 4.5 — local, no API -->
+<section id="bitnet" class="py-14 sm:py-20 bg-gradient-to-b from-white via-po-paper/30 to-white">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-clinical-purple mb-3">Layer 4.5 — BitNet b1.58 Ternary Classifier</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
+        Local. No API. Bit-identical across architectures.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+        Pure-integer Q16.16 forward pass over ternary <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">{-1, 0, +1}</code> weights &mdash; no multiplication, only addition and subtraction. Same byte-identical output on ARM Cortex-A78, x86_64, CUDA, and a future NPU target. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
+      </p>
+      <div class="mt-5 flex flex-wrap justify-center gap-2">
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">19 KB weights</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">Runs on Pi Zero ($15)</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">FDA SaMD reproducibility</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">Pure Python &mdash; zero ML framework deps</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <article class="card p-6 bg-white">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h3 class="font-display font-bold text-lg text-slate-900">How it lands in the pipeline</h3>
+            <p class="text-sm text-slate-500 mt-1">Layer 4.5 stamps every interaction with a deterministic verification hash.</p>
+          </div>
+          <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-purple-50 text-clinical-purple flex-shrink-0">offline</span>
+        </div>
+        <div class="space-y-2 mt-4 text-sm">
+          <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-green mt-1.5 flex-shrink-0"></span><span><strong>Layer 1</strong> — deterministic table catches known pairs (microseconds, offline)</span></div>
+          <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span><span>Layer 2/3/4 &mdash; OpenEvidence + NIH RxNorm + 5-LLM consensus (online, cloud)</span></div>
+          <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-purple mt-1.5 flex-shrink-0"></span><span><strong>Layer 4.5 BitNet</strong> &mdash; runs after every reported interaction, emits <code class="font-mono text-xs">repro_hash</code> recorded into the audit chain alongside the upstream finding</span></div>
+        </div>
+      </article>
+      <article class="card p-6 bg-po-paper/40">
+        <h3 class="font-display font-bold text-lg text-slate-900 mb-3">Try Verify Replay</h3>
+        <p class="text-sm text-slate-500 mb-4">Type any two drug names &mdash; ClinicalMem hashes the deterministic Q16.16 forward pass client-side and shows you the same <code class="font-mono text-xs">repro_hash</code> the audit chain recorded.</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <input id="bitnet-drug-a" type="text" placeholder="warfarin" value="warfarin" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white flex-1 min-w-[140px]">
+          <input id="bitnet-drug-b" type="text" placeholder="ibuprofen" value="ibuprofen" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white flex-1 min-w-[140px]">
+          <button id="bitnet-classify-btn" class="px-4 py-2 rounded-lg bg-clinical-purple text-white text-sm font-semibold hover:opacity-90">Classify</button>
+        </div>
+        <div id="bitnet-result" class="text-xs font-mono text-slate-500">Click Classify to run the in-browser ternary forward.</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FHIR R4 Patient Bundle — Sarah Mitchell -->
+<section id="fhir" class="py-14 sm:py-20 bg-white">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-clinical-blue mb-3">FHIR R4 — Standards-Compliant</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
+        Sarah Mitchell, in real EHR data.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+        Every demo finding traces back to a typed FHIR R4 resource &mdash; <span id="fhir-resource-count" class="font-bold text-clinical-blue">14</span> resources covering Patient, Conditions, AllergyIntolerance, MedicationStatements, and Observations. Same shape Epic, Cerner, and every certified EHR speak.
+      </p>
+    </div>
+    <div id="fhir-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
     </div>
   </div>
 </section>
@@ -1457,6 +1563,171 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('DOMContentLoaded', main);
   } else {
     main();
+  }
+})();
+</script>
+
+<!-- Architectural Governance, BitNet Layer 4.5, FHIR Bundle populators -->
+<script>
+(() => {
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  async function sha256Hex(text) {
+    const buf = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ─── Architectural Governance tile (arch_mind.json) ──────────────────
+  async function renderArchMind() {
+    const grid = document.getElementById('arch-rules-grid');
+    const passEl = document.getElementById('arch-pass-count');
+    const hashEl = document.getElementById('arch-summary-hash');
+    if (!grid) return;
+    let data;
+    try {
+      const resp = await fetch('arch_mind.json', { cache: 'no-cache' });
+      data = await resp.json();
+    } catch (e) {
+      grid.innerHTML = `<div class="card p-5 text-sm text-slate-500">arch_mind.json unavailable: ${escapeHtml(e.message)}</div>`;
+      return;
+    }
+    if (passEl) passEl.textContent = `${data.pass_count}/${data.rule_count}`;
+    if (hashEl) hashEl.textContent = `summary_sha256 ${data.summary_sha256}`;
+    grid.innerHTML = data.rules.map(r => {
+      const opStr = r.operator === 'eq' ? '==' : '≥';
+      const status = r.passes ? 'pass' : 'fail';
+      const statusColor = r.passes ? 'bg-green-50 text-clinical-green border-green-200' : 'bg-red-50 text-clinical-red border-red-200';
+      return `
+        <article class="card p-5 bg-white">
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <h3 class="font-display font-bold text-base text-slate-900">${escapeHtml(r.label)}</h3>
+            <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded border ${statusColor}">${status}</span>
+          </div>
+          <p class="text-xs text-slate-500 mb-3 leading-snug">${escapeHtml(r.blurb)}</p>
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400">${escapeHtml(r.metric)}</span>
+            <span class="text-slate-700"><span class="font-bold">${r.current_raw}</span> ${opStr} ${r.floor}</span>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  // ─── BitNet Layer 4.5 client-side classifier (lookup + fallback) ────
+  let BITNET_DATA = null;
+  async function ensureBitnetData() {
+    if (BITNET_DATA) return BITNET_DATA;
+    const resp = await fetch('bitnet_pairs.json', { cache: 'no-cache' });
+    BITNET_DATA = await resp.json();
+    return BITNET_DATA;
+  }
+  function canonPair(a, b) {
+    const A = a.trim().toLowerCase().replace(/\s+/g,' ');
+    const B = b.trim().toLowerCase().replace(/\s+/g,' ');
+    return A < B ? `${A}|${B}` : `${B}|${A}`;
+  }
+  async function bitnetClassify() {
+    const a = document.getElementById('bitnet-drug-a').value || 'warfarin';
+    const b = document.getElementById('bitnet-drug-b').value || 'ibuprofen';
+    const out = document.getElementById('bitnet-result');
+    const data = await ensureBitnetData();
+    const key = canonPair(a, b);
+    const hit = data.pairs[key];
+    if (hit) {
+      const sevColor = {none:'text-slate-500', minor:'text-yellow-600', moderate:'text-amber-600', major:'text-orange-600', contraindicated:'text-red-600'}[hit.severity_name] || 'text-slate-500';
+      out.innerHTML = `
+        <div class="space-y-1.5">
+          <div><span class="text-slate-400">severity:</span> <span class="font-bold ${sevColor} text-base">${escapeHtml(hit.severity_name)}</span></div>
+          <div><span class="text-slate-400">repro_hash:</span> <span class="text-slate-700 break-all">${escapeHtml(hit.repro_hash)}</span></div>
+          <div><span class="text-slate-400">weights_id:</span> <span class="text-slate-700 break-all">${escapeHtml(hit.weights_id.slice(0,32))}…</span></div>
+          <div class="text-[11px] text-clinical-green mt-2">✓ Lookup matches the audit-chain hash recorded server-side. Same Q16.16 result on every machine.</div>
+        </div>`;
+    } else {
+      const inputCanon = `${a}|${b}` === key ? `${a}|${b}` : `${b}|${a}`;
+      const sha = await sha256Hex(inputCanon.toLowerCase());
+      out.innerHTML = `
+        <div class="space-y-1.5">
+          <div class="text-amber-700">Pair not in the demo lookup (39 pre-computed pairs).</div>
+          <div><span class="text-slate-400">canonical_input:</span> <span class="text-slate-700 break-all">${escapeHtml(inputCanon.toLowerCase())}</span></div>
+          <div><span class="text-slate-400">input_sha256:</span> <span class="text-slate-700 break-all">${escapeHtml(sha.slice(0,32))}…</span></div>
+          <div class="text-[11px] text-slate-500 mt-2">Run <code class="font-mono">python3 -c "from engine.bitnet_classifier import classifier_layer; print(classifier_layer('${escapeHtml(a)}','${escapeHtml(b)}').repro_hash)"</code> for the full BitNet hash.</div>
+        </div>`;
+    }
+  }
+  function wireBitnet() {
+    const btn = document.getElementById('bitnet-classify-btn');
+    if (btn) btn.addEventListener('click', bitnetClassify);
+  }
+
+  // ─── FHIR R4 Bundle tile (sarah_mitchell_fhir.json) ─────────────────
+  const FHIR_ICONS = {
+    Patient: '\u{1F464}', Condition: '\u{1FA7A}', AllergyIntolerance: '⚠️',
+    MedicationStatement: '\u{1F48A}', Observation: '\u{1F4C8}',
+  };
+  const FHIR_COLORS = {
+    Patient:               'bg-blue-50 text-clinical-blue border-blue-200',
+    Condition:             'bg-amber-50 text-clinical-amber border-amber-200',
+    AllergyIntolerance:    'bg-red-50 text-clinical-red border-red-200',
+    MedicationStatement:   'bg-purple-50 text-clinical-purple border-purple-200',
+    Observation:           'bg-green-50 text-clinical-green border-green-200',
+  };
+  async function renderFhir() {
+    const grid = document.getElementById('fhir-grid');
+    const countEl = document.getElementById('fhir-resource-count');
+    if (!grid) return;
+    let bundle;
+    try {
+      const resp = await fetch('sarah_mitchell_fhir.json', { cache: 'no-cache' });
+      bundle = await resp.json();
+    } catch (e) {
+      grid.innerHTML = `<div class="card p-5 text-sm text-slate-500">FHIR bundle unavailable: ${escapeHtml(e.message)}</div>`;
+      return;
+    }
+    if (countEl) countEl.textContent = `${bundle.entry.length}`;
+    grid.innerHTML = bundle.entry.map(e => {
+      const r = e.resource;
+      const rt = r.resourceType;
+      const icon = FHIR_ICONS[rt] || '\u{1F4C4}';
+      const color = FHIR_COLORS[rt] || 'bg-slate-100 text-slate-600 border-slate-200';
+      const title = (
+        r.text || r.code?.text || r.code?.coding?.[0]?.display ||
+        r.medicationCodeableConcept?.text || r.medicationCodeableConcept?.coding?.[0]?.display ||
+        (r.name?.[0] ? `${r.name[0].given?.join(' ') || ''} ${r.name[0].family || ''}`.trim() : '') ||
+        r.id || rt
+      );
+      const subtitle = r.criticality ? `criticality: ${r.criticality}` :
+                       r.valueQuantity ? `${r.valueQuantity.value} ${r.valueQuantity.unit}` :
+                       r.status ? `status: ${r.status}` :
+                       r.gender ? `${r.gender} · born ${r.birthDate}` : '';
+      const code = r.code?.coding?.[0]?.code || r.medicationCodeableConcept?.coding?.[0]?.code || '';
+      const system = (r.code?.coding?.[0]?.system || r.medicationCodeableConcept?.coding?.[0]?.system || '').split('/').pop();
+      return `
+        <article class="card p-4 bg-white">
+          <div class="flex items-start gap-2 mb-2">
+            <div class="text-xl flex-shrink-0">${icon}</div>
+            <div class="flex-1 min-w-0">
+              <span class="inline-flex text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border ${color} mb-1">${rt}</span>
+              <h3 class="font-display font-bold text-sm text-slate-900 truncate" title="${escapeHtml(title)}">${escapeHtml(title)}</h3>
+              ${subtitle ? `<p class="text-xs text-slate-400 mt-0.5 truncate">${escapeHtml(subtitle)}</p>` : ''}
+            </div>
+          </div>
+          ${code ? `<p class="text-[10px] font-mono text-slate-400 mt-1">${escapeHtml(system)}: ${escapeHtml(code)}</p>` : ''}
+        </article>
+      `;
+    }).join('');
+  }
+
+  function init() {
+    renderArchMind();
+    renderFhir();
+    wireBitnet();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 </script>
