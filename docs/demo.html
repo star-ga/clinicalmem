@@ -41,18 +41,30 @@ tailwind.config = {
           purple: '#7c3aed',
           teal: '#0d9488',
         },
+        // Aligned with Prompt Opinion (the judging platform):
+        // Baloo-2 + slate canvas + orange-600 accent.
+        po: {
+          orange: '#FF6B35',
+          ink:    '#3B3E3F',   // favicon stroke / ink color
+          paper:  '#FAFAF7',
+        },
         surface: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0' }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+        // Baloo 2 = the Prompt Opinion brand font; we use it for
+        // headings + display surfaces so the demo feels native to
+        // the judging platform. Inter remains the body font for
+        // long-read clinical content.
+        display: ['"Baloo 2"', 'Inter', 'system-ui', 'sans-serif'],
+        sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono:    ['JetBrains Mono', 'Fira Code', 'monospace']
       }
     }
   }
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   body { background: #f8fafc; }
   ::selection { background: rgba(124, 58, 237, 0.2); }
@@ -212,6 +224,7 @@ tailwind.config = {
       <div class="hidden md:flex items-center gap-5 text-sm text-slate-500">
         <a href="#patient" class="hover:text-slate-900 transition-colors">Patient</a>
         <a href="#findings" class="hover:text-slate-900 transition-colors">Findings</a>
+        <a href="#flows" class="hover:text-slate-900 transition-colors">Flows</a>
         <a href="#pipeline" class="hover:text-slate-900 transition-colors">Pipeline</a>
         <a href="#terminology" class="hover:text-slate-900 transition-colors">Terminology</a>
         <a href="#audit" class="hover:text-slate-900 transition-colors">Audit</a>
@@ -232,6 +245,7 @@ tailwind.config = {
     <div class="max-w-5xl mx-auto px-4 py-2 flex flex-col text-sm text-slate-600">
       <a href="#patient" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Patient</a>
       <a href="#findings" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Findings</a>
+      <a href="#flows" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Flows</a>
       <a href="#pipeline" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Pipeline</a>
       <a href="#terminology" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Terminology</a>
       <a href="#audit" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Audit</a>
@@ -564,6 +578,61 @@ tailwind.config = {
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
           Simulate: Swap Ibuprofen &rarr; Acetaminophen
         </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Verifiable Clinical AI — six per-scenario flows + plan_hash decision IDs -->
+<section id="flows" class="py-14 sm:py-20 bg-gradient-to-b from-white via-po-paper/40 to-white">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-po-orange mb-3">Verifiable Clinical AI</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
+        Six compiled flows. Six unique decision IDs.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+        Every recommendation ClinicalMem produces carries a 64-character <code class="font-mono text-sm text-po-orange bg-po-orange/10 px-1.5 py-0.5 rounded">plan_hash</code> &mdash;
+        the FDA-grade reproducibility primitive that lets a regulator replay any decision months later, byte-for-byte.
+      </p>
+      <div class="mt-5 flex flex-wrap justify-center gap-2">
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">BitNet b1.58 &middot; bit-identical</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">SQLCipher at-rest &middot; HIPAA</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">arch-mind 9/9 rules</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">Apache-2.0 patent grant</span>
+      </div>
+    </div>
+
+    <!-- Flow cards grid (populated by JS from flows.json) -->
+    <div id="flow-cards" class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+      <!-- skeleton (replaced at runtime) -->
+      <div class="card p-6 animate-pulse">
+        <div class="h-5 bg-slate-100 rounded w-2/3 mb-3"></div>
+        <div class="h-3 bg-slate-100 rounded w-full mb-2"></div>
+        <div class="h-3 bg-slate-100 rounded w-5/6"></div>
+      </div>
+      <div class="card p-6 animate-pulse">
+        <div class="h-5 bg-slate-100 rounded w-2/3 mb-3"></div>
+        <div class="h-3 bg-slate-100 rounded w-full mb-2"></div>
+        <div class="h-3 bg-slate-100 rounded w-5/6"></div>
+      </div>
+    </div>
+
+    <!-- Footer: how plan_hash works -->
+    <div class="mt-10 max-w-3xl mx-auto card p-5 sm:p-6 bg-white">
+      <div class="flex items-start gap-3">
+        <div class="w-8 h-8 rounded-lg bg-po-orange/10 flex items-center justify-center flex-shrink-0 text-po-orange">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.1.9-2 2-2h.01M9 16h6M9 8h.01M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="text-sm text-slate-600 leading-relaxed">
+          <p class="font-semibold text-slate-900 mb-1.5">How replay works</p>
+          <p>
+            Every audit-chain entry stores <code class="font-mono text-xs">(flow_name, plan_hash, input_hash, output_hash)</code>.
+            Three months later, a regulator types the <code class="font-mono text-xs">plan_hash</code> into ClinicalMem's verifier &mdash;
+            <code class="font-mono text-xs">engine/flow_runner.py</code> recomputes SHA-256 over the canonical
+            <code class="font-mono text-xs">.flow.mind</code> source. A mismatch is a release-blocking integrity event.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -1194,6 +1263,203 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+</script>
+
+<!-- Mermaid for typed-graph rendering of .flow.mind contracts -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+(() => {
+  const FLOWS_URL = 'flows.json';
+
+  // Friendly per-flow lead lines (judges read these first)
+  const FLOW_LEAD = {
+    MedicationSafetyReview: 'Five-tier drug-interaction pipeline. Catches NSAID + warfarin. BitNet b1.58 deterministic-classifier at Layer 4.5.',
+    AllergyCrossReactivity: 'SNOMED CT 8-class hierarchy. Catches amoxicillin prescribed under a documented penicillin anaphylaxis.',
+    LabContraindication:    'Catches medications becoming contraindicated as labs trend toward thresholds. Demo case: GFR 45 → 32, metformin contraindicated below 30.',
+    ProviderDisagreement:   'Catches harmful contradictions across providers (cardiologist BP <130/80 vs nephrologist <140/90).',
+    WhatIfSimulation:       'Compositional flow — calls MedicationSafetyReview twice (current + hypothetical) and diffs the safety reports.',
+    ClinicalTrialMatch:     'Cross-checks ClinicalTrials.gov eligibility against demographics + active conditions; runs a fairness-audit invariant.',
+  };
+
+  // Map flow directives to Mermaid node-shape classes for visual coding
+  const NODE_STYLE = {
+    '@native':  ':::native',
+    '@llm':     ':::llm',
+    '@flow':    ':::compositional',
+    '@recall':  ':::memory',
+    '@verify':  ':::verify',
+  };
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function buildMermaid(flow) {
+    // input -> n1 -> n2 -> ... -> output
+    const lines = ['flowchart LR'];
+    flow.inputs.forEach(p => lines.push(`  ${p.name}[("${p.name}")]:::port`));
+    flow.outputs.forEach(p => lines.push(`  ${p.name}[("${p.name}")]:::port`));
+    flow.nodes.forEach(n => {
+      const cls = NODE_STYLE[n.directive] || ':::native';
+      lines.push(`  ${n.name}["${n.name}<br/><tt>${n.directive}</tt>"]${cls}`);
+    });
+    // Naive linear edges (the flow is acyclic; the .flow.mind file is the source of truth)
+    let prev = flow.inputs[0]?.name;
+    for (const n of flow.nodes) {
+      if (prev) lines.push(`  ${prev} --> ${n.name}`);
+      prev = n.name;
+    }
+    if (flow.outputs[0] && prev) lines.push(`  ${prev} --> ${flow.outputs[0].name}`);
+    lines.push(`  classDef port    fill:#fff,stroke:#94a3b8,stroke-width:1px,color:#475569,font-weight:600`);
+    lines.push(`  classDef native  fill:#f1f5f9,stroke:#3B3E3F,stroke-width:1px,color:#0f172a`);
+    lines.push(`  classDef llm     fill:#f5f3ff,stroke:#7c3aed,stroke-width:1px,color:#581c87`);
+    lines.push(`  classDef compositional fill:#fff7ed,stroke:#FF6B35,stroke-width:1.5px,color:#7c2d12`);
+    lines.push(`  classDef memory  fill:#ecfdf5,stroke:#16a34a,stroke-width:1px,color:#064e3b`);
+    lines.push(`  classDef verify  fill:#fef2f2,stroke:#dc2626,stroke-width:1px,color:#7f1d1d`);
+    return lines.join('\n');
+  }
+
+  // SHA-256 over canonical bytes (mirrors Python's _canonicalise_source)
+  async function canonicalSha256(text) {
+    const lf = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = lf.split('\n').map(l => l.replace(/[ \t]+$/, ''));
+    let canon = lines.join('\n');
+    while (canon.endsWith('\n')) canon = canon.slice(0, -1);
+    const buf = new TextEncoder().encode(canon);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function renderCard(flow) {
+    const lead = FLOW_LEAD[flow.name] || '';
+    const planHashShort = `${flow.plan_hash.slice(0, 12)}…${flow.plan_hash.slice(-8)}`;
+    const invariantsList = flow.invariants.slice(0, 4).map(i =>
+      `<li class="text-xs font-mono text-slate-500 truncate" title="${escapeHtml(i)}">${escapeHtml(i)}</li>`
+    ).join('');
+    const moreInv = flow.invariants.length > 4 ? `<li class="text-xs text-slate-400">+ ${flow.invariants.length - 4} more</li>` : '';
+    const mermaidId = `mermaid-${flow.name}`;
+    const mermaidSrc = buildMermaid(flow);
+    return `
+      <article class="card overflow-hidden flex flex-col bg-white">
+        <header class="px-5 pt-5 pb-3 border-b border-slate-100">
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 leading-tight">${escapeHtml(flow.name)}</h3>
+            <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-500 flex-shrink-0">${escapeHtml(flow.profile)}</span>
+          </div>
+          <p class="mt-1.5 text-sm text-slate-500 leading-snug">${escapeHtml(lead)}</p>
+        </header>
+        <div class="px-5 py-4 bg-po-paper/50">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">plan_hash</span>
+            <button class="copy-hash text-xs font-medium text-po-orange hover:text-po-ink transition-colors" data-hash="${flow.plan_hash}" title="Copy full hash">copy</button>
+          </div>
+          <code class="block font-mono text-[11px] sm:text-xs text-slate-700 break-all leading-relaxed">${planHashShort}</code>
+        </div>
+        <div class="px-3 py-3 bg-white">
+          <div class="mermaid text-xs" id="${mermaidId}">${escapeHtml(mermaidSrc)}</div>
+        </div>
+        <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">${flow.invariants.length} runtime invariants</p>
+          <ul class="space-y-0.5">${invariantsList}${moreInv}</ul>
+        </div>
+        <footer class="px-5 py-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          <span class="text-xs text-slate-400 font-mono truncate" title="${escapeHtml(flow.source_path)}">${escapeHtml(flow.source_path)}</span>
+          <button class="verify-replay inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-po-orange text-white text-xs font-semibold shadow-sm hover:bg-po-orange/90 transition-colors"
+                  data-flow="${escapeHtml(flow.name)}">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Verify replay
+          </button>
+        </footer>
+      </article>
+    `;
+  }
+
+  async function main() {
+    const grid = document.getElementById('flow-cards');
+    if (!grid) return;
+    let flows;
+    try {
+      const resp = await fetch(FLOWS_URL, { cache: 'no-cache' });
+      flows = await resp.json();
+    } catch (err) {
+      grid.innerHTML = `<div class="card p-6 text-sm text-slate-500">Could not load <code>${FLOWS_URL}</code>: ${escapeHtml(err.message)}</div>`;
+      return;
+    }
+    grid.innerHTML = flows.map(renderCard).join('');
+
+    // Init Mermaid + render new diagrams
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: {
+          fontFamily: '"Baloo 2", Inter, sans-serif',
+          fontSize: '12px',
+          primaryColor: '#fff',
+          primaryBorderColor: '#3B3E3F',
+          primaryTextColor: '#0f172a',
+          lineColor: '#94a3b8',
+        },
+        flowchart: { curve: 'basis', padding: 8, nodeSpacing: 24, rankSpacing: 28 },
+        securityLevel: 'loose',
+      });
+      try { await mermaid.run({ querySelector: '.mermaid' }); }
+      catch (e) { console.warn('mermaid render failed', e); }
+    }
+
+    // Wire copy + verify-replay buttons
+    grid.querySelectorAll('.copy-hash').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(btn.dataset.hash);
+        const original = btn.textContent;
+        btn.textContent = 'copied ✓';
+        setTimeout(() => { btn.textContent = original; }, 1200);
+      });
+    });
+    // Build a name -> source map for embedded-replay verification (no extra fetch)
+    const FLOW_SOURCE = Object.fromEntries(flows.map(f => [f.name, f.source]));
+
+    grid.querySelectorAll('.verify-replay').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('article');
+        const expected = card.querySelector('.copy-hash')?.dataset.hash;
+        const original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-block w-3.5 h-3.5 border-2 border-white border-r-transparent rounded-full animate-spin"></span> verifying';
+        try {
+          const text = FLOW_SOURCE[btn.dataset.flow];
+          if (text === undefined) throw new Error(`source for ${btn.dataset.flow} not in flows.json`);
+          const actual = await canonicalSha256(text);
+          const matches = (actual === expected);
+          btn.innerHTML = matches
+            ? '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> verified ✓'
+            : '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> mismatch';
+          btn.classList.toggle('bg-po-orange', false);
+          btn.classList.toggle('bg-clinical-green', matches);
+          btn.classList.toggle('bg-clinical-red', !matches);
+          setTimeout(() => {
+            btn.innerHTML = original;
+            btn.disabled = false;
+            btn.classList.toggle('bg-clinical-green', false);
+            btn.classList.toggle('bg-clinical-red', false);
+            btn.classList.toggle('bg-po-orange', true);
+          }, 2400);
+        } catch (err) {
+          btn.innerHTML = `error: ${escapeHtml(err.message).slice(0, 30)}`;
+          setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 2400);
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+  } else {
+    main();
+  }
+})();
 </script>
 </body>
 </html>
