@@ -132,7 +132,23 @@ def redact_phi(text: str, replacement: str = "[REDACTED]") -> tuple[str, list[PH
     """
     matches = detect_phi(text)
     if not matches:
+        # Clean text: log at DEBUG only — no PHI fired, no audit signal.
+        logger.debug(
+            "phi_redact_clean",
+            extra={"text_length": len(text)},
+        )
         return text, []
+
+    # PHI was found — log at INFO with the *categories* hit (NOT the
+    # matched values, which would re-emit the PHI we just detected).
+    logger.info(
+        "phi_redact_match",
+        extra={
+            "text_length": len(text),
+            "match_count": len(matches),
+            "categories": sorted({m.category for m in matches}),
+        },
+    )
 
     # Build redacted text by replacing matched spans
     parts = []
@@ -152,6 +168,19 @@ def scan_phi(text: str) -> PHIReport:
     """
     redacted, matches = redact_phi(text)
     categories = sorted(set(m.category for m in matches))
+
+    if matches:
+        # WARNING level — PHI hits in scan_phi are the safety-critical
+        # signal that operators must surface even at default log levels.
+        # Categories only — never the matched values themselves.
+        logger.warning(
+            "phi_scan_phi_detected",
+            extra={
+                "match_count": len(matches),
+                "categories": categories,
+                "is_safe": False,
+            },
+        )
 
     return PHIReport(
         original_text=text,
