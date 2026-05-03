@@ -154,6 +154,10 @@ def ground_check(
     claims = extract_clinical_claims(text)
 
     if not claims:
+        logger.debug(
+            "hallucination_check_no_claims",
+            extra={"text_length": len(text), "block_count": len(patient_blocks)},
+        )
         return GroundingReport(
             text=text,
             claims=[],
@@ -172,6 +176,27 @@ def ground_check(
     ungrounded = [v for v in verifications if not v.grounded]
 
     score = len(grounded) / len(verifications) if verifications else 0.0
+
+    if ungrounded:
+        # Ungrounded claims are the safety-relevant signal — log at WARNING
+        # so production observers see hallucinations even at default level.
+        logger.warning(
+            "hallucination_ungrounded_claims",
+            extra={
+                "ungrounded_count": len(ungrounded),
+                "claim_count": len(verifications),
+                "grounding_score": round(score, 3),
+                "block_count": len(patient_blocks),
+            },
+        )
+    else:
+        logger.debug(
+            "hallucination_check_clean",
+            extra={
+                "claim_count": len(verifications),
+                "grounding_score": round(score, 3),
+            },
+        )
 
     return GroundingReport(
         text=text,
