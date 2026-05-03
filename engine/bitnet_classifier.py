@@ -13,7 +13,7 @@ Models are in 1.58 Bits," arXiv:2402.17764, 2024.
 Why this layer matters in ClinicalMem
 ─────────────────────────────────────
 The 4-tier interaction pipeline already catches known pairs deterministically
-and verifies novel ones via 6-LLM consensus. The BitNet layer sits at "Layer
+and verifies novel ones via 5-LLM US-based consensus. The BitNet layer sits at "Layer
 4.5": a determinism-checked, FDA-grade classifier that:
 
   1. Reproduces the deterministic table's outputs bit-identically.

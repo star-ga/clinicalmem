@@ -13,7 +13,7 @@ regulatory-readiness story it underwrites.
 | 1. Deterministic table | `engine/clinical_scoring.py` | µs | Curated known pairs |
 | 2. OpenEvidence API (Mayo / Elsevier ClinicalKey AI) | `engine/openevidence_client.py` | ~200 ms | Authoritative evidence-grounded |
 | 3. NIH RxNorm + Drug Interaction API | `engine/rxnorm_client.py` | ~150 ms | The same federal database used by Epic / Cerner / certified EHRs |
-| 4. 6-LLM US-based consensus | `engine/consensus_engine.py` | ~1–3 s | Frontier reasoning over novel pairs |
+| 4. 5-LLM US-based consensus | `engine/consensus_engine.py` | ~1–3 s | Frontier reasoning over novel pairs (GPT-5.5 / Gemini 3.1 Pro / Grok 4.3 / Claude Opus 4.7 / Sonar Pro) |
 
 ## Layer 4.5 — BitNet b1.58 ternary classifier
 

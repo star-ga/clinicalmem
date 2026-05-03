@@ -129,7 +129,7 @@ Cite evidence blocks by [block_id] for every clinical claim."""
 
 
 async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None, str]:
-    """Async medical LLM cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite."""
+    """Async medical LLM cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro."""
     openai_key = os.environ.get("OPENAI_API_KEY")
     google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
@@ -170,7 +170,6 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
         if google_key:
             for model_id, model_label in [
                 ("gemini-3.1-pro-preview", "Gemini-3.1-Pro"),
-                ("gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite"),
             ]:
                 try:
                     resp = await client.post(
@@ -203,11 +202,11 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
 
 def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
     """
-    Call medical LLM with cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro → Gemini 3.1 Flash Lite.
+    Call medical LLM with cascade: OpenAI GPT-5.5 → Gemini 3.1 Pro.
 
     Uses whichever API keys are available. OpenAI has the strongest clinical
     validation (260 physicians, HIPAA BAA). Gemini 3.1 Pro is Google's most
-    capable model. Gemini 3.1 Flash Lite is the fast fallback.
+    capable model and serves as the deterministic fallback.
 
     Returns (response_text, model_used).
     """
@@ -249,11 +248,10 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
         except Exception as e:
             logger.info("OpenAI failed: %s, trying next model", e)
 
-    # Attempt 2-3: Google models (Gemini 3.1 Pro → Gemini 3.1 Flash Lite)
+    # Attempt 2: Google model (Gemini 3.1 Pro)
     if google_key:
         google_models = [
             ("gemini-3.1-pro-preview", "Gemini-3.1-Pro"),
-            ("gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite"),
         ]
         for model_id, model_label in google_models:
             try:

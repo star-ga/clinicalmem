@@ -1,18 +1,17 @@
 """Multi-LLM Consensus Verification — independent verification of clinical findings.
 
-Instead of trusting a single LLM, this module runs up to 6 LLMs independently
+Instead of trusting a single LLM, this module runs up to 5 LLMs independently
 on the same clinical finding and calculates an agreement score. Only findings
 with ≥2/3 agreement are reported as verified.
 
 Models (used when API keys are available — all US-based):
 - OpenAI GPT-5.5 (clinical validation, 260 physicians, HIPAA BAA)
 - Google Gemini 3.1 Pro (flagship reasoning, 1M context)
-- Google Gemini 3.1 Flash Lite (fast cost-efficient reasoning)
-- xAI Grok 4.1 (fast reasoning, 2M context)
-- Anthropic Claude Opus 4.6 (deepest reasoning, safety-focused)
+- xAI Grok 4.3 (fast reasoning, 2M context)
+- Anthropic Claude Opus 4.7 (deepest reasoning, safety-focused)
 - Perplexity Sonar Reasoning Pro (web-grounded clinical search)
 
-All 6 models are US-based providers, ensuring HIPAA-compatible data residency.
+All 5 models are US-based providers, ensuring HIPAA-compatible data residency.
 Diversity of model architectures reduces correlated hallucination risk.
 """
 import asyncio
@@ -218,7 +217,7 @@ async def _call_perplexity(prompt: str, api_key: str) -> LLMVerdict:
 
 
 async def _call_anthropic(prompt: str, api_key: str) -> LLMVerdict:
-    """Call Anthropic Claude Opus 4.6 for verification."""
+    """Call Anthropic Claude Opus 4.7 for verification."""
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.post(
             "https://api.anthropic.com/v1/messages",
@@ -228,7 +227,7 @@ async def _call_anthropic(prompt: str, api_key: str) -> LLMVerdict:
                 "content-type": "application/json",
             },
             json={
-                "model": "claude-opus-4-6",
+                "model": "claude-opus-4-7",
                 "max_tokens": 256,
                 "temperature": 0.1,
                 "system": _SYSTEM_MSG,
@@ -239,7 +238,7 @@ async def _call_anthropic(prompt: str, api_key: str) -> LLMVerdict:
             raise RuntimeError(f"Anthropic returned {resp.status_code}")
         content = resp.json().get("content", [])
         text = content[0].get("text", "") if content else ""
-        return _parse_verdict(text, "Anthropic-Claude-Opus-4.6")
+        return _parse_verdict(text, "Anthropic-Claude-Opus-4.7")
 
 
 async def verify_finding_consensus(
@@ -249,7 +248,7 @@ async def verify_finding_consensus(
 ) -> ConsensusResult:
     """Run multi-LLM consensus verification on a clinical finding.
 
-    Fires all available LLMs in parallel (up to 6). Calculates agreement score.
+    Fires all available LLMs in parallel (up to 5 US-based). Calculates agreement score.
     ≥90% = HIGH, ≥67% = MEDIUM, ≥1 = LOW, 0 = NONE.
     Findings with < 2 models available get consensus_level "LIMITED".
 
@@ -283,17 +282,14 @@ async def verify_finding_consensus(
         tasks.append(("Gemini-3.1-Pro", _call_google(
             prompt, google_key, "gemini-3.1-pro-preview", "Gemini-3.1-Pro",
         )))
-        tasks.append(("Gemini-3.1-Flash-Lite", _call_google(
-            prompt, google_key, "gemini-3.1-flash-lite-preview", "Gemini-3.1-Flash-Lite",
-        )))
 
     # Tier 2: Diverse US-based models (reduce correlated errors)
     if xai_key:
-        tasks.append(("xAI-Grok-4.1", _call_openai_compatible(
-            prompt, xai_key, "https://api.x.ai", "grok-4-1-fast-reasoning", "xAI-Grok-4.1",
+        tasks.append(("xAI-Grok-4.3", _call_openai_compatible(
+            prompt, xai_key, "https://api.x.ai", "grok-4.3", "xAI-Grok-4.3",
         )))
     if anthropic_key:
-        tasks.append(("Anthropic-Claude-Opus-4.6", _call_anthropic(prompt, anthropic_key)))
+        tasks.append(("Anthropic-Claude-Opus-4.7", _call_anthropic(prompt, anthropic_key)))
     if perplexity_key:
         tasks.append(("Perplexity-Sonar-Pro", _call_perplexity(
             prompt, perplexity_key,

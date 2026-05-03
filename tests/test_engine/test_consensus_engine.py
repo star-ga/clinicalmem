@@ -157,7 +157,8 @@ class TestVerifyFindingConsensus:
         )
 
         result = verify_finding_consensus_sync("Warfarin-aspirin interaction", [], {})
-        assert result.agreement_count == 3
+        # OpenAI + Gemini-3.1-Pro = 2 models (Gemini-3.1-Flash-Lite removed in v4.2)
+        assert result.agreement_count == 2
         assert result.consensus_level == "HIGH"
         assert result.should_report is True
 
@@ -199,37 +200,39 @@ class TestVerifyFindingConsensus:
         assert any("failed" in v.reasoning.lower() for v in result.verdicts)
 
     @respx.mock
-    def test_medium_consensus_2_of_3(self, monkeypatch):
+    def test_medium_consensus_with_perplexity(self, monkeypatch):
+        # MEDIUM consensus = 2/3 agree. With Flash-Lite removed in v4.2,
+        # the closest 3-model fan-out is OpenAI + Gemini-3.1-Pro + Sonar Pro.
+        # Two of the three agree (OpenAI, Gemini); Sonar disagrees.
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.setenv("GOOGLE_API_KEY", "gk-test")
+        monkeypatch.setenv("PERPLEXITY_API_KEY", "pp-test")
 
         agree_json = json.dumps({"agrees": True, "confidence": 0.8, "reasoning": "Valid"})
         disagree_json = json.dumps({"agrees": False, "confidence": 0.3, "reasoning": "Unsure"})
 
-        call_count = 0
-
-        def openai_handler(request):
-            return httpx.Response(200, json={
+        respx.post("https://api.openai.com/v1/chat/completions").mock(
+            return_value=httpx.Response(200, json={
                 "choices": [{"message": {"content": agree_json}}]
             })
-
-        def google_handler(request):
-            nonlocal call_count
-            call_count += 1
-            # First Google call agrees, second disagrees
-            content = agree_json if call_count == 1 else disagree_json
-            return httpx.Response(200, json={
-                "candidates": [{"content": {"parts": [{"text": content}]}}]
-            })
-
-        respx.post("https://api.openai.com/v1/chat/completions").mock(
-            side_effect=openai_handler
         )
         respx.post(
             url__regex=r"https://generativelanguage\.googleapis\.com/.*"
-        ).mock(side_effect=google_handler)
+        ).mock(
+            return_value=httpx.Response(200, json={
+                "candidates": [{"content": {"parts": [{"text": agree_json}]}}]
+            })
+        )
+        respx.post(
+            url__regex=r"https://api\.perplexity\.ai/.*"
+        ).mock(
+            return_value=httpx.Response(200, json={
+                "choices": [{"message": {"content": disagree_json}}]
+            })
+        )
 
         result = verify_finding_consensus_sync("Moderate finding", [], {})
+        assert result.total_models == 3
         assert result.agreement_count == 2
         assert result.consensus_level == "MEDIUM"
         assert result.should_report is True
@@ -255,7 +258,7 @@ class TestVerifyFindingConsensus:
 
         result = verify_finding_consensus_sync("Test finding", [], {})
         assert result.total_models == 1
-        assert result.verdicts[0].model == "xAI-Grok-4.1"
+        assert result.verdicts[0].model == "xAI-Grok-4.3"
         assert result.verdicts[0].agrees is True
 
     @respx.mock
@@ -275,7 +278,7 @@ class TestVerifyFindingConsensus:
 
         result = verify_finding_consensus_sync("Test finding", [], {})
         assert result.total_models == 1
-        assert result.verdicts[0].model == "Anthropic-Claude-Opus-4.6"
+        assert result.verdicts[0].model == "Anthropic-Claude-Opus-4.7"
         assert result.verdicts[0].agrees is True
 
     @respx.mock
@@ -299,8 +302,9 @@ class TestVerifyFindingConsensus:
         assert result.verdicts[0].agrees is False
 
     @respx.mock
-    def test_six_model_consensus(self, monkeypatch):
-        """All 6 US-based models fire in parallel when all keys are available."""
+    def test_five_model_consensus(self, monkeypatch):
+        """All 5 US-based models fire in parallel when all keys are available
+        (Gemini-3.1-Flash-Lite was removed from the cascade in v4.2)."""
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.setenv("GOOGLE_API_KEY", "gk-test")
         monkeypatch.setenv("XAI_API_KEY", "xai-test")
@@ -339,16 +343,20 @@ class TestVerifyFindingConsensus:
         )
 
         result = verify_finding_consensus_sync("Critical interaction", [], {})
-        assert result.total_models == 6
-        assert result.agreement_count == 6
+        assert result.total_models == 5
+        assert result.agreement_count == 5
         assert result.consensus_level == "HIGH"
         assert result.should_report is True
         models = {v.model for v in result.verdicts}
         assert "OpenAI-GPT-5.5" in models
         assert "Gemini-3.1-Pro" in models
-        assert "xAI-Grok-4.1" in models
-        assert "Anthropic-Claude-Opus-4.6" in models
+        assert "xAI-Grok-4.3" in models
+        assert "Anthropic-Claude-Opus-4.7" in models
         assert "Perplexity-Sonar-Pro" in models
+        # Gemini-3.1-Flash-Lite was dropped in v4.2 (US-based + diverse-architecture
+        # criteria are already satisfied by the other 5 providers; Flash-Lite added
+        # correlated errors with Gemini-3.1-Pro without diversifying the consensus)
+        assert "Gemini-3.1-Flash-Lite" not in models
 
     @respx.mock
     def test_partial_failure_still_works(self, monkeypatch):
@@ -483,7 +491,7 @@ class TestConsensusLevelLow:
         agree_json = json.dumps({"agrees": True, "confidence": 0.8, "reasoning": "Valid"})
         disagree_json = json.dumps({"agrees": False, "confidence": 0.8, "reasoning": "Nope"})
 
-        # OpenAI agrees, both Google models disagree
+        # OpenAI agrees, Gemini-3.1-Pro disagrees (Flash-Lite removed in v4.2)
         respx.post("https://api.openai.com/v1/chat/completions").mock(
             return_value=httpx.Response(200, json={
                 "choices": [{"message": {"content": agree_json}}]
@@ -498,7 +506,7 @@ class TestConsensusLevelLow:
         )
 
         result = verify_finding_consensus_sync("Weak finding", [], {})
-        assert result.total_models == 3
+        assert result.total_models == 2
         assert result.agreement_count == 1
         assert result.consensus_level == "LOW"
         assert result.should_report is False

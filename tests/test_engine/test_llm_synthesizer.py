@@ -205,19 +205,18 @@ class TestCallMedicalLlmSync:
             assert model == "Gemini-3.1-Pro"
 
     @patch("httpx.post")
-    def test_gemini_pro_fails_falls_to_flash(self, mock_post):
+    def test_gemini_pro_fails_returns_none(self, mock_post):
+        # Gemini-3.1-Flash-Lite was removed from the cascade in v4.2 (the
+        # five-LLM US-based consensus drops Flash-Lite to keep model
+        # diversity at Gemini Pro). With only Pro in the Google branch,
+        # a 429 from Pro cascades through with no further Google fallback.
         pro_resp = MagicMock()
         pro_resp.status_code = 429
-        flash_resp = MagicMock()
-        flash_resp.status_code = 200
-        flash_resp.json.return_value = {
-            "candidates": [{"content": {"parts": [{"text": "Flash result"}]}}]
-        }
-        mock_post.side_effect = [pro_resp, flash_resp]
+        mock_post.side_effect = [pro_resp]
         with patch.dict("os.environ", {"GOOGLE_API_KEY": "k2"}, clear=True):
             result, model = _call_medical_llm_sync("test", "system")
-            assert result == "Flash result"
-            assert model == "Gemini-3.1-Flash-Lite"
+            assert result is None
+            assert model == "none"
 
     @patch("httpx.post")
     def test_all_fail_returns_none(self, mock_post):

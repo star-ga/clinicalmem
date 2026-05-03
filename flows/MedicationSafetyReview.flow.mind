@@ -45,11 +45,11 @@ flow MedicationSafetyReview {
     // repro_hash that any auditor can re-verify in <1 ms per pair.
     node bitnet = @native bitnet_ternary_classify(normalized)
 
-    // ───── Tier 4: 6-model US-based LLM consensus ───────────────
+    // ───── Tier 4: 5-model US-based LLM consensus ───────────────
     node consensus = @llm consensus(
         prior:       [tier1, tier2, tier3, bitnet],
-        models:      ["gpt-5.5", "gemini-3.1-pro", "gemini-3.1-flash-lite",
-                      "grok-4.1", "claude-opus-4.6", "sonar-pro"],
+        models:      ["gpt-5.5", "gemini-3.1-pro",
+                      "grok-4.3", "claude-opus-4.7", "sonar-pro"],
         majority_or_abstain: true,
     )
     invariant consensus.available_models >= 4

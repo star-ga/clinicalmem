@@ -326,22 +326,14 @@ class TestCallMedicalLlmAsync:
         "os.environ",
         {"OPENAI_API_KEY": "", "GOOGLE_API_KEY": "goog-key", "GEMINI_API_KEY": ""},
     )
-    async def test_gemini_pro_fails_flash_succeeds(self):
-        """Lines 188-196: First Gemini returns non-200, second succeeds."""
-        call_count = [0]
-
+    async def test_gemini_pro_fails_returns_none(self):
+        """Gemini-3.1-Flash-Lite was removed from the cascade in v4.2 (the
+        five-LLM US-based consensus drops Flash-Lite to keep model
+        diversity at Gemini Pro). With only Pro in the Google branch,
+        a 503 from Pro cascades through with no further Google fallback."""
         def post_side_effect(*args, **kwargs):
-            call_count[0] += 1
             resp = MagicMock()
-            if call_count[0] == 1:
-                resp.status_code = 503
-            else:
-                resp.status_code = 200
-                resp.json.return_value = {
-                    "candidates": [
-                        {"content": {"parts": [{"text": "Flash Lite async"}]}}
-                    ]
-                }
+            resp.status_code = 503
             return resp
 
         mock_client = AsyncMock()
@@ -352,8 +344,8 @@ class TestCallMedicalLlmAsync:
         with patch("httpx.AsyncClient", return_value=mock_client):
             text, model = await _call_medical_llm_async("prompt", "system")
 
-        assert text == "Flash Lite async"
-        assert model == "Gemini-3.1-Flash-Lite"
+        assert text is None
+        assert model == "none"
 
     @patch.dict(
         "os.environ",

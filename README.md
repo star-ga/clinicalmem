@@ -49,7 +49,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 | Capability | Description |
 |-----------|-------------|
 | **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (drug normalization) &rarr; Six-model LLM consensus |
-| **Six-Model LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar &mdash; all US-based |
+| **Five-Model US-Based LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar &mdash; **all US-headquartered** for HIPAA-compatible data residency |
 | **Allergy Cross-Reaction Alerts** | SNOMED CT drug class hierarchy with 8 classes + alias expansion + cross-class detection |
 | **UMLS Cross-Vocabulary Mapping** | ICD-10 &harr; SNOMED CT &harr; LOINC &harr; RxNorm via UMLS Metathesaurus |
 | **What-If Medication Simulation** | Preview safety outcomes of medication changes before making them |
@@ -126,7 +126,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 1 | **Deterministic Table** | Rule-based | < 1ms |
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
-| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar | ~3s |
+| 4 | **Multi-LLM Consensus** | 5 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar | ~3s |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
@@ -235,7 +235,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
       "evidence": "NSAID + anticoagulant: increased bleeding risk (GI hemorrhage, intracranial bleeding)",
       "consensus": {"models_agreed": 6, "models_total": 6, "confidence": 1.0},
       "rxnorm_cuis": ["RxCUI:11289", "RxCUI:5640"],
-      "sources": ["Deterministic table", "OpenEvidence (Mayo Clinic)", "NIH Drug Interaction API", "6/6 LLM consensus"]
+      "sources": ["Deterministic table", "OpenEvidence (Mayo Clinic)", "NIH Drug Interaction API", "5/5 LLM consensus (US-based)"]
     }
   ],
   "total_findings": 1,
@@ -431,7 +431,7 @@ Coverage includes:
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
 | **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Six-model LLM consensus |
 | **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
-| **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Gemini 3.1 Flash Lite, Grok 4.1, Claude Opus 4.6, Perplexity Sonar (all US-based) |
+| **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar (all US-headquartered) |
 | **FDA** | [openFDA](https://open.fda.gov/) drug safety alerts, recalls, adverse events |
 | **Clinical Trials** | [ClinicalTrials.gov](https://clinicaltrials.gov/) API v2 |
 | **MCP** | [FastMCP 2.x](https://github.com/jlowin/fastmcp) with SHARP-on-MCP headers |
@@ -468,7 +468,7 @@ Coverage includes:
 
 ## Consensus Mechanism
 
-The six-model consensus engine uses **structured majority voting**:
+The five-model US-based consensus engine uses **structured majority voting**:
 
 1. All 6 US-based LLMs receive the same structured prompt with drug pair, patient context, and evidence from layers 1-3
 2. Each model returns a severity classification (CRITICAL / HIGH / MODERATE / LOW / NONE) and a confidence score
@@ -499,7 +499,7 @@ ClinicalMem is designed to **degrade gracefully** when external services are una
 | All LLMs down | Layers 4-5 unavailable | **Layers 1-3 still fully operational** (deterministic + APIs) |
 | FHIR server down | No patient ingestion | Cached patient data in memory still queryable |
 
-> **Key design principle**: The deterministic layer (Layer 1) and NIH APIs (Layer 3) have **zero LLM dependency**. Even if all 6 LLMs are completely unavailable, ClinicalMem still catches known drug interactions and normalizes medications via RxNorm.
+> **Key design principle**: The deterministic layer (Layer 1) and NIH APIs (Layer 3) have **zero LLM dependency**. Even if all 5 LLMs are completely unavailable, ClinicalMem still catches known drug interactions and normalizes medications via RxNorm.
 
 ### Retry & Timeout Policy
 
