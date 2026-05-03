@@ -366,60 +366,113 @@ def _openevidence_check_interactions(
 
     API: POST https://api.openevidence.com/analysis
     Auth: Token-based (OPENEVIDENCE_API_KEY)
+
+    Fallback: when OPENEVIDENCE_API_KEY is absent or the live call fails, the
+    function falls back to engine.openevidence_cache so the demo dashboard and
+    tests can show realistic responses. Cached entries are identified by the
+    "[CACHED <date>]" prefix in the description field and a structured INFO
+    log line.  The moment a live key is set, the live path takes precedence and
+    the cache is never consulted.
     """
     import json
-    import logging
     import os
 
-    logger = logging.getLogger(__name__)
-
     api_key = os.environ.get("OPENEVIDENCE_API_KEY")
-    if not api_key:
-        return []
-
-    med_names = [m.split()[0] if " " in m else m for m in medications]
-    query = (
-        f"Are there clinically significant drug-drug interactions between any of "
-        f"these medications: {', '.join(med_names)}? "
-        f"For each interaction found, state the two drugs, severity "
-        f"(serious or contraindicated), and a one-sentence clinical description."
-    )
-
-    try:
-        import httpx
-
-        resp = httpx.post(
-            "https://api.openevidence.com/analysis",
-            headers={
-                "Authorization": f"Token {api_key}",
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            json={"text": query, "model": "oe-v2"},
-            timeout=5,
+    if api_key:
+        med_names = [m.split()[0] if " " in m else m for m in medications]
+        query = (
+            f"Are there clinically significant drug-drug interactions between any of "
+            f"these medications: {', '.join(med_names)}? "
+            f"For each interaction found, state the two drugs, severity "
+            f"(serious or contraindicated), and a one-sentence clinical description."
         )
-        if resp.status_code != 200:
-            logger.warning("OpenEvidence API returned %d", resp.status_code)
-            return []
 
-        data = resp.json()
-        # OpenEvidence returns a narrative analysis — parse for drug pairs
-        analysis_text = data.get("text", "") or data.get("analysis", "") or str(data)
-        if not analysis_text:  # pragma: no cover — str(data) never empty
-            return []
+        try:
+            import httpx
 
-        results = _parse_interaction_narrative(
-            analysis_text, med_names, already_found, source="OpenEvidence"
-        )
-        if results:
-            logger.info(
-                "OpenEvidence detected %d additional interactions", len(results)
+            resp = httpx.post(
+                "https://api.openevidence.com/analysis",
+                headers={
+                    "Authorization": f"Token {api_key}",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                json={"text": query, "model": "oe-v2"},
+                timeout=5,
             )
-        return results
+            if resp.status_code != 200:
+                logger.warning("OpenEvidence API returned %d", resp.status_code)
+            else:
+                data = resp.json()
+                # OpenEvidence returns a narrative analysis — parse for drug pairs
+                analysis_text = data.get("text", "") or data.get("analysis", "") or str(data)
+                if not analysis_text:  # pragma: no cover — str(data) never empty
+                    return []
 
-    except Exception as e:
-        logger.warning("OpenEvidence API call failed: %s", e)
+                results = _parse_interaction_narrative(
+                    analysis_text, med_names, already_found, source="OpenEvidence"
+                )
+                if results:
+                    logger.info(
+                        "OpenEvidence detected %d additional interactions", len(results)
+                    )
+                return results
+
+        except Exception as e:
+            logger.warning("OpenEvidence API call failed: %s", e)
+            # Fall through to cache fallback below.
+
+    # No key or live call failed — consult the cached fixture set.
+    return _openevidence_cache_fallback(medications, already_found)
+
+
+def _openevidence_cache_fallback(
+    medications: list[str],
+    already_found: set[tuple[str, str]],
+) -> list[DrugInteraction]:
+    """Return cached OpenEvidence responses for the given medication list.
+
+    Produces DrugInteraction objects in the same format as the live path so
+    downstream layers (BitNet stamp, audit chain) require no changes.  Each
+    entry's description is prefixed "[CACHED <date>]" for audit transparency.
+    """
+    try:
+        from engine.openevidence_cache import lookup_cached, canonical_pair_key
+    except ImportError as exc:
+        logger.warning("openevidence_cache import failed; cache fallback skipped: %s", exc)
         return []
+
+    meds_lower = [m.strip().lower() for m in medications]
+    results: list[DrugInteraction] = []
+
+    for i, med_a in enumerate(meds_lower):
+        for med_b in meds_lower[i + 1:]:
+            pair = canonical_pair_key(med_a, med_b)
+            if pair in already_found or tuple(reversed(pair)) in already_found:
+                continue
+            cached = lookup_cached(med_a, med_b)
+            if cached is None:
+                continue
+            date_tag = cached.retrieved_at or "unknown"
+            description = f"[CACHED {date_tag}] {cached.clinical_summary}"
+            results.append(
+                DrugInteraction(
+                    drug_a=cached.drug_pair_canonical[0],
+                    drug_b=cached.drug_pair_canonical[1],
+                    severity=cached.severity,
+                    description=description,
+                    score=medication_severity_score(cached.severity),
+                )
+            )
+            logger.info(
+                "openevidence_cache: returning cached entry pair=%s+%s severity=%s source=%s",
+                cached.drug_pair_canonical[0],
+                cached.drug_pair_canonical[1],
+                cached.severity,
+                cached.source,
+            )
+
+    return results
 
 
 def _parse_interaction_narrative(

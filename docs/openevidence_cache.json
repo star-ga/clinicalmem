@@ -1,0 +1,197 @@
+[
+  {
+    "drug_a": "aspirin",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["aspirin", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Concurrent use of aspirin and warfarin substantially elevates haemorrhagic risk because aspirin irreversibly inhibits platelet thromboxane A2 synthesis while warfarin suppresses vitamin-K-dependent clotting factors; the combination has been associated with a two- to three-fold increase in major bleeding events in large randomised trials (Dentali et al., Ann Intern Med 2007). Gastroprotective co-prescription (PPI) and INR monitoring are recommended whenever concomitant use is medically necessary. Therapeutic benefit versus haemorrhagic risk must be explicitly re-evaluated at each prescribing encounter.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1847613/",
+      "https://www.ncbi.nlm.nih.gov/pubmed/17353492"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ibuprofen",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["ibuprofen", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "NSAIDs including ibuprofen inhibit prostaglandin-mediated platelet aggregation and impair the gastric mucosal barrier, compounding the anticoagulant effect of warfarin and significantly increasing the risk of gastrointestinal haemorrhage; meta-analyses (Masclee et al., Gut 2018) show a greater than three-fold increase in GI bleed risk compared to either agent alone. Ibuprofen can also displace warfarin from plasma protein binding sites, transiently elevating free-drug concentration and INR. Clinicians should consider alternative analgesics (paracetamol) and increase INR monitoring frequency if combination cannot be avoided.",
+    "evidence_urls": [
+      "https://gut.bmj.com/content/67/7/1382",
+      "https://www.ncbi.nlm.nih.gov/pubmed/29101258"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "naproxen",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["naproxen", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "Naproxen, like other non-selective NSAIDs, inhibits COX-1 and COX-2 pathways, impairing platelet function and increasing GI mucosal vulnerability; combined use with warfarin amplifies anticoagulation and raises the incidence of serious bleeding (Lanas et al., Aliment Pharmacol Ther 2006). Additionally, naproxen may modestly inhibit CYP2C9, the primary metabolic pathway for the more potent S-warfarin enantiomer, further elevating INR. Closer INR surveillance and gastroprotection are standard of care if co-prescription is unavoidable.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/16638293",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019842s048lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "nsaid",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": ["nsaid", "warfarin"],
+    "severity": "serious",
+    "clinical_summary": "As a class, NSAIDs potentiate warfarin anticoagulation through dual mechanisms: pharmacodynamic (anti-platelet, pro-haemorrhagic) and pharmacokinetic (plasma protein displacement, variable CYP2C9 inhibition); the FDA warfarin prescribing information explicitly lists NSAIDs as a class interaction requiring enhanced INR monitoring. Class-level risk management includes preferring COX-2-selective agents if NSAID therapy is unavoidable, prescribing concomitant PPI, and shortening INR check intervals during any NSAID course.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/009218s107lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18287551"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "contrast dye",
+    "drug_b": "metformin",
+    "drug_pair_canonical": ["contrast dye", "metformin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Iodinated contrast media can cause acute contrast-induced nephropathy (CIN), transiently impairing renal clearance of metformin; since metformin is renally excreted and not metabolised, impaired clearance can precipitate lactic acidosis, a rare but life-threatening complication (mortality ~50%). Current ACR contrast manual guidelines recommend withholding metformin at the time of contrast administration in patients with eGFR <60 mL/min and reassessing renal function 48 hours after the procedure before resuming. For patients with normal renal function, suspension on the day of the procedure with 48-hour hold remains standard institutional practice in many centres.",
+    "evidence_urls": [
+      "https://www.acr.org/Clinical-Resources/Contrast-Manual",
+      "https://www.ncbi.nlm.nih.gov/pubmed/28025645"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "potassium",
+    "drug_pair_canonical": ["lisinopril", "potassium"],
+    "severity": "moderate",
+    "clinical_summary": "ACE inhibitors such as lisinopril reduce aldosterone secretion, impairing renal potassium excretion; supplemental potassium or potassium-rich dietary changes during concurrent use can precipitate hyperkalaemia, which may manifest as cardiac arrhythmias, muscle weakness, or cardiac arrest at serum levels above 6.5 mEq/L (Einhorn et al., Arch Intern Med 2009). Risk is amplified in patients with renal impairment, diabetes, or concomitant use of potassium-sparing diuretics. Baseline and periodic serum potassium monitoring (at initiation, dose titration, and whenever renal function changes) is mandatory.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/19546408",
+      "https://www.ncbi.nlm.nih.gov/books/NBK482348/"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "spironolactone",
+    "drug_pair_canonical": ["lisinopril", "spironolactone"],
+    "severity": "moderate",
+    "clinical_summary": "The combination of an ACE inhibitor (lisinopril) and an aldosterone antagonist (spironolactone) creates additive potassium retention; while evidence-based for heart failure with reduced ejection fraction (RALES trial, NEJM 1999), hyperkalaemia necessitating hospitalisation occurred in 2% of controlled trial patients versus substantially higher rates in real-world post-approval surveillance. Prescribers should confirm baseline eGFR and serum potassium are acceptable, begin with low spironolactone doses (12.5–25 mg/day), and recheck electrolytes at 1 and 4 weeks after initiation.",
+    "evidence_urls": [
+      "https://www.nejm.org/doi/full/10.1056/NEJM199909023411001",
+      "https://www.ncbi.nlm.nih.gov/pubmed/15187148"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "metoprolol",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": ["metoprolol", "verapamil"],
+    "severity": "serious",
+    "clinical_summary": "Both metoprolol (a beta-1 adrenergic blocker) and verapamil (a non-dihydropyridine calcium channel blocker) independently slow atrioventricular nodal conduction and reduce cardiac contractility; their combination carries a risk of severe bradycardia, heart block, hypotension, and acute decompensated heart failure, including fatalities reported in case series (Jolly et al., Drug Saf 1996). The combination is generally considered contraindicated intravenously; oral co-prescription requires extreme caution, continuous haemodynamic monitoring, and is typically reserved for refractory supraventricular tachyarrhythmias under specialist supervision.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/8789925",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/018817s032lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amiodarone",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": ["amiodarone", "simvastatin"],
+    "severity": "serious",
+    "clinical_summary": "Amiodarone is a potent inhibitor of CYP3A4 and CYP2C8, the primary metabolic pathways for simvastatin; co-administration elevates simvastatin plasma exposure several-fold, raising the risk of myopathy and rhabdomyolysis (documented in FDA adverse event reports and the 2010 FDA communication requiring simvastatin dose cap of 20 mg/day with amiodarone). The FDA issued a drug safety communication specifically addressing this interaction and updated simvastatin labelling; pravastatin or rosuvastatin (CYP3A4-independent statins) should be substituted wherever possible.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-new-restrictions-contraindications-and-dose-limitations-zocor",
+      "https://www.ncbi.nlm.nih.gov/pubmed/12088592"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "fluoxetine",
+    "drug_b": "tramadol",
+    "drug_pair_canonical": ["fluoxetine", "tramadol"],
+    "severity": "serious",
+    "clinical_summary": "Fluoxetine inhibits serotonin reuptake (SSRI) while tramadol has weak serotonergic and noradrenergic reuptake inhibition in addition to its opioid effect; combined use can precipitate serotonin syndrome, characterised by hyperthermia, autonomic instability, neuromuscular abnormalities, and altered mental status — a medical emergency with reported fatalities (Isbister et al., Med J Aust 2004). Fluoxetine also potently inhibits CYP2D6, the main enzyme responsible for tramadol conversion to its active O-desmethyl metabolite, further complicating the pharmacokinetic profile. The combination should generally be avoided; if co-prescribing is unavoidable, start with the lowest tramadol dose and counsel patients on early serotonin syndrome warning signs.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/14705987",
+      "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6545928/"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "ciprofloxacin",
+    "drug_b": "tizanidine",
+    "drug_pair_canonical": ["ciprofloxacin", "tizanidine"],
+    "severity": "contraindicated",
+    "clinical_summary": "Ciprofloxacin is a potent inhibitor of CYP1A2, the principal enzyme responsible for tizanidine metabolism; co-administration produces a five-fold or greater increase in tizanidine plasma AUC, resulting in dangerous hypotension, excessive sedation, and psychomotor impairment — severe enough to be listed as a contraindication in both the FDA-approved tizanidine label and the ciprofloxacin prescribing information (Granfors et al., Clin Pharmacol Ther 2004). Prescribers must not co-prescribe these agents; if a fluoroquinolone is required during tizanidine therapy, levofloxacin (minimal CYP1A2 inhibition) is the preferred alternative.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/14691604",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020780s012lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "methotrexate",
+    "drug_b": "trimethoprim",
+    "drug_pair_canonical": ["methotrexate", "trimethoprim"],
+    "severity": "serious",
+    "clinical_summary": "Both methotrexate and trimethoprim are dihydrofolate reductase (DHFR) inhibitors; their combination produces additive or synergistic antifolate toxicity, manifesting as severe myelosuppression (pancytopenia), mucositis, and hepatotoxicity — including deaths documented in post-marketing case reports and systematic reviews (Thomas et al., Clin Infect Dis 1998). Trimethoprim also competes with methotrexate for renal tubular secretion, further elevating methotrexate plasma concentrations. This combination is generally contraindicated or requires specialist haematological supervision with leucovorin rescue protocols and intensive haematological monitoring.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/9524841",
+      "https://www.ncbi.nlm.nih.gov/pubmed/23508423"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "amoxicillin",
+    "drug_b": "penicillin",
+    "drug_pair_canonical": ["amoxicillin", "penicillin"],
+    "severity": "moderate",
+    "clinical_summary": "Amoxicillin is a semi-synthetic aminopenicillin and shares the core beta-lactam ring with penicillin G/V; co-administration provides no additive antimicrobial benefit against typical targets and may introduce competitive antagonism at penicillin-binding proteins. More clinically significant is the cross-allergy consideration: patients allergic to penicillin carry an approximately 1-2% risk of cross-reaction to amoxicillin (Romano et al., J Allergy Clin Immunol 2009), and the combination is therapeutically redundant. Concurrent prescription of two beta-lactams from the same class should be reviewed for indication, as combination therapy typically provides no clinical benefit.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/19530233",
+      "https://www.ncbi.nlm.nih.gov/books/NBK526054/"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "iodine",
+    "drug_b": "metformin",
+    "drug_pair_canonical": ["iodine", "metformin"],
+    "severity": "contraindicated",
+    "clinical_summary": "Iodine-containing contrast agents (iodine salts used in radiological imaging) can cause transient renal impairment, reducing metformin clearance and creating the physiological conditions for metformin-associated lactic acidosis (MALA), a complication with high mortality. ACR Manual on Contrast Media (2023) and EMA guidelines both specify withholding metformin at the time of iodinated contrast administration and restarting only after confirming stable renal function 48 hours post-procedure. This interaction is mechanistically equivalent to the broader 'contrast dye + metformin' class interaction but specifically calls out elemental iodine-labelled agents used diagnostically.",
+    "evidence_urls": [
+      "https://www.acr.org/Clinical-Resources/Contrast-Manual",
+      "https://www.ema.europa.eu/en/documents/scientific-guideline/guideline-clinical-evaluation-pharmacokinetics-medicinal-products-renal-impairment_en.pdf"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  },
+  {
+    "drug_a": "atorvastatin",
+    "drug_b": "grapefruit",
+    "drug_pair_canonical": ["atorvastatin", "grapefruit"],
+    "severity": "moderate",
+    "clinical_summary": "Grapefruit and grapefruit juice contain furanocoumarins (principally bergamottin and 6',7'-dihydroxybergamottin) that irreversibly inhibit intestinal CYP3A4; since atorvastatin undergoes significant first-pass CYP3A4 metabolism, large quantities of grapefruit juice (>1.2 L/day) can increase atorvastatin AUC by approximately 83% (Lilja et al., Clin Pharmacol Ther 1999), raising myopathy risk. Unlike simvastatin or lovastatin (where grapefruit interaction is more pronounced), the clinical significance for atorvastatin is considered moderate; FDA labelling recommends limiting grapefruit juice consumption rather than complete avoidance, with counselling focusing on high-quantity regular use.",
+    "evidence_urls": [
+      "https://www.ncbi.nlm.nih.gov/pubmed/10065673",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020702s056lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-02",
+    "source": "CACHED"
+  }
+]

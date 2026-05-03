@@ -117,9 +117,16 @@ class TestParseInteractionNarrative:
 
 class TestOpenEvidenceCheckInteractions:
     @patch.dict("os.environ", {"OPENEVIDENCE_API_KEY": ""})
-    def test_no_api_key(self):
+    def test_no_api_key_falls_back_to_cache(self):
+        # Empty string == falsy → no live call; cache fallback kicks in for
+        # known pairs and returns cached DrugInteraction objects.
+        from engine.openevidence_cache import invalidate_cache
+        invalidate_cache()
         results = _openevidence_check_interactions(["warfarin", "ibuprofen"], set())
-        assert results == []
+        # Cache has a warfarin+ibuprofen entry; at least one result expected.
+        assert len(results) >= 1
+        assert all(isinstance(r, DrugInteraction) for r in results)
+        assert any("[CACHED" in r.description for r in results)
 
     @patch("httpx.post")
     @patch.dict("os.environ", {"OPENEVIDENCE_API_KEY": "fake-key"})
@@ -135,18 +142,26 @@ class TestOpenEvidenceCheckInteractions:
 
     @patch("httpx.post")
     @patch.dict("os.environ", {"OPENEVIDENCE_API_KEY": "key"})
-    def test_non_200(self, mock_post):
+    def test_non_200_falls_back_to_cache(self, mock_post):
+        # Non-200 from live API now falls through to cache fallback.
+        from engine.openevidence_cache import invalidate_cache
+        invalidate_cache()
         mock_resp = MagicMock()
         mock_resp.status_code = 500
         mock_post.return_value = mock_resp
         results = _openevidence_check_interactions(["warfarin", "ibuprofen"], set())
-        assert results == []
+        assert len(results) >= 1
+        assert any("[CACHED" in r.description for r in results)
 
     @patch("httpx.post", side_effect=Exception("fail"))
     @patch.dict("os.environ", {"OPENEVIDENCE_API_KEY": "key"})
-    def test_exception(self, mock_post):
+    def test_exception_falls_back_to_cache(self, mock_post):
+        # Live call exception now falls through to cache fallback.
+        from engine.openevidence_cache import invalidate_cache
+        invalidate_cache()
         results = _openevidence_check_interactions(["warfarin", "ibuprofen"], set())
-        assert results == []
+        assert len(results) >= 1
+        assert any("[CACHED" in r.description for r in results)
 
     @patch("httpx.post")
     @patch.dict("os.environ", {"OPENEVIDENCE_API_KEY": "key"})
