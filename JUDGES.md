@@ -21,9 +21,9 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    headline accuracy: same SHA-256 `repro_hash` on any chip in
    healthcare. Bundle is 8,517 ternary parameters / 19 KB.
 2. **Recall gate (PCCP):** **100% on contraindicated**, 100% major /
-   serious / moderate, on a 104-pair OpenEvidence-cited cohort.
+   serious / moderate, on a 105-pair OpenEvidence-cited cohort.
    Every pair is evidence-backed (FDA labels + ACC/AHA + EULAR +
-   Beers + KDIGO + PubMed primaries).
+   Beers + KDIGO + ESC + PubMed primaries).
 3. **Precision gate:** **0 / 8 false positives** on a clinical-pharmacology
    negative-control cohort that includes two CYP-pathway boundary
    cases (clopidogrel + pantoprazole, atorvastatin + amlodipine).
@@ -43,31 +43,46 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 
 ## 5-minute audit
 
-Each command below prints a verifiable result. Total wall-clock < 90 s.
+The fastest path is a **single command** that runs all four gates
+in sequence and prints a unified PASS/FAIL summary:
 
 ```bash
-# 1. PCCP recall gate — must print "PCCP GATE: PASS" exit 0.
-#    Verifies 100% recall on contraindicated/major/serious/moderate
-#    against the 104-pair OpenEvidence-cited cohort.
+python3 scripts/run_all_gates.py
+```
+
+Expected output (≈ 1 second total):
+
+```
+[  PASS  ] PCCP recall                          PCCP GATE: PASS — all safety-class gates satisfied
+[  PASS  ] Negative-control precision           PRECISION GATE: PASS — no false positives.
+[  PASS  ] Federation 16-invariant demo         FEDERATION DEMO COMPLETE — exit 0
+[  PASS  ] arch-mind L1 governance              OK: every rule passed.
+ALL-GATES RESULT: PASS
+```
+
+If you'd rather run each gate individually:
+
+```bash
+# 1. PCCP recall gate — verifies 100% recall on contraindicated /
+#    major / serious / moderate against the 105-pair OpenEvidence-cited
+#    cohort.
 python3 scripts/run_clinical_regression_eval.py
 
-# 2. Negative-control precision gate — must print "PRECISION GATE: PASS" exit 0.
-#    Verifies 0 / 8 false positives on the negative-control cohort
-#    (6 clean negatives + 2 CYP-pathway boundary cases).
+# 2. Negative-control precision gate — verifies 0 / 8 false positives
+#    on the negative-control cohort (6 clean negatives + 2 CYP-pathway
+#    boundary cases).
 python3 scripts/run_negative_control_eval.py
 
-# 3. Federation 16-invariant flow demo — must print
-#    "FEDERATION DEMO COMPLETE — exit 0" with both site audit
-#    chain hashes matching (proves bit-identical canonical encoding).
+# 3. Federation 16-invariant flow demo — both site audit-chain hashes
+#    match (proves bit-identical canonical encoding).
 python3 scripts/federation_mock_demo.py
 
-# 4. arch-mind L1 governance gate — must print "OK: every rule passed."
-#    Walks engine/*.py with ast, scores 8 architectural kernels,
-#    enforces the rules profile at docs/arch_mind/clinicalmem_rules.mind.
+# 4. arch-mind L1 governance gate — walks engine/*.py with ast,
+#    scores 8 architectural kernels, enforces the rules profile.
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **817+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **820+ passed**.
 
 ---
 
