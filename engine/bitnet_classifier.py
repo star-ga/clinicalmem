@@ -253,17 +253,26 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
         for i, row in enumerate(matrix):
             for j, weight in enumerate(row):
                 if weight not in (-1, 0, 1):
+                    logger.error(
+                        "bitnet_weights_non_ternary",
+                        extra={"matrix": matrix_name, "row": i, "col": j, "value": weight},
+                    )
                     raise ValueError(
                         f"{matrix_name}[{i}][{j}] = {weight!r}; weights must be ternary"
                     )
 
-    return BitNetWeights(
+    weights = BitNetWeights(
         hidden_w=hidden_w,
         hidden_b=hidden_b,
         output_w=output_w,
         output_b=output_b,
         bundle_id=_bundle_id(payload),
     )
+    logger.info(
+        "bitnet_weights_loaded",
+        extra={"bundle_id": weights.bundle_id, "path": str(path)},
+    )
+    return weights
 
 
 # ─── Forward pass ──────────────────────────────────────────────────────────
@@ -340,6 +349,21 @@ def classify(
     if deterministic_table_severity is not None:
         deterministic_match = (severity == deterministic_table_severity)
 
+    # Audit-grade trace: structured DEBUG log so production INFO-level
+    # surfaces stay quiet but a reviewer can opt in by raising verbosity.
+    logger.debug(
+        "bitnet_classified",
+        extra={
+            "drug_a": a_canonical,
+            "drug_b": b_canonical,
+            "severity": severity,
+            "severity_name": _SEVERITY_NAMES[severity],
+            "repro_hash": repro_hash,
+            "weights_id": weights.bundle_id,
+            "deterministic_match": deterministic_match,
+        },
+    )
+
     return BitNetResult(
         severity=severity,
         severity_name=_SEVERITY_NAMES[severity],
@@ -370,9 +394,14 @@ def reload_weights() -> BitNetWeights:
     """Force a fresh load + re-pin. Use after a confirmed weights rotation."""
     global _CACHED_WEIGHTS, _PINNED_BUNDLE_ID
     with _CACHE_LOCK:
+        previous_id = _PINNED_BUNDLE_ID
         weights = load_weights()
         _CACHED_WEIGHTS = weights
         _PINNED_BUNDLE_ID = weights.bundle_id
+    logger.warning(
+        "bitnet_weights_reloaded",
+        extra={"previous_bundle_id": previous_id, "new_bundle_id": weights.bundle_id},
+    )
     return weights
 
 
