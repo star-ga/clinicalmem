@@ -1,0 +1,30 @@
+{
+  "corpus_size": 3247,
+  "framework_version": "2.10.0+cu128",
+  "per_class_accuracy": {
+    "contraindicated": {
+      "accuracy": 0.8571428656578064,
+      "support": 42
+    },
+    "major": {
+      "accuracy": 0.7676056623458862,
+      "support": 142
+    },
+    "minor": {
+      "accuracy": null,
+      "support": 0
+    },
+    "moderate": {
+      "accuracy": 0.5899280309677124,
+      "support": 139
+    },
+    "none": {
+      "accuracy": 0.6697530746459961,
+      "support": 324
+    }
+  },
+  "test_accuracy_inference": 0.6862442040185471,
+  "test_size": 647,
+  "train_size": 2600,
+  "weights_bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+}
