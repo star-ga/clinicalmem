@@ -1,0 +1,86 @@
+[
+  {
+    "drug_a": "acetaminophen",
+    "drug_b": "lisinopril",
+    "drug_pair_canonical": ["acetaminophen", "lisinopril"],
+    "expected_severity": "none",
+    "rationale": "No clinically significant pharmacokinetic or pharmacodynamic interaction. Acetaminophen is metabolised primarily by glucuronidation/sulfation and does not interact with the ACE-I pathway. Routine combination in primary-care hypertension + analgesia.",
+    "evidence_urls": [
+      "https://www.uptodate.com/contents/major-drug-interactions",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/019777s064lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — pipeline should NOT flag (precision test)."
+  },
+  {
+    "drug_a": "omeprazole",
+    "drug_b": "atorvastatin",
+    "drug_pair_canonical": ["atorvastatin", "omeprazole"],
+    "expected_severity": "none",
+    "rationale": "Both metabolised via CYP3A4 + CYP2C19 but at non-saturating substrate concentrations; clinically no significant interaction. Routinely co-prescribed in CAD + GERD. (Distinct from the clopidogrel + omeprazole interaction, which is mediated by CYP2C19 inhibition specifically affecting clopidogrel's prodrug activation.)",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020406s076lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/16181400"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — pipeline should NOT flag despite shared CYP3A4/2C19 metabolism."
+  },
+  {
+    "drug_a": "metformin",
+    "drug_b": "acetaminophen",
+    "drug_pair_canonical": ["acetaminophen", "metformin"],
+    "expected_severity": "none",
+    "rationale": "Metformin is renally excreted unchanged; acetaminophen is hepatically conjugated. No CYP overlap, no transporter conflict, no protein-binding displacement. Standard polypharmacy in T2DM patients with osteoarthritis.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020357s037s039,021202s021s023lbl.pdf",
+      "https://www.uptodate.com/contents/major-drug-interactions"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — pipeline should NOT flag."
+  },
+  {
+    "drug_a": "albuterol",
+    "drug_b": "fluticasone",
+    "drug_pair_canonical": ["albuterol", "fluticasone"],
+    "expected_severity": "none",
+    "rationale": "Inhaled β2-agonist (albuterol) plus inhaled corticosteroid (fluticasone) are the two pillars of asthma maintenance + reliever therapy (GINA guideline). The combination is intentional and additive in the desired direction (β2 bronchodilation + ICS anti-inflammatory). Both are local lung delivery with minimal systemic exposure at standard doses.",
+    "evidence_urls": [
+      "https://ginasthma.org/wp-content/uploads/2023/07/GINA-2023-Full-report.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021077s056lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — guideline-recommended combination; pipeline should NOT flag."
+  },
+  {
+    "drug_a": "amlodipine",
+    "drug_b": "acetaminophen",
+    "drug_pair_canonical": ["acetaminophen", "amlodipine"],
+    "expected_severity": "none",
+    "rationale": "Amlodipine is a dihydropyridine calcium channel blocker metabolised by CYP3A4; acetaminophen at therapeutic doses is metabolised by sulfation/glucuronidation with minor CYP2E1 contribution. No clinically meaningful interaction. Routine combination in elderly hypertensive patients with osteoarthritis pain.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2019/019787s053lbl.pdf",
+      "https://www.uptodate.com/contents/major-drug-interactions"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — pipeline should NOT flag."
+  },
+  {
+    "drug_a": "amoxicillin",
+    "drug_b": "fluticasone nasal",
+    "drug_pair_canonical": ["amoxicillin", "fluticasone nasal"],
+    "expected_severity": "none",
+    "rationale": "Oral β-lactam antibiotic plus topical intranasal corticosteroid. Different routes (systemic vs local), different metabolic pathways, no documented interaction. Co-prescribed routinely for sinusitis with bacterial superinfection.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021077s056lbl.pdf",
+      "https://www.uptodate.com/contents/major-drug-interactions"
+    ],
+    "retrieved_at": "2026-05-03",
+    "_added_iteration": "autonomous-watcher-iter-10",
+    "_purpose": "Negative control — matches pt-002 Kowalski cohort design (intentionally clean)."
+  }
+]
