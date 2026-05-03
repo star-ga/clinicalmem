@@ -85,3 +85,41 @@ def test_no_stale_per_class_counts_remain():
             f"Stale {label} sparkline label {stale!r} still in docs/demo.html "
             f"— replace with the live count."
         )
+
+
+def test_no_vacuous_major_recall_claim():
+    """The cohort has 0 'major' class entries; any "major 100%" claim is vacuous.
+
+    Iteration 35 discovery: the eval reports `recall_major: 1.000` because
+    `class_counts.get("major", {"total": 0})["total"] == 0` triggers the
+    `if bucket["total"] == 0: return 1.0` short-circuit in
+    `scripts/run_clinical_regression_eval.py`. That's mathematically
+    convention-driven, not empirical evidence. Any dashboard claim that
+    asserts "100% recall on major" is misleading until a major-class
+    pair is added to the cohort.
+    """
+    cache = json.loads(_CACHE.read_text())
+    major_count = sum(1 for it in cache if it.get("severity") == "major")
+    if major_count > 0:
+        # Once major-class pairs are added, this test becomes a no-op.
+        return
+
+    html = _DEMO_HTML.read_text()
+    # Specific stale claims to catch
+    forbidden = (
+        "major 100%",
+        "100% · all observed",  # iter-32-vintage major bar label
+    )
+    for snippet in forbidden:
+        assert snippet not in html, (
+            f"docs/demo.html contains the misleading {snippet!r} for the "
+            f"major class while the cohort has 0 major-class pairs. Either "
+            f"add major examples to docs/openevidence_cache.json or remove "
+            f"the inflated claim."
+        )
+
+    # Affirmative check: the honest "n/a · 0 in cohort" label is shown.
+    assert "n/a · 0 in cohort" in html, (
+        "docs/demo.html sparkline must label the empty major class as "
+        "'n/a · 0 in cohort' rather than implying 100% recall."
+    )

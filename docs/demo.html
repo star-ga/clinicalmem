@@ -588,7 +588,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 842 / 842 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 843 / 843 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.8.14</div>
     </div>
 
@@ -1057,18 +1057,18 @@ tailwind.config = {
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
           <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 105-pair PCCP regression</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100%, major 100%, serious 100%, moderate as observed in cohort">
+          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 17/17, serious 100% on 66/66, moderate 100% on 22/22; major class not represented in this cohort (see clinical_validation.md NTI cohort).">
             <!-- Axis baseline at 100% (=288) -->
             <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
             <line x1="40" y1="106" x2="312" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
-            <!-- Contraindicated (n=14) -->
+            <!-- Contraindicated (n=17) -->
             <rect x="40" y="20" width="272" height="14" rx="2" fill="#dc2626" fill-opacity="0.82"/>
             <text x="8"  y="31" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">contra·indicated</text>
             <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 17 / 17</text>
-            <!-- Major (no class in cohort but recall reported = 1.0) -->
-            <rect x="40" y="42" width="272" height="14" rx="2" fill="#FF6B35" fill-opacity="0.78"/>
-            <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">major</text>
-            <text x="318" y="53" font-family="JetBrains Mono, monospace" font-size="9" fill="#FF6B35" text-anchor="end">100% · all observed</text>
+            <!-- Major (0 in this cohort; outlined dashed bar — see NTI cohort for major-class testing) -->
+            <rect x="40" y="42" width="272" height="14" rx="2" fill="none" stroke="#FF6B35" stroke-width="0.7" stroke-dasharray="3 3" opacity="0.55"/>
+            <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#94a3b8">major</text>
+            <text x="318" y="53" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" text-anchor="end">n/a · 0 in cohort</text>
             <!-- Serious (n=64) -->
             <rect x="40" y="64" width="272" height="14" rx="2" fill="#0369A1" fill-opacity="0.78"/>
             <text x="8"  y="75" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">serious</text>
@@ -1750,7 +1750,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">842 / 842</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">843 / 843</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">105 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">14 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
