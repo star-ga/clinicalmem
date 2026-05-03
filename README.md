@@ -385,25 +385,30 @@ clinicalmem/
 
 ## Tests
 
-**429 tests** covering the full clinical safety pipeline:
+**817 tests** across `tests/test_engine/`, `tests/test_scripts/`,
+`tests/test_mcp/`, `tests/test_a2a/`, and `tests/test_agent/`.
+The canonical list is `python3 -m pytest --co -q`.
 
 ```
-tests/test_engine/test_clinical_scoring.py       — 43 tests (scoring kernels)
-tests/test_engine/test_consensus_engine.py       — 25 tests (6-model LLM consensus)
-tests/test_engine/test_fda_client.py             — 16 tests (openFDA safety alerts)
-tests/test_engine/test_hallucination_detector.py — 26 tests (evidence grounding)
-tests/test_engine/test_integration.py            — 61 tests (engine + FHIR + SSRF)
-tests/test_engine/test_llm_synthesizer.py        — 42 tests (LLM cascade + templates + abstention)
-tests/test_engine/test_phi_detector.py           — 25 tests (PHI detection)
-tests/test_engine/test_rxnorm_client.py          —  8 tests (RxNorm drug normalization)
-tests/test_engine/test_snomed_client.py          — 12 tests (SNOMED CT cross-reactivity)
-tests/test_engine/test_snomed_extended.py        — 19 tests (Snowstorm API + UMLS + FHIR mapping)
-tests/test_engine/test_trials_client.py          — 16 tests (ClinicalTrials.gov matching)
-tests/test_engine/test_umls_mapper.py            —  6 tests (UMLS cross-vocabulary mapping)
-tests/test_engine/test_what_if.py                — 13 tests (what-if medication simulation)
-tests/test_mcp/test_mcp_tools.py                 — 58 tests (all 18 MCP tools)
-tests/test_a2a/test_a2a_tools.py                 — 47 tests (A2A tools + FHIR helpers)
-tests/test_a2a/test_a2a_app.py                   — 12 tests (agent card + middleware + FHIR hook)
+tests/test_engine/         — 600+ tests covering the safety pipeline:
+   clinical scoring, BitNet classifier, consensus engine, evidence
+   grounding, hallucination detection, FHIR adapter, FDA client,
+   federation transport bridge (mind-mem v3.8.14 MemoryMesh +
+   EventFanout), 21 CFR Part 11 audit export, NPI registry, PHI
+   detector, RxNorm / SNOMED / UMLS clients, what-if simulator.
+
+tests/test_scripts/        — federation 16-invariant flow demo,
+   PCCP regression harness, negative-control precision gate
+   (3 tests for the precision side of the eval), arch-mind L1
+   governance gate (fixture + JSON + enforce-mode end-to-end).
+
+tests/test_mcp/            — all 18 @mcp.tool() decorators in
+   mcp_server/server.py.
+
+tests/test_a2a/            — A2A skill registry + agent card +
+   middleware + FHIR hook.
+
+tests/test_agent/          — flow_runner orchestration tests.
 ```
 
 Coverage includes:
