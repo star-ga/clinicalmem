@@ -1689,5 +1689,24 @@
     "retrieved_at": "2026-05-03",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-19"
+  },
+  {
+    "drug_a": "tamoxifen",
+    "drug_b": "paroxetine",
+    "drug_pair_canonical": [
+      "paroxetine",
+      "tamoxifen"
+    ],
+    "severity": "major",
+    "clinical_summary": "Tamoxifen is a prodrug whose anti-cancer activity depends on CYP2D6-mediated bioactivation to endoxifen, the metabolite responsible for the bulk of breast-cancer recurrence prevention. Paroxetine is a strong CYP2D6 inhibitor and reduces endoxifen plasma concentration by ~50-65% (Stearns et al., JNCI 2003; Goetz et al., Lancet 2009). Sustained co-administration in adjuvant therapy correlates with measurably higher breast-cancer mortality (Kelly et al., BMJ 2010). Strong-CYP2D6-inhibitor SSRIs (paroxetine, fluoxetine) are designated MAJOR contraindications when tamoxifen is the active anti-estrogen. Safer alternatives: venlafaxine, escitalopram, sertraline (low CYP2D6 inhibition).",
+    "evidence_urls": [
+      "https://pubmed.ncbi.nlm.nih.gov/14559875",
+      "https://pubmed.ncbi.nlm.nih.gov/19193548",
+      "https://www.bmj.com/content/340/bmj.c693"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-39",
+    "_purpose": "First MAJOR-class entry \u2014 closes the major-class testing gap flagged in iter 35."
   }
 ]

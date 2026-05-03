@@ -28,6 +28,7 @@ _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 _EXPECTED_CONTRAINDICATED = 17
 _EXPECTED_SERIOUS = 66
 _EXPECTED_MODERATE = 22
+_EXPECTED_MAJOR = 1  # iter 39: first major-class entry (tamoxifen + paroxetine)
 
 
 def _live_counts() -> dict[str, int]:
@@ -53,6 +54,10 @@ def test_live_per_class_counts_match_pinned():
     assert counts.get("moderate", 0) == _EXPECTED_MODERATE, (
         f"moderate count drifted: live={counts.get('moderate', 0)}, "
         f"pinned={_EXPECTED_MODERATE}"
+    )
+    assert counts.get("major", 0) == _EXPECTED_MAJOR, (
+        f"major count drifted: live={counts.get('major', 0)}, "
+        f"pinned={_EXPECTED_MAJOR}"
     )
 
 

@@ -20,14 +20,12 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    at Layer 4.5. Layer 4.5's job is *deterministic verification*, not
    headline accuracy: same SHA-256 `repro_hash` on any chip in
    healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
-2. **Recall gate (PCCP):** **100% recall** on the three severity
-   classes represented in the 105-pair OpenEvidence-cited cohort —
-   contraindicated (17/17), serious (66/66), moderate (22/22). The
-   `major` class is empty in this cohort by design (it's tested
-   separately in the 35-pair NTI cohort, see
-   `docs/clinical_validation.md`). Every pair is evidence-backed
-   (FDA labels + ACC/AHA + EULAR + Beers + KDIGO + ESC + PubMed
-   primaries).
+2. **Recall gate (PCCP):** **100% recall** on every severity class
+   represented in the 106-pair OpenEvidence-cited cohort —
+   contraindicated (17/17), major (1/1), serious (66/66), moderate
+   (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
+   EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
+   NTI-drug stress test (35 pairs), see `docs/clinical_validation.md`.
 3. **Precision gate:** **0 / 8 false positives** on a clinical-pharmacology
    negative-control cohort that includes two CYP-pathway boundary
    cases (clopidogrel + pantoprazole, atorvastatin + amlodipine).
