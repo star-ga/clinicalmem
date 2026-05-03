@@ -4521,6 +4521,257 @@
         ],
         "effectiveDateTime": "2026-04-22"
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-015a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1840781037"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Yamamoto",
+            "given": [
+              "Akiko"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-015b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1187344894"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Cantrell",
+            "given": [
+              "Margaret"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-015",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Pereira",
+            "given": [
+              "Beatriz",
+              "Helena"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1974-03-19",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "228 Linden Avenue"
+            ],
+            "city": "Providence",
+            "state": "RI",
+            "postalCode": "02906",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-015"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-015a",
+        "subject": {
+          "reference": "Patient/synthea-pt-015"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "254837009",
+              "display": "Estrogen receptor-positive breast cancer (post-mastectomy, on adjuvant endocrine therapy)"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "Z85.3"
+            }
+          ]
+        },
+        "onsetDateTime": "2024-08-14"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-015b",
+        "subject": {
+          "reference": "Patient/synthea-pt-015"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "370143000",
+              "display": "Major depressive disorder"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "F33.1"
+            }
+          ]
+        },
+        "onsetDateTime": "2025-02-08"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-015a",
+        "subject": {
+          "reference": "Patient/synthea-pt-015"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-015a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "10324",
+              "display": "tamoxifen"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "20 mg orally once daily (adjuvant endocrine therapy, year 2 of 5)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 20,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-015b",
+        "subject": {
+          "reference": "Patient/synthea-pt-015"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-015b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "32937",
+              "display": "paroxetine"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "20 mg orally once daily (started 8 weeks ago for major depression)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 20,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
