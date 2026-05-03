@@ -7,7 +7,7 @@
 - `scripts/federation_mock_demo.py` (839 lines, demo wiring)
 - `tests/test_engine/test_federation_transport.py` (273 lines, 9 tests)
 
-**Method:** arch-mind v0.0.3 ships the rules-DSL + scan/rules subcommands but
+**Method:** arch-mind v0.1.3 ships the rules-DSL + scan/rules subcommands but
 the **Phase D tree-sitter sidecar that parses Python files into a per-file
 rollup is not yet released** (per `arch-mind/examples/mind-mem/rules.mind`
 header). Until the sidecar lands, automated whole-repo scoring against
@@ -85,16 +85,21 @@ Per-kernel scores (from `clinicalmem.scan.json`):
 | `redundancy_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `q16_determinism_purity` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `mcp_tool_isolation` | 655360000 (=10000) | ge 9500 | +500 ✅ |
-| `evidence_chain_density` | 92266004 (≈ 1408) | ge 1000 | +408 ⚠️ |
+| `evidence_chain_density` | 106969917 (≈ 1632) | ge 1000 | +632 ✅ |
 | `governance_kernel_coverage` | 0 | omitted (MIND-only) | n/a |
 
 Notes:
 - The `evidence_chain_density` floor was deliberately set at 1000
-  (10%) for the v0.0.1 profile. The live ratio is 68 evidence calls
-  / 483 decision points = 14%; evidence wiring concentrates in the
-  federation bridge + audit-export module rather than uniformly
-  across every branch. Ratchet the floor up as evidence wiring
-  expands.
+  (10%) for the v0.0.1 profile. The live ratio has been ratcheted
+  across three iterations:
+    iter 8  (baseline)        : 1408 (≈ 14.0%)  — 68 / 483 evidence/decision
+    iter 18 (bitnet_classifier): 1490 (≈ 14.9%)  — added 4 structured-log calls
+    iter 23 (fhir_client)     : 1573 (≈ 15.7%)  — added 4 SSRF/HTTP-error log calls
+    iter 38 (hallucination_detector): 1632 (≈ 16.3%)  — added 3 grounding log calls
+  Evidence wiring concentrates in the federation bridge + audit-
+  export modules; further ratchets target what_if.py (12 dec / 0
+  evidence), phi_detector.py (6 / 0), and consensus_engine.py (24 / 1).
+  Re-run `scripts/run_arch_mind_gate.py` to see the live number.
 - `governance_kernel_coverage` is intentionally **omitted from the
   rules profile** — `sum_protected_decls` counts MIND-language
   `[protection]` markers, which don't exist in Python. Re-enable
