@@ -36,13 +36,15 @@
 @profile "regulated_distributed"
 @kernel  "guarded_federation"
 flow JointMemoryFederation {
-    input  finding:     ClinicalFinding
-    input  site_key:    Ed25519PrivateKey
-    input  site_epoch:  KeyEpoch
-    input  peer_record: FederatedRecord
-    input  peer_quorum: list<FederatedRecord>
-    output emitted:     FederatedRecord
-    output ingested:    LocalKnowledge
+    input  finding:              ClinicalFinding
+    input  site_key:             Ed25519PrivateKey
+    input  site_epoch:           KeyEpoch
+    input  site_x25519_private:  X25519PrivateKey
+    input  peer_pubkey:          X25519PublicKey
+    input  peer_record:          FederatedRecord
+    input  peer_quorum:          list<FederatedRecord>
+    output emitted:              FederatedRecord
+    output ingested:             LocalKnowledge
 
     // ─── EGRESS PATH (this site → peers) ──────────────────────────
 
@@ -87,27 +89,59 @@ flow JointMemoryFederation {
     invariant signed.epoch == site_epoch
     invariant signed.canonical_preimage_schema == "TAG_v1_NUL_separated"
 
+    // 6.5. Encrypt the signed envelope before it touches the wire.
+    //      Even though PHI is stripped, the de-identified clinical signal
+    //      (severity verdicts, BitNet activations, provider-disagreement
+    //      patterns) is competitively + adversarially valuable. X25519
+    //      ECDH + ChaCha20-Poly1305 closes the on-path-read gap. Per-
+    //      record key derivation; the recipient's epoch-pinned public key
+    //      is the only one that can decrypt.
+    node sealed = @native x25519_seal(
+        signed.payload,
+        recipient_public_key:  peer_pubkey,
+        cipher:                "chacha20-poly1305",
+        kdf:                   "hkdf-sha256",
+        per_record_nonce:      true,
+    )
+    invariant sealed.payload_encrypted == true
+    invariant sealed.cipher == "chacha20-poly1305"
+    invariant sealed.has_aead_tag == true
+
     // 7. Emit over mind-mem's patent-pending MAP / MIC@2 / binary
     //    transport. Cross-site delivery is at-least-once with
     //    idempotent ingestion at the receiver (deduplicates by
     //    semantic_idempotency_hash — distinct from transport_dedup_hash).
     node emitted_record = @flow mind_mem_publish(
-        signed.payload,
+        sealed.payload,
         protocol:                   "mic@2",
         annotation:                 "map",
         framing:                    "binary",
         delivery_class:             "at_least_once",
         semantic_idempotency_hash:  signed.semantic_hash,
-        transport_dedup_hash:       signed.envelope_hash,
+        transport_dedup_hash:       sealed.envelope_hash,
     )
     assign emitted = emitted_record
 
     // ─── INGRESS PATH (peers → this site) ─────────────────────────
 
-    // 8. Verify the incoming record's Ed25519 signature AND that its
-    //    KeyEpoch is not on the deny-list. A compromised epoch quarantines
-    //    every record signed under it retroactively.
-    node verified = @native ed25519_verify(peer_record)
+    // 7.5. Decrypt the incoming sealed envelope using this site's
+    //      X25519 private key. Failed decryption (wrong recipient,
+    //      tampered ciphertext, missing AEAD tag) fails-closed before
+    //      any signature verification — so an attacker can't even probe
+    //      for valid sender keys without first holding the recipient
+    //      private key.
+    node opened = @native x25519_open(
+        peer_record,
+        recipient_private_key:  site_x25519_private,
+        cipher:                 "chacha20-poly1305",
+    )
+    invariant opened.decryption_succeeded == true
+    invariant opened.aead_tag_verified == true
+
+    // 8. Verify the (now-decrypted) record's Ed25519 signature AND that
+    //    its KeyEpoch is not on the deny-list. A compromised epoch
+    //    quarantines every record signed under it retroactively.
+    node verified = @native ed25519_verify(opened.payload)
     invariant verified.signature_valid == true
     invariant verified.key_epoch_revoked == false
 

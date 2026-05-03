@@ -420,7 +420,7 @@ tailwind.config = {
         </p>
       </div>
       <p class="hero-fade text-sm sm:text-base text-slate-600 mt-5 max-w-2xl lg:mx-0 mx-auto leading-relaxed" style="animation-delay:0.12s">
-        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on contraindicated</strong> for the NTI cohort, 16 typed federation invariants enforcing PHI gates by construction, and an Apache-2.0 license carrying an explicit patent grant for healthcare deployment.
+        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on contraindicated</strong> for the NTI cohort, 21 typed federation invariants enforcing PHI gates and X25519 + ChaCha20-Poly1305 payload encryption by construction, and an Apache-2.0 license carrying an explicit patent grant for healthcare deployment.
       </p>
 
       <!-- Primary + secondary CTA -->
@@ -458,8 +458,8 @@ tailwind.config = {
         </div>
         <div class="rounded-xl bg-white border border-slate-200 px-4 py-3 shadow-soft">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Federation invariants</div>
-          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">16</div>
-          <div class="text-[10px] text-slate-400 mt-1 font-mono">PHI gate · runtime</div>
+          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">21</div>
+          <div class="text-[10px] text-slate-400 mt-1 font-mono">PHI gate · X25519 · runtime</div>
         </div>
       </div>
     </div>
@@ -959,9 +959,9 @@ tailwind.config = {
         ClinicalMem is the first clinical-memory system where the PHI / non-PHI boundary is a <strong>typed runtime invariant</strong>, not a policy doc. Drug-pair severity findings, BitNet activations on novel pairs, and audit-chain witnesses propagate freely between sites. Patient identifiers — names, DOB, MRN, FHIR Patient resources — stay inside the originating hospital.
       </p>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">6 typed invariants</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">21 typed invariants</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">HIPAA-defensible by construction</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">Ed25519 per-site signing</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">Ed25519 + X25519 + ChaCha20-Poly1305</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">Patent-pending MIC@2 / MAP transport</span>
       </div>
     </div>
@@ -1011,38 +1011,50 @@ tailwind.config = {
           <p class="text-sm text-slate-500 mt-1">Content-addressed plan_hash recorded in the audit chain for every federation event.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <span class="inline-flex items-center text-[10px] font-mono px-2 py-1 rounded bg-slate-100 text-slate-700">plan_hash: cb29324f…46c6</span>
-          <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-purple-50 text-clinical-purple">16 typed invariants</span>
+          <span class="inline-flex items-center text-[10px] font-mono px-2 py-1 rounded bg-slate-100 text-slate-700">plan_hash: 6c6fb3ea…5846</span>
+          <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-purple-50 text-clinical-purple">21 typed invariants</span>
+          <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-trust-50 text-trust-700 border border-trust-200">X25519 + ChaCha20-Poly1305</span>
           <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-blue-50 text-clinical-blue">7 of 7 flows ship</span>
         </div>
       </div>
       <pre class="text-xs font-mono text-slate-700 bg-po-paper/40 p-4 rounded-lg overflow-x-auto leading-relaxed border border-slate-200"><code>flow JointMemoryFederation {
-    input  finding:     ClinicalFinding
-    input  site_key:    Ed25519PrivateKey
-    input  peer_record: FederatedRecord
-    output emitted:     FederatedRecord
-    output ingested:    LocalKnowledge
+    input  finding:              ClinicalFinding
+    input  site_key:             Ed25519PrivateKey
+    input  site_x25519_private:  X25519PrivateKey
+    input  peer_pubkey:          X25519PublicKey
+    input  peer_record:          FederatedRecord
+    output emitted, ingested:    FederatedRecord, LocalKnowledge
 
     // EGRESS — this site → peers
     node classify  = @native federation_classify(finding)
     invariant classify.lane in ["clinical_knowledge", "phi_lane"]
-
     node scrubbed  = @native phi_strip(classify.payload)
     invariant scrubbed.has_phi == false
-    invariant classify.lane != "phi_lane" or scrubbed.empty == true
+    node signed    = @native ed25519_sign(scrubbed.payload, site_key, site_epoch)
+    invariant signed.canonical_preimage_schema == "TAG_v1_NUL_separated"
 
-    node signed    = @native ed25519_sign(scrubbed.payload, site_key)
-    node emitted_record = @flow mind_mem_publish(
-        signed.payload,
-        protocol: "mic@2",  annotation: "map",  framing: "binary",
+    // 6.5: encrypt the signed envelope before it touches the wire
+    node sealed    = @native x25519_seal(
+        signed.payload, recipient_public_key: peer_pubkey,
+        cipher: "chacha20-poly1305",  kdf: "hkdf-sha256",
+        per_record_nonce: true,
     )
+    invariant sealed.payload_encrypted == true
+    invariant sealed.has_aead_tag == true
+
+    node emitted_record = @flow mind_mem_publish(sealed.payload, ...)
 
     // INGRESS — peers → this site
-    node verified  = @native ed25519_verify(peer_record)
+    node opened    = @native x25519_open(peer_record, site_x25519_private, ...)
+    invariant opened.decryption_succeeded == true
+    invariant opened.aead_tag_verified == true
+    node verified  = @native ed25519_verify(opened.payload)
     invariant verified.signature_valid == true
+    invariant verified.key_epoch_revoked == false
     node inbound_scrub = @native phi_strip(verified.payload)
     invariant inbound_scrub.has_phi == false
-    node local_record = @native mind_mem_ingest(inbound_scrub.payload, …)
+    node quorum    = @native severity_quorum(verified.payload, peer_quorum, 3, 5)
+    node local_record = @native mind_mem_ingest(inbound_scrub.payload, ...)
 }</code></pre>
       <p class="text-xs text-slate-400 mt-3">Transport rides <strong>STARGA's patent-pending MIC@2 / MAP / binary protocols</strong> in <a href="https://pypi.org/project/mind-mem/" class="text-po-orange hover:underline" target="_blank" rel="noopener">mind-mem</a> (Apache-2.0). Apache § 3 patent grant applies to all ClinicalMem deployments. Full architecture: <a href="federated_memory.md" class="text-po-orange hover:underline">docs/federated_memory.md</a>.</p>
     </article>

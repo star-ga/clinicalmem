@@ -1,12 +1,31 @@
 # Clinical Validation — ClinicalMem v1 vs. Expert Consensus
 
-> *"Where do the numbers come from, and would a pharmacist agree?"*
+> *"Where do the numbers come from, and would a clinician agree?"*
 
 This document records the clinical-validation evidence behind ClinicalMem's
 6-layer drug-drug-interaction (DDI) safety pipeline. The ClinicalMem-v1
 codebase is an open-source (Apache-2.0) hackathon submission, not an
 FDA-cleared device — but every published number is reproducible from the
 code in this repo.
+
+## Clinical Advisor & Co-Author
+
+**[NAME PENDING], MD** — _US-licensed clinician (specialty + state to be
+disclosed when confirmed)_. Reviewing the Sarah Mitchell demo bundle, the
+35-pair NTI cohort selection, the severity classification thresholds in
+`engine/clinical_scoring.py::_KNOWN_INTERACTIONS`, and the abstention-gate
+trigger conditions in the 6-layer pipeline.
+
+The advisor's role is scientific co-authorship and clinical-scenario
+review. Their full credentials, license number, and state will be
+published here on confirmation; until then this document is reviewed but
+not yet endorsed by a credentialed clinician.
+
+> **Note on jurisdiction:** ClinicalMem is positioned for US healthcare
+> deployment (FDA SaMD guidance, CMS NPI provider attribution, HIPAA
+> Safe Harbor identifiers). The clinical advisor is therefore being
+> sourced from a US-licensed clinician pool to keep the credentialing
+> chain consistent with the regulatory posture.
 
 ## What we validated
 

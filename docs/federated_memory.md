@@ -100,7 +100,8 @@ inter-site exchange against the source contract bit-identically.
 
 ## Defence in depth
 
-After the 2026-05-02 multi-agent security + architectural review, **16 typed
+After three rounds of hardening (2026-05-02 multi-agent security review,
+multi-LLM 10/10 evaluation, and a payload-encryption pass), **21 typed
 runtime invariants** apply at every federation event (up from 6 in v0.1):
 
 **EGRESS (this site → peers):**
@@ -112,17 +113,19 @@ runtime invariants** apply at every federation event (up from 6 in v0.1):
 5. **KeyEpoch on the signature** — Ed25519 signatures include the current key epoch; deny-list propagation revokes every record signed under a compromised epoch retroactively.
 6. **Canonical preimage schema** — TAG_v1 NUL-separated, Q16.16 fixed-point. Pinned in the contract so the audit-chain hash is decades-stable.
 7. **Split idempotency** — `transport_dedup_hash` (envelope) is distinct from `semantic_idempotency_hash` (payload). Dedup is precise even under retries with timestamp drift.
+8. **X25519 ECDH + ChaCha20-Poly1305 payload encryption** — even with PHI stripped, the de-identified clinical signal (severity verdicts, BitNet activations, provider-disagreement patterns) is competitively + adversarially valuable. Per-record nonce + AEAD tag verified by the recipient before any signature check. HKDF-SHA256 key derivation. Closes the on-path-read attack surface entirely.
 
 **INGRESS (peers → this site):**
 
-8. **Ed25519 signature valid + KeyEpoch not revoked** — both checks pass-or-quarantine.
+9. **X25519 decryption + AEAD tag verification** — fails-closed before signature check, so an attacker can't probe sender keys without holding the recipient private key.
+10. **Ed25519 signature valid + KeyEpoch not revoked** — both checks pass-or-quarantine.
 9. **Freshness window** — records older than 5 minutes (configurable) are rejected. Replay protection.
 10. **Inbound PHI re-check** — `phi_strip` runs again on the receiver before the record reaches mind-mem's local store. Defence-in-depth against a misconfigured peer.
 11. **Tier bounds-check** — peer-supplied `tier` is clamped to `[0..5]` against the local mind-mem tier schema. A compromised peer cannot force records into the longest-retention bucket.
 12. **Severity quorum gate** — for any drug-pair severity verdict, accept it as **evidence-grade** ONLY if at least **3-of-5** independent peers have signed concurring records (configurable). Single-peer findings are stored at low tier; quorum-confirmed findings are promoted. Prevents bimodal verdict clusters across sites — the load-bearing fix for clinical reproducibility at scale.
 13. **Tamper-evident audit chain** — every inter-site exchange emits a TAG_v1 hash receipt; an auditor with the originator's public key can re-verify the exchange decades later.
 
-The contract's content-addressed `plan_hash` is now `cb29324f…46c6`.
+The contract's content-addressed `plan_hash` is now `6c6fb3ea…5846`.
 A change to any invariant changes the hash, which the audit chain
 records for every federation event — auditors detect drift bit-by-bit.
 
