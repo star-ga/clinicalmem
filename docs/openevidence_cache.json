@@ -1584,5 +1584,92 @@
     "retrieved_at": "2026-05-03",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-5"
+  },
+  {
+    "drug_a": "metformin",
+    "drug_b": "lisinopril",
+    "drug_pair_canonical": [
+      "lisinopril",
+      "metformin"
+    ],
+    "severity": "moderate",
+    "clinical_summary": "ACE inhibitors (lisinopril) and metformin are co-prescribed routinely in type 2 diabetes with hypertension or proteinuria, but the combination raises lactic-acidosis risk in chronic kidney disease (eGFR <45 mL/min/1.73m\u00b2): ACE-I-induced renal vasodilation can briefly drop GFR, reducing metformin clearance, while concurrent hyperkalaemia from the ACE-I is potentiated. The FDA Glucophage labelling and KDIGO 2022 guidance require eGFR-stratified dosing (full dose \u226545, halved 30-44, contraindicated <30) and serum-creatinine surveillance after any ACE-I dose change. Not a contraindication at preserved renal function, but a serious surveillance flag in CKD-3 / CKD-4 patients.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020357s037s039,021202s021s023lbl.pdf",
+      "https://kdigo.org/wp-content/uploads/2022/10/KDIGO-2022-Diabetes-Management-GL_Public-Review-draft_1Mar2022.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-9"
+  },
+  {
+    "drug_a": "carvedilol",
+    "drug_b": "furosemide",
+    "drug_pair_canonical": [
+      "carvedilol",
+      "furosemide"
+    ],
+    "severity": "moderate",
+    "clinical_summary": "Carvedilol (non-selective \u03b2-blocker with \u03b1\u2081-blockade) and furosemide (loop diuretic) are jointly indicated in heart failure with reduced ejection fraction and routinely co-prescribed. The interaction is haemodynamic: both lower blood pressure (additive), and furosemide-induced volume loss can amplify carvedilol's first-dose orthostatic hypotension. In CKD this is compounded \u2014 reduced renal clearance prolongs furosemide effect. Standard cardiology practice is to start carvedilol at 3.125 mg BID, uptitrate every 2 weeks, and adjust diuretic dose simultaneously; not a contraindication, but a moderate-severity surveillance flag (orthostatic vitals, daily weights).",
+    "evidence_urls": [
+      "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001062",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020297s033lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-9"
+  },
+  {
+    "drug_a": "lithium carbonate",
+    "drug_b": "hydrochlorothiazide",
+    "drug_pair_canonical": [
+      "hydrochlorothiazide",
+      "lithium carbonate"
+    ],
+    "severity": "serious",
+    "clinical_summary": "Thiazide diuretics (hydrochlorothiazide, chlorthalidone) reduce lithium renal clearance by 25-50% via increased proximal-tubule sodium reabsorption, raising serum lithium by 0.3-0.5 mEq/L within days. Lithium has a narrow therapeutic window (0.6-1.2 mEq/L); levels >1.5 mEq/L produce tremor, ataxia, and confusion; >2.5 mEq/L is life-threatening (seizures, renal failure, death). The American Psychiatric Association lithium-monitoring guideline mandates serum-lithium check 5-7 days after any thiazide dose change and 25-50% lithium dose reduction at thiazide initiation. Loop diuretics carry less risk; ACE-I and NSAIDs are also flagged.",
+    "evidence_urls": [
+      "https://pubmed.ncbi.nlm.nih.gov/8557211",
+      "https://psychiatryonline.org/doi/10.1176/appi.books.9780890423479.bp001",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/017812s033,018152s029,018421s033lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-9"
+  },
+  {
+    "drug_a": "methotrexate",
+    "drug_b": "trimethoprim-sulfamethoxazole",
+    "drug_pair_canonical": [
+      "methotrexate",
+      "trimethoprim-sulfamethoxazole"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Trimethoprim is a dihydrofolate-reductase inhibitor; sulfamethoxazole displaces methotrexate from plasma protein binding and reduces its renal tubular secretion. Co-administration produces additive folate antagonism plus increased free methotrexate, causing severe (sometimes fatal) bone-marrow suppression: pancytopenia, mucositis, hepatotoxicity. Reported even at low MTX doses (15-25 mg/week for rheumatoid arthritis). Formal contraindication in the EULAR rheumatology guideline and the FDA MTX label. If sepsis prophylaxis is required in an MTX-treated patient, atovaquone or pentamidine are alternatives; high-dose folic/folinic acid does NOT reliably rescue this combination.",
+    "evidence_urls": [
+      "https://pubmed.ncbi.nlm.nih.gov/3258510",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/008085s066lbl.pdf",
+      "https://ard.bmj.com/content/82/1/3"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-9"
+  },
+  {
+    "drug_a": "metoprolol succinate",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": [
+      "metoprolol succinate",
+      "verapamil"
+    ],
+    "severity": "serious",
+    "clinical_summary": "Metoprolol (\u03b2\u2081-selective \u03b2-blocker) and verapamil (non-dihydropyridine calcium channel blocker) both depress sinoatrial / atrioventricular nodal conduction and negative inotropy. Co-administration risks profound bradycardia, complete heart block, and cardiogenic shock \u2014 particularly in heart failure with reduced ejection fraction or pre-existing conduction disease. The 2023 ACC/AHA/HRS atrial-fibrillation guideline recommends against routine BB+non-DHP-CCB combinations except under specialist supervision with continuous ECG. If dual rate control is required, BB + dihydropyridine CCB (amlodipine) is hemodynamically safer.",
+    "evidence_urls": [
+      "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001193",
+      "https://pubmed.ncbi.nlm.nih.gov/2914393"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-9"
   }
 ]
