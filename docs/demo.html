@@ -683,17 +683,17 @@ tailwind.config = {
 <section id="bitnet" class="py-14 sm:py-20 bg-gradient-to-b from-white via-po-paper/30 to-white">
   <div class="max-w-5xl mx-auto px-4">
     <div class="text-center mb-10">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-clinical-purple mb-3">Layer 4.5 — BitNet b1.58 Ternary Classifier</p>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-clinical-purple mb-3">Layer 4.5 — FDA SaMD Reproducibility Primitive</p>
       <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
-        Local. No API. Bit-identical across architectures.
+        Bit-identical clinical decisions. Decade-stable audit replay.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Pure-integer Q16.16 forward pass over ternary <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">{-1, 0, +1}</code> weights &mdash; no multiplication, only addition and subtraction. Same byte-identical output on ARM Cortex-A78, x86_64, CUDA, and a future NPU target. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
+        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% precision on the safety-critical <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class</strong> &mdash; used as a high-precision veto: when Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
       </p>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">19 KB weights</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">85.7% on contraindicated</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">8,517 ternary weights / 19 KB</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">Runs on Pi Zero ($15)</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">FDA SaMD reproducibility</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">Pure Python &mdash; zero ML framework deps</span>
       </div>
     </div>
