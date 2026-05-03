@@ -10,22 +10,26 @@ code in this repo.
 
 ## Clinical Advisor & Co-Author
 
-**[NAME PENDING], MD** — _US-licensed clinician (specialty + state to be
-disclosed when confirmed)_. Reviewing the Sarah Mitchell demo bundle, the
-35-pair NTI cohort selection, the severity classification thresholds in
-`engine/clinical_scoring.py::_KNOWN_INTERACTIONS`, and the abstention-gate
-trigger conditions in the 6-layer pipeline.
+**Dr. Ludmila Afonicheva, MD** — Family Medicine, US-licensed
+(decades of active practice). State of licensure, NPI, and active
+practice setting published with her permission once she confirms the
+public credit format (preview in the briefing document, see
+`docs/advisor_briefing_summary.md`).
 
-The advisor's role is scientific co-authorship and clinical-scenario
-review. Their full credentials, license number, and state will be
-published here on confirmation; until then this document is reviewed but
-not yet endorsed by a credentialed clinician.
+Reviewing the Sarah Mitchell demo bundle, the 35-pair narrow-
+therapeutic-index cohort, the severity classifications in
+`engine/clinical_scoring.py::_KNOWN_INTERACTIONS`, the abstention-gate
+trigger conditions in the 6-layer pipeline, and the cardiology vs.
+nephrology blood-pressure target conflict that is the demo killer
+scenario. Family medicine is the specialty whose daily practice covers
+exactly the kind of multi-specialist coordination ClinicalMem is built
+to augment — Sarah's case (67 y/o female with T2DM + HTN + CKD-3b +
+AFib managed by four uncoordinated specialists) is a textbook
+primary-care coordination problem.
 
-> **Note on jurisdiction:** ClinicalMem is positioned for US healthcare
-> deployment (FDA SaMD guidance, CMS NPI provider attribution, HIPAA
-> Safe Harbor identifiers). The clinical advisor is therefore being
-> sourced from a US-licensed clinician pool to keep the credentialing
-> chain consistent with the regulatory posture.
+Endorsement quote and full credential disclosure pending Dr.
+Afonicheva's review and consent (briefing PDF delivered 2026-05-02;
+review window open through 2026-05-09 ahead of the May 11 submission).
 
 ## What we validated
 
