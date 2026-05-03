@@ -127,10 +127,13 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
 | 4 | **Multi-LLM Consensus** | 5 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar | ~3s |
+| 4.5 | **BitNet b1.58 ternary classifier** | Trained on 3,247-pair corpus across 224 drugs / 41 classes; 8,517 ternary weights, **bit-identical Q16.16 forward pass across CPU/GPU/NPU**; 85.7% on the load-bearing `contraindicated` class | < 1ms |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
-> Green layers (1) never hallucinate. Purple layers (4-5) are LLM-powered. Red layer (6) is a safety gate.
+> Green layers (1) never hallucinate. Purple layers (4-5) are LLM-powered. Layer 4.5 is the FDA-grade reproducibility primitive — every classification carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms` per pair. Red layer (6) is a safety gate.
+
+Full BitNet training recipe + corpus build script + reproducibility hashes: [`docs/bitnet_training.md`](docs/bitnet_training.md).
 
 ## MCP Server (18 Tools)
 
