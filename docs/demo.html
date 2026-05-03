@@ -294,6 +294,30 @@ tailwind.config = {
 </head>
 <body class="font-sans text-slate-700 antialiased">
 
+<!--
+  Scroll-progress bar — pure CSS via animation-timeline: scroll().
+  Sits above the navbar (z-60); 2px thick; teal → blue gradient.
+  Falls back to invisible (transform: scaleX(0)) on browsers that
+  don't support animation-timeline; also disabled by reduced-motion.
+-->
+<style>
+  @keyframes scroll-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+    background: linear-gradient(90deg, #0F766E 0%, #0369A1 100%);
+    transform-origin: 0 50%; transform: scaleX(0);
+  }
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress {
+      animation: scroll-progress linear; animation-timeline: scroll(root);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-progress { animation: none !important; transform: scaleX(0); }
+  }
+</style>
+<div class="scroll-progress" aria-hidden="true"></div>
+
 <!-- Navigation -->
 <nav class="nav-light fixed top-0 left-0 right-0 z-50 border-b border-slate-200">
   <div class="max-w-5xl mx-auto px-4">
