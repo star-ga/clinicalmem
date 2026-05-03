@@ -1263,14 +1263,16 @@ tests/test_scripts/
   test_federation_mock_demo.py</code></pre>
         </div>
       </div>
-      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Sample audit-chain hashes (canonical run)</p>
+      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Sample audit-chain hashes (one canonical run; nonces randomize per emit)</p>
       <pre class="text-xs font-mono text-slate-700 bg-po-paper/40 p-4 rounded border border-slate-200 overflow-x-auto leading-relaxed"><code>Site A (Mass General) egress  preimage_hash:
-  39788b9c83826ce39e8b69c9aa2586e3b7b550487ca0a37c8ef3bd505fc663b4
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10426c14404
 
 Site B (Mayo Clinic) ingress preimage_hash:
-  39788b9c83826ce39e8b69c9aa2586e3b7b550487ca0a37c8ef3bd505fc663b4
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10426c14404
 
-  ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.</code></pre>
+  ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.
+  ↑ Specific value differs per run (128-bit nonce); the *equality* of
+    the two hashes is the load-bearing claim. Re-run the demo to verify.</code></pre>
       <p class="text-xs text-slate-400 mt-3">Control plane (peer registry, 7 sync scopes, per-scope conflict policy, sync audit log, governance pub/sub fan-out) is <strong class="text-trust-700">LIVE</strong> against <code class="font-mono">mind-mem v3.8.14</code> MemoryMesh + EventFanout (9 unit tests in <code class="font-mono text-xs">tests/test_engine/test_federation_transport.py</code>). The mock queue handles only the wire bytes between sites; it swaps out for the live HTTP/gRPC adapter when mind-mem v3.9 ships, with no change above the <code class="font-mono text-xs">record_publish_event</code> / <code class="font-mono text-xs">record_ingest_event</code> boundary.</p>
     </article>
   </div>
