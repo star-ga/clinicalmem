@@ -48,7 +48,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 
 | Capability | Description |
 |-----------|-------------|
-| **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (drug normalization) &rarr; Six-model LLM consensus |
+| **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (drug normalization) &rarr; Five-model LLM consensus (US-based) |
 | **Five-Model US-Based LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar &mdash; **all US-headquartered** for HIPAA-compatible data residency |
 | **Allergy Cross-Reaction Alerts** | SNOMED CT drug class hierarchy with 8 classes + alias expansion + cross-class detection |
 | **UMLS Cross-Vocabulary Mapping** | ICD-10 &harr; SNOMED CT &harr; LOINC &harr; RxNorm via UMLS Metathesaurus |
@@ -160,7 +160,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | `scan_for_phi` | **HIPAA**: Detect PHI in free text |
 | `check_fda_safety_alerts` | **FDA**: Active recalls + adverse events |
 | `find_matching_trials` | **Research**: ClinicalTrials.gov matching |
-| `consensus_verify_finding` | **GenAI**: Six-model LLM consensus verification |
+| `consensus_verify_finding` | **GenAI**: Five-model LLM consensus (US-based) verification |
 | `health_check` | Container orchestrator health probe |
 
 ## A2A Agent (13 Tools)
@@ -179,7 +179,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | `what_if_scenario` | Digital Twin | Simulate medication changes |
 | `check_fda_alerts` | FDA | Safety alerts + adverse events |
 | `find_clinical_trials` | Research | ClinicalTrials.gov matching |
-| `consensus_verify` | GenAI | Six-model LLM consensus |
+| `consensus_verify` | GenAI | Five-model LLM consensus (US-based) |
 
 ## Why ClinicalMem
 
@@ -187,7 +187,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 
 | Capability | ClinicalMem | Typical Healthcare AI |
 |-----------|-------------|----------------------|
-| **Drug interactions** | 5-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Six-model consensus + **BitNet b1.58 ternary classifier (bit-identical Q16.16 forward, FDA-grade reproducibility)** | Hardcoded lookup table |
+| **Drug interactions** | 5-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Five-model US-based LLM consensus + **BitNet b1.58 ternary classifier (bit-identical Q16.16 forward, FDA-grade reproducibility)** | Hardcoded lookup table |
 | **LLM verification** | 6 US-based models (GPT-5.5, Gemini 3.1 Pro, Grok 4.1, Claude Opus 4.6, Perplexity Sonar, Gemini Flash) | Single model, no fallback |
 | **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard), openFDA, ClinicalTrials.gov | None |
@@ -321,7 +321,7 @@ clinicalmem/
 │   ├── __init__.py
 │   ├── clinical_memory.py      # mind-mem adapted for clinical data
 │   ├── clinical_scoring.py     # MIND Lang scoring kernels
-│   ├── consensus_engine.py     # 6-model US-based LLM consensus
+│   ├── consensus_engine.py     # 5-model US-based LLM consensus (GPT-5.5 + Claude-Opus-4.7 + Gemini-3.1-Pro + Grok-4.3 + Sonar-Pro)
 │   ├── fda_client.py           # openFDA drug safety alerts
 │   ├── fhir_client.py          # FHIR R4 client with SSRF protection
 │   ├── hallucination_detector.py # Evidence grounding validation
@@ -417,7 +417,7 @@ Coverage includes:
 - Adversarial negation detection ("ruled out", "NOT allergic")
 - FHIR R4 resource ingestion and normalization
 - Drug interaction detection (all 4 tiers)
-- Six-model LLM consensus verification (all US-based)
+- Five-model US-based LLM consensus verification
 - RxNorm drug normalization (exact + approximate matching)
 - SNOMED CT allergy cross-reactivity (8 drug classes, alias expansion)
 - UMLS Metathesaurus cross-vocabulary mapping (ICD-10 &harr; SNOMED &harr; RxNorm)
@@ -442,7 +442,7 @@ Coverage includes:
 |-----------|------------|
 | **Engine** | [mind-mem](https://github.com/star-ga/mind-mem) hybrid search (BM25 + vector + RRF fusion) |
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
-| **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Six-model LLM consensus |
+| **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Five-model LLM consensus (US-based) |
 | **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
 | **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar (all US-headquartered) |
 | **FDA** | [openFDA](https://open.fda.gov/) drug safety alerts, recalls, adverse events |
@@ -460,7 +460,7 @@ Coverage includes:
 |--------|-------|
 | **Deterministic layer latency** | < 1ms (rule-based, zero API calls) |
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
-| **Six-model LLM consensus** | ~3-5s (all 6 models queried in parallel) |
+| **Five-model LLM consensus** | ~3-5s (all 5 US-based models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
 | **Test suite execution** | ~40 s for 843+ engine + script tests (full suite ~5 min including a2a/mcp) |
 | **Code coverage** | Per-suite line coverage measured via `pytest --cov`; not enforced as a CI gate (see Tests section for canonical test count) |
@@ -474,7 +474,7 @@ Coverage includes:
 | RxNorm / NIH API | $0.00 | Free public API, no key required |
 | openFDA API | $0.00 | Free public API |
 | ClinicalTrials.gov | $0.00 | Free public API |
-| Six-model LLM consensus | ~$0.02-0.05 | Varies by token count; parallel execution |
+| Five-model LLM consensus (US-based) | ~$0.02-0.05 | Varies by token count; parallel execution |
 | **Total per check** | **~$0.02-0.05** | Dominated by LLM inference cost |
 
 > **Production optimization**: For high-volume deployment, the consensus layer can be reduced to 3 models (majority vote with fewer models) or cached for repeated drug pairs, reducing cost by 50-80%.
@@ -483,18 +483,17 @@ Coverage includes:
 
 The five-model US-based consensus engine uses **structured majority voting**:
 
-1. All 6 US-based LLMs receive the same structured prompt with drug pair, patient context, and evidence from layers 1-3
+1. Up to 5 US-based LLMs receive the same structured prompt with drug pair, patient context, and evidence from layers 1-3 (GPT-5.5, Claude-Opus-4.7, Gemini-3.1-Pro, Grok-4.3, Sonar-Pro). Models with no API key configured are skipped — the consensus rule scales to whatever is available.
 2. Each model returns a severity classification (CRITICAL / HIGH / MODERATE / LOW / NONE) and a confidence score
-3. **Majority rule**: A finding is confirmed if &ge;4/6 models agree on severity &ge; MODERATE
-4. **Split decision handling**: If exactly 3/6 agree, the finding is flagged as UNCERTAIN and escalated to the synthesis layer with a lower confidence score
-5. **Unanimous disagreement**: If no majority exists, the abstention gate fires &mdash; the system reports "insufficient consensus" rather than guessing
-6. **Model-specific bias mitigation**: Each model's response is weighted equally; no single model can override the consensus
+3. **Consensus levels** (per `engine.consensus_engine.verify_finding_consensus`): all-agree → HIGH; &ge; 2/3 agree → MEDIUM; &ge; 1 agree → LOW; none agree → NONE; &lt; 2 models available → LIMITED
+4. **Reportable findings**: only HIGH or MEDIUM consensus reports up the chain; LOW / NONE / LIMITED trigger the Layer 6 abstention gate, which surfaces "insufficient consensus" rather than guessing
+5. **Model-specific bias mitigation**: Each model's response is weighted equally; no single model can override the consensus
 
 | Scenario | Models Agreeing | Result |
 |----------|----------------|--------|
 | 6/6 agree CRITICAL | Unanimous | Confirmed CRITICAL (confidence: 1.0) |
 | 4/6 agree HIGH | Supermajority | Confirmed HIGH (confidence: 0.67) |
-| 3/6 agree, 3/6 disagree | Split | Flagged UNCERTAIN (confidence: 0.50) |
+| Mixed (1 / N agree, where 0 &lt; agree &lt; 2/3 of available) | LOW | Reported only with the abstention disclaimer; Layer 6 may suppress |
 | No majority | Fragmented | Abstention &mdash; "insufficient consensus" |
 
 ## Failure Modes & Resilience
@@ -518,7 +517,7 @@ ClinicalMem is designed to **degrade gracefully** when external services are una
 
 - All external API calls have a **5-second timeout** with 2 retries
 - LLM providers have a **10-second timeout** per model
-- Consensus engine runs all 6 models in **parallel** (not sequential)
+- Consensus engine runs all available US-based models in **parallel** (not sequential), up to 5
 - Circuit breaker: After 3 consecutive failures, an API is marked degraded for 60 seconds
 
 ## Clinical Validation Roadmap
@@ -559,7 +558,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 |-----------|-------------|------------|
 | **Synthetic data only** | All validation uses fictional patient Sarah Mitchell | Roadmap includes MIMIC-IV and clinician adjudication |
 | **Deterministic table coverage** | Rule-based layer covers common pairs, not all ~10,000 known interactions | Layers 2-4 catch pairs not in the deterministic table |
-| **LLM consensus cost** | Six-model inference adds ~$0.02-0.05 per check | Cacheable for repeated drug pairs; reducible to 3 models |
+| **LLM consensus cost** | Five-model US-based inference adds ~$0.02-0.05 per check | Cacheable for repeated drug pairs; reducible to 3 models |
 | **External API dependency** | RxNorm, OpenEvidence, openFDA may have downtime | Graceful degradation; deterministic layer always available |
 | **English only** | Clinical NLP and LLM prompts are English-only | Multilingual support planned |
 | **No EHR write-back** | Read-only FHIR integration; cannot modify EHR records | By design &mdash; ClinicalMem is advisory, not prescriptive |
