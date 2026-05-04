@@ -241,6 +241,20 @@ def export_audit_trail(
     """
     _assert_npi_valid(attestation_signer_npi)
 
+    # PHI-safe entry log: event count + signer NPI (NPI is public CMS
+    # registry data, safe to log) + output path (file system metadata).
+    # Never log actor_id, action text, or resource_ref — those can carry
+    # clinical narrative.
+    logger.info(
+        "audit_export_part11_start",
+        extra={
+            "event_count": len(events),
+            "attestation_signer_npi": attestation_signer_npi,
+            "output_path": str(output_path),
+            "include_metadata": include_metadata,
+        },
+    )
+
     # 1. Sort chronologically ─────────────────────────────────────────────────
     sorted_events = sorted(events, key=lambda e: e.timestamp_iso)
 
@@ -350,11 +364,17 @@ def export_audit_trail(
     output_path.write_text(serialised, encoding="utf-8")
     total_bytes = len(serialised.encode("utf-8"))
 
+    # PHI-safe completion log: counts + chain_root prefix (non-reversible,
+    # but safe to truncate as a correlation aid for auditors).
     logger.info(
-        "audit_export_part11: wrote %d events, chain_root=%s, path=%s",
-        len(sorted_events),
-        chain_root,
-        output_path,
+        "audit_export_part11_complete",
+        extra={
+            "event_count": len(sorted_events),
+            "chain_root_prefix": chain_root[:16],
+            "output_path": str(output_path),
+            "total_bytes": total_bytes,
+            "attestation_signer_npi": attestation_signer_npi,
+        },
     )
 
     return ExportResult(
@@ -401,9 +421,24 @@ def verify_audit_trail(path: Path | str) -> VerificationResult:
     from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
     path = Path(path)
+    # PHI-safe verify-start log: path only — file content is examined,
+    # never logged.
+    logger.debug(
+        "audit_verify_start",
+        extra={"path": str(path)},
+    )
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
+        # WARNING level — release-blocking integrity event. Log error
+        # type only (exception messages may include path / partial content).
+        logger.warning(
+            "audit_verify_read_failure",
+            extra={
+                "path": str(path),
+                "error_type": type(exc).__name__,
+            },
+        )
         return VerificationResult(
             is_valid=False,
             tampering_detected=[f"Cannot read/parse file: {exc}"],
@@ -488,6 +523,32 @@ def verify_audit_trail(path: Path | str) -> VerificationResult:
         anomalies.append("Ed25519 attestation signature is INVALID or missing")
 
     is_valid = len(anomalies) == 0
+
+    # PHI-safe completion log: WARNING when tampering detected, INFO on
+    # clean verify. Anomaly count + types only — never the anomaly text
+    # itself (which can quote chain hashes already considered safe to
+    # log via prefix elsewhere). Tampering_detected count is a strong
+    # release-block signal.
+    if is_valid:
+        logger.info(
+            "audit_verify_complete_clean",
+            extra={
+                "path": str(path),
+                "event_count": len(chain_events),
+                "chain_root_prefix": replayed_root[:16],
+                "signature_valid": True,
+            },
+        )
+    else:
+        logger.warning(
+            "audit_verify_tampering_detected",
+            extra={
+                "path": str(path),
+                "event_count": len(chain_events),
+                "anomaly_count": len(anomalies),
+                "signature_valid": signature_valid,
+            },
+        )
 
     return VerificationResult(
         is_valid=is_valid,

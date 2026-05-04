@@ -85,7 +85,7 @@ Per-kernel scores (from `clinicalmem.scan.json`):
 | `redundancy_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `q16_determinism_purity` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `mcp_tool_isolation` | 655360000 (=10000) | ge 9500 | +500 ✅ |
-| `evidence_chain_density` | 130266229 (≈ 1988) | ge 1000 | +988 ✅ |
+| `evidence_chain_density` | 136700858 (≈ 2086) | ge 1000 | +1086 ✅ |
 | `governance_kernel_coverage` | 0 | omitted (MIND-only) | n/a |
 
 Notes:
@@ -101,12 +101,13 @@ Notes:
     iter 48 (consensus_engine)      : 1865 (≈ 18.7%)  — added 5 PHI-safe consensus logs
     iter 53 (flow_runner)           : 1947 (≈ 19.5%)  — added 5 PHI-safe flow execution logs
     iter 58 (fhir_adapter)          : 1988 (≈ 19.9%)  — added 4 PHI-safe FHIR ingest logs (replaced 2 legacy printf-style)
+    iter 64 (audit_export_part11)   : 2086 (≈ 20.9%)  — added 5 PHI-safe export/verify logs (replaced 1 legacy printf-style)
   Evidence wiring concentrates in the federation bridge + audit-
-  export modules; the next ratchet targets are `clinical_memory.py`
-  (~104 dec / ~10 ev) and `clinical_scoring.py` (~148 dec / ~16 ev) —
-  but those have higher *baseline* densities (~9-11%) than the
-  modules ratcheted so far, so the marginal impact is smaller.
-  Re-run `scripts/run_arch_mind_gate.py` to see the live number.
+  export modules; the next ratchet targets are `snomed_client.py`
+  (~28 dec / ~2 ev = 7%) and `fda_client.py` (~36 dec / ~4 ev = 11%)
+  but those have higher *baseline* densities than the modules
+  ratcheted so far, so the marginal impact is smaller. Re-run
+  `scripts/run_arch_mind_gate.py` to see the live number.
 - `governance_kernel_coverage` is intentionally **omitted from the
   rules profile** — `sum_protected_decls` counts MIND-language
   `[protection]` markers, which don't exist in Python. Re-enable
