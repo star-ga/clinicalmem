@@ -8039,6 +8039,251 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-028",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-028",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-028"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Petrovi\u0107",
+            "given": [
+              "Tom\u00e1s"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1962-11-08",
+        "address": [
+          {
+            "use": "home",
+            "city": "Pittsburgh",
+            "state": "PA",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-028a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-028a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "428042005",
+              "display": "Methicillin resistant Staphylococcus aureus bacteraemia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "A41.02",
+              "display": "Sepsis due to methicillin resistant Staphylococcus aureus"
+            }
+          ],
+          "text": "MRSA bacteremia (admit 2026-04-28, central-line-associated)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-028"
+        },
+        "onsetDateTime": "2026-04-28"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-028b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-028b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "370143000",
+              "display": "Major depressive disorder"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "F33.1",
+              "display": "Major depressive disorder, recurrent, moderate"
+            }
+          ],
+          "text": "Recurrent MDD (stable on SSRI 4y, last episode 2022-03)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-028"
+        },
+        "onsetDateTime": "2018-06-15"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medstat-028a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-medstat-028a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "36437",
+              "display": "sertraline"
+            }
+          ],
+          "text": "sertraline 100 mg PO daily (MDD maintenance, stable 4 years)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-028"
+        },
+        "effectiveDateTime": "2022-04-12"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medreq-028b",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "synthea-medreq-028b",
+        "meta": {
+          "_synthetic": true,
+          "_proposed": true,
+          "_clinical_note": "FDA-contraindicated with concurrent sertraline (SSRI). Linezolid is a reversible MAOI; combination risks serotonin syndrome via dual MAOI-block + SSRI-reuptake-inhibition mechanism. ClinicalMem fires upstream Layer 1 + Layer 4.5 alerts."
+        },
+        "status": "draft",
+        "intent": "proposal",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "44178",
+              "display": "linezolid"
+            }
+          ],
+          "text": "linezolid 600 mg IV q12h (proposed for MRSA bacteremia)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-028"
+        },
+        "authoredOn": "2026-04-28",
+        "requester": {
+          "reference": "Practitioner/synthea-prac-028a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-028a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-028a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1852524226"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Okonkwo",
+            "given": [
+              "Chiamaka"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Infectious Disease"
+            }
+          }
+        ]
+      }
     }
   ]
 }

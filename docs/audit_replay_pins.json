@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-04T22:04:09.358208+00:00",
+  "dateCreated": "2026-05-04T23:12:15.389306+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -370,6 +370,20 @@
       ],
       "repro_hash": "d0f62c1aee3d8f5dfd06384c17d4e85796d322f33ee8aa45f187db91cb7b2e92",
       "severity_name": "major"
+    },
+    {
+      "drug_a": "linezolid",
+      "drug_b": "sertraline",
+      "feature_hash": "b2c0de0474b8e1f994a0b1faead5d284824fdfc98b90c2eb5c970e48dd3abb46",
+      "logits_q16": [
+        10341,
+        -949730,
+        -170040,
+        -817737,
+        640853
+      ],
+      "repro_hash": "1e6838feaebe1222d10b1df37c1ade4f1c5ef8c04b079325e6bbc123a30e510d",
+      "severity_name": "contraindicated"
     }
   ],
   "version": "1.0.0"

@@ -992,6 +992,16 @@
       ],
       "atc": "C01BD07",
       "note": "class III antiarrhythmic; moderate P-gp inhibitor + moderate CYP3A4 inhibitor"
+    },
+    "linezolid": {
+      "flags": [
+        "is_maoi"
+      ],
+      "atc": "J01XX08",
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf"
+      ],
+      "notes": "Reversible MAOI (oxazolidinone). FDA black-box vs serotonergic drugs."
     }
   }
 }

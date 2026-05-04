@@ -1912,5 +1912,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "linezolid",
+    "drug_b": "sertraline",
+    "drug_pair_canonical": [
+      "linezolid",
+      "sertraline"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Linezolid is a reversible monoamine oxidase inhibitor (MAOI; oxazolidinone antibiotic) with FDA black-box warning against concomitant use of serotonergic drugs including SSRIs. Co-administration with sertraline (5-HT reuptake inhibitor) elevates synaptic serotonin via dual mechanism \u2014 MAOI block of 5-HT degradation + SSRI block of 5-HT reuptake \u2014 risking serotonin syndrome (Lawrence 2006; Quinn 2009; Sun-Edelstein 2008). FDA Zyvox label requires a 2-week washout after MAOI discontinuation OR a 24-hour washout after the last sertraline dose with daily monitoring for serotonin-syndrome signs (hyperthermia, hyperreflexia, clonus, autonomic instability). When linezolid is needed for MRSA / VRE infections in patients on SSRIs, alternatives are vancomycin or daptomycin where susceptibility allows.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/16630347/",
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-drug-safety-communication-updated-information-about-drug-interaction-between-linezolid"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

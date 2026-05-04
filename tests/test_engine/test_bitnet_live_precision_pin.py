@@ -81,14 +81,18 @@ def test_bitnet_live_precision_recall_pinned():
     #           recall = 7/23 = 0.304. BitNet did not catch the new pair
     #           on the same architectural ceiling that misses
     #           tacrolimus+voriconazole (iter 110 pin).
+    # Iter-119: cohort grew (23 → 24, linezolid+sertraline), TP=8 →
+    #           recall = 8/24 = 0.333. BitNet CAUGHT the new pair —
+    #           MAOI×serotonergic flag pattern is well-represented in
+    #           training (multiple existing phenelzine+SSRI pairs).
     # Lower bound 0.28 catches the iter-99 baseline; upper 0.45
-    # covers a future weight rotation that lifts recall to ~10/23.
+    # covers a future weight rotation that lifts recall to ~10/24.
     assert 0.28 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.28, 0.45]"
     )
-    assert tp == 7, f"true positives drifted: live={tp}, pinned=7"
-    assert total == 23, f"contraindicated cohort size drifted: live={total}, pinned=23"
+    assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
+    assert total == 24, f"contraindicated cohort size drifted: live={total}, pinned=24"
 
 
 def test_dashboard_displays_live_precision_number():
