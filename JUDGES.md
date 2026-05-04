@@ -22,7 +22,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
 2. **Recall gate (PCCP):** **100% recall** on every severity class
    represented in the 106-pair OpenEvidence-cited cohort —
-   contraindicated (17/17), major (1/1), serious (66/66), moderate
+   contraindicated (18/18), major (1/1), serious (66/66), moderate
    (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
    EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
    NTI-drug stress test (35 pairs), see `docs/clinical_validation.md`.
@@ -95,13 +95,13 @@ artifact. Audit map:
 
 | Claim on the dashboard | Source of truth |
 |---|---|
-| `100% recall · contraindicated · 16/16` | `docs/openevidence_cache.json` (104 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
+| `100% recall · contraindicated · 18/18` | `docs/openevidence_cache.json` (107 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
 | `0 / 8 FP · precision = 1.0` | `docs/negative_control_cohort.json` (8 entries) → `scripts/run_negative_control_eval.py --json` |
 | `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain) |
 | `Federation control plane LIVE — mind-mem v3.8.14 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |
-| `15 synthetic patients · 30 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
+| `16 synthetic patients · 32 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
 | `21 CFR Part 11 audit export` | `engine/audit_export_part11.py` (30 tests) |
 | `Apache-2.0 + patent grant` | `LICENSE` (top of repo) |
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |

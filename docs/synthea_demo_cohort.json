@@ -4772,6 +4772,257 @@
           }
         ]
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-016",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Volkov",
+            "given": [
+              "Aleksandra",
+              "Mira"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "2002-04-12",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "891 Driggs Avenue, Apt 4B"
+            ],
+            "city": "Brooklyn",
+            "state": "NY",
+            "postalCode": "11211",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-016"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-016a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1146277805"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Patel",
+            "given": [
+              "Sahara"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-016b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1473373326"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Hinton",
+            "given": [
+              "Marcus"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-016a",
+        "subject": {
+          "reference": "Patient/synthea-pt-016"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "402194009",
+              "display": "Severe nodulocystic acne vulgaris"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "L70.0"
+            }
+          ]
+        },
+        "onsetDateTime": "2024-09-10"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-016b",
+        "subject": {
+          "reference": "Patient/synthea-pt-016"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "85129004",
+              "display": "Atypical (walking) pneumonia, presumed Mycoplasma pneumoniae"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J18.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2026-04-29"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-016a",
+        "subject": {
+          "reference": "Patient/synthea-pt-016"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-016a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "6098",
+              "display": "isotretinoin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "40 mg orally twice daily (severe nodulocystic acne, iPLEDGE program, month 2 of 5-month course)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 80,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-016b",
+        "subject": {
+          "reference": "Patient/synthea-pt-016"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-016b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "3640",
+              "display": "doxycycline"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "100 mg orally twice daily for 10 days (atypical pneumonia, started 2 days ago at urgent care \u2014 outside dermatology's awareness)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 200,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -1708,5 +1708,22 @@
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-39",
     "_purpose": "First MAJOR-class entry \u2014 closes the major-class testing gap flagged in iter 35."
+  },
+  {
+    "drug_a": "doxycycline",
+    "drug_b": "isotretinoin",
+    "drug_pair_canonical": [
+      "doxycycline",
+      "isotretinoin"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Coadministration of isotretinoin with tetracyclines (doxycycline, minocycline, tetracycline) is CONTRAINDICATED due to additive risk of pseudotumor cerebri (idiopathic intracranial hypertension). Both drug classes raise intracranial pressure independently; concurrent use can produce severe headache, papilledema, visual field deficits, and (rarely) permanent vision loss. The FDA Accutane (isotretinoin) label carries a black-box warning against tetracycline coadministration. Discontinue the tetracycline; if antibiotic coverage for atypical pneumonia is needed, switch to a macrolide (e.g. azithromycin) which lacks this interaction.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/018662s059lbl.pdf",
+      "https://www.jaad.org/article/S0190-9622(24)00424-6/fulltext",
+      "https://pubmed.ncbi.nlm.nih.gov/7848466/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
   }
 ]
