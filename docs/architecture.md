@@ -146,6 +146,13 @@ reproducibility primitive: a $15 Pi Zero produces the same SHA-256
 the 19 KB weights bundle and the 15 KB Python file can replay any past
 clinical decision on any device, decades later.
 
+> **Full spec:** See [`edge_pi_offline.md`](./edge_pi_offline.md) for the
+> Edge profile architecture (688 K parameters / 1.7 MB / learned RxCUI
+> embeddings), Pi-tier benchmarks (Pi 5 / Pi 4 / Pi Zero 2 W / ESP32),
+> the **"ClinicalMem Box" hardware product profile** (USB drop-in,
+> office-router drop-in, EHR sidecar; ~$99 SKU at ~$60 COGS), and
+> the data-licensing reality check (RxNorm / FDA SPL / DrugBank).
+
 ## Mock vs. live transport (current state, 2026-05-03)
 
 | Component | Status | Code |

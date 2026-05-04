@@ -112,6 +112,7 @@ artifact. Audit map:
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |
 | `Clinical Advisor: Dr. Ludmila Afonicheva, MD` | `docs/clinical_validation.md` (US-licensed Family Medicine, NPI 1932159530) |
 | `External judge-LLM consensus 9.32 / 10 (n=6)` | `docs/eval_runs/round_4_full.json` + `docs/eval_runs/round_4_recovery_gemini.json` (raw rubric scores + parsed gaps from gemini-3.1-pro / grok-4.3 / deepseek-v4-pro / mistral-large / zhipu-glm-5 / nvidia-deepseek-v3.2). Summary in `docs/eval_runs/README.md`. |
+| `Edge / offline build · $15 Pi Zero 2 W · USB plug-in` | `docs/edge_pi_offline.md` — full Edge profile spec (688 K params / 1.7 MB / 3-layer ternary / learned RxCUI embeddings), Pi-tier latency benchmarks (Pi 5 / Pi 4 / Pi Zero 2 W / ESP32), the **"ClinicalMem Box" hardware product profile** (USB OTG gadget mode for zero-IT plug-in, office-router drop-in, EHR sidecar; ~$99 SKU at ~$60 COGS), and the data-licensing reality check (RxNorm public + FDA SPL public + DrugBank commercial). The bit-identical SHA-256 audit hash works on Pi/x86/CUDA/browser — same `repro_hash` regardless of chip. |
 
 ---
 
