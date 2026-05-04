@@ -1,0 +1,66 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "ClinicalMem Reproducibility Manifest",
+  "version": "1.0.0",
+  "dateCreated": "2026-05-04T02:42:32.147707+00:00",
+  "license": "Apache-2.0",
+  "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all six artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
+  "git_head": "f96d072753c533163c6a2e76014c0592a02b476f",
+  "artifacts": {
+    "openevidence_cache": {
+      "path": "docs/openevidence_cache.json",
+      "sha256": "c50b4be1d7c0ddd051a658c6fb150272d56e03ae4e350c3c714eacfa6dabacef",
+      "entry_count": 108,
+      "per_class_counts": {
+        "serious": 66,
+        "contraindicated": 19,
+        "moderate": 22,
+        "major": 1
+      }
+    },
+    "bitnet_weights": {
+      "path": "engine/bitnet_weights.json",
+      "sha256": "4078396f17124c89df2f1788b7b28a71b6d14233a97d0b2ead87915f809dfec9",
+      "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
+      "param_count": "unknown"
+    },
+    "bitnet_confusion_matrix": {
+      "path": "docs/bitnet_confusion_matrix.json",
+      "sha256": "ff51214471ea1802212d8b26330d7caec57ac64154fcecefb898f2ee196ae23a",
+      "safety_invariants": {
+        "fp_contraindicated_is_zero": true,
+        "tp_contraindicated_at_least_six": true
+      },
+      "cache_pairs_total": 108
+    },
+    "cohort_coverage_matrix": {
+      "path": "docs/cohort_coverage_matrix.md",
+      "sha256": "5b4cc5500cb6dd0487c9585388777d3c8e88c000d52bbe0b2d4e1c65c850d2a9"
+    },
+    "synthea_demo_cohort": {
+      "path": "docs/synthea_demo_cohort.json",
+      "sha256": "6fcfacdbf7a93926b8cefe4260261a763ffb76faca422baecb8f529bfb129c4e",
+      "patient_count": 17,
+      "practitioner_count": 34,
+      "entry_count": 157
+    },
+    "flow_plan_hashes": {
+      "AllergyCrossReactivity": "272d3692b73aae490580dc6675ae905d3648697c435807436dc54e6c0ac786db",
+      "ClinicalTrialMatch": "675abe773fa6f012c57a56f9b16cef2b5824d719beabbc2826bfeb1c8e348cdc",
+      "JointMemoryFederation": "5eb5c557bd23bee6d55f336cb1b20af28da378dec099cc9610d0fc70a73add62",
+      "LabContraindication": "0f327e251bcc3fe2912a0bcf5287d4cdd641043c5433e36fe358b65941fdc970",
+      "MedicationSafetyReview": "4a703dd3388f2997dbece895fb2ecd4580d0fc212f080f3e467e2a1109054be6",
+      "ProviderDisagreement": "a24f13b553ad8f6e228215dc5abf0a90057a8b8384d0a01c5c3abd59f7fb078f",
+      "WhatIfSimulation": "dabcf5790ac62d5778371662114abc331d1d857141002103f113f82549713058"
+    }
+  },
+  "gates": {
+    "pccp_recall": "PASS",
+    "negative_control_precision": "PASS",
+    "federation_invariant": "PASS",
+    "arch_mind_l1": "PASS"
+  },
+  "test_count": 885,
+  "audit_replay_hint": "To verify: (1) check git_head matches the auditor's expected commit, (2) recompute SHA-256 of every artifact path and compare, (3) recompute flow plan_hashes via engine.flow_runner.compute_plan_hash, (4) re-run the four gate scripts, (5) run pytest tests/test_engine tests/test_scripts and confirm test_count is at or above the manifested value."
+}
