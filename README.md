@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-1022%20passed-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-1025%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -197,7 +197,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
-| **Test coverage** | 1022+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
+| **Test coverage** | 1025+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ### vs. Commercial Clinical Decision Support
@@ -370,7 +370,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run tests on push (1022+ tests across engine + scripts)
+│   ├── test.yaml               # CI: Run tests on push (1025+ tests across engine + scripts)
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -385,7 +385,7 @@ clinicalmem/
 
 ## Tests
 
-**1022 tests** across `tests/test_engine/`, `tests/test_scripts/`,
+**1025 tests** across `tests/test_engine/`, `tests/test_scripts/`,
 `tests/test_mcp/`, `tests/test_a2a/`, and `tests/test_agent/`.
 The canonical list is `python3 -m pytest --co -q`.
 
@@ -462,7 +462,7 @@ Coverage includes:
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
 | **Five-model LLM consensus** | ~3-5s (all 5 US-based models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
-| **Test suite execution** | ~40 s for 1022+ engine + script tests (full suite ~5 min including a2a/mcp) |
+| **Test suite execution** | ~40 s for 1025+ engine + script tests (full suite ~5 min including a2a/mcp) |
 | **Code coverage** | Per-suite line coverage measured via `pytest --cov`; not enforced as a CI gate (see Tests section for canonical test count) |
 
 ### Cost Analysis (per patient safety check)
@@ -526,7 +526,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 
 ### Current State (Hackathon)
 
-- &check; 1022+ automated tests including adversarial cases (negation detection, boundary conditions)
+- &check; 1025+ automated tests including adversarial cases (negation detection, boundary conditions)
 - &check; SSRF protection validated against RFC 1918, link-local, and IPv6 private ranges
 - &check; PHI detection tested against 25 patterns (SSN, MRN, phone, email, DOB, address)
 - &check; Hallucination detection validated against fabricated citations and unsupported claims
