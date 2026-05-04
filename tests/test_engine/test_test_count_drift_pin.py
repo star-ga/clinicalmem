@@ -11,8 +11,8 @@ historical test counts and fails if any of them reappear. It also
 verifies the live count is at least as large as the floor reported
 in the live test count (this catches accidental down-bumps).
 
-Pinned floor: 843 (iter 35 standard scope = test_engine + test_scripts).
-The floor is "≥ 843" rather than "== 843" so cohort growth or new
+Pinned floor: 857 (iter 47 standard scope = test_engine + test_scripts).
+The floor is "≥ 857" rather than "== 857" so cohort growth or new
 pin tests can land without re-bumping multiple docs each time.
 """
 from __future__ import annotations
@@ -43,6 +43,10 @@ _HISTORICAL_COUNTS = (
     "820",
     "822",
     "826",
+    "843",
+    "846",
+    "848",
+    "854",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -56,7 +60,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 843
+_TEST_COUNT_FLOOR = 857
 
 
 def test_no_stale_test_counts_in_docs():
