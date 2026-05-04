@@ -21,7 +21,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    headline accuracy: same SHA-256 `repro_hash` on any chip in
    healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
 2. **Recall gate (PCCP):** **100% recall** on every severity class
-   represented in the 106-pair OpenEvidence-cited cohort —
+   represented in the 107-pair OpenEvidence-cited cohort —
    contraindicated (18/18), major (1/1), serious (66/66), moderate
    (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
    EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
@@ -66,7 +66,7 @@ If you'd rather run each gate individually:
 
 ```bash
 # 1. PCCP recall gate — verifies 100% recall on contraindicated /
-#    major / serious / moderate against the 105-pair OpenEvidence-cited
+#    major / serious / moderate against the 107-pair OpenEvidence-cited
 #    cohort.
 python3 scripts/run_clinical_regression_eval.py
 
@@ -84,7 +84,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **857+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **869+ passed**.
 
 ---
 

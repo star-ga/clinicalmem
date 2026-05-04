@@ -588,7 +588,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 857 / 857 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 869 / 869 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.8.14</div>
     </div>
 
@@ -1106,6 +1106,69 @@ tailwind.config = {
         </div>
       </div>
       <p class="text-[10px] text-slate-400 mt-2 text-center font-mono">latency varies ±1 ms per run (CPU contention); agreement + gate are deterministic. Re-run <code class="bg-slate-50 px-1 py-0.5 rounded text-slate-500">scripts/run_clinical_regression_eval.py</code> to verify.</p>
+
+      <!-- Layer 4.5 confusion matrix — live deployment, full ground-truth × predicted -->
+      <div class="mt-5 pt-4 border-t border-slate-100">
+        <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (107 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
+          </div>
+          <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">0 FP · contraindicated</span>
+        </div>
+        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 107-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 18, with zero false positives.">
+          <!-- Column header labels -->
+          <text x="80"  y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">none</text>
+          <text x="118" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">minor</text>
+          <text x="156" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">moder.</text>
+          <text x="194" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">serious</text>
+          <text x="232" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">major</text>
+          <text x="270" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#dc2626" text-anchor="middle" font-weight="600">contr.</text>
+          <text x="60"  y="6"  font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">predicted &rarr;</text>
+
+          <!-- Row 1: moderate (n=22) -->
+          <text x="60" y="35" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569" text-anchor="end">moderate</text>
+          <rect x="65"  y="22" width="32" height="20" rx="2" fill="#fee2e2"/><text x="81"  y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">10</text>
+          <rect x="103" y="22" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="141" y="22" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.65"/><text x="157" y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#064e3b" text-anchor="middle" font-weight="600">11</text>
+          <rect x="179" y="22" width="32" height="20" rx="2" fill="#f8fafc"/><text x="195" y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="217" y="22" width="32" height="20" rx="2" fill="#fef3c7"/><text x="233" y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#92400e" text-anchor="middle">1</text>
+          <rect x="255" y="22" width="32" height="20" rx="2" fill="#f8fafc"/><text x="271" y="36" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+
+          <!-- Row 2: serious (n=66) -->
+          <text x="60" y="59" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569" text-anchor="end">serious</text>
+          <rect x="65"  y="46" width="32" height="20" rx="2" fill="#fecaca"/><text x="81"  y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">17</text>
+          <rect x="103" y="46" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="141" y="46" width="32" height="20" rx="2" fill="#fee2e2"/><text x="157" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">4</text>
+          <rect x="179" y="46" width="32" height="20" rx="2" fill="#94a3b8" fill-opacity="0.25"/><text x="195" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#475569" text-anchor="middle" font-style="italic">0</text>
+          <rect x="217" y="46" width="32" height="20" rx="2" fill="#fca5a5"/><text x="233" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle" font-weight="600">45</text>
+          <rect x="255" y="46" width="32" height="20" rx="2" fill="#f8fafc"/><text x="271" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+
+          <!-- Row 3: major (n=1) -->
+          <text x="60" y="83" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569" text-anchor="end">major</text>
+          <rect x="65"  y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="81"  y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="103" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="141" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="157" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="179" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="195" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="217" y="70" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.65"/><text x="233" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#064e3b" text-anchor="middle" font-weight="600">1</text>
+          <rect x="255" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="271" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+
+          <!-- Row 4: contraindicated (n=18) — the safety class -->
+          <text x="60" y="107" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#dc2626" text-anchor="end">contraindicated</text>
+          <rect x="65"  y="94" width="32" height="20" rx="2" fill="#fee2e2"/><text x="81"  y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">3</text>
+          <rect x="103" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="141" y="94" width="32" height="20" rx="2" fill="#fef3c7"/><text x="157" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#92400e" text-anchor="middle">1</text>
+          <rect x="179" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="195" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="217" y="94" width="32" height="20" rx="2" fill="#fecaca"/><text x="233" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">8</text>
+          <rect x="255" y="94" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.85" stroke="#059669" stroke-width="1.5"/><text x="271" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="white" text-anchor="middle" font-weight="700">6</text>
+
+          <!-- Footer caption -->
+          <text x="60"  y="126" font-family="Lexend, sans-serif" font-size="8" fill="#475569" text-anchor="end">ground truth &darr;</text>
+          <text x="160" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#059669" text-anchor="middle">contraindicated · precision = 6 / 6 = 100%</text>
+          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 18 = 33%</text>
+        </svg>
+        <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_six</strong> (the recall floor). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
+      </div>
     </article>
   </div>
 </section>
@@ -1754,7 +1817,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">857 / 857</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">869 / 869</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">107 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">16 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
