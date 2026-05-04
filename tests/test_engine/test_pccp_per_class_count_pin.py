@@ -29,7 +29,7 @@ _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 _EXPECTED_CONTRAINDICATED = 20
 _EXPECTED_SERIOUS = 68
 _EXPECTED_MODERATE = 22
-_EXPECTED_MAJOR = 1  # iter 39: first major-class entry (tamoxifen + paroxetine)
+_EXPECTED_MAJOR = 2  # iter 83: 2nd major (clarithromycin + digoxin) joined iter-39's tamoxifen + paroxetine
 
 
 def _live_counts() -> dict[str, int]:

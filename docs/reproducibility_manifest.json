@@ -3,20 +3,20 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T09:28:03.707399+00:00",
+  "dateCreated": "2026-05-04T09:43:39.774242+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all seven artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "17831968c3d89bde51b0580cd9b8b62554280bfe",
+  "git_head": "e8da351ba4a0288f85c1c55cf8ad63c2969290bd",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
-      "sha256": "3db5be598e29e0cf8f9ed062f2665b1142fc91e1ca8425c40211ae991ae8f865",
-      "entry_count": 111,
+      "sha256": "867e9721fcb99cdc43363676e7e43f384995907693a6218eb0a6d11d3408ed23",
+      "entry_count": 112,
       "per_class_counts": {
         "serious": 68,
         "contraindicated": 20,
         "moderate": 22,
-        "major": 1
+        "major": 2
       }
     },
     "bitnet_weights": {
@@ -27,29 +27,29 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "a64ae08143c89617743ca58446fd42e239e03ddba83dd6abfd0b565d1c45a49b",
+      "sha256": "35a434d0837f2f2951c0aaa164f5738417b753e176b2724dde474c0838b9f312",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
         "tp_contraindicated_at_least_six": true
       },
-      "cache_pairs_total": 111
+      "cache_pairs_total": 112
     },
     "cohort_coverage_matrix": {
       "path": "docs/cohort_coverage_matrix.md",
-      "sha256": "37fa40826fbe4f2bdf72330cedd9bd22eb5d65489b7f847133b5e547ce4ecbac"
+      "sha256": "862356f84fc94a37d97598f2369282bb0623ccddb0f9fb15d834b7c5150a40a2"
     },
     "synthea_demo_cohort": {
       "path": "docs/synthea_demo_cohort.json",
-      "sha256": "dd745b98b7acaaf3fc63dd63e916bcfeec50e76d6ba858a61c9ce62407eaf404",
-      "patient_count": 20,
-      "practitioner_count": 37,
-      "entry_count": 175
+      "sha256": "c5bcde250699e31bf819b22132977d66529bf77284a608ceb6f6905f1340012a",
+      "patient_count": 21,
+      "practitioner_count": 38,
+      "entry_count": 181
     },
     "bitnet_calibration": {
       "path": "docs/bitnet_calibration.json",
-      "sha256": "f8b1b85cb6301003efe881cec723c1da6b5d0a7cac6a65b8a6433f5589dd9ab0",
+      "sha256": "e6777e3f5833a99acede1919f68aa08ecef361f7a9aabe49a4e48cb54b50d968",
       "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-      "total_pairs": 111,
+      "total_pairs": 112,
       "contraindicated_recall": 0.3
     },
     "flow_plan_hashes": {

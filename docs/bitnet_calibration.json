@@ -13,10 +13,10 @@
       "wrong_count": 14
     },
     "major": {
-      "correct_count": 1,
-      "count": 1,
+      "correct_count": 2,
+      "count": 2,
       "max_margin_wrong_q16": null,
-      "mean_margin_correct_q16": 114743,
+      "mean_margin_correct_q16": 262408,
       "mean_margin_wrong_q16": null,
       "min_margin_wrong_q16": null,
       "recall": 1.0,
@@ -1993,11 +1993,28 @@
       "predicted": "major",
       "top1_class": "major",
       "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "clarithromycin",
+      "drug_b": "digoxin",
+      "ground_truth": "major",
+      "logits_q16": [
+        -297466,
+        -1478627,
+        -550953,
+        112607,
+        -806143
+      ],
+      "margin_q16": 410073,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 111,
+  "total_pairs": 112,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

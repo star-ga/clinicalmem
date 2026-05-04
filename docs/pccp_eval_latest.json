@@ -3,7 +3,7 @@
   "@type": "SoftwareApplication",
   "name": "ClinicalMem PCCP Regression Harness",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T09:28:59.920846+00:00",
+  "dateCreated": "2026-05-04T09:44:57.538767+00:00",
   "license": "Apache-2.0",
   "description": "Empirical PCCP gate verifying zero contraindicated false-negatives against the OpenEvidence ground-truth cache. Per ClinicalMem PCCP Section 4.2 Algorithm Change Protocol.",
   "pccp_gate_pass": true,
@@ -15,10 +15,10 @@
   },
   "ground_truth_source": "docs/openevidence_cache.json",
   "metrics": {
-    "total_pairs": 111,
-    "total_agreements": 111,
+    "total_pairs": 112,
+    "total_agreements": 112,
     "agreement_rate": 1.0,
-    "mean_latency_ms": 6.239,
+    "mean_latency_ms": 4.5,
     "recall_contraindicated": 1.0,
     "recall_major": 1.0,
     "recall_serious": 1.0,
@@ -41,7 +41,7 @@
         "fn": 0
       },
       "major": {
-        "total": 1,
+        "total": 2,
         "fn": 0
       }
     }
@@ -55,7 +55,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 179.537
+      "latency_ms": 170.356
     },
     {
       "drug_a": "ibuprofen",
@@ -63,7 +63,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.81
+      "latency_ms": 3.129
     },
     {
       "drug_a": "naproxen",
@@ -71,7 +71,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.521
+      "latency_ms": 2.711
     },
     {
       "drug_a": "nsaid",
@@ -79,7 +79,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.502
+      "latency_ms": 2.816
     },
     {
       "drug_a": "contrast dye",
@@ -87,7 +87,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.45
+      "latency_ms": 2.712
     },
     {
       "drug_a": "lisinopril",
@@ -95,7 +95,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.625
+      "latency_ms": 2.776
     },
     {
       "drug_a": "lisinopril",
@@ -103,7 +103,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.443
+      "latency_ms": 2.688
     },
     {
       "drug_a": "metoprolol",
@@ -111,7 +111,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.374
+      "latency_ms": 3.111
     },
     {
       "drug_a": "amiodarone",
@@ -119,7 +119,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.475
+      "latency_ms": 2.869
     },
     {
       "drug_a": "fluoxetine",
@@ -127,7 +127,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.724
+      "latency_ms": 2.788
     },
     {
       "drug_a": "ciprofloxacin",
@@ -135,7 +135,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.502
+      "latency_ms": 2.723
     },
     {
       "drug_a": "methotrexate",
@@ -143,7 +143,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.359
+      "latency_ms": 2.712
     },
     {
       "drug_a": "amoxicillin",
@@ -151,7 +151,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 5.713
+      "latency_ms": 3.754
     },
     {
       "drug_a": "iodine",
@@ -159,7 +159,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.457
+      "latency_ms": 2.689
     },
     {
       "drug_a": "atorvastatin",
@@ -167,7 +167,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.396
+      "latency_ms": 2.763
     },
     {
       "drug_a": "clarithromycin",
@@ -175,7 +175,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.755
+      "latency_ms": 2.858
     },
     {
       "drug_a": "clarithromycin",
@@ -183,7 +183,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.512
+      "latency_ms": 2.716
     },
     {
       "drug_a": "lithium",
@@ -191,7 +191,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.481
+      "latency_ms": 3.099
     },
     {
       "drug_a": "hydrochlorothiazide",
@@ -199,7 +199,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.5
+      "latency_ms": 3.646
     },
     {
       "drug_a": "lisinopril",
@@ -207,7 +207,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.582
+      "latency_ms": 2.851
     },
     {
       "drug_a": "ibuprofen",
@@ -215,7 +215,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.57
+      "latency_ms": 2.719
     },
     {
       "drug_a": "amiodarone",
@@ -223,7 +223,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.553
+      "latency_ms": 2.78
     },
     {
       "drug_a": "digoxin",
@@ -231,7 +231,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.501
+      "latency_ms": 2.751
     },
     {
       "drug_a": "digoxin",
@@ -239,7 +239,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 5.71
+      "latency_ms": 3.646
     },
     {
       "drug_a": "phenytoin",
@@ -247,7 +247,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.534
+      "latency_ms": 2.694
     },
     {
       "drug_a": "fluconazole",
@@ -255,7 +255,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.534
+      "latency_ms": 2.881
     },
     {
       "drug_a": "ciprofloxacin",
@@ -263,7 +263,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.576
+      "latency_ms": 2.831
     },
     {
       "drug_a": "cyclosporine",
@@ -271,7 +271,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.551
+      "latency_ms": 2.86
     },
     {
       "drug_a": "cyclosporine",
@@ -279,7 +279,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.447
+      "latency_ms": 3.16
     },
     {
       "drug_a": "fluconazole",
@@ -287,7 +287,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.371
+      "latency_ms": 2.703
     },
     {
       "drug_a": "ssri",
@@ -295,7 +295,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.57
+      "latency_ms": 2.741
     },
     {
       "drug_a": "sertraline",
@@ -303,7 +303,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.632
+      "latency_ms": 2.834
     },
     {
       "drug_a": "phenelzine",
@@ -311,7 +311,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.475
+      "latency_ms": 3.692
     },
     {
       "drug_a": "fluoxetine",
@@ -319,7 +319,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.486
+      "latency_ms": 2.647
     },
     {
       "drug_a": "benzodiazepine",
@@ -327,7 +327,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.498
+      "latency_ms": 2.709
     },
     {
       "drug_a": "lorazepam",
@@ -335,7 +335,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.65
+      "latency_ms": 2.826
     },
     {
       "drug_a": "gemfibrozil",
@@ -343,7 +343,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.443
+      "latency_ms": 2.743
     },
     {
       "drug_a": "gemfibrozil",
@@ -351,7 +351,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.362
+      "latency_ms": 2.669
     },
     {
       "drug_a": "ace inhibitor",
@@ -359,7 +359,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.495
+      "latency_ms": 2.653
     },
     {
       "drug_a": "lisinopril",
@@ -367,7 +367,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.581
+      "latency_ms": 2.793
     },
     {
       "drug_a": "diltiazem",
@@ -375,7 +375,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.417
+      "latency_ms": 2.829
     },
     {
       "drug_a": "amiodarone",
@@ -383,7 +383,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.394
+      "latency_ms": 2.723
     },
     {
       "drug_a": "amiodarone",
@@ -391,7 +391,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.344
+      "latency_ms": 2.658
     },
     {
       "drug_a": "methotrexate",
@@ -399,7 +399,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.451
+      "latency_ms": 3.799
     },
     {
       "drug_a": "methotrexate",
@@ -407,7 +407,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.348
+      "latency_ms": 2.747
     },
     {
       "drug_a": "furosemide",
@@ -415,7 +415,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.411
+      "latency_ms": 2.681
     },
     {
       "drug_a": "lisinopril",
@@ -423,7 +423,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.427
+      "latency_ms": 2.708
     },
     {
       "drug_a": "apixaban",
@@ -431,7 +431,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.645
+      "latency_ms": 3.061
     },
     {
       "drug_a": "clopidogrel",
@@ -439,7 +439,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.405
+      "latency_ms": 2.726
     },
     {
       "drug_a": "clopidogrel",
@@ -447,7 +447,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.479
+      "latency_ms": 2.863
     },
     {
       "drug_a": "nsaid",
@@ -455,7 +455,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.868
+      "latency_ms": 2.745
     },
     {
       "drug_a": "sulfamethoxazole",
@@ -463,7 +463,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 5.091
+      "latency_ms": 2.931
     },
     {
       "drug_a": "fluconazole",
@@ -471,7 +471,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.441
+      "latency_ms": 2.783
     },
     {
       "drug_a": "ciprofloxacin",
@@ -479,7 +479,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.406
+      "latency_ms": 2.834
     },
     {
       "drug_a": "omeprazole",
@@ -487,7 +487,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.352
+      "latency_ms": 3.462
     },
     {
       "drug_a": "benzodiazepine",
@@ -495,7 +495,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.636
+      "latency_ms": 3.13
     },
     {
       "drug_a": "amitriptyline",
@@ -503,7 +503,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.442
+      "latency_ms": 2.841
     },
     {
       "drug_a": "diphenhydramine",
@@ -511,7 +511,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.453
+      "latency_ms": 2.729
     },
     {
       "drug_a": "ckd",
@@ -519,7 +519,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.419
+      "latency_ms": 2.929
     },
     {
       "drug_a": "metformin",
@@ -527,7 +527,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.587
+      "latency_ms": 3.116
     },
     {
       "drug_a": "propranolol",
@@ -535,7 +535,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.395
+      "latency_ms": 2.74
     },
     {
       "drug_a": "atenolol",
@@ -543,7 +543,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.4
+      "latency_ms": 2.997
     },
     {
       "drug_a": "carvedilol",
@@ -551,7 +551,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.439
+      "latency_ms": 2.858
     },
     {
       "drug_a": "itraconazole",
@@ -559,7 +559,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.775
+      "latency_ms": 3.233
     },
     {
       "drug_a": "ketoconazole",
@@ -567,7 +567,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.534
+      "latency_ms": 2.71
     },
     {
       "drug_a": "eplerenone",
@@ -575,7 +575,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.48
+      "latency_ms": 3.132
     },
     {
       "drug_a": "potassium chloride",
@@ -583,7 +583,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.711
+      "latency_ms": 2.892
     },
     {
       "drug_a": "lisinopril",
@@ -591,7 +591,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 8.767
+      "latency_ms": 8.167
     },
     {
       "drug_a": "enalapril",
@@ -599,7 +599,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.527
+      "latency_ms": 2.752
     },
     {
       "drug_a": "spironolactone",
@@ -607,7 +607,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.37
+      "latency_ms": 2.669
     },
     {
       "drug_a": "erythromycin",
@@ -615,7 +615,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.484
+      "latency_ms": 2.753
     },
     {
       "drug_a": "erythromycin",
@@ -623,7 +623,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 5.258
+      "latency_ms": 3.328
     },
     {
       "drug_a": "apixaban",
@@ -631,7 +631,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.498
+      "latency_ms": 2.694
     },
     {
       "drug_a": "methotrexate",
@@ -639,7 +639,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.418
+      "latency_ms": 2.762
     },
     {
       "drug_a": "haloperidol",
@@ -647,7 +647,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.448
+      "latency_ms": 2.714
     },
     {
       "drug_a": "amiodarone",
@@ -655,7 +655,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.719
+      "latency_ms": 2.859
     },
     {
       "drug_a": "digoxin",
@@ -663,7 +663,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.542
+      "latency_ms": 2.702
     },
     {
       "drug_a": "elderly",
@@ -671,7 +671,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.75
+      "latency_ms": 2.856
     },
     {
       "drug_a": "dabigatran",
@@ -679,7 +679,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.561
+      "latency_ms": 3.69
     },
     {
       "drug_a": "ibuprofen",
@@ -687,7 +687,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.75
+      "latency_ms": 2.883
     },
     {
       "drug_a": "paroxetine",
@@ -695,7 +695,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.395
+      "latency_ms": 2.693
     },
     {
       "drug_a": "amitriptyline",
@@ -703,7 +703,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.401
+      "latency_ms": 2.647
     },
     {
       "drug_a": "nortriptyline",
@@ -711,7 +711,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.407
+      "latency_ms": 2.766
     },
     {
       "drug_a": "alprazolam",
@@ -719,7 +719,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.673
+      "latency_ms": 2.934
     },
     {
       "drug_a": "clopidogrel",
@@ -727,7 +727,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.461
+      "latency_ms": 2.717
     },
     {
       "drug_a": "cranberry",
@@ -735,7 +735,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.502
+      "latency_ms": 2.711
     },
     {
       "drug_a": "grapefruit",
@@ -743,7 +743,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.703
+      "latency_ms": 3.023
     },
     {
       "drug_a": "felodipine",
@@ -751,7 +751,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.591
+      "latency_ms": 2.833
     },
     {
       "drug_a": "apixaban",
@@ -759,7 +759,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.431
+      "latency_ms": 2.688
     },
     {
       "drug_a": "amlodipine",
@@ -767,7 +767,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.454
+      "latency_ms": 3.498
     },
     {
       "drug_a": "losartan",
@@ -775,7 +775,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.475
+      "latency_ms": 2.926
     },
     {
       "drug_a": "bisoprolol",
@@ -783,7 +783,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.562
+      "latency_ms": 2.817
     },
     {
       "drug_a": "azithromycin",
@@ -791,7 +791,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.446
+      "latency_ms": 2.733
     },
     {
       "drug_a": "maoi",
@@ -799,7 +799,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.521
+      "latency_ms": 2.941
     },
     {
       "drug_a": "maoi",
@@ -807,7 +807,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.509
+      "latency_ms": 2.693
     },
     {
       "drug_a": "amitriptyline",
@@ -815,7 +815,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.673
+      "latency_ms": 2.802
     },
     {
       "drug_a": "fentanyl",
@@ -823,7 +823,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.503
+      "latency_ms": 2.771
     },
     {
       "drug_a": "alprazolam",
@@ -831,7 +831,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.513
+      "latency_ms": 2.74
     },
     {
       "drug_a": "allopurinol",
@@ -839,7 +839,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.46
+      "latency_ms": 2.624
     },
     {
       "drug_a": "lisinopril",
@@ -847,7 +847,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.662
+      "latency_ms": 2.776
     },
     {
       "drug_a": "carvedilol",
@@ -855,7 +855,7 @@
       "ground_truth": "moderate",
       "pipeline_verdict": "moderate",
       "is_fn": false,
-      "latency_ms": 4.513
+      "latency_ms": 2.733
     },
     {
       "drug_a": "hydrochlorothiazide",
@@ -863,7 +863,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.476
+      "latency_ms": 2.851
     },
     {
       "drug_a": "methotrexate",
@@ -871,7 +871,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 8.551
+      "latency_ms": 5.813
     },
     {
       "drug_a": "metoprolol succinate",
@@ -879,7 +879,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 8.858
+      "latency_ms": 5.429
     },
     {
       "drug_a": "isosorbide mononitrate",
@@ -887,7 +887,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.438
+      "latency_ms": 2.746
     },
     {
       "drug_a": "paroxetine",
@@ -895,7 +895,7 @@
       "ground_truth": "major",
       "pipeline_verdict": "major",
       "is_fn": false,
-      "latency_ms": 4.393
+      "latency_ms": 2.942
     },
     {
       "drug_a": "doxycycline",
@@ -903,7 +903,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.532
+      "latency_ms": 3.224
     },
     {
       "drug_a": "clarithromycin",
@@ -911,7 +911,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.803
+      "latency_ms": 4.565
     },
     {
       "drug_a": "lisinopril",
@@ -919,7 +919,7 @@
       "ground_truth": "contraindicated",
       "pipeline_verdict": "contraindicated",
       "is_fn": false,
-      "latency_ms": 4.592
+      "latency_ms": 2.775
     },
     {
       "drug_a": "gabapentin",
@@ -927,7 +927,7 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.494
+      "latency_ms": 2.719
     },
     {
       "drug_a": "azithromycin",
@@ -935,7 +935,15 @@
       "ground_truth": "serious",
       "pipeline_verdict": "serious",
       "is_fn": false,
-      "latency_ms": 4.492
+      "latency_ms": 3.21
+    },
+    {
+      "drug_a": "clarithromycin",
+      "drug_b": "digoxin",
+      "ground_truth": "major",
+      "pipeline_verdict": "major",
+      "is_fn": false,
+      "latency_ms": 3.907
     }
   ]
 }

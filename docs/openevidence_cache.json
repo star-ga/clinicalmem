@@ -1793,5 +1793,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "clarithromycin",
+    "drug_b": "digoxin",
+    "drug_pair_canonical": [
+      "clarithromycin",
+      "digoxin"
+    ],
+    "severity": "major",
+    "clinical_summary": "Concurrent clarithromycin and digoxin therapy elevates digoxin toxicity risk through dual P-glycoprotein and CYP3A4 inhibition: clarithromycin reduces both intestinal P-gp efflux (raising absorption) and renal P-gp-mediated tubular secretion (reducing clearance), producing 2- to 3-fold serum-digoxin AUC elevation within 5-7 days of co-administration. Clinical sequelae include bradyarrhythmias (junctional rhythm, AV block), nausea/vomiting, visual disturbances (xanthopsia), and life-threatening atrial-tachycardia with block. Multiple pharmacovigilance series and case-control studies (Wright et al., CMAJ 2005; Gomes et al., Arch Intern Med 2009) document a 12- to 14-fold increased hospitalisation risk for digoxin toxicity in elderly patients co-prescribed clarithromycin vs azithromycin. Recommended alternatives for atypical-coverage CAP in digoxin-treated patients: azithromycin (modest CYP3A4 effect, no significant P-gp inhibition) or doxycycline (no interaction). When clarithromycin is medically necessary, baseline digoxin level + halved digoxin dose + serial monitoring (day 4, day 7) are recommended.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/050662s050s051lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/16027444/",
+      "https://pubmed.ncbi.nlm.nih.gov/19273752/"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

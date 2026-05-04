@@ -5930,6 +5930,240 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-021",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-021",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Whitaker",
+            "given": [
+              "Charles",
+              "Davis"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1948-09-22",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "6024 East Speedway Boulevard, Apt 312"
+            ],
+            "city": "Tucson",
+            "state": "AZ",
+            "postalCode": "85712",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-021"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-021a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-021a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I50.22",
+              "display": "Chronic systolic (congestive) heart failure"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "84114007",
+              "display": "Heart failure"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-021"
+        },
+        "onsetDateTime": "2017-06-15"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-021b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-021b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "J18.9",
+              "display": "Pneumonia, unspecified organism"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "385093006",
+              "display": "Community acquired pneumonia"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-021"
+        },
+        "onsetDateTime": "2026-04-30"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-021a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-021a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "3407",
+              "display": "digoxin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-021"
+        },
+        "effectiveDateTime": "2017-07-01",
+        "dosage": [
+          {
+            "text": "Digoxin 0.125 mg PO once daily; baseline level 1.1 ng/mL (chronic systolic heart failure NYHA II)",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-021b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-021b",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "21212",
+              "display": "clarithromycin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-021"
+        },
+        "effectiveDateTime": "2026-04-30",
+        "dosage": [
+          {
+            "text": "Clarithromycin 500 mg PO BID x 7 days for community-acquired pneumonia (atypical coverage); prescribed at outpatient cardiology follow-up without home-med reconciliation gate"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-021a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-021a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1415424054"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Reyes",
+            "given": [
+              "Elena"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ]
 }
