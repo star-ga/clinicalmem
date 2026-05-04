@@ -123,7 +123,14 @@ class ClinicalMemEngine:
         except ImportError:
             logger.warning("mind-mem not installed — using fallback search and audit")
         except Exception as e:
-            logger.warning("mind-mem init failed: %s — using fallback", e)
+            # PHI / secret discipline: error_type only, never str(e).
+            # mind-mem init exceptions can carry config-file paths,
+            # database connection strings, and embedding-API URLs — all
+            # potential security signals not safe for production logs.
+            logger.warning(
+                "clinical_memory_mind_mem_init_failed",
+                extra={"error_type": type(e).__name__, "fallback": "in_memory"},
+            )
 
     def _patient_dir(self, patient_id: str) -> str:
         import re
@@ -241,7 +248,14 @@ class ClinicalMemEngine:
                 self._store_block(block)
                 counts["medications"] += 1
         except Exception as e:
-            logger.error("Failed to ingest medications: %s", e)
+            # PHI / secret discipline: error_type only, NEVER str(e).
+            # Medication ingestion exceptions can quote drug names or
+            # FHIR resource bodies (which contain Patient references
+            # and dosage strings — both PHI by HIPAA Safe Harbor).
+            logger.error(
+                "clinical_memory_medications_ingest_failed",
+                extra={"error_type": type(e).__name__},
+            )
 
         try:
             conditions = fhir.get_conditions()
@@ -273,7 +287,10 @@ class ClinicalMemEngine:
                 self._store_block(block)
                 counts["conditions"] += 1
         except Exception as e:
-            logger.error("Failed to ingest conditions: %s", e)
+            logger.error(
+                "clinical_memory_conditions_ingest_failed",
+                extra={"error_type": type(e).__name__},
+            )
 
         try:
             allergies = fhir.get_allergies()
@@ -309,7 +326,10 @@ class ClinicalMemEngine:
                 self._store_block(block)
                 counts["allergies"] += 1
         except Exception as e:
-            logger.error("Failed to ingest allergies: %s", e)
+            logger.error(
+                "clinical_memory_allergies_ingest_failed",
+                extra={"error_type": type(e).__name__},
+            )
 
         try:
             for category in ["vital-signs", "laboratory"]:
@@ -387,7 +407,10 @@ class ClinicalMemEngine:
                     self._store_block(block)
                     counts["observations"] += 1
         except Exception as e:
-            logger.error("Failed to ingest observations: %s", e)
+            logger.error(
+                "clinical_memory_observations_ingest_failed",
+                extra={"error_type": type(e).__name__},
+            )
 
         audit_hash = self._append_audit(
             "ingest_fhir",
@@ -486,7 +509,10 @@ class ClinicalMemEngine:
                 limit=top_k,
             )
         except Exception as e:
-            logger.warning("mind-mem hybrid search failed: %s — falling back", e)
+            logger.warning(
+                "clinical_memory_hybrid_search_failed",
+                extra={"error_type": type(e).__name__, "fallback": "fallback_recall"},
+            )
             return self._recall_fallback(patient_id, query, blocks, top_k)
 
         if not mm_results:
