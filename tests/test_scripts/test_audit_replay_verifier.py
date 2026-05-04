@@ -94,6 +94,50 @@ def test_audit_replay_check_passes():
     )
 
 
+def test_pins_cover_every_contraindicated_cache_entry(pins):
+    """Iter-85 expanded the audit-replay pin set from 5 hand-picked
+    pairs to **every contraindicated cache entry** (20 pairs as of
+    iter-83 cohort growth). This pin makes the FDA SaMD 'every
+    contraindicated decision is replayable' claim runnable for the
+    entire safety class. Future cache growth that adds a contra pair
+    AND fails to extend the replay set fails this gate."""
+    cache_path = _REPO_ROOT / "docs" / "openevidence_cache.json"
+    cache = json.load(cache_path.open())
+    contra_keys = {
+        tuple(sorted([
+            e["drug_pair_canonical"][0].lower().strip(),
+            e["drug_pair_canonical"][1].lower().strip(),
+        ]))
+        for e in cache if e.get("severity") == "contraindicated"
+    }
+    pin_keys = {
+        tuple(sorted([e["drug_a"].lower().strip(),
+                      e["drug_b"].lower().strip()]))
+        for e in pins["pairs"]
+    }
+    missing = contra_keys - pin_keys
+    assert not missing, (
+        f"Audit-replay pin set must cover EVERY contraindicated cache "
+        f"entry (full safety-class replay coverage). Missing: "
+        f"{sorted(missing)}. Re-run "
+        f"`python3 scripts/verify_audit_replay.py` to refresh."
+    )
+
+
+def test_pins_size_at_least_full_contra_coverage(pins):
+    """Soft floor: pins must contain at least len(cache_contraindicated)
+    pairs. Catches the case where the replay-set builder regressed to
+    the iter-80 5-pair hand-picked sample."""
+    cache_path = _REPO_ROOT / "docs" / "openevidence_cache.json"
+    cache = json.load(cache_path.open())
+    contra_count = sum(1 for e in cache if e.get("severity") == "contraindicated")
+    assert len(pins["pairs"]) >= contra_count, (
+        f"Audit-replay pins ({len(pins['pairs'])}) below the "
+        f"contraindicated-class floor ({contra_count}). The replay-set "
+        f"builder must include every contraindicated cache entry."
+    )
+
+
 def test_pins_cover_canonical_safety_classes(pins):
     """The pin set must include at least one contraindicated and one
     serious GROUND-TRUTH pair so judges can replay a 'serious safety'

@@ -22,13 +22,23 @@ to regenerate pins under the new `bundle_id`. The pins file shows ALL
 bundle_ids ever audit-replayed, so the chain is preservable across
 weight rotations.
 
-Pin set: 5 canonical pairs covering every severity class
-─────────────────────────────────────────────────────────
-  • warfarin + ibuprofen          ground-truth: serious
-  • atorvastatin + grapefruit     ground-truth: serious
-  • clarithromycin + simvastatin  ground-truth: contraindicated
-  • metformin + iodine            ground-truth: major
-  • amoxicillin + penicillin      ground-truth: minor (allergy redundancy)
+Pin set: full safety-class audit-replay coverage
+─────────────────────────────────────────────────
+Iter-85 expanded the replay set from a 5-pair hand-picked sample
+to **every contraindicated cache entry (20 pairs)** plus 3
+non-contra anchors:
+
+  Non-contra anchors:
+    • warfarin + ibuprofen          ground-truth: serious
+    • atorvastatin + grapefruit     ground-truth: serious
+    • amoxicillin + penicillin      ground-truth: minor
+
+  All 20 contraindicated pairs from `docs/openevidence_cache.json`
+  (auto-discovered at build time so future cache growth automatically
+  expands the replay set without code change).
+
+This makes the FDA SaMD claim "every contraindicated decision is
+replayable" runnable for the entire safety class.
 """
 from __future__ import annotations
 
@@ -43,22 +53,46 @@ sys.path.insert(0, str(_REPO_ROOT))
 from engine.bitnet_classifier import classify, load_weights  # noqa: E402
 
 _PINS = _REPO_ROOT / "docs" / "audit_replay_pins.json"
+_CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 
-# Canonical replay set. Every pair here is in the engine's scope; the
-# `repro_hash` must reproduce byte-for-byte under a stable bundle_id.
-_REPLAY_SET = [
-    ("warfarin", "ibuprofen"),
-    ("atorvastatin", "grapefruit"),
-    ("clarithromycin", "simvastatin"),
-    ("metformin", "iodine"),
-    ("amoxicillin", "penicillin"),
+# Non-contraindicated audit-replay anchors. Cover serious / major /
+# minor classes alongside the full contraindicated sweep below. Every
+# pair must be in the engine's scope; the `repro_hash` must reproduce
+# byte-for-byte under a stable bundle_id.
+_NON_CONTRA_ANCHORS = [
+    ("warfarin", "ibuprofen"),       # GT serious — pharmacovigilance flagship
+    ("atorvastatin", "grapefruit"),  # GT serious — patient-education classic
+    ("amoxicillin", "penicillin"),   # GT minor (allergy redundancy)
 ]
+
+
+def _build_replay_set() -> list[tuple[str, str]]:
+    """Build the full replay set: every contraindicated cache entry +
+    a small set of non-contra anchors. iter-80 shipped 5 hand-picked
+    pairs; iter-85 expanded to ALL 20 contraindicated (full safety-class
+    audit-replay coverage) plus the 3 non-contra anchors."""
+    cache = json.loads(_CACHE.read_text())
+    contra: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for entry in cache:
+        if entry.get("severity") != "contraindicated":
+            continue
+        a, b = entry["drug_pair_canonical"]
+        # Canonicalise: sort lex; the engine sorts internally too.
+        key = tuple(sorted([a.lower().strip(), b.lower().strip()]))
+        if key in seen:
+            continue
+        seen.add(key)
+        contra.append((a, b))
+    pairs: list[tuple[str, str]] = list(_NON_CONTRA_ANCHORS) + contra
+    return pairs
 
 
 def _build() -> dict:
     weights = load_weights()
+    replay_set = _build_replay_set()
     pairs: list[dict] = []
-    for a, b in _REPLAY_SET:
+    for a, b in replay_set:
         result = classify(a, b, weights)
         pairs.append({
             "drug_a": a,
