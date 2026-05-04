@@ -17,6 +17,13 @@ Pinned event surface:
   - audit_verify_read_failure (WARNING, error_type only)
   - audit_verify_complete_clean (INFO)
   - audit_verify_tampering_detected (WARNING)
+  - audit_signature_invalid (WARNING, iter-118)        — bytes parse OK,
+                                                          crypto verify fails
+  - audit_signature_verification_exception (WARNING, iter-118) — malformed
+                                                          payload / key shape
+  - audit_export_npi_invalid (WARNING, iter-118)       — pre-raise on bad NPI
+  - audit_verify_pubkey_setup_failed (WARNING, iter-118) — pubkey b64
+                                                            decode failure
 """
 import json
 import logging
@@ -147,4 +154,96 @@ def test_export_logs_never_emit_secret_actor_or_action(caplog, sample_events, tm
             )
             assert _SECRET_ACTION not in text, (
                 f"action narrative leaked into log {rec.message}"
+            )
+
+
+def test_logger_call_floor():
+    """audit_export_part11.py logger-call floor (iter-118 ratchet 6 -> 10).
+
+    iter-118 closed three silent paths:
+      _verify_signature InvalidSignature exc -> WARNING (with error_type)
+      _verify_signature general Exception   -> WARNING (with error_type)
+      _assert_npi_valid pre-raise            -> WARNING (with public NPI)
+      verify_audit_trail pubkey setup        -> WARNING (with error_type)
+
+    Future audits may add more (would raise this floor). A regression
+    that drops below 10 means a structured event got silently removed.
+    """
+    import re
+    src = (
+        Path(__file__).resolve().parent.parent.parent
+        / "engine"
+        / "audit_export_part11.py"
+    ).read_text()
+    calls = re.findall(r"\blogger\.(debug|info|warning|error|critical)\(", src)
+    assert len(calls) >= 10, (
+        f"engine/audit_export_part11.py logger-call count regressed: "
+        f"{len(calls)} < floor 10. Some structured event was silently "
+        f"removed."
+    )
+
+
+def test_invalid_npi_emits_warning_before_raise(caplog, sample_events, tmp_path):
+    """Bad NPI submission must emit a structured WARNING before raising.
+
+    iter-118 added the pre-raise log so operators can spot bad-NPI
+    submissions before the ValueError propagates. NPI is public CMS
+    registry data — safe to log alongside the failure reason.
+    """
+    caplog.set_level(logging.DEBUG, logger="engine.audit_export_part11")
+    bad_npi = "0000000000"  # all zeros — fails CMS Luhn check
+    out = tmp_path / "trail.json"
+    with pytest.raises(ValueError, match="failed CMS Luhn"):
+        export_audit_trail(sample_events, out, bad_npi)
+    rec = _record(caplog, "audit_export_npi_invalid")
+    assert rec is not None, (
+        f"expected 'audit_export_npi_invalid' WARNING log; got "
+        f"{[r.message for r in caplog.records]}"
+    )
+    assert rec.levelno == logging.WARNING
+    assert getattr(rec, "npi", None) == bad_npi
+    assert getattr(rec, "reason", None) == "cms_luhn_validation_failed"
+
+
+def test_invalid_signature_emits_warning_with_error_type_only(caplog, sample_events, tmp_path):
+    """Tampered signature must emit a structured WARNING; PHI-safe metadata only.
+
+    iter-118 closed the silent `except (InvalidSignature, Exception): return False`
+    path in `_verify_signature`. Verification failures must surface as WARNING
+    with `error_type` only — never the raw signature bytes (attacker-
+    controlled payload would otherwise echo into the log).
+    """
+    caplog.set_level(logging.DEBUG, logger="engine.audit_export_part11")
+    out = tmp_path / "trail.json"
+    export_audit_trail(sample_events, out, _VALID_NPI)
+
+    # Tamper the signature to force InvalidSignature.
+    document = json.loads(out.read_text())
+    # Replace the attestation signature with a different valid-shape b64
+    # (Ed25519 signatures are 64 bytes / ~88 b64url chars).
+    sentinel = "ZZZ_TAMPERED_SIG_PAYLOAD_LEAK_iter118"
+    document["attestation"]["signature"] = (
+        "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMA"
+        "ECAwQFBgcICQoLDA"
+    )
+    out.write_text(json.dumps(document, indent=2))
+
+    caplog.clear()
+    result = verify_audit_trail(out)
+    assert not result.is_valid
+
+    sig_record = _record(caplog, "audit_signature_invalid")
+    assert sig_record is not None, (
+        f"expected 'audit_signature_invalid' WARNING; got "
+        f"{[r.message for r in caplog.records]}"
+    )
+    assert sig_record.levelno == logging.WARNING
+    assert isinstance(sig_record.error_type, str)
+    assert " " not in sig_record.error_type  # short identifier, no message body
+
+    # No sentinel leak across any record.
+    for rec in caplog.records:
+        for value in vars(rec).values():
+            assert sentinel not in repr(value), (
+                f"sentinel leaked into log {rec.message}"
             )

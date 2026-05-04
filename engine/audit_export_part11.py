@@ -188,7 +188,24 @@ def _verify_signature(
         sig_bytes = base64.urlsafe_b64decode(signature_b64url + "==")
         public_key.verify(sig_bytes, data.encode("utf-8"))
         return True
-    except (InvalidSignature, Exception):
+    except InvalidSignature as exc:
+        # Cryptographically invalid signature — the bytes parsed cleanly
+        # but verification failed. Caller treats False as a tampering
+        # signal; surface a WARNING so audit-replay debugging can see
+        # which signature failed (NOT the bytes themselves — those would
+        # leak the attacker-controlled payload).
+        logger.warning(
+            "audit_signature_invalid",
+            extra={"error_type": type(exc).__name__},
+        )
+        return False
+    except Exception as exc:
+        # Unexpected error path (malformed b64, key shape mismatch, etc.).
+        # Same PHI discipline — error_type only, no message contents.
+        logger.warning(
+            "audit_signature_verification_exception",
+            extra={"error_type": type(exc).__name__},
+        )
         return False
 
 
@@ -198,6 +215,17 @@ def _assert_npi_valid(npi: str) -> None:
     from engine.npi_registry import validate_npi
 
     if not validate_npi(npi):
+        # NPI is public CMS-registry data — safe to log alongside
+        # the failure reason. Pre-raise structured WARNING so
+        # operators can spot bad-NPI submissions before the
+        # ValueError propagates.
+        logger.warning(
+            "audit_export_npi_invalid",
+            extra={
+                "npi": npi,
+                "reason": "cms_luhn_validation_failed",
+            },
+        )
         raise ValueError(
             f"attestation_signer_npi '{npi}' failed CMS Luhn validation"
         )
@@ -517,6 +545,18 @@ def verify_audit_trail(path: Path | str) -> VerificationResult:
             public_key = Ed25519PublicKey.from_public_bytes(pub_bytes)
             signature_valid = _verify_signature(public_key, signed_payload, signature)
         except Exception as exc:
+            # Surface the verification-error path through structured
+            # logging too — the anomalies list captures the human-
+            # readable reason for the verifier output, but operators
+            # debugging audit-replay need to see the event in logs
+            # with PHI-safe metadata only.
+            logger.warning(
+                "audit_verify_pubkey_setup_failed",
+                extra={
+                    "path": str(path),
+                    "error_type": type(exc).__name__,
+                },
+            )
             anomalies.append(f"Signature verification error: {exc}")
 
     if not signature_valid:
