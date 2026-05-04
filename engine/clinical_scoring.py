@@ -300,7 +300,10 @@ def _attach_bitnet_repro_hashes(
     try:
         from engine.bitnet_classifier import classifier_layer, WeightsTamperError
     except Exception as exc:
-        logger.warning("bitnet_classifier import failed; Layer 4.5 skipped: %s", exc)
+        logger.warning(
+            "bitnet_classifier_import_failed",
+            extra={"error_type": type(exc).__name__, "layer": "4.5"},
+        )
         return interactions
 
     stamped: list[DrugInteraction] = []
@@ -419,7 +422,13 @@ def _openevidence_check_interactions(
                 return results
 
         except Exception as e:
-            logger.warning("OpenEvidence API call failed: %s", e)
+            logger.warning(
+                "openevidence_api_call_failed",
+                extra={
+                    "error_type": type(e).__name__,
+                    "med_count": len(medications),
+                },
+            )
             # Fall through to cache fallback below.
 
     # No key or live call failed — consult the cached fixture set.
@@ -439,7 +448,10 @@ def _openevidence_cache_fallback(
     try:
         from engine.openevidence_cache import lookup_cached, canonical_pair_key
     except ImportError as exc:
-        logger.warning("openevidence_cache import failed; cache fallback skipped: %s", exc)
+        logger.warning(
+            "openevidence_cache_import_failed",
+            extra={"error_type": type(exc).__name__},
+        )
         return []
 
     meds_lower = [m.strip().lower() for m in medications]
@@ -551,13 +563,30 @@ def _rxnorm_check_interactions(
 
     try:
         from engine.rxnorm_client import normalize_medication_list, get_interactions_for_list
-    except ImportError:
+    except ImportError as exc:
+        logger.error(
+            "rxnorm_client_import_failed",
+            extra={
+                "error_type": type(exc).__name__,
+                "med_count": len(medications),
+            },
+        )
         return []
 
     resolved = normalize_medication_list(medications)
     rxcuis = [rc.rxcui for rc in resolved.values() if rc is not None]
 
     if len(rxcuis) < 2:
+        # Debug-level: the negative-control eval triggers this on every
+        # 0-or-1-drug pair (clean negatives often have only 1 covered
+        # drug) and stdout-captured JSON output would be polluted at INFO.
+        logger.debug(
+            "rxnorm_pre_flight_insufficient_rxcuis",
+            extra={
+                "med_count": len(medications),
+                "resolved_count": len(rxcuis),
+            },
+        )
         return []
 
     rxnorm_interactions = get_interactions_for_list(rxcuis)
@@ -619,7 +648,10 @@ def _call_openai_json(prompt: str, api_key: str) -> str | None:
         data = resp.json()
         return data["choices"][0]["message"]["content"]
     except Exception as e:
-        logger.info("OpenAI call failed: %s", e)
+        logger.info(
+            "openai_call_failed",
+            extra={"error_type": type(e).__name__},
+        )
         return None
 
 
@@ -648,7 +680,13 @@ def _call_google_json(prompt: str, api_key: str, model_id: str) -> str | None:
         if candidates:
             return candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
     except Exception as e:
-        logger.info("%s failed: %s", model_id, e)
+        logger.info(
+            "google_genai_call_failed",
+            extra={
+                "model_id": model_id,
+                "error_type": type(e).__name__,
+            },
+        )
     return None
 
 
