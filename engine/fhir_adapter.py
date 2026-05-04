@@ -410,6 +410,18 @@ def ingest_bundle(
     # --- compute audit anchor before any mutation ------------------------------
     bundle_sha256 = _canonical_sha256(bundle)
 
+    # PHI-safe entry log: structural metadata only — bundle_type is FHIR R4
+    # standard, sha256 prefix is non-reversible, entry_count is a count.
+    logger.debug(
+        "fhir_bundle_ingest_start",
+        extra={
+            "bundle_type": bundle_type,
+            "entry_count": len(entries),
+            "bundle_sha256_prefix": bundle_sha256[:16],
+            "strict_resource_types": strict_resource_types,
+        },
+    )
+
     # --- iterate entries -------------------------------------------------------
     patient_id = "unknown-patient"
     phi_redactions = 0
@@ -430,9 +442,19 @@ def ingest_bundle(
 
         if rt not in _KNOWN_RESOURCE_TYPES:
             if strict_resource_types:
+                # WARNING level when strict mode rejects a resource — operators
+                # need to see this surface. resourceType names are FHIR R4
+                # standard, public configuration — safe to log.
+                logger.warning(
+                    "fhir_bundle_unknown_resource_type_rejected",
+                    extra={"resource_type": rt, "strict": True},
+                )
                 rejected.append((rt, f"unrecognised resourceType '{rt}'"))
             else:
-                logger.debug("fhir_adapter: skipping unknown resourceType %s", rt)
+                logger.debug(
+                    "fhir_bundle_unknown_resource_type_skipped",
+                    extra={"resource_type": rt, "strict": False},
+                )
             continue
 
         try:
@@ -474,11 +496,40 @@ def ingest_bundle(
                 practitioner_npis.extend(npis)
 
         except Exception as exc:  # noqa: BLE001 — surface per-resource errors as rejections
-            logger.warning("fhir_adapter: exception parsing %s: %s", rt, exc)
+            # PHI-safe error log: exception TYPE only, never the message
+            # body (FHIR exceptions can sometimes embed resource content
+            # in their message, which would re-leak data).
+            logger.warning(
+                "fhir_bundle_parse_failure",
+                extra={
+                    "resource_type": rt,
+                    "error_type": type(exc).__name__,
+                },
+            )
             rejected.append((rt, f"parse error: {exc}"))
 
     # Flat medication name list for check_drug_interactions() compatibility
     normalized_medication_names = [m.display_text for m in medications]
+
+    # PHI-safe completion log: counts + sha-prefix + patient_id (post-scrub
+    # internal identifier). WARNING when any resource was rejected; INFO
+    # on the all-clean path. Drug names + condition codes + observation
+    # values stay sealed — only counts surface.
+    log_fn = logger.warning if rejected else logger.info
+    log_fn(
+        "fhir_bundle_ingest_complete",
+        extra={
+            "patient_id": patient_id,
+            "bundle_sha256_prefix": bundle_sha256[:16],
+            "medication_count": len(medications),
+            "condition_count": len(conditions),
+            "allergy_count": len(allergies),
+            "observation_count": len(observations),
+            "practitioner_count": len(practitioner_npis),
+            "rejected_count": len(rejected),
+            "phi_redactions": phi_redactions,
+        },
+    )
 
     return ClinicalIngestResult(
         patient_id=patient_id,
