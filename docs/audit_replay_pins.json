@@ -1,0 +1,82 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
+  "dateCreated": "2026-05-04T08:58:18.316514+00:00",
+  "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
+  "license": "Apache-2.0",
+  "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
+  "pairs": [
+    {
+      "drug_a": "warfarin",
+      "drug_b": "ibuprofen",
+      "feature_hash": "915d4f7fedc194c9307795a8bc8b5866fa9b79b087c1a7dfd3568058bfe9f51e",
+      "logits_q16": [
+        332445,
+        -778737,
+        197180,
+        848472,
+        -324252
+      ],
+      "repro_hash": "bdaf385a5caf7c9a77ad71ac1bf8d821da9eba6ca7d350f5a6c8e4307a9d99d5",
+      "severity_name": "major"
+    },
+    {
+      "drug_a": "atorvastatin",
+      "drug_b": "grapefruit",
+      "feature_hash": "31931b82ae38e6f406925b104e5fbdf5bba263dbdc8e60d0624eaf409bb6da49",
+      "logits_q16": [
+        -660034,
+        -1901520,
+        1258061,
+        -782695,
+        -967905
+      ],
+      "repro_hash": "5d05e706d6d896d154918f21f03d6e44efc10c17cd9d38c04d5965550dfcb4d2",
+      "severity_name": "moderate"
+    },
+    {
+      "drug_a": "clarithromycin",
+      "drug_b": "simvastatin",
+      "feature_hash": "e656a327dcfa21fe62133831a9172223385d62f1860a84dcb6a39fcb314f5d9e",
+      "logits_q16": [
+        -38658,
+        -745029,
+        -596344,
+        243157,
+        -367014
+      ],
+      "repro_hash": "e55aed5ec49f9732fa99a05ee671b7e5f34541e3d69286744b7b0c2cadb9c383",
+      "severity_name": "major"
+    },
+    {
+      "drug_a": "metformin",
+      "drug_b": "iodine",
+      "feature_hash": "506e1ce0e86861127f6c03f290532b93623274aa95daa823d343c7f8d2c68dd7",
+      "logits_q16": [
+        -568547,
+        -1266889,
+        -87875,
+        -534025,
+        497582
+      ],
+      "repro_hash": "f537a7db08419fde8366a45ed1278f2eb260d701a5e6e79a23e6c3140830ba9e",
+      "severity_name": "contraindicated"
+    },
+    {
+      "drug_a": "amoxicillin",
+      "drug_b": "penicillin",
+      "feature_hash": "8928034a77473286bf88abd817c7db11b1f01e71802eb1a388e632611aef0ef0",
+      "logits_q16": [
+        19485,
+        -2410907,
+        1141434,
+        -423044,
+        -2002063
+      ],
+      "repro_hash": "b694853b27e0120906e6f4822f505d000bf6489b0499acd001f0f0d0659b85d3",
+      "severity_name": "moderate"
+    }
+  ],
+  "version": "1.0.0"
+}
