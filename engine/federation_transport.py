@@ -27,6 +27,7 @@ Apache-2.0 — STARGA, Inc.
 """
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
@@ -38,6 +39,15 @@ from mind_mem.event_fanout import (
     LoggingPublisher,
     Publisher,
 )
+
+logger = logging.getLogger(__name__)
+
+
+# Threshold above which a single ingest is logged as WARNING. The
+# severity-quorum gate (invariant 16 in JointMemoryFederation.flow.mind)
+# expects normal traffic to be tens of blocks; a sudden burst of >250
+# is a sign of either a misconfigured peer or a replay attempt.
+_BATCH_SIZE_WARN_THRESHOLD = 250
 
 
 # Default sync scopes the federation control plane registers for every
@@ -116,7 +126,20 @@ def register_clinical_peer(
     which is what the severity-quorum gate (invariant 16 in the flow
     contract) enforces at runtime.
     """
-    return mesh.add_peer(peer_id=peer_id, endpoint=endpoint, scopes=scopes)
+    peer = mesh.add_peer(peer_id=peer_id, endpoint=endpoint, scopes=scopes)
+    # PHI discipline: peer_id is an operator-chosen site identifier
+    # (e.g., "huron-rural-fqhc"); not PHI per HIPAA Safe Harbor.
+    # endpoint length only -- the URL itself may carry tenant tokens
+    # in production deployments.
+    logger.info(
+        "federation_peer_registered",
+        extra={
+            "peer_id": peer_id,
+            "scope_count": len(scopes),
+            "endpoint_length": len(endpoint),
+        },
+    )
+    return peer
 
 
 def record_publish_event(
@@ -143,6 +166,34 @@ def record_publish_event(
         blocks_transferred=blocks_transferred,
         conflicts_resolved=0,
     )
+    # Structured trace for the audit chain. PHI discipline: never log
+    # payload_summary directly -- it can contain arbitrary caller-supplied
+    # fields. Log key count + canonical hash fingerprints only; the
+    # full payload is captured by mind-mem's sync log + fanout publish.
+    logger.debug(
+        "federation_publish",
+        extra={
+            "peer_id": peer_id,
+            "scope": scope.value,
+            "blocks_transferred": blocks_transferred,
+            "semantic_idempotency_hash_prefix": semantic_idempotency_hash[:16],
+            "transport_dedup_hash_prefix": transport_dedup_hash[:16],
+            "payload_summary_field_count": len(payload_summary or {}),
+        },
+    )
+    if blocks_transferred > _BATCH_SIZE_WARN_THRESHOLD:
+        # Severity-quorum invariant: a burst above the warn threshold
+        # is either a misconfigured peer or a replay attempt; surfaces
+        # as WARNING so on-call sees it without flipping the audit gate.
+        logger.warning(
+            "federation_publish_oversize_batch",
+            extra={
+                "peer_id": peer_id,
+                "scope": scope.value,
+                "blocks_transferred": blocks_transferred,
+                "threshold": _BATCH_SIZE_WARN_THRESHOLD,
+            },
+        )
     fanout.publish(
         Event(
             kind=EVENT_FEDERATION_PUBLISH,
@@ -190,6 +241,30 @@ def record_ingest_event(
         blocks_transferred=blocks_transferred,
         conflicts_resolved=conflicts_resolved,
     )
+    logger.debug(
+        "federation_ingest",
+        extra={
+            "peer_id": peer_id,
+            "scope": scope.value,
+            "blocks_transferred": blocks_transferred,
+            "conflicts_resolved": conflicts_resolved,
+            "payload_summary_field_count": len(payload_summary or {}),
+        },
+    )
+    if conflicts_resolved > 0:
+        # Conflicts on a governance-gated scope mean the peer's payload
+        # had a semantic disagreement that the local policy resolved.
+        # Surface as WARNING so the on-call team can correlate with the
+        # peer's audit log if pattern repeats.
+        logger.warning(
+            "federation_ingest_conflicts",
+            extra={
+                "peer_id": peer_id,
+                "scope": scope.value,
+                "conflicts_resolved": conflicts_resolved,
+                "blocks_transferred": blocks_transferred,
+            },
+        )
     fanout.publish(
         Event(
             kind=EVENT_FEDERATION_INGEST,
@@ -231,6 +306,19 @@ def record_quarantine_event(
         scope=memory_mesh.SyncScope.GOVERNANCE,
         blocks_transferred=0,
         conflicts_resolved=1,
+    )
+    # Quarantine is a security-grade event. WARNING level so it bubbles
+    # up in default log filters even when DEBUG is suppressed. The
+    # `reason` is a short categorical string ("phi_gate_failed",
+    # "signature_invalid", etc.) -- never a free-text dump that could
+    # carry payload bytes.
+    logger.warning(
+        "federation_quarantine",
+        extra={
+            "peer_id": peer_id,
+            "reason": reason,
+            "payload_summary_field_count": len(payload_summary or {}),
+        },
     )
     fanout.publish(
         Event(
