@@ -76,6 +76,7 @@ _HISTORICAL_COUNTS = (
     "980",
     "984",
     "989",
+    "996",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -89,7 +90,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 996
+_TEST_COUNT_FLOOR = 1000
 
 
 def test_no_stale_test_counts_in_docs():
