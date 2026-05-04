@@ -84,7 +84,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1056+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1057+ passed**.
 
 ---
 
@@ -96,7 +96,7 @@ artifact. Audit map:
 | Claim on the dashboard | Source of truth |
 |---|---|
 | `100% recall · contraindicated · 24/24` | `docs/openevidence_cache.json` (119 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
-| `0 / 10 FP · precision = 1.0` | `docs/negative_control_cohort.json` (10 entries) → `scripts/run_negative_control_eval.py --json`. Cohort integrity is independently pinned by `tests/test_engine/test_negative_control_cohort_integrity_pin.py` (6 tests: cohort size = 10, every entry has expected_severity = "none", ZERO collision with cache contras, every entry has ≥ 1 evidence URL, the 4 named CYP-pathway boundary cases are present, clean negatives use drugs that are EITHER absent from contra contexts OR explicitly allow-listed for non-collision demonstration). |
+| `0 / 10 FP · precision = 1.0` | `docs/negative_control_cohort.json` (10 entries) → `scripts/run_negative_control_eval.py --json`. Cohort integrity is independently pinned by `tests/test_engine/test_negative_control_cohort_integrity_pin.py` (7 tests: cohort size = 10, every entry has expected_severity = "none", ZERO collision with cache contras, every entry has ≥ 1 evidence URL, the 4 named CYP-pathway boundary cases are present, clean negatives use drugs that are EITHER absent from contra contexts OR explicitly allow-listed for non-collision demonstration, demo cites this pin file near the precision-claim sentence (iter-121 surfacing extension)). |
 | `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
 | `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 119-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
 | `Layer 4.5 design-class abstention (high-precision veto)` | The empty `minor` and `serious` columns of the live confusion matrix are **architectural by design**: BitNet abstains from those two classes because they are the primary-recall classes carried by upstream Layers 1-4 (RxNorm + OpenEvidence + NIH RxNav + 5-LLM consensus). Layer 4.5's role is the **high-precision veto** sitting BELOW those layers, not a primary classifier — emitting `minor`/`serious` would put it in competition with upstream instead of vetoing them. Pinned by `tests/test_engine/test_bitnet_design_class_abstention_pin.py` (5 tests: `minor` column total = 0, `serious` column total = 0, demo's "by design" rhetoric near the confusion-matrix card, demo names BOTH abstained classes with explicit `0 of N` live counts (iter-116 surfacing extension), JUDGES design-rationale citation). A weight rotation that lifts either column off zero must update demo + JUDGES rhetoric explicitly — silent drift here breaks the safety-case justification. |

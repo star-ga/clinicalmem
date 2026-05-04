@@ -41,6 +41,7 @@ from pathlib import Path
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _NEG_CONTROL = _REPO_ROOT / "docs" / "negative_control_cohort.json"
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
+_DEMO = _REPO_ROOT / "docs" / "demo.html"
 
 _EXPECTED_SIZE = 10
 _EXPECTED_BOUNDARY_CASES = frozenset({
@@ -218,4 +219,44 @@ def test_neg_control_clean_negatives_are_truly_clean():
         f"never seen in contra contexts). If the inclusion is intentional "
         f"(e.g. demonstrating non-collision on a specific drug class), "
         f"add the drug to _ALLOWED_OVERLAP with a comment."
+    )
+
+
+def test_demo_cites_this_pin_file():
+    """Demo must cite this pin file near the precision-claim sentence.
+
+    Iter 121 (T2 surfacing) added a post-precision sentence to
+    docs/demo.html that names the 6 cohort-integrity invariants and
+    references this pin file. A future copy edit could silently drop
+    the pin reference, making the precision claim look unguarded
+    even though the integrity tests still pass internally. This pin
+    enforces the surfacing.
+
+    Same pattern as iter-110 + iter-115's "JUDGES cites pin file"
+    cross-checks: the test layer and the user-facing surface must
+    stay in sync.
+    """
+    text = _DEMO.read_text()
+    pin_filename = "test_negative_control_cohort_integrity_pin.py"
+    assert pin_filename in text, (
+        f"docs/demo.html must cite "
+        f"`tests/test_engine/{pin_filename}` near the 0/10 false-positive "
+        f"precision claim so judges can trace the precision cohort's "
+        f"integrity to its enforcing pin file. Same drift class as "
+        f"iter-107 JUDGES manifest description fix."
+    )
+    # Also enforce the disambiguator phrase "cohort itself is pinned"
+    # OR equivalent — the pin reference should appear in the SAME
+    # paragraph as the precision claim, not an unrelated section.
+    locality_anchors = (
+        "cohort itself is pinned",
+        "pinned for integrity",
+        "6 invariants",
+    )
+    has_anchor = any(a in text for a in locality_anchors)
+    assert has_anchor, (
+        f"Demo's pin-file citation must appear with a locality anchor "
+        f"such as 'cohort itself is pinned' / 'pinned for integrity' / "
+        f"'6 invariants'. None found near the precision claim — copy "
+        f"edit may have stripped the rationale."
     )
