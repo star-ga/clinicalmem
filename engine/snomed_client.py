@@ -75,9 +75,34 @@ def search_snomed(
 
     Uses the free Snowstorm browser API. Falls back to UMLS if API key is set.
     """
+    # PHI-safe entry log: term length + semantic_tag (FHIR R4 standard,
+    # public configuration) only. Drug / condition names go on the wire
+    # to public APIs anyway, but local logs use length to keep records
+    # categorical.
+    logger.debug(
+        "snomed_search_start",
+        extra={
+            "term_length": len(term),
+            "semantic_tag": semantic_tag or "",
+            "umls_fallback_available": bool(UMLS_API_KEY),
+        },
+    )
+
     results = _search_snowstorm(term, semantic_tag)
+    source = "snowstorm" if results else "none"
     if not results and UMLS_API_KEY:
         results = _search_umls_snomed(term)
+        if results:
+            source = "umls"
+
+    logger.debug(
+        "snomed_search_complete",
+        extra={
+            "result_count": len(results),
+            "source": source,
+            "semantic_tag": semantic_tag or "",
+        },
+    )
     return results
 
 
@@ -109,7 +134,15 @@ def _search_snowstorm(
             for item in items
         ]
     except Exception as e:
-        logger.debug("Snowstorm search failed for %s: %s", term, e)
+        # WARNING level — Snowstorm is a load-bearing external API.
+        # error_type only — exception messages can quote response body.
+        logger.warning(
+            "snomed_snowstorm_error",
+            extra={
+                "error_type": type(e).__name__,
+                "term_length": len(term),
+            },
+        )
         return []
 
 
@@ -142,7 +175,14 @@ def _search_umls_snomed(term: str) -> list[SnomedConcept]:
             if r.get("ui") != "NONE"
         ]
     except Exception as e:
-        logger.debug("UMLS SNOMED search failed for %s: %s", term, e)
+        # WARNING level — UMLS is the secondary lookup; error_type only.
+        logger.warning(
+            "snomed_umls_error",
+            extra={
+                "error_type": type(e).__name__,
+                "term_length": len(term),
+            },
+        )
         return []
 
 
@@ -173,6 +213,17 @@ def is_allergy_cross_reactive(allergy: str, medication: str) -> bool:
     if "penicillin" in allergy_lower:
         cephalosporins = _DRUG_CLASS_HIERARCHY.get("cephalosporin", [])
         if any(c in med_lower for c in cephalosporins):
+            # WARNING level — beta-lactam cross-reactivity is a real
+            # safety hit when caught. Categorical only: which two
+            # classes triggered, not the literal allergen / med strings
+            # (clinical input may carry adjacent narrative).
+            logger.warning(
+                "snomed_beta_lactam_cross_reactive",
+                extra={
+                    "allergy_class": "penicillin",
+                    "med_class": "cephalosporin",
+                },
+            )
             return True  # Flag for clinical review
 
     return False
