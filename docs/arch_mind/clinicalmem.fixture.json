@@ -11,8 +11,8 @@
     "sum_abs_symbol_diffs": 131,
     "redundancy_excess": 0,
     "pure_modules": 21,
-    "sum_decision_points": 483,
-    "sum_evidence_calls": 68,
+    "sum_decision_points": 488,
+    "sum_evidence_calls": 88,
     "max_mcp_tool_overlap": 0,
     "sum_protected_decls": 0
   },

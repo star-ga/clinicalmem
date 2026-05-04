@@ -106,6 +106,7 @@ artifact. Audit map:
 | `Apache-2.0 + patent grant` | `LICENSE` (top of repo) |
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |
 | `Clinical Advisor: Dr. Ludmila Afonicheva, MD` | `docs/clinical_validation.md` (US-licensed Family Medicine, NPI 1932159530) |
+| `External judge-LLM consensus 9.32 / 10 (n=6)` | `docs/eval_runs/round_4_full.json` + `docs/eval_runs/round_4_recovery_gemini.json` (raw rubric scores + parsed gaps from gemini-3.1-pro / grok-4.3 / deepseek-v4-pro / mistral-large / zhipu-glm-5 / nvidia-deepseek-v3.2). Summary in `docs/eval_runs/README.md`. |
 
 ---
 

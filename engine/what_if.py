@@ -54,6 +54,18 @@ def simulate_add_medication(
     Compares the safety profile BEFORE and AFTER adding the medication
     to identify NEW risks introduced by the change.
     """
+    # PHI-safe entry log: arity counts only (no drug names, no allergy text).
+    logger.debug(
+        "what_if_add_entry",
+        extra={
+            "patient_id": patient_id,
+            "scenario": "add",
+            "current_med_count": len(current_medications),
+            "allergy_count": len(allergies),
+            "observation_count": len(observations),
+        },
+    )
+
     # Baseline: current interactions
     baseline_interactions = check_drug_interactions(
         current_medications, use_llm_fallback=False
@@ -113,6 +125,32 @@ def simulate_add_medication(
 
     safe_to_proceed = not has_critical
 
+    # PHI-safe outcome log: severity tier + counts only.
+    # WARNING level when critical risk surfaces — operators must see this
+    # at production default log levels. INFO otherwise.
+    if has_critical:
+        logger.warning(
+            "what_if_add_critical_risk",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "add",
+                "new_interaction_count": len(new_interactions),
+                "new_allergy_count": len(new_allergy_conflicts),
+                "new_lab_contra_count": len(new_lab_contra),
+                "safe_to_proceed": False,
+            },
+        )
+    else:
+        logger.info(
+            "what_if_add_outcome",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "add",
+                "new_risk_count": new_risk_count,
+                "safe_to_proceed": True,
+            },
+        )
+
     # Build recommendation
     if not new_risk_count:
         recommendation = (
@@ -169,6 +207,16 @@ def simulate_remove_medication(
 
     Identifies risks that would be ELIMINATED by removing the medication.
     """
+    # PHI-safe entry log.
+    logger.debug(
+        "what_if_remove_entry",
+        extra={
+            "patient_id": patient_id,
+            "scenario": "remove",
+            "current_med_count": len(current_medications),
+        },
+    )
+
     # Baseline
     baseline_interactions = check_drug_interactions(
         current_medications, use_llm_fallback=False
@@ -212,6 +260,16 @@ def simulate_remove_medication(
 
     risk_delta = -len(removed_risks)
 
+    # PHI-safe outcome log: count of resolved risks only.
+    logger.info(
+        "what_if_remove_outcome",
+        extra={
+            "patient_id": patient_id,
+            "scenario": "remove",
+            "resolved_risk_count": len(removed_risks),
+        },
+    )
+
     if removed_risks:
         recommendation = (
             f"Removing {remove_medication} eliminates {len(removed_risks)} risk(s): "
@@ -250,6 +308,16 @@ def simulate_swap_medication(
 
     Combines remove + add to show net risk change.
     """
+    # PHI-safe entry log: arity counts only.
+    logger.debug(
+        "what_if_swap_entry",
+        extra={
+            "patient_id": patient_id,
+            "scenario": "swap",
+            "current_med_count": len(current_medications),
+        },
+    )
+
     # Step 1: Remove
     meds_after_remove = [
         m for m in current_medications
@@ -275,6 +343,27 @@ def simulate_swap_medication(
     )
 
     net_delta = result.risk_delta + remove_result.risk_delta
+
+    # PHI-safe outcome log: categorical direction (SAFER / NEUTRAL / RISKIER)
+    # plus net_delta integer. Drug names not logged (already covered by the
+    # nested simulate_add / simulate_remove logs above).
+    if net_delta < 0:
+        swap_direction = "safer"
+    elif net_delta == 0:
+        swap_direction = "neutral"
+    else:
+        swap_direction = "riskier"
+    log_fn = logger.warning if swap_direction == "riskier" else logger.info
+    log_fn(
+        "what_if_swap_outcome",
+        extra={
+            "patient_id": patient_id,
+            "scenario": "swap",
+            "net_delta": net_delta,
+            "direction": swap_direction,
+            "safe_to_proceed": result.safe_to_proceed,
+        },
+    )
 
     if net_delta < 0:
         rec = (

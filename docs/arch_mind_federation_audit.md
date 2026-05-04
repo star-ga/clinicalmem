@@ -85,21 +85,24 @@ Per-kernel scores (from `clinicalmem.scan.json`):
 | `redundancy_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `q16_determinism_purity` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `mcp_tool_isolation` | 655360000 (=10000) | ge 9500 | +500 ✅ |
-| `evidence_chain_density` | 106969917 (≈ 1632) | ge 1000 | +632 ✅ |
+| `evidence_chain_density` | 118179672 (≈ 1803) | ge 1000 | +803 ✅ |
 | `governance_kernel_coverage` | 0 | omitted (MIND-only) | n/a |
 
 Notes:
 - The `evidence_chain_density` floor was deliberately set at 1000
   (10%) for the v0.0.1 profile. The live ratio has been ratcheted
-  across three iterations:
-    iter 8  (baseline)        : 1408 (≈ 14.0%)  — 68 / 483 evidence/decision
-    iter 18 (bitnet_classifier): 1490 (≈ 14.9%)  — added 4 structured-log calls
-    iter 23 (fhir_client)     : 1573 (≈ 15.7%)  — added 4 SSRF/HTTP-error log calls
+  across five iterations:
+    iter 8  (baseline)              : 1408 (≈ 14.0%)  — 68 / 483 evidence/decision
+    iter 18 (bitnet_classifier)     : 1490 (≈ 14.9%)  — added 4 structured-log calls
+    iter 23 (fhir_client)           : 1573 (≈ 15.7%)  — added 4 SSRF/HTTP-error log calls
     iter 38 (hallucination_detector): 1632 (≈ 16.3%)  — added 3 grounding log calls
+    iter 43 (phi_detector)          : 1690 (≈ 16.9%)  — added 3 PHI-safe redact/scan logs
+    iter 45 (what_if)               : 1803 (≈ 18.0%)  — added 7 what-if scenario logs
   Evidence wiring concentrates in the federation bridge + audit-
-  export modules; further ratchets target what_if.py (12 dec / 0
-  evidence), phi_detector.py (6 / 0), and consensus_engine.py (24 / 1).
-  Re-run `scripts/run_arch_mind_gate.py` to see the live number.
+  export modules; the next ratchet target is `consensus_engine.py`
+  (currently ~24 decision / ~1 evidence), then any newly added
+  control-flow modules. Re-run `scripts/run_arch_mind_gate.py` to
+  see the live number.
 - `governance_kernel_coverage` is intentionally **omitted from the
   rules profile** — `sum_protected_decls` counts MIND-language
   `[protection]` markers, which don't exist in Python. Re-enable
