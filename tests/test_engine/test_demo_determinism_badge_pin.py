@@ -33,8 +33,17 @@ def test_verify_replay_has_determinism_badge():
     assert "tests/test_scripts/test_bitnet_determinism.py" in text
 
 
-def test_verify_replay_demo_cache_chip_still_present():
-    """Iter-46 chip (`demo cache · 39 pairs`) must coexist with the
-    iter-62 determinism chip — they communicate complementary facts."""
+def test_verify_replay_in_browser_chip_present():
+    """Iter-69 replaced the iter-46 'demo cache · 39 pairs' chip with
+    'live JS · in-browser Q16.16' because the lookup-table fallback
+    was retired in favor of a real in-browser forward pass."""
     text = _DEMO.read_text()
-    assert "demo cache · 39 pairs" in text
+    assert "live JS · in-browser Q16.16" in text, (
+        "Iter-69 chip 'live JS · in-browser Q16.16' must be present "
+        "(replacing the iter-46 'demo cache · 39 pairs' chip)."
+    )
+    # iter-46 chip must NOT be present anymore.
+    assert "demo cache · 39 pairs" not in text, (
+        "iter-46 'demo cache · 39 pairs' chip is stale — iter 69 ships "
+        "live in-browser inference, no lookup table."
+    )
