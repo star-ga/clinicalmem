@@ -1191,10 +1191,10 @@
       "methadone"
     ],
     "severity": "serious",
-    "clinical_summary": "Both haloperidol and methadone independently block the cardiac hERG potassium channel (IKr), prolonging the QT interval; their combination produces additive QTc prolongation that significantly increases risk of torsades de pointes and sudden cardiac death, a risk amplified by hypokalaemia, hypomagnesaemia, or bradycardia (Justo and Zeltser, Drug Saf 2006). Methadone is among the most QT-prolonging drugs at therapeutic doses; co-prescribing haloperidol requires baseline ECG, repeat ECG at 2-4 weeks, and correction of electrolyte abnormalities. The Credible Meds (AzCERT) risk classification rates both drugs as 'Known Risk' for torsades.",
+    "clinical_summary": "Both haloperidol and methadone independently block the cardiac hERG potassium channel (IKr), prolonging the QT interval; their combination produces additive QTc prolongation that significantly increases risk of torsades de pointes and sudden cardiac death, a risk amplified by hypokalaemia, hypomagnesaemia, or bradycardia (Justo and Zeltser, Drug Saf 2006). Methadone is among the most QT-prolonging drugs at therapeutic doses; co-prescribing haloperidol requires baseline ECG, repeat ECG at 2-4 weeks, and correction of electrolyte abnormalities. Both drugs carry FDA QT-prolongation warnings; the Credible Meds (AzCERT) registry rates both as 'Known Risk' for torsades.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/16536635",
-      "https://crediblemeds.org/"
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/006134s041lbl.pdf"
     ],
     "retrieved_at": "2026-05-03",
     "source": "CACHED"
