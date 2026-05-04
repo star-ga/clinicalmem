@@ -163,6 +163,17 @@ def _resolve_flow_path(flow_name: str, flows_dir: Path | None = None) -> Path:
         flow_name = flow_name + ".flow.mind"
     candidate = base / flow_name
     if not candidate.exists():
+        # Log only the requested basename + available count — never the
+        # full filesystem path (could leak caller cwd) and never the
+        # available-flow list (would let a probe enumerate the catalogue
+        # via repeated 404s on misspelled names).
+        logger.error(
+            "flow_resolve_failed",
+            extra={
+                "flow_name": flow_name,
+                "available_count": len(list_flow_names(base)),
+            },
+        )
         raise FileNotFoundError(
             f"flow source not found: {candidate}; available flows: {list_flow_names(base)}"
         )
@@ -310,6 +321,13 @@ def parse_flow_contract(
             continue
 
     if flow_decl_name is None:
+        logger.error(
+            "flow_parse_failed",
+            extra={
+                "flow_path_basename": flow_path.name,
+                "reason": "missing_flow_decl",
+            },
+        )
         raise ValueError(f"no `flow Name {{ … }}` declaration found in {flow_path}")
 
     # PHI-safe contract-shape log: counts only, no expression text.
@@ -585,6 +603,17 @@ def execute(
         node_t0 = time.time()
         callable_ = table.get((node.directive, node.name))
         if callable_ is None:
+            # DEBUG-only: skipping is normal for @llm directives without
+            # API keys; auditors who want to see the skip pattern can
+            # opt in. Use canonical (directive, name) cardinality only.
+            logger.debug(
+                "flow_node_skipped",
+                extra={
+                    "flow_name": flow_name,
+                    "node_name": node.name,
+                    "directive": node.directive,
+                },
+            )
             nodes.append(NodeExecution(
                 node_name=node.name,
                 directive=node.directive,
@@ -611,6 +640,20 @@ def execute(
                 elapsed_ms=int((time.time() - node_t0) * 1000),
             ))
         except Exception as e:
+            # PHI / secret discipline: log error_type only, never str(e).
+            # Node callables receive the running flow state which can
+            # carry medications + patient_id; an exception's str(e) may
+            # quote the offending key/value verbatim.
+            logger.warning(
+                "flow_node_failed",
+                extra={
+                    "flow_name": flow_name,
+                    "node_name": node.name,
+                    "directive": node.directive,
+                    "error_type": type(e).__name__,
+                    "elapsed_ms": int((time.time() - node_t0) * 1000),
+                },
+            )
             nodes.append(NodeExecution(
                 node_name=node.name,
                 directive=node.directive,
