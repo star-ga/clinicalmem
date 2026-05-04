@@ -76,14 +76,19 @@ def test_bitnet_live_precision_recall_pinned():
     # Recall is allowed to fluctuate within a tight band — Layer 4.5
     # is high-precision-by-design, not a recall maximizer.
     # Iter-99: cohort grew (20 → 21 contras), recall = 6/21 = 0.286.
+    # Iter-104: cohort grew (21 → 22), TP=7 → recall = 7/22 = 0.318.
+    # Iter-114: cohort grew (22 → 23, voriconazole+simvastatin), TP=7 →
+    #           recall = 7/23 = 0.304. BitNet did not catch the new pair
+    #           on the same architectural ceiling that misses
+    #           tacrolimus+voriconazole (iter 110 pin).
     # Lower bound 0.28 catches the iter-99 baseline; upper 0.45
-    # covers a future weight rotation that lifts recall to ~9/21.
+    # covers a future weight rotation that lifts recall to ~10/23.
     assert 0.28 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.28, 0.45]"
     )
     assert tp == 7, f"true positives drifted: live={tp}, pinned=7"
-    assert total == 22, f"contraindicated cohort size drifted: live={total}, pinned=22"
+    assert total == 23, f"contraindicated cohort size drifted: live={total}, pinned=23"
 
 
 def test_dashboard_displays_live_precision_number():

@@ -1895,5 +1895,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "voriconazole",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": [
+      "simvastatin",
+      "voriconazole"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; co-administration with simvastatin produces a 10- to 20-fold increase in simvastatin AUC, substantially elevating the risk of severe myopathy and rhabdomyolysis (Neuvonen 2008; Backman 2016). The simvastatin label contraindicates concomitant use with strong CYP3A4 inhibitors including all azole antifungals except fluconazole and isavuconazole \u2014 voriconazole is explicitly named. Particularly relevant in solid-organ transplant patients on voriconazole antifungal prophylaxis. Simvastatin should be withheld for the duration of voriconazole therapy; rosuvastatin or pravastatin are safer statin alternatives because they are not primarily CYP3A4 metabolized.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s033s034lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/18577686/"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

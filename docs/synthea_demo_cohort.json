@@ -7739,6 +7739,306 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-027",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-027",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-027"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Sokolov",
+            "given": [
+              "Mariana"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1968-02-14",
+        "address": [
+          {
+            "use": "home",
+            "city": "Boston",
+            "state": "MA",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-027a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-027a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "236138007",
+              "display": "Renal transplant recipient"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "Z94.0",
+              "display": "Kidney transplant status"
+            }
+          ],
+          "text": "Renal transplant recipient (cadaveric, 2024-09-12)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-027"
+        },
+        "onsetDateTime": "2024-09-12"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-027b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-027b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "428215000",
+              "display": "Pulmonary aspergillosis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B44.81",
+              "display": "Allergic bronchopulmonary aspergillosis"
+            }
+          ],
+          "text": "Invasive pulmonary aspergillosis (post-transplant, 2025-11-08)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-027"
+        },
+        "onsetDateTime": "2025-11-08"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-027c",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-027c",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "55822004",
+              "display": "Hyperlipidemia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "E78.5",
+              "display": "Hyperlipidemia, unspecified"
+            }
+          ],
+          "text": "Hyperlipidemia (LDL 168 mg/dL, post-transplant, 2026-04-22)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-027"
+        },
+        "onsetDateTime": "2026-04-22"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medstat-027a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-medstat-027a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "11118",
+              "display": "voriconazole"
+            }
+          ],
+          "text": "voriconazole 200 mg PO BID (post-transplant antifungal prophylaxis)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-027"
+        },
+        "effectiveDateTime": "2025-11-09"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medreq-027b",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "synthea-medreq-027b",
+        "meta": {
+          "_synthetic": true,
+          "_proposed": true,
+          "_clinical_note": "FDA-contraindicated with concurrent voriconazole (CYP3A4 strong inhibitor) \u2014 simvastatin AUC \u2191 10-20\u00d7, rhabdomyolysis risk; ClinicalMem fires upstream Layer 1 + Layer 4.5 alerts."
+        },
+        "status": "draft",
+        "intent": "proposal",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "36567",
+              "display": "simvastatin"
+            }
+          ],
+          "text": "simvastatin 40 mg PO daily (proposed for new hyperlipidemia)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-027"
+        },
+        "authoredOn": "2026-04-25",
+        "requester": {
+          "reference": "Practitioner/synthea-prac-027a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-027a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-027a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1991282108"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Khalid",
+            "given": [
+              "Yusuf"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Infectious Disease / Transplant Hepatology"
+            }
+          }
+        ]
+      }
     }
   ]
 }

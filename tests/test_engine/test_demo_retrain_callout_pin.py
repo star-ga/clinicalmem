@@ -55,15 +55,22 @@ def test_callout_acknowledges_safety_floor():
 
 
 def test_heatmap_footer_recall_is_correct():
-    """The confusion-matrix heatmap footer must show 6/20 = 30%
-    (not the stale iter-49 33%)."""
+    """The confusion-matrix heatmap footer must show 7/23 = 30%
+    (iter-114 cohort growth pt-027 voriconazole+simvastatin bumped
+    denominator 22 → 23 but BitNet did not catch the new pair —
+    architectural ceiling, recall stays at TP 7).
+    """
     text = _DEMO.read_text()
-    assert "recall = 7 / 22 = 32%" in text, (
-        "Heatmap footer recall must be 7/22 = 32% — iter-104 cohort "
-        "growth (pt-025 sumatriptan+phenelzine) bumped denominator 21 → 22 "
-        "AND BitNet correctly classified the new pair (TP 6 → 7)."
+    assert "recall = 7 / 23 = 30%" in text, (
+        "Heatmap footer recall must be 7/23 = 30% — iter-114 cohort "
+        "growth (pt-027 voriconazole+simvastatin) bumped denominator "
+        "22 → 23. BitNet did not catch the new pair (architectural "
+        "ceiling on hash-only encoder for CYP3A4-inhib×statin); TP "
+        "stays at 7."
     )
-    assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale (denom was 18)
-    assert "recall = 6 / 20 = 30%" not in text  # iter-93 era stale (now 22 contras)
-    assert "recall = 6 / 21 = 29%" not in text  # iter-99 era stale (now 7/22)
-    assert "recall = 6 / 19" not in text  # iter-49 era 6/19 also stale
+    # Block historical phrasings so prior values can't reappear.
+    assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale
+    assert "recall = 6 / 20 = 30%" not in text  # iter-93 era stale
+    assert "recall = 6 / 21 = 29%" not in text  # iter-99 era stale
+    assert "recall = 7 / 22 = 32%" not in text  # iter-104 era stale (now 7/23)
+    assert "recall = 6 / 19" not in text  # iter-49 era stale
