@@ -141,7 +141,18 @@ def compute_plan_hash(flow_name: str, flows_dir: Path | None = None) -> str:
     """
     flow_path = _resolve_flow_path(flow_name, flows_dir)
     canonical = _canonicalise_source(flow_path.read_bytes())
-    return hashlib.sha256(canonical).hexdigest()
+    digest = hashlib.sha256(canonical).hexdigest()
+    # PHI-safe: flow_name is config + the digest is by definition
+    # non-reversible. canonical_size is metadata, not content.
+    logger.debug(
+        "flow_plan_hash_computed",
+        extra={
+            "flow_name": flow_name,
+            "plan_hash_prefix": digest[:16],
+            "canonical_size_bytes": len(canonical),
+        },
+    )
+    return digest
 
 
 def _resolve_flow_path(flow_name: str, flows_dir: Path | None = None) -> Path:
@@ -301,6 +312,20 @@ def parse_flow_contract(
     if flow_decl_name is None:
         raise ValueError(f"no `flow Name {{ … }}` declaration found in {flow_path}")
 
+    # PHI-safe contract-shape log: counts only, no expression text.
+    logger.debug(
+        "flow_contract_parsed",
+        extra={
+            "flow_name": flow_decl_name,
+            "profile": profile,
+            "kernel": kernel or "",
+            "input_count": len(inputs),
+            "output_count": len(outputs),
+            "node_count": len(nodes),
+            "invariant_count": len(invariants),
+        },
+    )
+
     return FlowContract(
         name=flow_decl_name,
         flow_path=flow_path,
@@ -344,12 +369,28 @@ def verify_replay(
     """
     contract = parse_flow_contract(flow_name, flows_dir=flows_dir)
     matches = (contract.plan_hash == expected_hash)
-    if not matches:
+    if matches:
+        # INFO on success — auditors want to see the positive replay outcome
+        # in the audit chain, not just failures. Hash prefix only (the full
+        # hash is in the ReplayResult anyway).
+        logger.info(
+            "flow_replay_verified",
+            extra={
+                "flow_name": flow_name,
+                "matches": True,
+                "plan_hash_prefix": contract.plan_hash[:16],
+            },
+        )
+    else:
+        # WARNING level — release-blocking audit-chain integrity event.
         logger.warning(
-            "replay mismatch for flow %s: expected=%s actual=%s",
-            flow_name,
-            expected_hash,
-            contract.plan_hash,
+            "flow_replay_mismatch",
+            extra={
+                "flow_name": flow_name,
+                "matches": False,
+                "expected_prefix": expected_hash[:16],
+                "actual_prefix": contract.plan_hash[:16],
+            },
         )
     return ReplayResult(
         flow_name=flow_name,
@@ -523,6 +564,20 @@ def execute(
     t0 = time.time()
     inputs_hash = _canonical_json_hash(inputs)
 
+    # PHI-safe entry log: counts + hash prefixes only. inputs may carry
+    # medications + patient_id, both already past the PHI gate; the hash
+    # prefix is non-reversible and lets auditors correlate later.
+    logger.info(
+        "flow_execute_start",
+        extra={
+            "flow_name": flow_name,
+            "plan_hash_prefix": contract.plan_hash[:16],
+            "inputs_hash_prefix": inputs_hash[:16],
+            "node_count": len(contract.nodes),
+            "input_keys": sorted(inputs.keys()),
+        },
+    )
+
     state: dict[str, object] = dict(inputs)
     nodes: list[NodeExecution] = []
 
@@ -586,6 +641,27 @@ def execute(
                 break
     output_hash = _canonical_json_hash(final_output)
 
+    # PHI-safe completion log: per-status node counts + elapsed.
+    # WARNING when any node failed (not skipped — skipped is normal for
+    # @llm without keys); INFO on the all-ok / all-skipped path.
+    ok_count = sum(1 for n in nodes if n.status == "ok")
+    skipped_count = sum(1 for n in nodes if n.status == "skipped")
+    failed_count = sum(1 for n in nodes if n.status == "failed")
+    elapsed_ms = int((time.time() - t0) * 1000)
+    log_fn = logger.warning if failed_count > 0 else logger.info
+    log_fn(
+        "flow_execute_complete",
+        extra={
+            "flow_name": flow_name,
+            "plan_hash_prefix": contract.plan_hash[:16],
+            "output_hash_prefix": output_hash[:16],
+            "ok_nodes": ok_count,
+            "skipped_nodes": skipped_count,
+            "failed_nodes": failed_count,
+            "elapsed_ms": elapsed_ms,
+        },
+    )
+
     return FlowExecution(
         flow_name=flow_name,
         plan_hash=contract.plan_hash,
@@ -594,7 +670,7 @@ def execute(
         nodes=tuple(nodes),
         invariant_violations=tuple(invariant_violations),
         output=final_output,
-        elapsed_ms=int((time.time() - t0) * 1000),
+        elapsed_ms=elapsed_ms,
     )
 
 

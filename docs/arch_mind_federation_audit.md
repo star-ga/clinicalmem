@@ -85,7 +85,7 @@ Per-kernel scores (from `clinicalmem.scan.json`):
 | `redundancy_q16` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `q16_determinism_purity` | 655360000 (=10000) | ge 9000 | +1000 ✅ |
 | `mcp_tool_isolation` | 655360000 (=10000) | ge 9500 | +500 ✅ |
-| `evidence_chain_density` | 122208524 (≈ 1865) | ge 1000 | +865 ✅ |
+| `evidence_chain_density` | 127580327 (≈ 1947) | ge 1000 | +947 ✅ |
 | `governance_kernel_coverage` | 0 | omitted (MIND-only) | n/a |
 
 Notes:
@@ -99,10 +99,11 @@ Notes:
     iter 43 (phi_detector)          : 1690 (≈ 16.9%)  — added 3 PHI-safe redact/scan logs
     iter 45 (what_if)               : 1803 (≈ 18.0%)  — added 7 what-if scenario logs
     iter 48 (consensus_engine)      : 1865 (≈ 18.7%)  — added 5 PHI-safe consensus logs
+    iter 53 (flow_runner)           : 1947 (≈ 19.5%)  — added 5 PHI-safe flow execution logs
   Evidence wiring concentrates in the federation bridge + audit-
-  export modules; the next ratchet targets are `flow_runner.py`
-  (~55 dec / ~1 ev) and `fhir_adapter.py` (~58 dec / ~3 ev). Re-run
-  `scripts/run_arch_mind_gate.py` to see the live number.
+  export modules; the next ratchet target is `fhir_adapter.py`
+  (~58 dec / ~3 ev). Re-run `scripts/run_arch_mind_gate.py` to see
+  the live number.
 - `governance_kernel_coverage` is intentionally **omitted from the
   rules profile** — `sum_protected_decls` counts MIND-language
   `[protection]` markers, which don't exist in Python. Re-enable
