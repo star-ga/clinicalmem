@@ -129,6 +129,59 @@ def test_demo_cites_design_invariant_near_confusion_matrix():
     )
 
 
+def test_demo_names_both_abstained_classes_with_counts():
+    """Demo must name BOTH `minor` and `serious` as abstained classes
+    with explicit live column counts (e.g. `0 of 118`).
+
+    Iter 115 added the design-class abstention pin but only enforced
+    the rhetoric for `serious`. Iter 116 surfaces the BOTH-classes
+    fact in the demo and pins it: the design rationale applies to
+    `minor` and `serious` together (both are upstream-domain), so
+    naming only one is misleading.
+
+    A judge reading the confusion-matrix card should see at a glance:
+      'minor (0 of 118) and serious (0 of 118) columns are by design'
+
+    Future cache growth that bumps 118 must rotate both numbers.
+    """
+    matrix = json.loads(_CONFUSION.read_text())
+    total_pairs = sum(
+        sum(row.values()) for row in matrix["matrix"].values()
+    )
+    text = _DEMO.read_text()
+    # Locate "by design" region and require BOTH class names within 300 chars
+    # AND at least one explicit "0 of N" count where N is the live total.
+    n = len(text)
+    found_classes = False
+    found_count = False
+    expected_count = f"0 of {total_pairs}"
+    for i in range(0, n, 100):
+        window = text[i : i + 600]
+        if "by design" not in window:
+            continue
+        if "minor" in window and "serious" in window:
+            found_classes = True
+        if expected_count in window:
+            found_count = True
+        if found_classes and found_count:
+            break
+    assert found_classes, (
+        "docs/demo.html confusion-matrix design-rationale claim must "
+        "name BOTH `minor` AND `serious` within ~600 chars of "
+        "'by design'. Iter-115 pin only enforced `serious`; iter-116 "
+        "extends to require both because the architectural-by-design "
+        "invariant applies symmetrically to both upstream-domain "
+        "classes (Layer 4.5 abstains from both)."
+    )
+    assert found_count, (
+        f"docs/demo.html design-rationale claim must include the "
+        f"explicit live column count '{expected_count}' so judges can "
+        f"cross-check against `docs/bitnet_confusion_matrix.json` "
+        f"without running the test. Future cache growth that bumps "
+        f"{total_pairs} must rotate the demo number."
+    )
+
+
 def test_judges_documents_design_class_abstention():
     """JUDGES.md must document the architectural-by-design invariant."""
     text = _JUDGES.read_text()
