@@ -134,5 +134,41 @@
     "retrieved_at": "2026-05-03",
     "_added_iteration": "autonomous-watcher-iter-14",
     "_purpose": "Boundary case \u2014 shared CYP3A4 metabolism at non-saturating concentrations; routine CAD/HTN polypharmacy."
+  },
+  {
+    "drug_a": "simvastatin",
+    "drug_b": "diltiazem",
+    "drug_pair_canonical": [
+      "diltiazem",
+      "simvastatin"
+    ],
+    "expected_severity": "none",
+    "rationale": "Boundary case \u2014 diltiazem is a moderate CYP3A4 inhibitor and simvastatin is a CYP3A4 substrate. The FDA Zocor label limits simvastatin to \u2264 10 mg/day when co-prescribed with diltiazem; AT or below that dose ceiling the combination is safely co-prescribed in cardiology practice for CAD + chronic stable angina. The boundary tests that the pipeline does not reflex-flag CYP3A4 substrate overlap when the dose is within the FDA-permitted safe range. (Distinct from the clarithromycin + simvastatin entry in the cache, which is CONTRAINDICATED at any dose because clarithromycin is a STRONG CYP3A4 inhibitor producing a 10-20\u00d7 AUC rise.)",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s085lbl.pdf",
+      "https://www.aafp.org/pubs/afp/issues/2007/0501/p1369.html",
+      "https://pubmed.ncbi.nlm.nih.gov/9879949"
+    ],
+    "retrieved_at": "2026-05-04",
+    "_added_iteration": "autonomous-watcher-iter-65",
+    "_purpose": "Boundary case \u2014 moderate CYP3A4 inhibitor + statin combination below the FDA-permitted dose ceiling. Distinguishes from the STRONG CYP3A4 inhibitor + statin contraindicated cases."
+  },
+  {
+    "drug_a": "spironolactone",
+    "drug_b": "trimethoprim",
+    "drug_pair_canonical": [
+      "spironolactone",
+      "trimethoprim"
+    ],
+    "expected_severity": "none",
+    "rationale": "Boundary case \u2014 both spironolactone (aldosterone antagonist) and trimethoprim (epithelial sodium channel blocker via amiloride-like effect) raise serum potassium. The combination is commonly co-prescribed in heart-failure patients on spironolactone who need short-course UTI treatment. FDA labeling and 2018 BMJ analysis (Antoniou et al.) recommend potassium monitoring at 5-7 days but do not classify as contraindicated in non-elderly patients with normal baseline K+. The boundary tests that the pipeline does not reflex-flag every K-sparing combination \u2014 the additive risk is monitoring-grade, not classification-grade.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/050608s032lbl.pdf",
+      "https://www.bmj.com/content/350/bmj.h6196",
+      "https://pubmed.ncbi.nlm.nih.gov/26658308"
+    ],
+    "retrieved_at": "2026-05-04",
+    "_added_iteration": "autonomous-watcher-iter-65",
+    "_purpose": "Boundary case \u2014 additive K-sparing pharmacology that is monitoring-grade rather than contraindication-grade. Tests that the pipeline does not reflex-flag K-sparing combinations."
   }
 ]

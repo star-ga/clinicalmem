@@ -480,7 +480,7 @@ tailwind.config = {
           in healthcare.
         </h1>
         <p class="font-editorial text-base sm:text-lg text-slate-700 mt-5 max-w-2xl lg:mx-0 mx-auto leading-[1.55]" style="font-style: italic;">
-          &ldquo;Sarah&rsquo;s cardiologist sets her blood pressure target below 130/80. Her nephrologist says below 140/90. Same patient, same week. Neither knew about the other.&rdquo;
+          &ldquo;Sarah&rsquo;s cardiologist sets her blood pressure target below 130/100. Her nephrologist says below 140/90. Same patient, same week. Neither knew about the other.&rdquo;
         </p>
       </div>
       <p class="hero-fade text-sm sm:text-base text-slate-600 mt-5 max-w-2xl lg:mx-0 mx-auto leading-relaxed" style="animation-delay:0.12s">
@@ -799,7 +799,7 @@ tailwind.config = {
               <h3 class="text-base font-bold text-slate-900">Conflicting BP Targets</h3>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-clinical-amber flex-shrink-0">HIGH</span>
             </div>
-            <p class="text-sm text-slate-500 mb-3">Cardiologist targets &lt;130/80 vs Nephrologist &lt;140/90. Conflicting treatment plans.</p>
+            <p class="text-sm text-slate-500 mb-3">Cardiologist targets &lt;130/100 vs Nephrologist &lt;140/90. Conflicting treatment plans.</p>
             <div class="flex flex-wrap gap-1.5 text-[10px]">
               <span class="px-2 py-0.5 rounded bg-green-50 text-clinical-green font-semibold border border-green-200">Provider Disagreement</span>
               <span class="px-2 py-0.5 rounded bg-purple-50 text-clinical-purple font-semibold border border-purple-200">Cross-Provider</span>
@@ -1098,7 +1098,7 @@ tailwind.config = {
             <!-- Title -->
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 109-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 8 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 2 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine).</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 109-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
         </div>
       </div>
 
@@ -2059,7 +2059,7 @@ document.addEventListener('DOMContentLoaded', () => {
     MedicationSafetyReview: 'Five-tier drug-interaction pipeline. Catches NSAID + warfarin. BitNet b1.58 deterministic-classifier at Layer 4.5.',
     AllergyCrossReactivity: 'SNOMED CT 8-class hierarchy. Catches amoxicillin prescribed under a documented penicillin anaphylaxis.',
     LabContraindication:    'Catches medications becoming contraindicated as labs trend toward thresholds. Demo case: GFR 45 → 32, metformin contraindicated below 30.',
-    ProviderDisagreement:   'Catches harmful contradictions across providers (cardiologist BP <130/80 vs nephrologist <140/90).',
+    ProviderDisagreement:   'Catches harmful contradictions across providers (cardiologist BP <130/100 vs nephrologist <140/90).',
     WhatIfSimulation:       'Compositional flow — calls MedicationSafetyReview twice (current + hypothetical) and diffs the safety reports.',
     ClinicalTrialMatch:     'Cross-checks ClinicalTrials.gov eligibility against demographics + active conditions; runs a fairness-audit invariant.',
   };

@@ -26,7 +26,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
    EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
    NTI-drug stress test (35 pairs), see `docs/clinical_validation.md`.
-3. **Precision gate:** **0 / 8 false positives** on a clinical-pharmacology
+3. **Precision gate:** **0 / 10 false positives** on a clinical-pharmacology
    negative-control cohort that includes two CYP-pathway boundary
    cases (clopidogrel + pantoprazole, atorvastatin + amlodipine).
 4. **PHI never leaves the building.** The PHI / non-PHI boundary is
@@ -70,8 +70,8 @@ If you'd rather run each gate individually:
 #    cohort.
 python3 scripts/run_clinical_regression_eval.py
 
-# 2. Negative-control precision gate — verifies 0 / 8 false positives
-#    on the negative-control cohort (6 clean negatives + 2 CYP-pathway
+# 2. Negative-control precision gate — verifies 0 / 10 false positives
+#    on the negative-control cohort (6 clean negatives + 4 CYP-pathway
 #    boundary cases).
 python3 scripts/run_negative_control_eval.py
 
@@ -96,7 +96,7 @@ artifact. Audit map:
 | Claim on the dashboard | Source of truth |
 |---|---|
 | `100% recall · contraindicated · 20/20` | `docs/openevidence_cache.json` (109 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
-| `0 / 8 FP · precision = 1.0` | `docs/negative_control_cohort.json` (8 entries) → `scripts/run_negative_control_eval.py --json` |
+| `0 / 10 FP · precision = 1.0` | `docs/negative_control_cohort.json` (10 entries) → `scripts/run_negative_control_eval.py --json` |
 | `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
 | `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 109-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
 | `Q16.16 determinism (bit-identical replay)` | `scripts/run_bitnet_determinism_stress.py` — runs 100 iterations × 12 representative pairs (1200 classifier calls) and asserts every iteration produces bit-identical `severity_name + repro_hash + logits_q16`. Pinned in `tests/test_scripts/test_bitnet_determinism.py` (lighter 10-iteration form for the standard pytest scope; subprocess-runs the full stress script). Cross-machine determinism is implied by the Q16.16 fixed-point math (no floating-point ops). |
