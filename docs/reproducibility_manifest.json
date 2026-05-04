@@ -3,17 +3,17 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T06:28:32.180372+00:00",
+  "dateCreated": "2026-05-04T06:44:13.037935+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all six artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "3b7dde04f23e70c6739e8e2816f071c4495a1c7e",
+  "git_head": "45b94b23a7f6c16dc959832bda08a48c98672fb4",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
-      "sha256": "235cd9a8ca2201e5a07aa4a4ae779385b81e7423ac67c63c9fdc1991b5e2c7af",
-      "entry_count": 109,
+      "sha256": "26bb5e2d764756ddc7ad41684348429a071ef7d647e51877232e989a31648cf2",
+      "entry_count": 110,
       "per_class_counts": {
-        "serious": 66,
+        "serious": 67,
         "contraindicated": 20,
         "moderate": 22,
         "major": 1
@@ -27,23 +27,23 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "403edad6c184b75f2076ff2170c546bb3eee5b51e1046484cb5efba91992c99c",
+      "sha256": "7341330a94227b35c229f9671d943f08a6c5c0652ce0e60413f8e3badd5de95d",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
         "tp_contraindicated_at_least_six": true
       },
-      "cache_pairs_total": 109
+      "cache_pairs_total": 110
     },
     "cohort_coverage_matrix": {
       "path": "docs/cohort_coverage_matrix.md",
-      "sha256": "0a5e7139cc18f53d74b2516e7f1ab5be98a4997d4564fc3c66b9efa81a231570"
+      "sha256": "1708d4fdb0a01b914078e299ec256fa0b92b3032e467cae35288a2939bb5a720"
     },
     "synthea_demo_cohort": {
       "path": "docs/synthea_demo_cohort.json",
-      "sha256": "139a3dee62e43a7c43ffa2dd2289c4ac518eee0e736206c8117e027b96acb5dd",
-      "patient_count": 18,
-      "practitioner_count": 35,
-      "entry_count": 163
+      "sha256": "7f783569a431bca38cb5f5fb7d591b842d2f98054aa0d98ba14f368c4e7d7b3c",
+      "patient_count": 19,
+      "practitioner_count": 36,
+      "entry_count": 169
     },
     "flow_plan_hashes": {
       "AllergyCrossReactivity": "272d3692b73aae490580dc6675ae905d3648697c435807436dc54e6c0ac786db",

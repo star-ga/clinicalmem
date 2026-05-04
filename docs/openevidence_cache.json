@@ -1759,5 +1759,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "gabapentin",
+    "drug_b": "tramadol",
+    "drug_pair_canonical": [
+      "gabapentin",
+      "tramadol"
+    ],
+    "severity": "serious",
+    "clinical_summary": "Coadministration of gabapentin (or pregabalin) with opioid analgesics including tramadol produces additive CNS and respiratory depression that has been associated with serious adverse outcomes including death. The FDA issued a Drug Safety Communication in December 2019 warning that gabapentinoids increase the risk of opioid-induced respiratory depression, particularly in patients with respiratory risk factors (COPD, obstructive sleep apnea, age >65) or on benzodiazepines / other CNS depressants. Tramadol additionally carries serotonergic activity (SNRI-like mechanism) and lowers seizure threshold \u2014 both relevant when combined with gabapentinoids in patients with epilepsy history. Co-prescribing requires (a) lowest-effective-dose strategy for both agents, (b) overlap-period sleep-apnea screening, (c) naloxone co-prescription per CDC opioid guideline when MED >50, and (d) re-assessment at 1-2 weeks. Common in diabetic neuropathy or post-herpetic neuralgia patients who develop acute or post-surgical pain.",
+    "evidence_urls": [
+      "https://www.fda.gov/drugs/drug-safety-and-availability/fda-warns-about-serious-breathing-problems-seizure-and-nerve-pain-medicines-gabapentin-neurontin",
+      "https://www.cdc.gov/mmwr/volumes/71/rr/rr7103a1.htm",
+      "https://pubmed.ncbi.nlm.nih.gov/29018005"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

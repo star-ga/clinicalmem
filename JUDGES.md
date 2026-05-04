@@ -21,8 +21,8 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    headline accuracy: same SHA-256 `repro_hash` on any chip in
    healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
 2. **Recall gate (PCCP):** **100% recall** on every severity class
-   represented in the 109-pair OpenEvidence-cited cohort —
-   contraindicated (20/20), major (1/1), serious (66/66), moderate
+   represented in the 110-pair OpenEvidence-cited cohort —
+   contraindicated (20/20), major (1/1), serious (67/67), moderate
    (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
    EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
    NTI-drug stress test (35 pairs), see `docs/clinical_validation.md`.
@@ -66,7 +66,7 @@ If you'd rather run each gate individually:
 
 ```bash
 # 1. PCCP recall gate — verifies 100% recall on contraindicated /
-#    major / serious / moderate against the 109-pair OpenEvidence-cited
+#    major / serious / moderate against the 110-pair OpenEvidence-cited
 #    cohort.
 python3 scripts/run_clinical_regression_eval.py
 
@@ -95,18 +95,18 @@ artifact. Audit map:
 
 | Claim on the dashboard | Source of truth |
 |---|---|
-| `100% recall · contraindicated · 20/20` | `docs/openevidence_cache.json` (109 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
+| `100% recall · contraindicated · 20/20` | `docs/openevidence_cache.json` (110 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
 | `0 / 10 FP · precision = 1.0` | `docs/negative_control_cohort.json` (10 entries) → `scripts/run_negative_control_eval.py --json` |
 | `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
-| `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 109-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
+| `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 110-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
 | `Q16.16 determinism (bit-identical replay)` | `scripts/run_bitnet_determinism_stress.py` — runs 100 iterations × 12 representative pairs (1200 classifier calls) and asserts every iteration produces bit-identical `severity_name + repro_hash + logits_q16`. Pinned in `tests/test_scripts/test_bitnet_determinism.py` (lighter 10-iteration form for the standard pytest scope; subprocess-runs the full stress script). Cross-machine determinism is implied by the Q16.16 fixed-point math (no floating-point ops). |
 | `In-browser BitNet inference (vanilla JS)` | `docs/bitnet_browser.js` (≈ 300 LOC, no dependencies) ports the Q16.16 forward pass to vanilla JavaScript: hand-written BLAKE2b-128 (BigInt for 64-bit ops) + 64-trit per-drug encoding + 128→64→5 ternary linear + ReLU + argmax + SHA-256 canonical-JSON repro_hash. Cross-language pin: `tests/test_engine/test_browser_bitnet_pin.py` runs the JS file via Node.js and asserts the resulting `repro_hash + severity_name + feature_hash + logits_q16 + weights_id` for warfarin + ibuprofen match the Python reference **byte-for-byte**. Closes the iter-50 R4-eval gap that 3 of 6 evaluators flagged ("BitNet 4.5 demo uses pre-computed lookup table, not live ternary inference"). |
 | `Single-file reproducibility manifest` | `docs/reproducibility_manifest.json` (regenerate with `scripts/build_reproducibility_manifest.py`) — content-addressed snapshot of every load-bearing artifact: SHA-256 of cache + weights + cohort, flow plan_hashes for all 7 `.flow.mind` files, gate verdicts (PCCP / negative-control / federation / arch-mind), test count, git HEAD. Drops into a compliance review as one file an FDA SaMD reviewer can verify with `--check`. Pinned in `tests/test_scripts/test_reproducibility_manifest.py`. |
-| `Evidence-URL backbone integrity` | `tests/test_engine/test_cache_evidence_urls.py` — 6 tests pin the structural integrity of every cache entry's `evidence_urls`: ≥ 1 URL per entry, all HTTPS (no plain HTTP), all have non-empty host AND non-empty path beyond root, no duplicates within an entry, ≥ 90% from the NIH/FDA/peer-review whitelist, average ≥ 1.5 URLs per pair (corroboration floor — every drug-pair classification backed by ≥ 1 primary citation + ≥ 1 secondary). Live: 226 URLs across 109 entries, 100% authoritative, avg 2.07 URLs/pair. |
+| `Evidence-URL backbone integrity` | `tests/test_engine/test_cache_evidence_urls.py` — 6 tests pin the structural integrity of every cache entry's `evidence_urls`: ≥ 1 URL per entry, all HTTPS (no plain HTTP), all have non-empty host AND non-empty path beyond root, no duplicates within an entry, ≥ 90% from the NIH/FDA/peer-review whitelist, average ≥ 1.5 URLs per pair (corroboration floor — every drug-pair classification backed by ≥ 1 primary citation + ≥ 1 secondary). Live: 226 URLs across 110 entries, 100% authoritative, avg 2.07 URLs/pair. |
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain) |
 | `Federation control plane LIVE — mind-mem v3.9.0 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |
-| `18 synthetic patients · 35 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
+| `19 synthetic patients · 36 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
 | `21 CFR Part 11 audit export` | `engine/audit_export_part11.py` (30 tests) |
 | `Apache-2.0 + patent grant` | `LICENSE` (top of repo) |
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |

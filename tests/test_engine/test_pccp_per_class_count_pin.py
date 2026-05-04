@@ -10,10 +10,10 @@ growth (iter-19 added pt-013, iter-9 added 5 cache entries before
 that). This test pins the per-class counts so any future cache
 growth fails the gate until the labels are updated.
 
-Pinned values (iter 60):
+Pinned values (iter 72):
 
   contraindicated: 20 (was 14 → 15 → 16 → 17 → 18 → 19 → 20 across cohort growth)
-  serious        : 66 (was 64 → 66 — sparkline lagged)
+  serious        : 67 (was 64 → 66 → 67 — iter 72 added gabapentin+tramadol)
   moderate       : 22 (was 20 → 22 — sparkline lagged)
   major          : 1  (iter 39: tamoxifen + paroxetine — first major)
 """
@@ -27,7 +27,7 @@ _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 
 _EXPECTED_CONTRAINDICATED = 20
-_EXPECTED_SERIOUS = 66
+_EXPECTED_SERIOUS = 67
 _EXPECTED_MODERATE = 22
 _EXPECTED_MAJOR = 1  # iter 39: first major-class entry (tamoxifen + paroxetine)
 
