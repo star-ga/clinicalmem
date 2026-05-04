@@ -273,6 +273,28 @@ async def verify_finding_consensus(
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     perplexity_key = os.environ.get("PERPLEXITY_API_KEY")
 
+    # PHI-safe entry log: counts only — no finding text, no evidence body,
+    # no patient context. Provider availability is public configuration.
+    available_providers = [
+        label for key, label in (
+            (openai_key, "OpenAI-GPT-5.5"),
+            (google_key, "Gemini-3.1-Pro"),
+            (xai_key, "xAI-Grok-4.3"),
+            (anthropic_key, "Anthropic-Claude-Opus-4.7"),
+            (perplexity_key, "Perplexity-Sonar-Pro"),
+        )
+        if key
+    ]
+    logger.debug(
+        "consensus_dispatch",
+        extra={
+            "providers_available": len(available_providers),
+            "providers": available_providers,
+            "evidence_block_count": len(evidence),
+            "prompt_length": len(prompt),
+        },
+    )
+
     tasks: list[tuple[str, Any]] = []
 
     # Tier 1: Clinical-validated models
@@ -296,6 +318,17 @@ async def verify_finding_consensus(
         )))
 
     if not tasks:
+        # WARNING level — operators must see when consensus can't run at
+        # all. The abstention gate downstream will catch this, but the
+        # signal needs to surface in production logs.
+        logger.warning(
+            "consensus_no_providers",
+            extra={
+                "providers_available": 0,
+                "level": "NONE",
+                "should_report": False,
+            },
+        )
         return ConsensusResult(
             finding=finding,
             verdicts=(),
@@ -315,7 +348,15 @@ async def verify_finding_consensus(
 
     for (label, _), result in zip(tasks, results):
         if isinstance(result, Exception):
-            logger.info("Consensus call to %s failed: %s", label, result)
+            # Per-provider error — type only (not message body, which can
+            # leak request/response bodies in third-party SDKs).
+            logger.warning(
+                "consensus_provider_error",
+                extra={
+                    "provider": label,
+                    "error_type": type(result).__name__,
+                },
+            )
             verdicts.append(
                 LLMVerdict(
                     model=label,
@@ -325,6 +366,21 @@ async def verify_finding_consensus(
                 )
             )
         else:
+            # Per-provider success — verdict bool + confidence bucket only,
+            # never the reasoning string (model output may quote PHI even
+            # though the prompt was redacted).
+            logger.debug(
+                "consensus_provider_verdict",
+                extra={
+                    "provider": label,
+                    "agrees": result.agrees,
+                    "confidence_bucket": (
+                        "high" if result.confidence >= 0.75
+                        else "medium" if result.confidence >= 0.5
+                        else "low"
+                    ),
+                },
+            )
             verdicts.append(result)
 
     agreement_count = sum(1 for v in verdicts if v.agrees)
@@ -356,6 +412,22 @@ async def verify_finding_consensus(
         for v in verdicts
     ]
 
+    # Aggregate-result log: categorical level + counts only. INFO when the
+    # finding will be reported; WARNING when consensus dropped to LOW /
+    # NONE / LIMITED — those are the abstention triggers downstream.
+    should_report = level in ("HIGH", "MEDIUM")
+    log_fn = logger.info if should_report else logger.warning
+    log_fn(
+        "consensus_aggregated",
+        extra={
+            "level": level,
+            "agreement_count": agreement_count,
+            "total_models": total,
+            "should_report": should_report,
+            "confidence_score": round(confidence, 2),
+        },
+    )
+
     return ConsensusResult(
         finding=finding,
         verdicts=tuple(verdicts),
@@ -363,7 +435,7 @@ async def verify_finding_consensus(
         total_models=total,
         consensus_level=level,
         confidence_score=round(confidence, 2),
-        should_report=level in ("HIGH", "MEDIUM"),
+        should_report=should_report,
         reasoning_summary=" | ".join(reasoning_parts),
     )
 
