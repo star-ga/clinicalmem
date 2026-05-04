@@ -5023,6 +5023,257 @@
           }
         ]
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-017",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Castellanos",
+            "given": [
+              "Lucia",
+              "Maribel"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1981-07-22",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "1247 South Oak Park Boulevard"
+            ],
+            "city": "Tucson",
+            "state": "AZ",
+            "postalCode": "85716",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-017"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-017a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1837537897"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Lindqvist",
+            "given": [
+              "Astrid"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-017b",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1311992535"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Petrov",
+            "given": [
+              "Daniel"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-017a",
+        "subject": {
+          "reference": "Patient/synthea-pt-017"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "37796009",
+              "display": "Chronic episodic migraine without aura"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "G43.709"
+            }
+          ]
+        },
+        "onsetDateTime": "2018-04-12"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-017b",
+        "subject": {
+          "reference": "Patient/synthea-pt-017"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "32398004",
+              "display": "Acute bronchitis (bacterial superinfection)"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J20.9"
+            }
+          ]
+        },
+        "onsetDateTime": "2026-04-30"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-017a",
+        "subject": {
+          "reference": "Patient/synthea-pt-017"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-017a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "4034",
+              "display": "ergotamine"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "1 mg orally at migraine onset, may repeat 1 mg q30min up to 3 mg/attack (Cafergot \u2014 ergotamine 1 mg / caffeine 100 mg combination, prescribed by neurology for breakthrough migraine; PRN)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-017b",
+        "subject": {
+          "reference": "Patient/synthea-pt-017"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-017b"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "21212",
+              "display": "clarithromycin"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "500 mg orally twice daily for 7 days (acute bacterial bronchitis, started 1 day ago at urgent care \u2014 outside neurology's awareness)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1000,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

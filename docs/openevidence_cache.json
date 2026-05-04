@@ -1725,5 +1725,22 @@
     ],
     "retrieved_at": "2026-05-03",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "clarithromycin",
+    "drug_b": "ergotamine",
+    "drug_pair_canonical": [
+      "clarithromycin",
+      "ergotamine"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Coadministration of ergotamine (or other ergot alkaloids \u2014 dihydroergotamine, methylergonovine) with strong CYP3A4 inhibitors such as macrolide antibiotics (clarithromycin, erythromycin, telithromycin), azole antifungals (itraconazole, voriconazole), and protease inhibitors is CONTRAINDICATED. CYP3A4 inhibition reduces ergotamine clearance, producing supratherapeutic levels with severe peripheral vasoconstriction (ergotism) \u2014 manifesting as cold, painful, cyanotic extremities; arterial spasm; and in severe cases gangrene requiring amputation. Cerebral, coronary, and mesenteric ischemia have all been reported. The FDA Cafergot (ergotamine + caffeine) label carries a black-box warning. Substitute the macrolide with azithromycin (which does NOT inhibit CYP3A4 meaningfully) or use a non-macrolide alternative; if antibiotic is required, hold the ergotamine for the duration of therapy plus 48 hours.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/006120s011lbl.pdf",
+      "https://www.aan.com/Guidelines/home/GuidelineDetail/970",
+      "https://pubmed.ncbi.nlm.nih.gov/16344209/"
+    ],
+    "retrieved_at": "2026-05-03",
+    "source": "CACHED"
   }
 ]

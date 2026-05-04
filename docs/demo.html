@@ -990,7 +990,7 @@ tailwind.config = {
         Bit-identical clinical decisions. Decade-stable audit replay.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% per-class accuracy on the held-out test set's <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42)</strong>; on the live OpenEvidence cache (n=18 contraindicated) the deployment-side numbers are <strong>precision 100% / recall 33.3%</strong> &mdash; a high-precision veto by design. When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
+        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% per-class accuracy on the held-out test set's <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42)</strong>; on the live OpenEvidence cache (n=19 contraindicated) the deployment-side numbers are <strong>precision 100% / recall 31.6%</strong> &mdash; a high-precision veto by design. When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
       </p>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">85.7% held-out · 100% live precision</span>
@@ -1068,15 +1068,15 @@ tailwind.config = {
 
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 107-pair PCCP regression</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 18/18, major 100% on 1/1, serious 100% on 66/66, moderate 100% on 22/22.">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 108-pair PCCP regression</p>
+          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 19/19, major 100% on 1/1, serious 100% on 66/66, moderate 100% on 22/22.">
             <!-- Axis baseline at 100% (=288) -->
             <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
             <line x1="40" y1="106" x2="312" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
             <!-- Contraindicated (n=17) -->
             <rect x="40" y="20" width="272" height="14" rx="2" fill="#dc2626" fill-opacity="0.82"/>
             <text x="8"  y="31" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">contra·indicated</text>
-            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 18 / 18</text>
+            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 19 / 19</text>
             <!-- Major (n=1, tamoxifen + paroxetine — added iter 39) -->
             <rect x="40" y="42" width="272" height="14" rx="2" fill="#FF6B35" fill-opacity="0.78"/>
             <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">major</text>
@@ -1092,7 +1092,7 @@ tailwind.config = {
             <!-- Title -->
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 107-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 8 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 2 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine).</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 108-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 8 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 2 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine).</p>
         </div>
       </div>
 
@@ -1121,11 +1121,11 @@ tailwind.config = {
         <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (107 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (108 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
           </div>
           <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">0 FP · contraindicated</span>
         </div>
-        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 107-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 18, with zero false positives.">
+        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 108-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 19, with zero false positives.">
           <!-- Column header labels -->
           <text x="80"  y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">none</text>
           <text x="118" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">minor</text>
@@ -1162,9 +1162,9 @@ tailwind.config = {
           <rect x="217" y="70" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.65"/><text x="233" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#064e3b" text-anchor="middle" font-weight="600">1</text>
           <rect x="255" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="271" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
 
-          <!-- Row 4: contraindicated (n=18) — the safety class -->
+          <!-- Row 4: contraindicated (n=19) — the safety class -->
           <text x="60" y="107" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#dc2626" text-anchor="end">contraindicated</text>
-          <rect x="65"  y="94" width="32" height="20" rx="2" fill="#fee2e2"/><text x="81"  y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">3</text>
+          <rect x="65"  y="94" width="32" height="20" rx="2" fill="#fee2e2"/><text x="81"  y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">4</text>
           <rect x="103" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="141" y="94" width="32" height="20" rx="2" fill="#fef3c7"/><text x="157" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#92400e" text-anchor="middle">1</text>
           <rect x="179" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="195" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
@@ -1174,7 +1174,7 @@ tailwind.config = {
           <!-- Footer caption -->
           <text x="60"  y="126" font-family="Lexend, sans-serif" font-size="8" fill="#475569" text-anchor="end">ground truth &darr;</text>
           <text x="160" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#059669" text-anchor="middle">contraindicated · precision = 6 / 6 = 100%</text>
-          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 18 = 33%</text>
+          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 19 = 33%</text>
         </svg>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_six</strong> (the recall floor). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
       </div>
@@ -1827,8 +1827,8 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
       <div><span class="text-slate-400">tests</span> <span class="text-trust-700">869 / 869</span></div>
-      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">107 pairs</span></div>
-      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">16 patients</span></div>
+      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">108 pairs</span></div>
+      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">17 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
       <div><span class="text-slate-400">verified</span> <span class="text-trust-700">2026-05-03</span></div>
     </div>

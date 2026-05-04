@@ -10,11 +10,11 @@ as "precision" on the dashboard, and it doesn't reflect deployment
 reality.
 
 The deployment-side reality, on the live `docs/openevidence_cache.json`
-(n=107, contraindicated subset n=18):
+(n=108, contraindicated subset n=19):
 
   Layer 4.5 BitNet alone, contraindicated class
     precision = TP / (TP + FP) = 6 / 6  = 100.0%
-    recall    = TP / (TP + FN) = 6 / 18 =  33.3%
+    recall    = TP / (TP + FN) = 6 / 19 =  31.6%
 
 Precision is 100% by design — Layer 4.5's job is *high-precision veto*,
 not headline recall. Recall is intentionally low because the upstream
@@ -74,7 +74,7 @@ def test_bitnet_live_precision_recall_pinned():
         f"live={recall:.4f}, allowed=[0.30, 0.45]"
     )
     assert tp == 6, f"true positives drifted: live={tp}, pinned=6"
-    assert total == 18, f"contraindicated cohort size drifted: live={total}, pinned=18"
+    assert total == 19, f"contraindicated cohort size drifted: live={total}, pinned=19"
 
 
 def test_dashboard_displays_live_precision_number():
