@@ -1976,11 +1976,28 @@
       "predicted": "major",
       "top1_class": "major",
       "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "azithromycin",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        308892,
+        -326976,
+        -233529,
+        422416,
+        -248150
+      ],
+      "margin_q16": 113524,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 110,
+  "total_pairs": 111,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

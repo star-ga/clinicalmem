@@ -5696,6 +5696,240 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-020",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-020",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Hawthorne",
+            "given": [
+              "Beatrice",
+              "Anne"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1958-03-14",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "1247 Sunrise Hollow Lane"
+            ],
+            "city": "Asheville",
+            "state": "NC",
+            "postalCode": "28804",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-020"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-020a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-020a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I48.91",
+              "display": "Unspecified atrial fibrillation"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-020"
+        },
+        "onsetDateTime": "2019-11-08"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-020b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-020b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "J01.90",
+              "display": "Acute sinusitis, unspecified"
+            },
+            {
+              "system": "http://snomed.info/sct",
+              "code": "75498004",
+              "display": "Acute bacterial sinusitis"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-020"
+        },
+        "onsetDateTime": "2026-04-29"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-020a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-020a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "11289",
+              "display": "warfarin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-020"
+        },
+        "effectiveDateTime": "2019-11-15",
+        "dosage": [
+          {
+            "text": "Warfarin 5 mg PO once daily; INR target 2.0-3.0 (atrial fibrillation, CHA2DS2-VASc=4)",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-020b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-020b",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "18631",
+              "display": "azithromycin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-020"
+        },
+        "effectiveDateTime": "2026-04-29",
+        "dosage": [
+          {
+            "text": "Azithromycin 500 mg PO day 1, then 250 mg PO daily x 4 days (Z-pack for acute sinusitis); prescribed at urgent care without home-med reconciliation"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-020a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-020a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1198774857"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Davis",
+            "given": [
+              "Marcus"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ]
 }

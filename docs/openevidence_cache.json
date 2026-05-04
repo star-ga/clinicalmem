@@ -1776,5 +1776,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "azithromycin",
+    "drug_b": "warfarin",
+    "drug_pair_canonical": [
+      "azithromycin",
+      "warfarin"
+    ],
+    "severity": "serious",
+    "clinical_summary": "Concurrent azithromycin and warfarin therapy elevates haemorrhagic risk through two convergent mechanisms: modest CYP3A4 inhibition by azithromycin reduces clearance of S-warfarin, and antibiotic disruption of vitamin-K-producing intestinal flora amplifies anticoagulant effect. Case series and pharmacovigilance reports document supratherapeutic INR elevations (typically peaking 3-7 days into a 5-day Z-pack course) and occasional major bleeding (Glasheen et al., Pharmacotherapy 2003; FDA MedWatch). Anticipatory INR monitoring at days 4-7 with a return visit or self-test is recommended whenever a Z-pack is co-prescribed in a warfarin-treated patient; alternative antibiotic classes (e.g., doxycycline for atypical coverage) avoid the interaction entirely.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/050710s045lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/12614410/",
+      "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6383540/"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]
