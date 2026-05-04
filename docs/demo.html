@@ -990,7 +990,7 @@ tailwind.config = {
         Bit-identical clinical decisions. Decade-stable audit replay.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% per-class accuracy on the held-out test set's <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42)</strong>; on the live OpenEvidence cache (<span id="bitnet-body-contra-total" class="font-bold">n=21 contraindicated</span>) the deployment-side numbers are <strong>precision 100% / recall <span id="bitnet-body-contra-recall">28.6%</span></strong> &mdash; a high-precision veto by design. When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
+        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% per-class accuracy on the held-out test set's <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42)</strong>; on the live OpenEvidence cache (<span id="bitnet-body-contra-total" class="font-bold">n=22 contraindicated</span>) the deployment-side numbers are <strong>precision 100% / recall <span id="bitnet-body-contra-recall">31.8%</span></strong> &mdash; a high-precision veto by design. When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
       </p>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">85.7% held-out · 100% live precision</span>
@@ -1074,15 +1074,15 @@ tailwind.config = {
 
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 115-pair PCCP regression</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 21/21, major 100% on 3/3, serious 100% on 69/69, moderate 100% on 22/22.">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 116-pair PCCP regression</p>
+          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 22/22, major 100% on 3/3, serious 100% on 69/69, moderate 100% on 22/22.">
             <!-- Axis baseline at 100% (=288) -->
             <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
             <line x1="40" y1="106" x2="312" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
-            <!-- Contraindicated (n=21) -->
+            <!-- Contraindicated (n=22) -->
             <rect x="40" y="20" width="272" height="14" rx="2" fill="#dc2626" fill-opacity="0.82"/>
             <text x="8"  y="31" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">contra·indicated</text>
-            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 21 / 21</text>
+            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 22 / 22</text>
             <!-- Major (n=3, tamoxifen + paroxetine added iter 39, clarithromycin + digoxin added iter 83, voriconazole + tacrolimus added iter 93) -->
             <rect x="40" y="42" width="272" height="14" rx="2" fill="#FF6B35" fill-opacity="0.78"/>
             <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">major</text>
@@ -1098,7 +1098,7 @@ tailwind.config = {
             <!-- Title -->
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 115-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 116-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
         </div>
       </div>
 
@@ -1127,11 +1127,11 @@ tailwind.config = {
         <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (115 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (116 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
           </div>
           <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">0 FP · contraindicated</span>
         </div>
-        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 115-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 21, with zero false positives.">
+        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 116-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 7 of 22, with zero false positives.">
           <!-- Column header labels -->
           <text x="80"  y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">none</text>
           <text x="118" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">minor</text>
@@ -1168,19 +1168,19 @@ tailwind.config = {
           <rect x="217" y="70" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.65"/><text x="233" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#064e3b" text-anchor="middle" font-weight="600">2</text>
           <rect x="255" y="70" width="32" height="20" rx="2" fill="#f8fafc"/><text x="271" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
 
-          <!-- Row 4: contraindicated (n=21) — the safety class -->
+          <!-- Row 4: contraindicated (n=22) — the safety class -->
           <text x="60" y="107" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#dc2626" text-anchor="end">contraindicated</text>
           <rect x="65"  y="94" width="32" height="20" rx="2" fill="#fee2e2"/><text x="81"  y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">5</text>
           <rect x="103" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="141" y="94" width="32" height="20" rx="2" fill="#fef3c7"/><text x="157" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#92400e" text-anchor="middle">2</text>
           <rect x="179" y="94" width="32" height="20" rx="2" fill="#f8fafc"/><text x="195" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="217" y="94" width="32" height="20" rx="2" fill="#fecaca"/><text x="233" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">8</text>
-          <rect x="255" y="94" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.85" stroke="#059669" stroke-width="1.5"/><text x="271" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="white" text-anchor="middle" font-weight="700">6</text>
+          <rect x="255" y="94" width="32" height="20" rx="2" fill="#10b981" fill-opacity="0.85" stroke="#059669" stroke-width="1.5"/><text x="271" y="108" font-family="JetBrains Mono, monospace" font-size="9" fill="white" text-anchor="middle" font-weight="700">7</text>
 
           <!-- Footer caption -->
           <text x="60"  y="126" font-family="Lexend, sans-serif" font-size="8" fill="#475569" text-anchor="end">ground truth &darr;</text>
-          <text x="160" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#059669" text-anchor="middle">contraindicated · precision = 6 / 6 = 100%</text>
-          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 21 = 29%</text>
+          <text x="160" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#059669" text-anchor="middle">contraindicated · precision = 7 / 7 = 100%</text>
+          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 7 / 22 = 32%</text>
         </svg>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_six</strong> (the recall floor). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Path A staged (iter 96 ablation)</strong> — <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a 13-flag ATC pharmacology table (CYP3A4 / P-gp / OATP1B1 / statin / MAOI / etc.) with FDA-label citations per drug + 6 pair-derived DDI-rule bits. Standalone train at 160-dim feature input hits <strong class="text-clinical-green">20/20 contraindicated recall</strong> (vs baseline 16/20) with a tunable precision trade-off. Engine integration deferred until 20/20 recall + 0 FP simultaneously achievable; current shipped weights are the iter-72 baseline (16/20 + 0 FP, the precision-respecting safety floor).</p>
@@ -1645,7 +1645,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px] font-mono">
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">openevidence_cache</span>
-          <span class="text-slate-700">2e97e580317faaa8…</span>
+          <span class="text-slate-700">fa8b0e47ed600d36…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_weights</span>
@@ -1653,27 +1653,27 @@ Site B (Mayo Clinic) ingress preimage_hash:
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_confusion_matrix</span>
-          <span class="text-slate-700">6264b409f4aae7bd…</span>
+          <span class="text-slate-700">eb22f97af93c5c5b…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">cohort_coverage_matrix</span>
-          <span class="text-slate-700">97addfaa44ff4eaa…</span>
+          <span class="text-slate-700">e42c493bf4a4a8bf…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">synthea_demo_cohort</span>
-          <span class="text-slate-700">2c45ac4644507d2c…</span>
+          <span class="text-slate-700">e72d34f7cf70c32a…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_calibration</span>
-          <span class="text-slate-700">77887a0c3049792d…</span>
+          <span class="text-slate-700">e8921b83376ab982…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">audit_replay_pins</span>
-          <span class="text-slate-700">aa59d94db946f6f4…</span>
+          <span class="text-slate-700">e73bbe5ed994e002…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">pharmacology_flags</span>
-          <span class="text-slate-700">43738860ba65bfcf…</span>
+          <span class="text-slate-700">e06e87e867771626…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">flow_plan_hashes</span>
@@ -1887,8 +1887,8 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
       <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1019 / 1019</span></div>
-      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">115 pairs</span></div>
-      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">24 patients</span></div>
+      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">116 pairs</span></div>
+      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">25 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
       <div><span class="text-slate-400">verified</span> <span class="text-trust-700" id="provenance-verified">2026-05-04</span></div>
     </div>

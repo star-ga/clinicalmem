@@ -82,8 +82,8 @@ def test_bitnet_live_precision_recall_pinned():
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.28, 0.45]"
     )
-    assert tp == 6, f"true positives drifted: live={tp}, pinned=6"
-    assert total == 21, f"contraindicated cohort size drifted: live={total}, pinned=21"
+    assert tp == 7, f"true positives drifted: live={tp}, pinned=7"
+    assert total == 22, f"contraindicated cohort size drifted: live={total}, pinned=22"
 
 
 def test_dashboard_displays_live_precision_number():

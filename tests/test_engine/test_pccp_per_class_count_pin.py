@@ -26,7 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 
-_EXPECTED_CONTRAINDICATED = 21
+_EXPECTED_CONTRAINDICATED = 22
 _EXPECTED_SERIOUS = 69
 _EXPECTED_MODERATE = 22
 _EXPECTED_MAJOR = 3  # iter 93: 3rd major (voriconazole + tacrolimus) joined iter-83's clarithromycin + digoxin and iter-39's tamoxifen + paroxetine

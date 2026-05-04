@@ -1861,5 +1861,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "phenelzine",
+    "drug_b": "sumatriptan",
+    "drug_pair_canonical": [
+      "phenelzine",
+      "sumatriptan"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Sumatriptan (selective 5-HT1B/1D agonist for acute migraine abortive therapy) coadministered with phenelzine (irreversible monoamine oxidase inhibitor) is contraindicated per the FDA Imitrex label and the AHA/AAN headache-management guideline. Phenelzine inactivates MAO-A in the gut wall; sumatriptan is metabolised by MAO-A. The block raises sumatriptan AUC \u22652 fold and creates a high-risk substrate for serotonin syndrome via the additive 5-HT pathway (Krishnan et al., Headache 2008; Boyer & Shannon, NEJM 2005 review of serotonin syndrome). MAO-A recovery requires phenelzine washout of \u22652 weeks before any triptan can be considered. Alternatives: CGRP-receptor antagonists (rimegepant, ubrogepant), topiramate as preventive, or non-serotonergic abortive (NSAID + dihydroergotamine if ergot tolerated).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/020132s019lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/15784664",
+      "https://www.ncbi.nlm.nih.gov/pubmed/18540991"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

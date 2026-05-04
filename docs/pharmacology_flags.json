@@ -971,6 +971,16 @@
       ],
       "atc": "M04AC01",
       "note": "narrow-TI antimitotic; CYP3A4 + P-gp dual substrate"
+    },
+    "sumatriptan": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/020132s019lbl.pdf"
+      ],
+      "atc": "N02CC01",
+      "note": "5-HT1B/1D agonist; abortive triptan; MAO-A substrate"
     }
   }
 }
