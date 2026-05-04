@@ -131,6 +131,28 @@ def test_cohort_matrix_header_quotes_live_counts():
     )
 
 
+def test_evidence_url_count_in_judges_matches_live_cache():
+    """Iter-78 cohort growth + iter-81 audit caught a drift: when pt-020
+    landed (110 → 111 cache entries, +3 evidence URLs), JUDGES.md was
+    rotated to '229 URLs across 111 entries, avg 2.06' but the live
+    count was 232 / 2.09. T3 round 16 corrected. Pinning the live
+    URL-count claim against the JUDGES prose closes that drift class."""
+    cache = json.loads(_CACHE.read_text())
+    total_urls = sum(len(e.get("evidence_urls", [])) for e in cache)
+    n = len(cache)
+    avg = total_urls / max(n, 1)
+    judges = _JUDGES.read_text()
+    expected = f"{total_urls} URLs across {n} entries"
+    assert expected in judges, (
+        f"JUDGES.md must quote live URL count: {expected!r} "
+        f"(found something else; live avg = {avg:.2f} URLs/pair)"
+    )
+    expected_avg = f"avg {avg:.2f} URLs/pair"
+    assert expected_avg in judges, (
+        f"JUDGES.md must quote live URL/pair average {expected_avg!r}"
+    )
+
+
 def test_no_off_by_one_stale_cache_count_in_user_docs():
     """Catches the iter-78-style drift: cohort grew to 111 entries but
     a doc still says 110. Blocks both N-1 and N+1 stragglers."""
