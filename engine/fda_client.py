@@ -17,6 +17,13 @@ from dataclasses import dataclass
 logger = logging.getLogger(__name__)
 
 
+# A response with > 100 results for a single drug is anomalous; the
+# openFDA endpoints we call are pagesize-bounded by `limit`, so a
+# burst above this threshold means either a misconfigured `limit`
+# parameter or a server-side change worth surfacing.
+_RESPONSE_SIZE_WARN_THRESHOLD = 100
+
+
 @dataclass(frozen=True)
 class FDAAlert:
     """A single FDA safety alert for a drug."""
@@ -62,6 +69,19 @@ def get_adverse_events(
         return []
 
     clean_name = drug_name.strip().lower()
+    # PHI discipline: drug name is not PHI per HIPAA Safe Harbor, but the
+    # caller may pass through free-text from a clinical note. Log
+    # length + endpoint kind only; the literal string DOES go on the
+    # wire to a public openFDA endpoint, but the local audit trail
+    # stays clean.
+    logger.debug(
+        "fda_adverse_search_start",
+        extra={
+            "drug_name_length": len(clean_name),
+            "limit": limit,
+            "endpoint": "drug/event",
+        },
+    )
     try:
         resp = httpx.get(
             "https://api.fda.gov/drug/event.json",
@@ -73,11 +93,27 @@ def get_adverse_events(
             timeout=5,
         )
         if resp.status_code != 200:
-            logger.debug("openFDA adverse events returned %d for %s", resp.status_code, drug_name)
+            logger.warning(
+                "fda_adverse_non_200",
+                extra={
+                    "drug_name_length": len(clean_name),
+                    "status_code": resp.status_code,
+                    "endpoint": "drug/event",
+                },
+            )
             return []
 
         data = resp.json()
         results = data.get("results", [])
+        if len(results) > _RESPONSE_SIZE_WARN_THRESHOLD:
+            logger.warning(
+                "fda_adverse_oversize_response",
+                extra={
+                    "drug_name_length": len(clean_name),
+                    "results_returned": len(results),
+                    "threshold": _RESPONSE_SIZE_WARN_THRESHOLD,
+                },
+            )
 
         alerts = []
         for r in results:
@@ -95,7 +131,17 @@ def get_adverse_events(
         return alerts
 
     except Exception as e:
-        logger.debug("openFDA adverse events failed for %s: %s", drug_name, e)
+        # PHI / secret discipline: httpx exception messages can carry
+        # response-body fragments (server error pages echo the request
+        # query string). Log error_type only; never str(e).
+        logger.warning(
+            "fda_adverse_failed",
+            extra={
+                "drug_name_length": len(clean_name),
+                "error_type": type(e).__name__,
+                "endpoint": "drug/event",
+            },
+        )
         return []
 
 
@@ -172,7 +218,14 @@ def get_label_warnings(drug_name: str) -> list[FDAAlert]:
         return alerts
 
     except Exception as e:
-        logger.debug("openFDA label failed for %s: %s", drug_name, e)
+        logger.warning(
+            "fda_label_failed",
+            extra={
+                "drug_name_length": len(clean_name),
+                "error_type": type(e).__name__,
+                "endpoint": "drug/label",
+            },
+        )
         return []
 
 
@@ -223,7 +276,14 @@ def get_drug_recalls(drug_name: str, limit: int = 3) -> list[FDAAlert]:
         return alerts
 
     except Exception as e:
-        logger.debug("openFDA recalls failed for %s: %s", drug_name, e)
+        logger.warning(
+            "fda_recall_failed",
+            extra={
+                "drug_name_length": len(clean_name),
+                "error_type": type(e).__name__,
+                "endpoint": "drug/enforcement",
+            },
+        )
         return []
 
 
@@ -262,6 +322,20 @@ def get_safety_profile(medications: list[str]) -> FDASafetyProfile:
     highest = "none"
     if all_alerts:
         highest = all_alerts[0].severity
+
+    # Per-patient FDA safety-profile complete. Log counts only --
+    # medication names are caller-supplied; cardinality is the
+    # auditor-friendly summary.
+    logger.info(
+        "fda_safety_profile_complete",
+        extra={
+            "med_count": len(medications),
+            "alert_count": len(all_alerts),
+            "black_box_count": len(black_box),
+            "total_adverse_events": total_adverse,
+            "highest_severity": highest,
+        },
+    )
 
     return FDASafetyProfile(
         medications=medications,
