@@ -18,6 +18,12 @@ CTGOV_BASE = "https://clinicaltrials.gov/api/v2"
 _TIMEOUT = 10
 _ALLOWED_HOSTS = frozenset({"clinicaltrials.gov"})
 
+# A response with > 200 studies for a single condition is anomalous;
+# ClinicalTrials.gov rarely returns that many for a typical query, and a
+# burst is either a misconfigured pageSize or a server-side change worth
+# surfacing as WARNING for triage.
+_RESPONSE_SIZE_WARN_THRESHOLD = 200
+
 
 def _ssrf_guard(url: str) -> None:
     """Validate URL hostname against allowlist."""
@@ -77,6 +83,20 @@ def search_trials(
     url = f"{CTGOV_BASE}/studies"
     _ssrf_guard(url)
 
+    # PHI discipline: a free-text condition is clinical context (diagnosis
+    # name) but caller-supplied; could carry adjacent narrative. Log length
+    # + status filter only -- never the literal condition string in the
+    # local audit trail. The string IS sent on the wire to a public API
+    # (CT.gov), but the audit log stays clean.
+    logger.debug(
+        "trials_search_start",
+        extra={
+            "cond_length": len(cond),
+            "status_filter": status,
+            "max_results": max_results,
+        },
+    )
+
     try:
         resp = httpx.get(
             url,
@@ -89,13 +109,28 @@ def search_trials(
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
-            logger.debug(
-                "ClinicalTrials.gov returned %d for %s", resp.status_code, cond
+            logger.warning(
+                "trials_search_non_200",
+                extra={
+                    "cond_length": len(cond),
+                    "status_code": resp.status_code,
+                    "status_filter": status,
+                },
             )
             return ()
 
         data = resp.json()
         studies = data.get("studies", [])
+        if len(studies) > _RESPONSE_SIZE_WARN_THRESHOLD:
+            # Anomalous response size -- worth surfacing for triage.
+            logger.warning(
+                "trials_search_oversize_response",
+                extra={
+                    "cond_length": len(cond),
+                    "studies_returned": len(studies),
+                    "threshold": _RESPONSE_SIZE_WARN_THRESHOLD,
+                },
+            )
         trials = []
 
         for study in studies:
@@ -149,10 +184,27 @@ def search_trials(
                 )
             )
 
+        logger.debug(
+            "trials_search_complete",
+            extra={
+                "cond_length": len(cond),
+                "result_count": len(trials),
+                "status_filter": status,
+            },
+        )
         return tuple(trials)
 
     except Exception as e:
-        logger.debug("ClinicalTrials.gov search failed for %s: %s", cond, e)
+        # PHI discipline: httpx exception messages can carry response-body
+        # fragments (server error pages echo request params). Log only the
+        # exception type, never str(e) directly.
+        logger.warning(
+            "trials_search_failed",
+            extra={
+                "cond_length": len(cond),
+                "error_type": type(e).__name__,
+            },
+        )
         return ()
 
 
@@ -179,7 +231,20 @@ def match_patient_to_trials(
             search_terms=(),
         )
 
+    # Per-patient match start. PHI discipline: count of conditions only,
+    # never the conditions themselves -- patient diagnoses can be a
+    # quasi-identifier when combined with cohort size + geography.
+    logger.info(
+        "trials_match_start",
+        extra={
+            "condition_count": len(conditions),
+            "med_count": len(medications) if medications else 0,
+            "max_per_condition": max_per_condition,
+        },
+    )
+
     seen_nct: set[str] = set()
+    duplicate_count = 0
     all_trials: list[ClinicalTrial] = []
     search_terms: list[str] = []
 
@@ -190,9 +255,21 @@ def match_patient_to_trials(
         search_terms.append(cond)
         trials = search_trials(cond, max_results=max_per_condition)
         for trial in trials:
-            if trial.nct_id not in seen_nct:
-                seen_nct.add(trial.nct_id)
-                all_trials.append(trial)
+            if trial.nct_id in seen_nct:
+                duplicate_count += 1
+                continue
+            seen_nct.add(trial.nct_id)
+            all_trials.append(trial)
+
+    logger.info(
+        "trials_match_complete",
+        extra={
+            "condition_count": len(conditions),
+            "search_terms_used": len(search_terms),
+            "matched_trial_count": len(all_trials),
+            "duplicates_dropped": duplicate_count,
+        },
+    )
 
     return TrialMatchResult(
         patient_conditions=tuple(conditions),
