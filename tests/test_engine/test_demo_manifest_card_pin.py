@@ -51,16 +51,20 @@ def test_demo_card_sha_prefixes_match_manifest():
         )
 
 
-def test_demo_card_announces_all_four_gates_pass():
+def test_demo_card_announces_all_gates_pass():
     """The card chip must say 'PASS' for the gate verdict, and the
-    manifest must back it up."""
+    manifest must back it up. Card now reports 5/5 gates after iter-90
+    promoted the audit-replay verifier into run_all_gates.py."""
     text = _DEMO.read_text()
     manifest = json.loads(_MANIFEST.read_text())
-    assert "4 / 4 gates · PASS" in text or "4 / 4 gates · pass" in text.lower(), (
-        "Reproducibility-manifest card must show '4 / 4 gates · PASS' chip"
+    gate_count = len(manifest["gates"])
+    expected_chip = f"{gate_count} / {gate_count} gates · PASS"
+    assert expected_chip in text or expected_chip.lower() in text.lower(), (
+        f"Reproducibility-manifest card must show {expected_chip!r} chip "
+        f"(driven by manifest['gates'] which has {gate_count} entries)."
     )
     for verdict in manifest["gates"].values():
         assert verdict == "PASS", (
             f"Manifest reports a non-PASS gate verdict ({verdict}); "
-            f"don't claim 4/4 PASS in the demo until that's fixed."
+            f"don't claim {gate_count}/{gate_count} PASS until that's fixed."
         )

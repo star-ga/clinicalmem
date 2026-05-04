@@ -99,14 +99,21 @@ def test_manifest_safety_invariants_pass_through(manifest):
     )
 
 
-def test_manifest_all_four_gates_pass(manifest):
-    """The four-gate audit sequence must show PASS on every line."""
+def test_manifest_all_gates_pass(manifest):
+    """The five-gate audit sequence must show PASS on every line.
+
+    Iter 90 promoted the audit-replay verifier from a stand-alone
+    `verify_audit_replay.py --check` into run_all_gates.py, and the
+    manifest's `gates` dict now includes `audit_replay` alongside the
+    iter-20 four. Future gate additions extend `expected` here.
+    """
     gates = manifest["gates"]
     expected = {
         "pccp_recall",
         "negative_control_precision",
         "federation_invariant",
         "arch_mind_l1",
+        "audit_replay",
     }
     assert set(gates.keys()) == expected
     for name, verdict in gates.items():

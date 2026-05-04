@@ -45,7 +45,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 
 ## 5-minute audit
 
-The fastest path is a **single command** that runs all four gates
+The fastest path is a **single command** that runs all five gates
 in sequence and prints a unified PASS/FAIL summary:
 
 ```bash

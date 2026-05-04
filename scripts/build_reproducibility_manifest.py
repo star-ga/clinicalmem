@@ -90,13 +90,13 @@ def _live_test_count() -> int:
     return int(m.group(1)) if m else -1
 
 
-def _gate_verdict(script_name: str) -> str:
+def _gate_verdict(script_name: str, *extra_args: str) -> str:
     """Run a gate script and return PASS / FAIL / SKIP."""
     script = _REPO_ROOT / "scripts" / script_name
     if not script.exists():
         return "SKIP"
     cp = subprocess.run(
-        [sys.executable, str(script)],
+        [sys.executable, str(script), *extra_args],
         capture_output=True, text=True, timeout=120, cwd=str(_REPO_ROOT),
     )
     return "PASS" if cp.returncode == 0 else "FAIL"
@@ -201,6 +201,7 @@ def _build() -> dict:
             ),
             "federation_invariant": _gate_verdict("federation_mock_demo.py"),
             "arch_mind_l1": _gate_verdict("run_arch_mind_gate.py"),
+            "audit_replay": _gate_verdict("verify_audit_replay.py", "--check"),
         },
         "test_count": _live_test_count(),
         "audit_replay_hint": (

@@ -1,14 +1,15 @@
 """All-gates eval driver — runs every deterministic verification in one shot.
 
-The four gates collapsed into one command:
+The five gates collapsed into one command:
 
   1. PCCP recall gate          — scripts/run_clinical_regression_eval.py
   2. Negative-control precision — scripts/run_negative_control_eval.py
   3. Federation 16-invariant   — scripts/federation_mock_demo.py
   4. arch-mind L1 governance   — scripts/run_arch_mind_gate.py
+  5. Audit-replay verifier     — scripts/verify_audit_replay.py --check
 
 Each gate is invoked as a subprocess so the all-gates result is exactly
-what a reviewer sees if they run the four commands by hand. Skipped
+what a reviewer sees if they run the five commands by hand. Skipped
 gates (arch-mind binary absent) are reported as `skipped`, not `fail`.
 
 Exit code:
@@ -66,6 +67,7 @@ def _run(name: str, cmd: list[str], skip_reason: str | None = None) -> GateResul
             for tok in (
                 "PCCP GATE", "PRECISION GATE", "FEDERATION DEMO COMPLETE",
                 "OK: every rule passed", "DEMO FAILED", "FAIL",
+                "AUDIT REPLAY", "byte-for-byte", "audit-replay",
             )
         ):
             summary = line
@@ -125,6 +127,12 @@ def main() -> int:
                 "--skip-arch-mind passed" if args.skip_arch_mind else
                 "arch-mind binary not installed" if not _arch_mind_available() else None
             ),
+        )
+    )
+    gates.append(
+        _run(
+            "Audit-replay verifier",
+            [sys.executable, str(_SCRIPTS / "verify_audit_replay.py"), "--check"],
         )
     )
 
