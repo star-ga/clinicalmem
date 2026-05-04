@@ -3,11 +3,11 @@
   "@type": "Dataset",
   "name": "ClinicalMem Layer 4.5 BitNet Confusion Matrix",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T02:29:05.902637+00:00",
+  "dateCreated": "2026-05-04T03:57:09.634648+00:00",
   "license": "Apache-2.0",
   "description": "Live deployment-side confusion matrix of the Q16.16 ternary BitNet classifier on the OpenEvidence ground-truth cache. Layer 4.5's role is *high-precision veto*, not headline recall: a contraindicated prediction is always correct (precision 1.000) and the upstream 4-tier pipeline carries primary classification.",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "cache_pairs_total": 108,
+  "cache_pairs_total": 109,
   "matrix": {
     "none": {
       "none": 0,
@@ -52,7 +52,7 @@
     "contraindicated": {
       "none": 4,
       "minor": 0,
-      "moderate": 1,
+      "moderate": 2,
       "serious": 0,
       "major": 8,
       "contraindicated": 6
@@ -61,10 +61,10 @@
   "per_class": {
     "moderate": {
       "tp": 11,
-      "fp": 5,
+      "fp": 6,
       "fn": 11,
       "ground_truth_total": 22,
-      "precision": 0.6875,
+      "precision": 0.6471,
       "recall": 0.5
     },
     "serious": {
@@ -86,10 +86,10 @@
     "contraindicated": {
       "tp": 6,
       "fp": 0,
-      "fn": 13,
-      "ground_truth_total": 19,
+      "fn": 14,
+      "ground_truth_total": 20,
       "precision": 1.0,
-      "recall": 0.3158
+      "recall": 0.3
     }
   },
   "safety_invariants": {

@@ -21,8 +21,8 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
    headline accuracy: same SHA-256 `repro_hash` on any chip in
    healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
 2. **Recall gate (PCCP):** **100% recall** on every severity class
-   represented in the 108-pair OpenEvidence-cited cohort —
-   contraindicated (19/19), major (1/1), serious (66/66), moderate
+   represented in the 109-pair OpenEvidence-cited cohort —
+   contraindicated (20/20), major (1/1), serious (66/66), moderate
    (22/22). Every pair is evidence-backed (FDA labels + ACC/AHA +
    EULAR + Beers + KDIGO + ESC + PubMed primaries). For the older
    NTI-drug stress test (35 pairs), see `docs/clinical_validation.md`.
@@ -66,7 +66,7 @@ If you'd rather run each gate individually:
 
 ```bash
 # 1. PCCP recall gate — verifies 100% recall on contraindicated /
-#    major / serious / moderate against the 108-pair OpenEvidence-cited
+#    major / serious / moderate against the 109-pair OpenEvidence-cited
 #    cohort.
 python3 scripts/run_clinical_regression_eval.py
 
@@ -95,15 +95,15 @@ artifact. Audit map:
 
 | Claim on the dashboard | Source of truth |
 |---|---|
-| `100% recall · contraindicated · 19/19` | `docs/openevidence_cache.json` (108 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
+| `100% recall · contraindicated · 20/20` | `docs/openevidence_cache.json` (109 entries) → `docs/pccp_eval_latest.json` (per-pair verdicts) |
 | `0 / 8 FP · precision = 1.0` | `docs/negative_control_cohort.json` (8 entries) → `scripts/run_negative_control_eval.py --json` |
 | `8,512 ternary weights + 69 Q16.16 biases = 8,581 params / 19 KB` + bundle hash `cfadb4f6…` | `engine/bitnet_weights.json` + `engine/bitnet_classifier.py`. Pinned by `tests/test_engine/test_bitnet_param_count_pin.py`. |
-| `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 108-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
+| `Layer 4.5 BitNet confusion matrix (live deployment)` | `docs/bitnet_confusion_matrix.json` (regenerate with `scripts/build_bitnet_confusion_matrix.py`) — full ground-truth × predicted matrix on the 109-pair cache, plus per-class precision / recall. **Safety invariant: 0 false positives on contraindicated**, pinned in `tests/test_scripts/test_bitnet_confusion_matrix.py`. |
 | `Single-file reproducibility manifest` | `docs/reproducibility_manifest.json` (regenerate with `scripts/build_reproducibility_manifest.py`) — content-addressed snapshot of every load-bearing artifact: SHA-256 of cache + weights + cohort, flow plan_hashes for all 7 `.flow.mind` files, gate verdicts (PCCP / negative-control / federation / arch-mind), test count, git HEAD. Drops into a compliance review as one file an FDA SaMD reviewer can verify with `--check`. Pinned in `tests/test_scripts/test_reproducibility_manifest.py`. |
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain) |
 | `Federation control plane LIVE — mind-mem v3.9.0 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |
-| `17 synthetic patients · 34 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
+| `18 synthetic patients · 35 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). |
 | `21 CFR Part 11 audit export` | `engine/audit_export_part11.py` (30 tests) |
 | `Apache-2.0 + patent grant` | `LICENSE` (top of repo) |
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |

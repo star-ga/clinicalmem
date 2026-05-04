@@ -1742,5 +1742,22 @@
     ],
     "retrieved_at": "2026-05-03",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "lisinopril",
+    "drug_b": "sacubitril",
+    "drug_pair_canonical": [
+      "lisinopril",
+      "sacubitril"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Concomitant use of sacubitril/valsartan (Entresto) with any ACE inhibitor (lisinopril, enalapril, ramipril, captopril, etc.) is CONTRAINDICATED due to additive bradykinin / substance-P potentiation by neprilysin inhibition, producing severe and potentially life-threatening angioedema (airway compromise, death). The FDA Entresto label requires a minimum 36-hour washout when switching FROM an ACE inhibitor TO sacubitril/valsartan; the same washout applies in reverse. ARBs (valsartan, losartan) do NOT require washout \u2014 sacubitril/valsartan already contains valsartan as the ARB component. Switching protocol: (a) discontinue ACE inhibitor; (b) wait \u2265 36 hours (typically next-morning dosing if last ACE-I dose was evening); (c) initiate sacubitril/valsartan at appropriate dose for renal function. Black-box warning: angioedema.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207620Orig1s000lbl.pdf",
+      "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063",
+      "https://academic.oup.com/eurheartj/article/42/36/3599/6358045"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

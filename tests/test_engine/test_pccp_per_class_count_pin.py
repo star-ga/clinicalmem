@@ -10,9 +10,9 @@ growth (iter-19 added pt-013, iter-9 added 5 cache entries before
 that). This test pins the per-class counts so any future cache
 growth fails the gate until the labels are updated.
 
-Pinned values (iter 54):
+Pinned values (iter 60):
 
-  contraindicated: 19 (was 14 → 15 → 16 → 17 → 18 → 19 across cohort growth)
+  contraindicated: 20 (was 14 → 15 → 16 → 17 → 18 → 19 → 20 across cohort growth)
   serious        : 66 (was 64 → 66 — sparkline lagged)
   moderate       : 22 (was 20 → 22 — sparkline lagged)
   major          : 1  (iter 39: tamoxifen + paroxetine — first major)
@@ -26,7 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 
-_EXPECTED_CONTRAINDICATED = 19
+_EXPECTED_CONTRAINDICATED = 20
 _EXPECTED_SERIOUS = 66
 _EXPECTED_MODERATE = 22
 _EXPECTED_MAJOR = 1  # iter 39: first major-class entry (tamoxifen + paroxetine)
@@ -77,13 +77,19 @@ def test_dashboard_sparkline_displays_pinned_counts():
 
 
 def test_no_stale_per_class_counts_remain():
-    """Old per-class counts must not linger after cohort growth."""
+    """Old per-class counts must not linger after cohort growth.
+
+    Iter 60 NOTE: removed the "moderate 100% · 20 / 20" historical from
+    this list. As of iter 60 the *contraindicated* class hit 20, so the
+    label "100% · 20 / 20" is now the LIVE contraindicated count and
+    blocking it would fire on legitimate copy. Past historicals are kept
+    because their values haven't been re-claimed by another class.
+    """
     historical = (
         ("contraindicated", "100% · 14 / 14"),
         ("contraindicated", "100% · 15 / 15"),
         ("contraindicated", "100% · 16 / 16"),
         ("serious", "100% · 64 / 64"),
-        ("moderate", "100% · 20 / 20"),
     )
     html = _DEMO_HTML.read_text()
     for label, stale in historical:

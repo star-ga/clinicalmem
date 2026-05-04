@@ -5274,6 +5274,217 @@
           }
         ]
       }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-018",
+        "meta": {
+          "_synthetic": true
+        },
+        "name": [
+          {
+            "use": "official",
+            "family": "Bjornstad",
+            "given": [
+              "Magnus",
+              "Erik"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1959-11-08",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "4720 West Larkspur Lane"
+            ],
+            "city": "Minneapolis",
+            "state": "MN",
+            "postalCode": "55408",
+            "country": "US"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://example.org/synthea/mrn",
+            "value": "SYN-MRN-018"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-018a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1390896094"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Halverson",
+            "given": [
+              "Greta"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-018a",
+        "subject": {
+          "reference": "Patient/synthea-pt-018"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "703272007",
+              "display": "Heart failure with reduced ejection fraction (HFrEF, NYHA class II, EF 32%)"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I50.21"
+            }
+          ]
+        },
+        "onsetDateTime": "2022-09-15"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-018b",
+        "subject": {
+          "reference": "Patient/synthea-pt-018"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "59621000",
+              "display": "Essential hypertension"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I10"
+            }
+          ]
+        },
+        "onsetDateTime": "2018-02-22"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-018a",
+        "subject": {
+          "reference": "Patient/synthea-pt-018"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-018a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "29046",
+              "display": "lisinopril"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "20 mg orally once daily \u2014 taken this morning at 07:00 (most recent dose < 36 h ago)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 20,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-018b",
+        "subject": {
+          "reference": "Patient/synthea-pt-018"
+        },
+        "informationSource": {
+          "reference": "Practitioner/synthea-prac-018a"
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1656331",
+              "display": "sacubitril"
+            }
+          ]
+        },
+        "dosage": [
+          {
+            "text": "sacubitril 49 mg / valsartan 51 mg (Entresto) orally twice daily \u2014 first dose scheduled for tonight 19:00 (washout from lisinopril ~12 h, FDA-required minimum is 36 h \u2014 DDI gate fires here)",
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 100,
+                  "unit": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
