@@ -155,6 +155,7 @@ def test_manifest_tracks_all_load_bearing_artifacts(manifest):
         "synthea_demo_cohort",
         "bitnet_calibration",
         "audit_replay_pins",
+        "pharmacology_flags",
         "flow_plan_hashes",
     }
     actual = set(manifest["artifacts"].keys())
@@ -199,6 +200,55 @@ def test_manifest_audit_replay_bundle_id_matches_engine(manifest):
         f"audit_replay_pins bundle_id={audit_bid[:16]}... but engine "
         f"bundle_id={eng_bid[:16]}... — pins are stale, "
         f"re-run scripts/verify_audit_replay.py"
+    )
+
+
+def test_manifest_pharmacology_flags_integrity(manifest):
+    """The pharmacology_flags entry must record the live drug count and
+    flag-key set. If they drift, the demo's `13-flag ATC table` claim
+    is hollow. Iter-97 catch — same gap class as iter-76 / iter-86 for
+    bitnet_calibration / audit_replay_pins respectively.
+
+    Floors:
+      - drug_count >= 50 (covers the cohort + cache drug surface area)
+      - len(flag_keys) >= 12 (the 12-flag minimum we ship)
+      - schema_version is set (audit-trail invariant)
+    """
+    pf = manifest["artifacts"].get("pharmacology_flags", {})
+    if not pf:
+        return  # bootstrap path
+    drug_count = pf.get("drug_count", 0)
+    flag_keys = pf.get("flag_keys", [])
+    schema_version = pf.get("schema_version")
+    assert drug_count >= 50, (
+        f"pharmacology_flags drug_count={drug_count} < 50; the curated "
+        f"table must cover at least the cohort + cache drug surface."
+    )
+    assert len(flag_keys) >= 12, (
+        f"pharmacology_flags has only {len(flag_keys)} flag keys; "
+        f"floor is 12 (the iter-96 baseline schema)."
+    )
+    assert schema_version is not None, (
+        "pharmacology_flags must carry a schema_version field — "
+        "without it the audit chain can't pin the flag-set shape."
+    )
+    # Critical flag presence — the load-bearing pharmacology classes
+    # the demo claims to flag.
+    required = {
+        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_substrate",
+        "is_p_gp_inhibitor",
+        "is_p_gp_substrate",
+        "is_statin",
+        "is_anticoagulant",
+        "is_maoi",
+        "is_serotonergic",
+    }
+    missing = required - set(flag_keys)
+    assert not missing, (
+        f"pharmacology_flags missing required flag keys: {sorted(missing)}. "
+        f"These are referenced in demo + JUDGES copy; removing them "
+        f"breaks the published schema."
     )
 
 

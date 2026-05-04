@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1000 / 1000 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1001 / 1001 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -1672,12 +1672,16 @@ Site B (Mayo Clinic) ingress preimage_hash:
           <span class="text-slate-700">4806d54f6937af12…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
+          <span class="text-slate-500">pharmacology_flags</span>
+          <span class="text-slate-700">ca31cd518ac66df4…</span>
+        </div>
+        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">flow_plan_hashes</span>
           <span class="text-slate-700">7 flows &middot; 64-char hex each</span>
         </div>
       </div>
 
-      <p class="text-[10px] text-slate-400 mt-3 leading-relaxed">Pinned by <code class="font-mono">tests/test_scripts/test_reproducibility_manifest.py</code> (11 tests): SHA-format check, flow-set parity, BitNet safety-invariant pass-through, all-5-gates-PASS, test_count floor, git_head format, live↔on-disk parity via <code class="font-mono">--check</code>, every load-bearing artifact tracked (7 SHA-tracked + flow_plan_hashes), calibration + audit-replay weights_id ↔ engine bundle_id cross-checks. Re-run <code>scripts/build_reproducibility_manifest.py</code> after any artifact change.</p>
+      <p class="text-[10px] text-slate-400 mt-3 leading-relaxed">Pinned by <code class="font-mono">tests/test_scripts/test_reproducibility_manifest.py</code> (12 tests): SHA-format check, flow-set parity, BitNet safety-invariant pass-through, all-5-gates-PASS, test_count floor, git_head format, live↔on-disk parity via <code class="font-mono">--check</code>, every load-bearing artifact tracked (8 SHA-tracked + flow_plan_hashes), calibration + audit-replay weights_id ↔ engine bundle_id cross-checks, pharmacology-flags drug-count floor + flag-key set integrity. Re-run <code>scripts/build_reproducibility_manifest.py</code> after any artifact change.</p>
     </article>
   </div>
 </section>
@@ -1882,7 +1886,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1000 / 1000</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1001 / 1001</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">114 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">23 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>

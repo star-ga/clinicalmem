@@ -111,6 +111,7 @@ def _build() -> dict:
     cohort_path = _REPO_ROOT / "docs" / "synthea_demo_cohort.json"
     calibration_path = _REPO_ROOT / "docs" / "bitnet_calibration.json"
     audit_replay_path = _REPO_ROOT / "docs" / "audit_replay_pins.json"
+    pharm_flags_path = _REPO_ROOT / "docs" / "pharmacology_flags.json"
 
     cache = json.loads(cache_path.read_text())
     weights = json.loads(weights_path.read_text())
@@ -118,6 +119,7 @@ def _build() -> dict:
     cohort = json.loads(cohort_path.read_text())
     calibration = json.loads(calibration_path.read_text()) if calibration_path.exists() else None
     audit_replay = json.loads(audit_replay_path.read_text()) if audit_replay_path.exists() else None
+    pharm_flags = json.loads(pharm_flags_path.read_text()) if pharm_flags_path.exists() else None
 
     patients = sum(
         1 for e in cohort.get("entry", [])
@@ -191,6 +193,13 @@ def _build() -> dict:
                 "sha256": _sha256_file(audit_replay_path) if audit_replay_path.exists() else None,
                 "bundle_id": audit_replay.get("bundle_id") if audit_replay else None,
                 "pair_count": len(audit_replay.get("pairs", [])) if audit_replay else 0,
+            },
+            "pharmacology_flags": {
+                "path": "docs/pharmacology_flags.json",
+                "sha256": _sha256_file(pharm_flags_path) if pharm_flags_path.exists() else None,
+                "drug_count": len(pharm_flags.get("drugs", {})) if pharm_flags else 0,
+                "flag_keys": pharm_flags.get("flag_keys", []) if pharm_flags else [],
+                "schema_version": pharm_flags.get("schema_version") if pharm_flags else None,
             },
             "flow_plan_hashes": _flow_plan_hashes(),
         },

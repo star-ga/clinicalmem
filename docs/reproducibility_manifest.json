@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T17:30:00.312775+00:00",
+  "dateCreated": "2026-05-04T17:42:54.301325+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "72fd7e2f49786c8e9102176fda7797a26596bfd1",
+  "git_head": "37ef05434ab47d120d569a9bcb97f4a3a62d43c3",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -58,6 +58,27 @@
       "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
       "pair_count": 23
     },
+    "pharmacology_flags": {
+      "path": "docs/pharmacology_flags.json",
+      "sha256": "ca31cd518ac66df484c610689f162ce9300d0eebf8b77bccdbe96c97d9e30b94",
+      "drug_count": 110,
+      "flag_keys": [
+        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_substrate",
+        "is_cyp2c9_inhibitor",
+        "is_cyp2d6_inhibitor",
+        "is_p_gp_inhibitor",
+        "is_p_gp_substrate",
+        "is_oatp1b1_inhibitor",
+        "is_statin",
+        "is_anticoagulant",
+        "is_maoi",
+        "is_serotonergic",
+        "is_nsaid",
+        "is_pde5_inhibitor"
+      ],
+      "schema_version": "v1"
+    },
     "flow_plan_hashes": {
       "AllergyCrossReactivity": "272d3692b73aae490580dc6675ae905d3648697c435807436dc54e6c0ac786db",
       "ClinicalTrialMatch": "675abe773fa6f012c57a56f9b16cef2b5824d719beabbc2826bfeb1c8e348cdc",
@@ -75,6 +96,6 @@
     "arch_mind_l1": "PASS",
     "audit_replay": "PASS"
   },
-  "test_count": 1000,
+  "test_count": 1001,
   "audit_replay_hint": "To verify: (1) check git_head matches the auditor's expected commit, (2) recompute SHA-256 of every artifact path and compare, (3) recompute flow plan_hashes via engine.flow_runner.compute_plan_hash, (4) re-run the four gate scripts, (5) run pytest tests/test_engine tests/test_scripts and confirm test_count is at or above the manifested value."
 }
