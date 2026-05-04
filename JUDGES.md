@@ -84,7 +84,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **932+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **940+ passed**.
 
 ---
 
@@ -112,6 +112,7 @@ artifact. Audit map:
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |
 | `Clinical Advisor: Dr. Ludmila Afonicheva, MD` | `docs/clinical_validation.md` (US-licensed Family Medicine, NPI 1932159530) |
 | `External judge-LLM consensus 9.32 / 10 (n=6)` | `docs/eval_runs/round_4_full.json` + `docs/eval_runs/round_4_recovery_gemini.json` (raw rubric scores + parsed gaps from gemini-3.1-pro / grok-4.3 / deepseek-v4-pro / mistral-large / zhipu-glm-5 / nvidia-deepseek-v3.2). Summary in `docs/eval_runs/README.md`. |
+| `Layer 4.5 calibration / margin diagnostic` | `docs/bitnet_calibration.json` (regenerate via `scripts/build_bitnet_calibration.py`) — per-pair top-1-vs-top-2 logit margin (Q16.16) for the entire 110-pair cache, plus per-class aggregates (mean margin correct vs wrong) and the top-10 worst-close-calls / confidently-wrong lists. Surfaces the safety case: the smallest-margin contraindicated miss (`itraconazole + simvastatin`) is at Q16.16 margin **90,199 ≈ 1.38** — a close call, not a confident misclassification, which means the upstream FDA deterministic table catches it cleanly. Pinned by `tests/test_scripts/test_bitnet_calibration.py` (8 tests including a `weights_id` cross-check so the artifact cannot drift out-of-sync with the engine weights bundle). |
 | `Edge / offline build · $15 Pi Zero 2 W · USB plug-in` | `docs/edge_pi_offline.md` — full Edge profile spec (688 K params / 1.7 MB / 3-layer ternary / learned RxCUI embeddings), Pi-tier latency benchmarks (Pi 5 / Pi 4 / Pi Zero 2 W / ESP32), the **"ClinicalMem Box" hardware product profile** (USB OTG gadget mode for zero-IT plug-in, office-router drop-in, EHR sidecar; ~$99 SKU at ~$60 COGS), and the data-licensing reality check (RxNorm public + FDA SPL public + DrugBank commercial). The bit-identical SHA-256 audit hash works on Pi/x86/CUDA/browser — same `repro_hash` regardless of chip. |
 
 ---

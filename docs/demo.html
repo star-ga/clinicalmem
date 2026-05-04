@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 932 / 932 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 940 / 940 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -1184,6 +1184,7 @@ tailwind.config = {
         </svg>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_six</strong> (the recall floor). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Retrain v2 staged</strong> at <code class="font-mono text-[10px]">retrain_runpod/</code> — augmented corpus (3,257 rows = base 3,247 + 10 cache contraindicated anchors) + gated train script (rejects any weight rotation that breaks <code class="font-mono">fp_contraindicated_is_zero</code> OR fails to hit 20/20 recall). Awaiting GPU; runs ~30 s on a 3090.</p>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">🎯 <strong>Calibration / margin diagnostic</strong> — <code class="font-mono text-[10px]">docs/bitnet_calibration.json</code> records every pair's top-1-vs-top-2 logit margin so an FDA reviewer can see <em>when</em> the model is uncertain, not just whether it's right. The smallest-margin contraindicated miss (<code class="font-mono">itraconazole + simvastatin</code>) is at Q16.16 margin <strong>90,199 ≈ 1.38</strong> — a close call, not a confident misclassification. Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_calibration.py</code>.</p>
       </div>
     </article>
   </div>
@@ -1873,7 +1874,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">932 / 932</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">940 / 940</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">110 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">19 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>

@@ -1,0 +1,2058 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "by_class": {
+    "contraindicated": {
+      "correct_count": 6,
+      "count": 20,
+      "max_margin_wrong_q16": 1567524,
+      "mean_margin_correct_q16": 679298,
+      "mean_margin_wrong_q16": 594445,
+      "min_margin_wrong_q16": 90199,
+      "recall": 0.3,
+      "wrong_count": 14
+    },
+    "major": {
+      "correct_count": 1,
+      "count": 1,
+      "max_margin_wrong_q16": null,
+      "mean_margin_correct_q16": 114743,
+      "mean_margin_wrong_q16": null,
+      "min_margin_wrong_q16": null,
+      "recall": 1.0,
+      "wrong_count": 0
+    },
+    "moderate": {
+      "correct_count": 11,
+      "count": 22,
+      "max_margin_wrong_q16": 1736658,
+      "mean_margin_correct_q16": 1202051,
+      "mean_margin_wrong_q16": 673405,
+      "min_margin_wrong_q16": 11347,
+      "recall": 0.5,
+      "wrong_count": 11
+    }
+  },
+  "confidently_wrong": [
+    {
+      "drug_a": "nsaid",
+      "drug_b": "rivaroxaban",
+      "ground_truth": "serious",
+      "margin_q16": 2970219,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "benzodiazepine",
+      "drug_b": "elderly",
+      "ground_truth": "serious",
+      "margin_q16": 2617909,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "diphenhydramine",
+      "drug_b": "elderly",
+      "ground_truth": "serious",
+      "margin_q16": 2300214,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "apixaban",
+      "drug_b": "aspirin",
+      "ground_truth": "serious",
+      "margin_q16": 2257054,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "gabapentin",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "margin_q16": 1961119,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "benzodiazepine",
+      "drug_b": "opioid",
+      "ground_truth": "serious",
+      "margin_q16": 1910245,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "carvedilol",
+      "drug_b": "furosemide",
+      "ground_truth": "moderate",
+      "margin_q16": 1736658,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "cyclosporine",
+      "drug_b": "nsaid",
+      "ground_truth": "serious",
+      "margin_q16": 1697137,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "fluconazole",
+      "drug_b": "phenytoin",
+      "ground_truth": "serious",
+      "margin_q16": 1692000,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "cranberry",
+      "drug_b": "warfarin",
+      "ground_truth": "moderate",
+      "margin_q16": 1605922,
+      "predicted": "none"
+    }
+  ],
+  "description": "Per-pair top-1-vs-top-2 logit margin (Q16.16) for the live OpenEvidence cache. Surfaces whether the BitNet classifier is confidently right, uncertainly right, uncertainly wrong, or confidently wrong. The 'uncertainly wrong' bucket is the deferral-friendly case \u2014 small margin \u2192 upstream layer (RxNorm / OpenEvidence / 5-LLM consensus) decides.",
+  "entries": [
+    {
+      "correct": false,
+      "drug_a": "aspirin",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        583800,
+        -1175551,
+        50861,
+        1232329,
+        -415882
+      ],
+      "margin_q16": 648529,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "ibuprofen",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        332445,
+        -778737,
+        197180,
+        848472,
+        -324252
+      ],
+      "margin_q16": 516027,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "naproxen",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        45322,
+        -487693,
+        33682,
+        166655,
+        -173353
+      ],
+      "margin_q16": 121333,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "nsaid",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        111499,
+        -774880,
+        -289969,
+        343346,
+        -368847
+      ],
+      "margin_q16": 231847,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "contrast dye",
+      "drug_b": "metformin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -267278,
+        -2825694,
+        -1511422,
+        -1711538,
+        762082
+      ],
+      "margin_q16": 1029360,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "lisinopril",
+      "drug_b": "potassium",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        -602657,
+        -2241992,
+        1129225,
+        329775,
+        -1549529
+      ],
+      "margin_q16": 799450,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "major"
+    },
+    {
+      "correct": true,
+      "drug_a": "lisinopril",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        -379505,
+        -2321480,
+        1779933,
+        -1851680,
+        -3295717
+      ],
+      "margin_q16": 2159438,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "metoprolol",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -6255,
+        -3402902,
+        -1232880,
+        1579152,
+        -2756700
+      ],
+      "margin_q16": 1585407,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amiodarone",
+      "drug_b": "simvastatin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        380478,
+        -102854,
+        -407806,
+        470128,
+        -77705
+      ],
+      "margin_q16": 89650,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "fluoxetine",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -1229312,
+        -2101730,
+        -480162,
+        946430,
+        -1203985
+      ],
+      "margin_q16": 1426592,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": true,
+      "drug_a": "ciprofloxacin",
+      "drug_b": "tizanidine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -189865,
+        -2227871,
+        -14426,
+        -835363,
+        816561
+      ],
+      "margin_q16": 830987,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "methotrexate",
+      "drug_b": "trimethoprim",
+      "ground_truth": "serious",
+      "logits_q16": [
+        963266,
+        -677673,
+        -1266885,
+        1595190,
+        -130897
+      ],
+      "margin_q16": 631924,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "amoxicillin",
+      "drug_b": "penicillin",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        19485,
+        -2410907,
+        1141434,
+        -423044,
+        -2002063
+      ],
+      "margin_q16": 1121949,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "iodine",
+      "drug_b": "metformin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -568547,
+        -1266889,
+        -87875,
+        -534025,
+        497582
+      ],
+      "margin_q16": 585457,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": true,
+      "drug_a": "atorvastatin",
+      "drug_b": "grapefruit",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        -660034,
+        -1901520,
+        1258061,
+        -782695,
+        -967905
+      ],
+      "margin_q16": 1918095,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "clarithromycin",
+      "drug_b": "simvastatin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -38658,
+        -745029,
+        -596344,
+        243157,
+        -367014
+      ],
+      "margin_q16": 281815,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "clarithromycin",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        339240,
+        -124961,
+        -97020,
+        637225,
+        332902
+      ],
+      "margin_q16": 297985,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "lithium",
+      "drug_b": "thiazide",
+      "ground_truth": "serious",
+      "logits_q16": [
+        106354,
+        -1512324,
+        -1683789,
+        476887,
+        -1326987
+      ],
+      "margin_q16": 370533,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "hydrochlorothiazide",
+      "drug_b": "lithium",
+      "ground_truth": "serious",
+      "logits_q16": [
+        521901,
+        -169761,
+        -425329,
+        530459,
+        -103550
+      ],
+      "margin_q16": 8558,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "lisinopril",
+      "drug_b": "lithium",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -513048,
+        -796604,
+        464989,
+        498599,
+        -774321
+      ],
+      "margin_q16": 33610,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "ibuprofen",
+      "drug_b": "lithium",
+      "ground_truth": "serious",
+      "logits_q16": [
+        53255,
+        -955848,
+        -169510,
+        1329047,
+        -406184
+      ],
+      "margin_q16": 1275792,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amiodarone",
+      "drug_b": "digoxin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        533442,
+        -1210247,
+        -402000,
+        76964,
+        -214635
+      ],
+      "margin_q16": 456478,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "digoxin",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        610640,
+        -5460053,
+        1036407,
+        955671,
+        -3878134
+      ],
+      "margin_q16": 80736,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "digoxin",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        1327353,
+        -4268995,
+        1316006,
+        -1419350,
+        -2735485
+      ],
+      "margin_q16": 11347,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "phenytoin",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        364897,
+        -1474491,
+        -730076,
+        470578,
+        -570722
+      ],
+      "margin_q16": 105681,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "fluconazole",
+      "drug_b": "phenytoin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1486394,
+        -4668196,
+        -372562,
+        -205606,
+        -3992598
+      ],
+      "margin_q16": 1692000,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "ciprofloxacin",
+      "drug_b": "theophylline",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1248141,
+        -2760891,
+        330830,
+        -673831,
+        -1355213
+      ],
+      "margin_q16": 917311,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "cyclosporine",
+      "drug_b": "simvastatin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -384924,
+        -973143,
+        -330308,
+        -91533,
+        -256460
+      ],
+      "margin_q16": 164927,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "cyclosporine",
+      "drug_b": "nsaid",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1351674,
+        -1196882,
+        -887315,
+        -609716,
+        -345463
+      ],
+      "margin_q16": 1697137,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "fluconazole",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        269450,
+        -611024,
+        13700,
+        579992,
+        115745
+      ],
+      "margin_q16": 310542,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "ssri",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -295882,
+        -3164283,
+        -1283507,
+        -525447,
+        -1467568
+      ],
+      "margin_q16": 229565,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "sertraline",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -111298,
+        -1383392,
+        -177503,
+        939901,
+        -826364
+      ],
+      "margin_q16": 1051199,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "phenelzine",
+      "drug_b": "sertraline",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -1413856,
+        -2013551,
+        -290983,
+        -508447,
+        260508
+      ],
+      "margin_q16": 551491,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": true,
+      "drug_a": "fluoxetine",
+      "drug_b": "phenelzine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -1061913,
+        -1934986,
+        -2180939,
+        -448705,
+        475777
+      ],
+      "margin_q16": 924482,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "benzodiazepine",
+      "drug_b": "opioid",
+      "ground_truth": "serious",
+      "logits_q16": [
+        293942,
+        -6772976,
+        -366562,
+        2204187,
+        -5399919
+      ],
+      "margin_q16": 1910245,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "lorazepam",
+      "drug_b": "morphine",
+      "ground_truth": "serious",
+      "logits_q16": [
+        476568,
+        -1591306,
+        -633255,
+        1351825,
+        -1534602
+      ],
+      "margin_q16": 875257,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "gemfibrozil",
+      "drug_b": "simvastatin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -61067,
+        -755273,
+        -568478,
+        305808,
+        -704375
+      ],
+      "margin_q16": 366875,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "gemfibrozil",
+      "drug_b": "rosuvastatin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        361856,
+        -1380728,
+        -834653,
+        1612071,
+        -941637
+      ],
+      "margin_q16": 1250215,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "ace inhibitor",
+      "drug_b": "arb",
+      "ground_truth": "serious",
+      "logits_q16": [
+        429374,
+        -2071757,
+        -153955,
+        670933,
+        -2134320
+      ],
+      "margin_q16": 241559,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "lisinopril",
+      "drug_b": "losartan",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -870567,
+        -2735651,
+        -667882,
+        784169,
+        -415560
+      ],
+      "margin_q16": 1199729,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "diltiazem",
+      "drug_b": "metoprolol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        833403,
+        -481269,
+        -810513,
+        898276,
+        -430200
+      ],
+      "margin_q16": 64873,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amiodarone",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        457072,
+        -388910,
+        -28216,
+        918991,
+        123829
+      ],
+      "margin_q16": 461919,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amiodarone",
+      "drug_b": "ondansetron",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1251126,
+        -695996,
+        -350583,
+        1313534,
+        -716269
+      ],
+      "margin_q16": 62408,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "methotrexate",
+      "drug_b": "naproxen",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -40691,
+        -1587910,
+        87709,
+        -256148,
+        -1756871
+      ],
+      "margin_q16": 128400,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "methotrexate",
+      "drug_b": "omeprazole",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        465342,
+        -1341801,
+        496704,
+        -142192,
+        -1043232
+      ],
+      "margin_q16": 31362,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "furosemide",
+      "drug_b": "nsaid",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        869570,
+        -720513,
+        53025,
+        -360548,
+        -651397
+      ],
+      "margin_q16": 816545,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "lisinopril",
+      "drug_b": "nsaid",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        48641,
+        -463908,
+        -7096,
+        -559450,
+        -681947
+      ],
+      "margin_q16": 55737,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "apixaban",
+      "drug_b": "nsaid",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1210922,
+        -823197,
+        -1033617,
+        -85552,
+        46023
+      ],
+      "margin_q16": 1164899,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "clopidogrel",
+      "drug_b": "omeprazole",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        1269067,
+        -3047832,
+        150052,
+        -979029,
+        -2422729
+      ],
+      "margin_q16": 1119015,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "clopidogrel",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -125742,
+        -1108633,
+        -51343,
+        78442,
+        -63606
+      ],
+      "margin_q16": 129785,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "nsaid",
+      "drug_b": "rivaroxaban",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -1479066,
+        -1863377,
+        -1390687,
+        1579532,
+        -2882136
+      ],
+      "margin_q16": 2970219,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "sulfamethoxazole",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        442750,
+        -803900,
+        -510282,
+        189208,
+        -266436
+      ],
+      "margin_q16": 253542,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "fluconazole",
+      "drug_b": "glipizide",
+      "ground_truth": "serious",
+      "logits_q16": [
+        372885,
+        -2053230,
+        82923,
+        -990379,
+        -514217
+      ],
+      "margin_q16": 289962,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": true,
+      "drug_a": "ciprofloxacin",
+      "drug_b": "glipizide",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        620940,
+        -3538635,
+        2535847,
+        -1880070,
+        -2095561
+      ],
+      "margin_q16": 1914907,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "omeprazole",
+      "drug_b": "ppi long-term",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        1217583,
+        -789918,
+        70195,
+        626827,
+        -1308245
+      ],
+      "margin_q16": 590756,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "benzodiazepine",
+      "drug_b": "elderly",
+      "ground_truth": "serious",
+      "logits_q16": [
+        3340908,
+        -8689775,
+        -2806119,
+        722999,
+        -7141808
+      ],
+      "margin_q16": 2617909,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "amitriptyline",
+      "drug_b": "elderly",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1630771,
+        -6497101,
+        -3639256,
+        950024,
+        -3172631
+      ],
+      "margin_q16": 680747,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "diphenhydramine",
+      "drug_b": "elderly",
+      "ground_truth": "serious",
+      "logits_q16": [
+        2555879,
+        -6223745,
+        -905607,
+        255665,
+        -4964484
+      ],
+      "margin_q16": 2300214,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "ckd",
+      "drug_b": "nsaid",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1398107,
+        -852614,
+        -855379,
+        100857,
+        -23055
+      ],
+      "margin_q16": 1297250,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "metformin",
+      "drug_b": "renal impairment",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        985761,
+        -3545732,
+        -899630,
+        -581763,
+        -2630643
+      ],
+      "margin_q16": 1567524,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "propranolol",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        193536,
+        -2946070,
+        -981217,
+        554755,
+        -1636425
+      ],
+      "margin_q16": 361219,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "atenolol",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        796286,
+        -3279296,
+        -362248,
+        1322127,
+        -3673638
+      ],
+      "margin_q16": 525841,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "carvedilol",
+      "drug_b": "diltiazem",
+      "ground_truth": "serious",
+      "logits_q16": [
+        379875,
+        -458014,
+        -384819,
+        489015,
+        192841
+      ],
+      "margin_q16": 109140,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "itraconazole",
+      "drug_b": "simvastatin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        997864,
+        -768476,
+        -763457,
+        907665,
+        -847480
+      ],
+      "margin_q16": 90199,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "ketoconazole",
+      "drug_b": "simvastatin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -819579,
+        -1916326,
+        -833551,
+        236971,
+        -1343450
+      ],
+      "margin_q16": 1056550,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "eplerenone",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        448065,
+        -1257207,
+        782228,
+        -1798788,
+        -1134016
+      ],
+      "margin_q16": 334163,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "potassium chloride",
+      "drug_b": "spironolactone",
+      "ground_truth": "serious",
+      "logits_q16": [
+        327508,
+        -6496268,
+        -129519,
+        -1459124,
+        -3466201
+      ],
+      "margin_q16": 457027,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": true,
+      "drug_a": "lisinopril",
+      "drug_b": "potassium chloride",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        86786,
+        -961214,
+        954817,
+        -655180,
+        -1161153
+      ],
+      "margin_q16": 868031,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "enalapril",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        162137,
+        -1280548,
+        1652273,
+        -1856297,
+        -1914041
+      ],
+      "margin_q16": 1490136,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "spironolactone",
+      "drug_b": "valsartan",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        -388638,
+        -4918909,
+        811010,
+        -553258,
+        -317160
+      ],
+      "margin_q16": 1128170,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "erythromycin",
+      "drug_b": "simvastatin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        169956,
+        -1372713,
+        -591845,
+        662144,
+        -835033
+      ],
+      "margin_q16": 492188,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "erythromycin",
+      "drug_b": "warfarin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        532134,
+        -2294139,
+        92006,
+        908572,
+        -835773
+      ],
+      "margin_q16": 376438,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "apixaban",
+      "drug_b": "fluconazole",
+      "ground_truth": "serious",
+      "logits_q16": [
+        57182,
+        -644855,
+        -145294,
+        382547,
+        -565237
+      ],
+      "margin_q16": 325365,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "methotrexate",
+      "drug_b": "sulfamethoxazole",
+      "ground_truth": "serious",
+      "logits_q16": [
+        232620,
+        -1548482,
+        181806,
+        1052441,
+        -1865144
+      ],
+      "margin_q16": 819821,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "haloperidol",
+      "drug_b": "methadone",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -59843,
+        -699076,
+        14828,
+        -520520,
+        -621754
+      ],
+      "margin_q16": 74671,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amiodarone",
+      "drug_b": "azithromycin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        560824,
+        -1180986,
+        554996,
+        937537,
+        -455559
+      ],
+      "margin_q16": 376713,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "digoxin",
+      "drug_b": "furosemide",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        1868142,
+        -3312181,
+        1833582,
+        -1207587,
+        -2367832
+      ],
+      "margin_q16": 34560,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "elderly",
+      "drug_b": "zolpidem",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -292903,
+        -6772224,
+        -672919,
+        -413891,
+        -4437977
+      ],
+      "margin_q16": 120988,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "dabigatran",
+      "drug_b": "ketoconazole",
+      "ground_truth": "serious",
+      "logits_q16": [
+        661820,
+        -1976597,
+        -1220458,
+        1521698,
+        -1965470
+      ],
+      "margin_q16": 859878,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "ibuprofen",
+      "drug_b": "methotrexate",
+      "ground_truth": "serious",
+      "logits_q16": [
+        882352,
+        -1291290,
+        446321,
+        1134200,
+        -725358
+      ],
+      "margin_q16": 251848,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "paroxetine",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -108826,
+        -1380322,
+        -576605,
+        1011842,
+        -315733
+      ],
+      "margin_q16": 1120668,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amitriptyline",
+      "drug_b": "fluoxetine",
+      "ground_truth": "serious",
+      "logits_q16": [
+        8391,
+        -3923457,
+        -218828,
+        1602118,
+        -3137003
+      ],
+      "margin_q16": 1593727,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "nortriptyline",
+      "drug_b": "paroxetine",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -1156265,
+        -5879527,
+        487015,
+        1534500,
+        -1664183
+      ],
+      "margin_q16": 1047485,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "alprazolam",
+      "drug_b": "itraconazole",
+      "ground_truth": "serious",
+      "logits_q16": [
+        3122631,
+        -7828718,
+        -886368,
+        2537091,
+        -5020640
+      ],
+      "margin_q16": 585540,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "clopidogrel",
+      "drug_b": "esomeprazole",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        850608,
+        -697011,
+        -15274,
+        -584509,
+        -1162354
+      ],
+      "margin_q16": 865882,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "cranberry",
+      "drug_b": "warfarin",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        1620841,
+        -3598015,
+        -2249872,
+        14919,
+        -808089
+      ],
+      "margin_q16": 1605922,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "grapefruit",
+      "drug_b": "simvastatin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        113471,
+        -1288497,
+        78537,
+        -647767,
+        -480824
+      ],
+      "margin_q16": 34934,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "felodipine",
+      "drug_b": "grapefruit",
+      "ground_truth": "serious",
+      "logits_q16": [
+        132656,
+        -4554763,
+        928738,
+        -1829063,
+        -2063709
+      ],
+      "margin_q16": 796082,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "apixaban",
+      "drug_b": "aspirin",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -382079,
+        -2684075,
+        -855509,
+        1874975,
+        -1797430
+      ],
+      "margin_q16": 2257054,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "amlodipine",
+      "drug_b": "simvastatin",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        225423,
+        -1186998,
+        -133698,
+        592646,
+        -1274986
+      ],
+      "margin_q16": 367223,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "losartan",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        -38221,
+        -1822382,
+        1418646,
+        -919012,
+        -1688602
+      ],
+      "margin_q16": 1456867,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "bisoprolol",
+      "drug_b": "diltiazem",
+      "ground_truth": "serious",
+      "logits_q16": [
+        192443,
+        -285302,
+        -34945,
+        385543,
+        -205286
+      ],
+      "margin_q16": 193100,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "azithromycin",
+      "drug_b": "sotalol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1091041,
+        -531262,
+        43883,
+        533020,
+        -926957
+      ],
+      "margin_q16": 558021,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "maoi",
+      "drug_b": "venlafaxine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        595868,
+        -805554,
+        -1097855,
+        862755,
+        -1636736
+      ],
+      "margin_q16": 266887,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "maoi",
+      "drug_b": "tramadol",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        339168,
+        -749756,
+        134076,
+        831545,
+        -824085
+      ],
+      "margin_q16": 492377,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "amitriptyline",
+      "drug_b": "phenelzine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1031733,
+        -1479248,
+        -2707462,
+        -235156,
+        1185748
+      ],
+      "margin_q16": 154015,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "fentanyl",
+      "drug_b": "midazolam",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -535020,
+        -1339236,
+        -85125,
+        901625,
+        -1163345
+      ],
+      "margin_q16": 986750,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "alprazolam",
+      "drug_b": "hydrocodone",
+      "ground_truth": "serious",
+      "logits_q16": [
+        883788,
+        -5181351,
+        21002,
+        2386599,
+        -4613119
+      ],
+      "margin_q16": 1502811,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "allopurinol",
+      "drug_b": "azathioprine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        890665,
+        -6403705,
+        1239287,
+        -1538787,
+        -3092145
+      ],
+      "margin_q16": 348622,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "lisinopril",
+      "drug_b": "metformin",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        143802,
+        -2421295,
+        -713676,
+        -806504,
+        -60012
+      ],
+      "margin_q16": 203814,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "contraindicated"
+    },
+    {
+      "correct": false,
+      "drug_a": "carvedilol",
+      "drug_b": "furosemide",
+      "ground_truth": "moderate",
+      "logits_q16": [
+        2006589,
+        -3386190,
+        -183028,
+        269931,
+        -2083715
+      ],
+      "margin_q16": 1736658,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "hydrochlorothiazide",
+      "drug_b": "lithium carbonate",
+      "ground_truth": "serious",
+      "logits_q16": [
+        100140,
+        -790315,
+        141351,
+        246789,
+        -532546
+      ],
+      "margin_q16": 105438,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "methotrexate",
+      "drug_b": "trimethoprim-sulfamethoxazole",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1678845,
+        -1898432,
+        -840668,
+        541186,
+        -1848050
+      ],
+      "margin_q16": 1137659,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "metoprolol succinate",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        709178,
+        -8058479,
+        -816848,
+        914696,
+        -5176324
+      ],
+      "margin_q16": 205518,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "isosorbide mononitrate",
+      "drug_b": "sildenafil",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        884738,
+        -8115243,
+        -1503376,
+        1161362,
+        -3697138
+      ],
+      "margin_q16": 276624,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": true,
+      "drug_a": "paroxetine",
+      "drug_b": "tamoxifen",
+      "ground_truth": "major",
+      "logits_q16": [
+        1166159,
+        -3733756,
+        -1679037,
+        1280902,
+        -1892455
+      ],
+      "margin_q16": 114743,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "doxycycline",
+      "drug_b": "isotretinoin",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        -668600,
+        -1031398,
+        859,
+        866459,
+        -149365
+      ],
+      "margin_q16": 865600,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "clarithromycin",
+      "drug_b": "ergotamine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1010186,
+        -974689,
+        -8769,
+        -292194,
+        -321487
+      ],
+      "margin_q16": 1018955,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "lisinopril",
+      "drug_b": "sacubitril",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        570841,
+        -3232335,
+        958469,
+        -1976382,
+        -2087514
+      ],
+      "margin_q16": 387628,
+      "predicted": "moderate",
+      "top1_class": "moderate",
+      "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "gabapentin",
+      "drug_b": "tramadol",
+      "ground_truth": "serious",
+      "logits_q16": [
+        -38276,
+        -2630489,
+        -613123,
+        1922843,
+        -1940431
+      ],
+      "margin_q16": 1961119,
+      "predicted": "major",
+      "top1_class": "major",
+      "top2_class": "none"
+    }
+  ],
+  "license": "Apache-2.0",
+  "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
+  "total_pairs": 110,
+  "version": "1.0.0",
+  "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
+  "worst_close_calls": [
+    {
+      "drug_a": "hydrochlorothiazide",
+      "drug_b": "lithium",
+      "ground_truth": "serious",
+      "margin_q16": 8558,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "digoxin",
+      "drug_b": "spironolactone",
+      "ground_truth": "moderate",
+      "margin_q16": 11347,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "lisinopril",
+      "drug_b": "lithium",
+      "ground_truth": "serious",
+      "margin_q16": 33610,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "digoxin",
+      "drug_b": "furosemide",
+      "ground_truth": "moderate",
+      "margin_q16": 34560,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "grapefruit",
+      "drug_b": "simvastatin",
+      "ground_truth": "serious",
+      "margin_q16": 34934,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "lisinopril",
+      "drug_b": "nsaid",
+      "ground_truth": "moderate",
+      "margin_q16": 55737,
+      "predicted": "none"
+    },
+    {
+      "drug_a": "amiodarone",
+      "drug_b": "ondansetron",
+      "ground_truth": "serious",
+      "margin_q16": 62408,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "diltiazem",
+      "drug_b": "metoprolol",
+      "ground_truth": "serious",
+      "margin_q16": 64873,
+      "predicted": "major"
+    },
+    {
+      "drug_a": "haloperidol",
+      "drug_b": "methadone",
+      "ground_truth": "serious",
+      "margin_q16": 74671,
+      "predicted": "moderate"
+    },
+    {
+      "drug_a": "digoxin",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "margin_q16": 80736,
+      "predicted": "moderate"
+    }
+  ]
+}
