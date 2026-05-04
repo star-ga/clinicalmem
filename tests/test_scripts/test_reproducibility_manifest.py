@@ -147,6 +147,7 @@ def test_manifest_tracks_all_load_bearing_artifacts(manifest):
         "cohort_coverage_matrix",
         "synthea_demo_cohort",
         "bitnet_calibration",
+        "audit_replay_pins",
         "flow_plan_hashes",
     }
     actual = set(manifest["artifacts"].keys())
@@ -172,6 +173,25 @@ def test_manifest_calibration_weights_id_matches_engine(manifest):
         f"calibration weights_id={cal_wid[:16]}... but engine "
         f"bundle_id={eng_bid[:16]}... — calibration is stale, "
         f"re-run scripts/build_bitnet_calibration.py"
+    )
+
+
+def test_manifest_audit_replay_bundle_id_matches_engine(manifest):
+    """The audit_replay_pins entry must record the same bundle_id as
+    the engine weights bundle. If they drift, the audit-replay pins
+    were captured against stale weights and `--check` would either
+    show 'bundle_id_rotated' or repro_hash mismatches. Same drift
+    class as test_manifest_calibration_weights_id_matches_engine."""
+    audit = manifest["artifacts"].get("audit_replay_pins", {})
+    weights = manifest["artifacts"].get("bitnet_weights", {})
+    audit_bid = audit.get("bundle_id")
+    eng_bid = weights.get("bundle_id")
+    if audit_bid is None or eng_bid is None:
+        return  # bootstrap path
+    assert audit_bid == eng_bid, (
+        f"audit_replay_pins bundle_id={audit_bid[:16]}... but engine "
+        f"bundle_id={eng_bid[:16]}... — pins are stale, "
+        f"re-run scripts/verify_audit_replay.py"
     )
 
 

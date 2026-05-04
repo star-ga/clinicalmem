@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T10:12:46.615533+00:00",
+  "dateCreated": "2026-05-04T10:26:37.536265+00:00",
   "license": "Apache-2.0",
-  "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all seven artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "d62555b0541fc193fb9d116c1940e59434bc34a8",
+  "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
+  "git_head": "c8d6286a1ca0fc55e18f7987e4c845e4d0e9226e",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -51,6 +51,12 @@
       "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
       "total_pairs": 112,
       "contraindicated_recall": 0.3
+    },
+    "audit_replay_pins": {
+      "path": "docs/audit_replay_pins.json",
+      "sha256": "918496cadb9b4145b0ce4166f6b2af18bd6d2168de0d5177a456ac6e6599a2f6",
+      "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
+      "pair_count": 23
     },
     "flow_plan_hashes": {
       "AllergyCrossReactivity": "272d3692b73aae490580dc6675ae905d3648697c435807436dc54e6c0ac786db",
