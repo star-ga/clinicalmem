@@ -2010,11 +2010,28 @@
       "predicted": "major",
       "top1_class": "major",
       "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "rivaroxaban",
+      "drug_b": "verapamil",
+      "ground_truth": "serious",
+      "logits_q16": [
+        1479266,
+        -5489005,
+        -1682601,
+        -83683,
+        -3549650
+      ],
+      "margin_q16": 1562949,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 112,
+  "total_pairs": 113,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

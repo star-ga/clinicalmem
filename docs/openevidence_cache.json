@@ -1810,5 +1810,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "rivaroxaban",
+    "drug_b": "verapamil",
+    "drug_pair_canonical": [
+      "rivaroxaban",
+      "verapamil"
+    ],
+    "severity": "serious",
+    "clinical_summary": "Concurrent rivaroxaban (a direct factor-Xa inhibitor) and verapamil therapy elevates haemorrhagic risk through dual P-glycoprotein and moderate CYP3A4 inhibition: verapamil reduces both intestinal P-gp efflux (raising absorption fraction) and hepatic CYP3A4-mediated clearance of rivaroxaban, producing approximately 40-50% AUC elevation within 1-2 weeks of co-administration. Sequelae include spontaneous mucosal/GI bleeding, intracranial haemorrhage in elderly patients, and prolonged surgical bleeding. The FDA US Prescribing Information for Xarelto warns against co-prescription with combined P-gp and moderate CYP3A4 inhibitors in patients with renal impairment (CrCl 30-49 mL/min), and recommends dose adjustment or alternative anticoagulant (apixaban, dabigatran, warfarin) when concomitant verapamil therapy is unavoidable. Pharmacovigilance series (Mendell et al., Br J Clin Pharmacol 2013; Yin et al., Clin Pharmacokinet 2015) document the PK interaction; population-based cohort analyses correlate concomitant exposure with elevated major-bleeding events.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2024/202439s033lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/22971107/",
+      "https://pubmed.ncbi.nlm.nih.gov/25567533/"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

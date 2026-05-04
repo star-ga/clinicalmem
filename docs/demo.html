@@ -1074,8 +1074,8 @@ tailwind.config = {
 
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 112-pair PCCP regression</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 20/20, major 100% on 2/2, serious 100% on 68/68, moderate 100% on 22/22.">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 113-pair PCCP regression</p>
+          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 20/20, major 100% on 2/2, serious 100% on 69/69, moderate 100% on 22/22.">
             <!-- Axis baseline at 100% (=288) -->
             <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
             <line x1="40" y1="106" x2="312" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
@@ -1090,7 +1090,7 @@ tailwind.config = {
             <!-- Serious (n=64) -->
             <rect x="40" y="64" width="272" height="14" rx="2" fill="#0369A1" fill-opacity="0.78"/>
             <text x="8"  y="75" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">serious</text>
-            <text x="318" y="75" font-family="JetBrains Mono, monospace" font-size="9" fill="#0369A1" text-anchor="end">100% · 68 / 68</text>
+            <text x="318" y="75" font-family="JetBrains Mono, monospace" font-size="9" fill="#0369A1" text-anchor="end">100% · 69 / 69</text>
             <!-- Moderate (n=20) -->
             <rect x="40" y="86" width="272" height="14" rx="2" fill="#0F766E" fill-opacity="0.78"/>
             <text x="8"  y="97" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">moderate</text>
@@ -1098,7 +1098,7 @@ tailwind.config = {
             <!-- Title -->
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 112-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 113-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
         </div>
       </div>
 
@@ -1127,11 +1127,11 @@ tailwind.config = {
         <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (112 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (113 pairs). Diagonal = correct. The empty <code class="font-mono">serious</code> column is by design &mdash; the upstream 4-tier pipeline carries that class; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>.</p>
           </div>
           <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">0 FP · contraindicated</span>
         </div>
-        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 112-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 20, with zero false positives.">
+        <svg viewBox="0 0 320 132" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 113-pair live cache. Rows: ground truth severity. Columns: predicted severity. Contraindicated diagonal: 6 of 20, with zero false positives.">
           <!-- Column header labels -->
           <text x="80"  y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">none</text>
           <text x="118" y="14" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="middle">minor</text>
@@ -1152,7 +1152,7 @@ tailwind.config = {
 
           <!-- Row 2: serious (n=67) -->
           <text x="60" y="59" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569" text-anchor="end">serious</text>
-          <rect x="65"  y="46" width="32" height="20" rx="2" fill="#fecaca"/><text x="81"  y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">17</text>
+          <rect x="65"  y="46" width="32" height="20" rx="2" fill="#fecaca"/><text x="81"  y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">18</text>
           <rect x="103" y="46" width="32" height="20" rx="2" fill="#f8fafc"/><text x="119" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="141" y="46" width="32" height="20" rx="2" fill="#fee2e2"/><text x="157" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#7f1d1d" text-anchor="middle">4</text>
           <rect x="179" y="46" width="32" height="20" rx="2" fill="#94a3b8" fill-opacity="0.25"/><text x="195" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="#475569" text-anchor="middle" font-style="italic">0</text>
@@ -1645,7 +1645,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px] font-mono">
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">openevidence_cache</span>
-          <span class="text-slate-700">867e9721fcb99cdc…</span>
+          <span class="text-slate-700">386dd9499a1fe3a4…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_weights</span>
@@ -1653,23 +1653,23 @@ Site B (Mayo Clinic) ingress preimage_hash:
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_confusion_matrix</span>
-          <span class="text-slate-700">35a434d0837f2f29…</span>
+          <span class="text-slate-700">0f9e9346b3db4ff6…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">cohort_coverage_matrix</span>
-          <span class="text-slate-700">862356f84fc94a37…</span>
+          <span class="text-slate-700">a99fe38666085603…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">synthea_demo_cohort</span>
-          <span class="text-slate-700">c5bcde250699e31b…</span>
+          <span class="text-slate-700">bdaa13733464c262…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">bitnet_calibration</span>
-          <span class="text-slate-700">e6777e3f5833a99a…</span>
+          <span class="text-slate-700">9eaca6444c7a6a3e…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">audit_replay_pins</span>
-          <span class="text-slate-700">918496cadb9b4145…</span>
+          <span class="text-slate-700">49482eb664fd9017…</span>
         </div>
         <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
           <span class="text-slate-500">flow_plan_hashes</span>
@@ -1883,8 +1883,8 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
       <div><span class="text-slate-400">tests</span> <span class="text-trust-700">977 / 977</span></div>
-      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">112 pairs</span></div>
-      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">21 patients</span></div>
+      <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">113 pairs</span></div>
+      <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">22 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
       <div><span class="text-slate-400">verified</span> <span class="text-trust-700">2026-05-03</span></div>
     </div>
