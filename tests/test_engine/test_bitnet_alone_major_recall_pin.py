@@ -45,6 +45,7 @@ from pathlib import Path
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _CALIB = _REPO_ROOT / "docs" / "bitnet_calibration.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
+_JUDGES = _REPO_ROOT / "JUDGES.md"
 
 # Frozen as of iter 110.
 _BITNET_CORRECT_MAJORS = frozenset({
@@ -168,4 +169,36 @@ def test_demo_names_the_bitnet_miss_pair():
         "explicitly in the BitNet-vs-engine callout — naming the "
         "miss pair lets judges cross-check the architectural ceiling "
         "claim against the live regression eval logs."
+    )
+
+
+def test_judges_cites_this_pin_file():
+    """JUDGES.md must cite this pin file in the runnable-claims table.
+
+    JUDGES.md is the first doc a hackathon judge reads. The
+    runnable-claims table is the cross-reference between the dashboard
+    and the test suite — every load-bearing claim should be traceable
+    to a pin file. This test enforces that the BitNet-alone-vs-engine
+    claim has the same auditable provenance as every other claim in
+    the table.
+
+    Same drift class as iter-107 (JUDGES manifest description listed
+    only 4 gates after iter-90 promoted audit-replay to gate 5):
+    silent drift between JUDGES.md and the live test inventory is
+    judge-visible and erodes trust.
+    """
+    judges = _JUDGES.read_text()
+    pin_filename = "test_bitnet_alone_major_recall_pin.py"
+    assert pin_filename in judges, (
+        f"JUDGES.md must cite `tests/test_engine/{pin_filename}` in the "
+        f"runnable-claims table so judges can trace the BitNet-alone "
+        f"vs engine claim to its pin file. Found citations of other "
+        f"pins but not this one — silent drift between JUDGES.md and "
+        f"the test inventory."
+    )
+    # And the BitNet-alone count must be there too (so the row's claim
+    # text matches the demo + the pin's frozen set).
+    assert "3 of 4" in judges, (
+        "JUDGES.md row for BitNet-alone-vs-engine must contain the "
+        "explicit '3 of 4' phrasing (matches docs/demo.html callout)."
     )
