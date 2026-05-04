@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1029 / 1029 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1033 / 1033 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -1099,6 +1099,9 @@ tailwind.config = {
             <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
           </svg>
           <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 117-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).</p>
+          <p class="text-xs text-slate-500 mt-3 leading-relaxed border-l-2 border-amber-300 pl-3 bg-amber-50/40 py-2 rounded-r">
+            <strong class="text-slate-700">⚠️ Layer 4.5 BitNet alone vs. engine final:</strong> the major sparkline above (<code class="font-mono">100% · 4 / 4</code>) is the <em>engine</em> final verdict. Layer 4.5 BitNet alone catches <strong>3 of 4</strong> majors — it misses <code class="font-mono">tacrolimus + voriconazole</code> (P-gp + strong CYP3A4 cross-mechanism, predicted "none"). The engine still emits <code class="font-mono">major</code> for that pair because Layer 4.5 <strong>preserves upstream</strong> when it disagrees by downgrading; <code class="font-mono">BITNET_SAFETY_DOWNGRADE_DISAGREEMENT</code> fires in <code class="font-mono">scripts/run_clinical_regression_eval.py</code> on every run, surfacing the disagreement for clinical review. This is the architectural ceiling of a hash-only encoder; pinned by <code class="font-mono">tests/test_engine/test_bitnet_alone_major_recall_pin.py</code>.
+          </p>
         </div>
       </div>
 
@@ -1887,7 +1890,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1029 / 1029</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1033 / 1033</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">117 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">26 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
