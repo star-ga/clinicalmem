@@ -133,6 +133,48 @@ def test_manifest_git_head_present(manifest):
     assert head == "unavailable" or re.match(r"^[0-9a-f]{40}$", head)
 
 
+def test_manifest_tracks_all_load_bearing_artifacts(manifest):
+    """Iter-75 added `docs/bitnet_calibration.json` — a load-bearing
+    audit artifact (linked from JUDGES + demo, pinned by 8 tests). It
+    must be in the reproducibility manifest's tracked artifacts so the
+    SHA is content-addressed; an attacker who modifies the file but
+    leaves the manifest stale would otherwise go undetected by the
+    --check parity gate. This test catches that drift."""
+    expected_artifacts = {
+        "openevidence_cache",
+        "bitnet_weights",
+        "bitnet_confusion_matrix",
+        "cohort_coverage_matrix",
+        "synthea_demo_cohort",
+        "bitnet_calibration",
+        "flow_plan_hashes",
+    }
+    actual = set(manifest["artifacts"].keys())
+    missing = expected_artifacts - actual
+    assert not missing, (
+        f"Reproducibility manifest is missing tracked artifacts: {sorted(missing)}. "
+        f"Update scripts/build_reproducibility_manifest.py to include them, "
+        f"then regenerate the manifest."
+    )
+
+
+def test_manifest_calibration_weights_id_matches_engine(manifest):
+    """The calibration entry in the manifest must record the same
+    weights_id (bundle_id) as the engine weights bundle. If they
+    drift, the calibration was computed against stale weights."""
+    calib = manifest["artifacts"].get("bitnet_calibration", {})
+    weights = manifest["artifacts"].get("bitnet_weights", {})
+    cal_wid = calib.get("weights_id")
+    eng_bid = weights.get("bundle_id")
+    if cal_wid is None or eng_bid is None:
+        return  # bootstrap path — nothing to check
+    assert cal_wid == eng_bid, (
+        f"calibration weights_id={cal_wid[:16]}... but engine "
+        f"bundle_id={eng_bid[:16]}... — calibration is stale, "
+        f"re-run scripts/build_bitnet_calibration.py"
+    )
+
+
 def test_manifest_matches_live_computation():
     """`--check` mode confirms artifact is in sync with live state."""
     cp = subprocess.run(

@@ -12,6 +12,7 @@ deterministic surface:
   - bitnet_weights.json — SHA-256 + bundle_id + param count
   - bitnet_confusion_matrix.json — safety-invariant booleans
   - cohort_coverage_matrix.md — SHA-256 + patient count
+  - bitnet_calibration.json — SHA-256 + weights_id + total_pairs + recall
   - flow plan_hashes for all 6 .flow.mind files
   - gate verdicts (PCCP / negative-control / federation / arch-mind)
   - test count
@@ -108,11 +109,13 @@ def _build() -> dict:
     confusion_path = _REPO_ROOT / "docs" / "bitnet_confusion_matrix.json"
     coverage_path = _REPO_ROOT / "docs" / "cohort_coverage_matrix.md"
     cohort_path = _REPO_ROOT / "docs" / "synthea_demo_cohort.json"
+    calibration_path = _REPO_ROOT / "docs" / "bitnet_calibration.json"
 
     cache = json.loads(cache_path.read_text())
     weights = json.loads(weights_path.read_text())
     confusion = json.loads(confusion_path.read_text())
     cohort = json.loads(cohort_path.read_text())
+    calibration = json.loads(calibration_path.read_text()) if calibration_path.exists() else None
 
     patients = sum(
         1 for e in cohort.get("entry", [])
@@ -135,7 +138,7 @@ def _build() -> dict:
         "description": (
             "Content-addressed snapshot of every load-bearing deterministic "
             "artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) "
-            "verifies all six artifacts + four gate verdicts + flow plan "
+            "verifies all seven artifacts + four gate verdicts + flow plan "
             "hashes by checking this single file. Re-run "
             "`scripts/build_reproducibility_manifest.py --check` to verify "
             "the on-disk manifest matches the live computation."
@@ -170,6 +173,16 @@ def _build() -> dict:
                 "patient_count": patients,
                 "practitioner_count": practitioners,
                 "entry_count": len(cohort.get("entry", [])),
+            },
+            "bitnet_calibration": {
+                "path": "docs/bitnet_calibration.json",
+                "sha256": _sha256_file(calibration_path) if calibration_path.exists() else None,
+                "weights_id": calibration.get("weights_id") if calibration else None,
+                "total_pairs": calibration.get("total_pairs") if calibration else None,
+                "contraindicated_recall": (
+                    calibration.get("by_class", {}).get("contraindicated", {}).get("recall")
+                    if calibration else None
+                ),
             },
             "flow_plan_hashes": _flow_plan_hashes(),
         },
