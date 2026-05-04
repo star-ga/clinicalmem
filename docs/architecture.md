@@ -158,15 +158,15 @@ clinical decision on any device, decades later.
 | 21 CFR Part 11 audit export | ✅ Live | `engine/audit_export_part11.py` |
 | PCCP regression harness | ✅ Live | `scripts/run_clinical_regression_eval.py` |
 | Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash cbfaf3e8…4e18b — pinned by `tests/test_scripts/test_federation_plan_hash.py`) |
-| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.8.14` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
+| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.9.0` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
 | Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
-| Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ In flight by upstream mind-mem team — `memory_mesh` core ships in v3.8.14, transport adapter targets v3.9 | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
+| Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ Pending v3.10 — v3.9.0's `http_transport.py` is a **single-workspace REST adapter** (status / query / memories / consolidate / clear endpoints for non-MCP clients like Slack bots, Streamlit dashboards), NOT a peer-to-peer federation transport; the dedicated MIC@2 transport adapter targets v3.10 | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
 | MCP server (18 tools) | ✅ Live | `mcp_server*.py` deployed on Azure Container Apps |
 | A2A agent (13 skills) | ✅ Live | `a2a_agent/` deployed on Azure Container Apps |
 
 The control plane (peer registry, 7 sync scopes, per-scope conflict
 resolution, sync audit log, governance pub/sub fan-out) is now LIVE
-against `mind-mem v3.8.14`'s `MemoryMesh` and `EventFanout`. Every
+against `mind-mem v3.9.0`'s `MemoryMesh` and `EventFanout`. Every
 publish, ingest, and PHI quarantine in the federation demo writes a
 `SyncEvent` to the local mesh and broadcasts a structured event on the
 fanout stream — observable end-to-end in the demo's stdout and in the

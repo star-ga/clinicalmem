@@ -1,7 +1,7 @@
 """ClinicalMem federation transport bridge.
 
 Wires the JointMemoryFederation.flow.mind control-plane invariants to the
-real mind-mem v3.8.14 surface:
+real mind-mem v3.9.0 surface:
 
 * :class:`mind_mem.memory_mesh.MemoryMesh` for peer registry, the seven
   sync scopes (memories / actions / semantic / procedural / relations /
@@ -14,7 +14,7 @@ real mind-mem v3.8.14 surface:
   plug in by adding their :class:`Publisher` to the fanout instance.
 
 Cross-machine wire transport (HTTP / gRPC / QUIC) is intentionally not
-provided here — mind-mem v3.8.14 explicitly defers it (see
+provided here — mind-mem v3.9.0 explicitly defers it (see
 ``mind_mem.memory_mesh`` module docstring: "the transport layer slots
 in around this core"). ClinicalMem ships a single-process queue
 implementation in :mod:`scripts.federation_mock_demo` for the

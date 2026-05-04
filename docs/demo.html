@@ -598,7 +598,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 888 / 888 engine tests</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.8.14</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
     <!-- Single-command audit affordance — judges can verify everything
@@ -1215,7 +1215,7 @@ tailwind.config = {
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">21 typed invariants</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">HIPAA-defensible by construction</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">Ed25519 + X25519 + ChaCha20-Poly1305</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-trust-50 text-trust-700 border border-trust-200"><span class="w-1.5 h-1.5 rounded-full bg-trust-600 animate-pulse"></span>Control plane LIVE — mind-mem v3.8.14 MemoryMesh</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-trust-50 text-trust-700 border border-trust-200"><span class="w-1.5 h-1.5 rounded-full bg-trust-600 animate-pulse"></span>Control plane LIVE — mind-mem v3.9.0 MemoryMesh</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">Patent-pending MIC@2 / MAP transport</span>
       </div>
     </div>
@@ -1349,7 +1349,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
   ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.
   ↑ Specific value differs per run (128-bit nonce); the *equality* of
     the two hashes is the load-bearing claim. Re-run the demo to verify.</code></pre>
-      <p class="text-xs text-slate-400 mt-3">Control plane (peer registry, 7 sync scopes, per-scope conflict policy, sync audit log, governance pub/sub fan-out) is <strong class="text-trust-700">LIVE</strong> against <code class="font-mono">mind-mem v3.8.14</code> MemoryMesh + EventFanout (9 unit tests in <code class="font-mono text-xs">tests/test_engine/test_federation_transport.py</code>). The mock queue handles only the wire bytes between sites; it swaps out for the live HTTP/gRPC adapter when mind-mem v3.9 ships, with no change above the <code class="font-mono text-xs">record_publish_event</code> / <code class="font-mono text-xs">record_ingest_event</code> boundary.</p>
+      <p class="text-xs text-slate-400 mt-3">Control plane (peer registry, 7 sync scopes, per-scope conflict policy, sync audit log, governance pub/sub fan-out) is <strong class="text-trust-700">LIVE</strong> against <code class="font-mono">mind-mem v3.9.0</code> MemoryMesh + EventFanout (9 unit tests in <code class="font-mono text-xs">tests/test_engine/test_federation_transport.py</code>). The mock queue handles only the wire bytes between sites; it swaps out for the live MIC@2 federation-transport adapter when mind-mem v3.10 ships (v3.9.0's <code class="font-mono">http_transport.py</code> is a single-workspace REST adapter, not P2P federation), with no change above the <code class="font-mono text-xs">record_publish_event</code> / <code class="font-mono text-xs">record_ingest_event</code> boundary.</p>
     </article>
   </div>
 </section>
