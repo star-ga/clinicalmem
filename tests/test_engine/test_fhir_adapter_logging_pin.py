@@ -11,12 +11,17 @@ disciplined. Pinned discipline:
   - NEVER log: medication display text, condition codes, observation
     values, allergy text, raw exception messages from parsing.
 
-Pinned event surface:
+Pinned event surface (10 events post-iter-108):
   - fhir_bundle_ingest_start (DEBUG)
   - fhir_bundle_unknown_resource_type_skipped (DEBUG, tolerant mode)
   - fhir_bundle_unknown_resource_type_rejected (WARNING, strict mode)
   - fhir_bundle_parse_failure (WARNING, error TYPE only)
   - fhir_bundle_ingest_complete (INFO when no rejections / WARNING otherwise)
+  - fhir_bundle_invalid_json (ERROR)             — iter 108
+  - fhir_bundle_wrong_python_type (ERROR)        — iter 108
+  - fhir_bundle_wrong_resource_type (ERROR)      — iter 108
+  - fhir_bundle_entry_not_array (ERROR)          — iter 108
+  - fhir_bundle_unsupported_type (ERROR)         — iter 108
 """
 import logging
 
@@ -134,3 +139,82 @@ def test_ingest_logs_never_emit_secret_drug_token(caplog, minimal_bundle):
             assert "TestSurname" not in text, (
                 f"patient family name leaked into log {rec.message}"
             )
+
+
+# ─── Iter 108: 5 silent pre-raise validation paths now logged ──────────────
+
+
+def test_invalid_json_logs_decode_msg_not_raw_input(caplog):
+    """A malformed JSON bundle string logs `fhir_bundle_invalid_json`
+    with the canned decode_msg only. The raw bundle string (which can
+    contain attacker-supplied content) must NOT appear in the log."""
+    caplog.set_level(logging.ERROR, logger="engine.fhir_adapter")
+    sentinel = "ZZZ_RAW_BUNDLE_BODY_LEAK_TOKEN"
+    bad_json = '{"resourceType": "Bundle", "type": "collection",' + sentinel
+    with pytest.raises(ValueError):
+        ingest_bundle(bad_json)
+
+    rec = _record(caplog, "fhir_bundle_invalid_json")
+    assert rec is not None, "fhir_bundle_invalid_json event missing"
+    assert rec.error_type == "JSONDecodeError"
+    assert isinstance(rec.decode_msg, str)
+    assert isinstance(rec.input_size_bytes, int)
+    for value in vars(rec).values():
+        assert sentinel not in repr(value), (
+            f"fhir_bundle_invalid_json leaked raw bundle content"
+        )
+
+
+def test_wrong_resource_type_logs_length_only(caplog):
+    """A bundle with a non-'Bundle' resourceType logs `fhir_bundle_
+    wrong_resource_type` with the LENGTH of the bad string, never
+    the value."""
+    caplog.set_level(logging.ERROR, logger="engine.fhir_adapter")
+    sentinel_rt = "ZZZ_FAKE_RESOURCE_TYPE_PAYLOAD_LEAK"
+    bundle = {"resourceType": sentinel_rt, "type": "collection", "entry": []}
+    with pytest.raises(ValueError):
+        ingest_bundle(bundle)
+
+    rec = _record(caplog, "fhir_bundle_wrong_resource_type")
+    assert rec is not None, "fhir_bundle_wrong_resource_type event missing"
+    assert rec.resource_type_len == len(sentinel_rt)
+    assert rec.resource_type_class == "str"
+    for value in vars(rec).values():
+        assert sentinel_rt not in repr(value), (
+            f"fhir_bundle_wrong_resource_type leaked raw resourceType"
+        )
+
+
+def test_unsupported_bundle_type_logs_length_only(caplog):
+    """An unsupported Bundle.type logs `fhir_bundle_unsupported_type`
+    with the LENGTH of the bad value, never the value itself."""
+    caplog.set_level(logging.ERROR, logger="engine.fhir_adapter")
+    sentinel_type = "ZZZ_MALICIOUS_BUNDLE_TYPE_LEAK"
+    bundle = {"resourceType": "Bundle", "type": sentinel_type, "entry": []}
+    with pytest.raises(ValueError):
+        ingest_bundle(bundle)
+
+    rec = _record(caplog, "fhir_bundle_unsupported_type")
+    assert rec is not None, "fhir_bundle_unsupported_type event missing"
+    assert rec.bundle_type_len == len(sentinel_type)
+    for value in vars(rec).values():
+        assert sentinel_type not in repr(value), (
+            f"fhir_bundle_unsupported_type leaked raw bundle type"
+        )
+
+
+def test_fhir_adapter_has_at_least_ten_structured_logs():
+    """Iter-108 floor: fhir_adapter.py grew from 5 to 10 logger
+    calls. Future evidence-chain regressions can't quietly slip
+    below the floor."""
+    import re
+    from pathlib import Path
+    src = (Path(__file__).resolve().parent.parent.parent / "engine" / "fhir_adapter.py").read_text()
+    pat = re.compile(
+        r"\blogger\.(?:debug|info|warning|error|exception|critical)\("
+    )
+    count = len(pat.findall(src))
+    assert count >= 10, (
+        f"engine/fhir_adapter.py has {count} logger calls; "
+        f"floor is 10 (iter-108 baseline)."
+    )

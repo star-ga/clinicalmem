@@ -387,24 +387,64 @@ def ingest_bundle(
         try:
             bundle = json.loads(bundle)
         except json.JSONDecodeError as exc:
+            # PHI-safe pre-raise log: position + msg-class only, NEVER
+            # the raw input. JSONDecodeError exposes column/line of the
+            # parse failure which can quote raw bundle content; exc.msg
+            # is the canned phrase ("Expecting value", etc.) — safe.
+            logger.error(
+                "fhir_bundle_invalid_json",
+                extra={
+                    "error_type": "JSONDecodeError",
+                    "decode_msg": exc.msg,
+                    "input_size_bytes": len(bundle) if isinstance(bundle, str) else 0,
+                },
+            )
             raise ValueError(f"bundle is not valid JSON: {exc}") from exc
 
     if not isinstance(bundle, dict):
+        logger.error(
+            "fhir_bundle_wrong_python_type",
+            extra={"actual_type": type(bundle).__name__},
+        )
         raise ValueError("bundle must be a dict or JSON string")
 
     # --- structural validation -------------------------------------------------
     resource_type = bundle.get("resourceType")
     if resource_type != "Bundle":
+        # resourceType is an FHIR R4 standard string — safe to log
+        # categorically. A bundle with a wildly malformed resourceType
+        # (e.g. very long, embedded HTML) is logged as length-only.
+        logger.error(
+            "fhir_bundle_wrong_resource_type",
+            extra={
+                "resource_type_len": (
+                    len(resource_type) if isinstance(resource_type, str) else 0
+                ),
+                "resource_type_class": type(resource_type).__name__,
+            },
+        )
         raise ValueError(
             f"Expected resourceType='Bundle', got '{resource_type}'"
         )
     entries = bundle.get("entry")
     if not isinstance(entries, list):
+        logger.error(
+            "fhir_bundle_entry_not_array",
+            extra={"entry_type_class": type(entries).__name__},
+        )
         raise ValueError("Bundle.entry must be an array")
 
     bundle_type = bundle.get("type", "collection")
     if bundle_type not in ("collection", "transaction", "searchset", "batch",
                             "history", "document"):
+        logger.error(
+            "fhir_bundle_unsupported_type",
+            extra={
+                "bundle_type_len": (
+                    len(bundle_type) if isinstance(bundle_type, str) else 0
+                ),
+            },
+        )
         raise ValueError(f"Unsupported Bundle.type: '{bundle_type}'")
 
     # --- compute audit anchor before any mutation ------------------------------
