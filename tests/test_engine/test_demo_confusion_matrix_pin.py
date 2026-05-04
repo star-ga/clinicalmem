@@ -44,7 +44,7 @@ def test_demo_confusion_cells_match_artifact():
     # `Layer 4.5 BitNet confusion matrix` heading and the recall=6/18 footer.
     start = demo_text.find("Layer 4.5 BitNet confusion matrix &mdash; live deployment")
     assert start != -1, "Confusion matrix card not found in demo.html"
-    end = demo_text.find("tp_contraindicated_at_least_six", start)
+    end = demo_text.find("tp_contraindicated_at_least_seven", start)
     assert end != -1, "Confusion matrix card footer not found"
     section = demo_text[start:end]
 

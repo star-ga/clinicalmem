@@ -116,8 +116,8 @@ def _compute_matrix() -> dict:
                 )
                 == 0
             ),
-            "tp_contraindicated_at_least_six": (
-                matrix["contraindicated"]["contraindicated"] >= 6
+            "tp_contraindicated_at_least_seven": (
+                matrix["contraindicated"]["contraindicated"] >= 7
             ),
         },
     }

@@ -60,10 +60,28 @@ def test_safety_invariant_fp_contraindicated_is_zero(matrix):
 
 
 def test_safety_invariant_tp_contraindicated_floor(matrix):
-    """Recall floor: at least 6 contraindicated TPs on the live cache."""
-    assert matrix["safety_invariants"]["tp_contraindicated_at_least_six"] is True
+    """Recall floor: at least 7 contraindicated TPs on the live cache.
+
+    Iter-117 ratchet: bumped 6 -> 7 because BitNet has held TP=7 since
+    iter 104 (sumatriptan+phenelzine catch). The floor follows the
+    iter-66/iter-90 ratchet pattern — once a safety-class invariant
+    has held for many iters, ratchet up so a regression below the
+    sustained value fails the gate.
+
+    The old key `tp_contraindicated_at_least_six` is intentionally
+    removed to force callers to update; the historical block test
+    below catches the old name.
+    """
+    assert matrix["safety_invariants"]["tp_contraindicated_at_least_seven"] is True
     tp = matrix["per_class"]["contraindicated"]["tp"]
-    assert tp >= 6, f"contraindicated TP dropped below floor: {tp}, floor=6"
+    assert tp >= 7, f"contraindicated TP dropped below floor: {tp}, floor=7"
+    # Old key must NOT remain in the artifact — silent dual-keying
+    # would let a regression to TP=6 pass.
+    assert "tp_contraindicated_at_least_six" not in matrix["safety_invariants"], (
+        "iter-117 ratchet: the legacy 'at_least_six' key must not remain "
+        "in safety_invariants. Re-run scripts/build_bitnet_confusion_matrix.py "
+        "to regenerate with only 'at_least_seven'."
+    )
 
 
 def test_artifact_matches_live_computation():

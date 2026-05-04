@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-04T22:29:33.995257+00:00",
+  "dateCreated": "2026-05-04T22:43:21.277311+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "be2e2f7fd8b147b629a45558c66d47eb729b9582",
+  "git_head": "0cd6880c4d79c7d39537d5eefdfdf0304b3f4f96",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -27,10 +27,10 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "da73df114c528b5a872a8c8194ee849f0bc934fe84f04f5f688961065f2a1a7f",
+      "sha256": "505a9d3b506c43e5f98329bfd81b54ce5b83b76b35da5de3c69c07faca27735b",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
-        "tp_contraindicated_at_least_six": true
+        "tp_contraindicated_at_least_seven": true
       },
       "cache_pairs_total": 118
     },

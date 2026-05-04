@@ -84,17 +84,21 @@ def test_manifest_flow_plan_hashes_match_flow_sources(manifest):
 
 
 def test_manifest_safety_invariants_pass_through(manifest):
-    """The fp_contraindicated_is_zero + tp_contraindicated_at_least_six
+    """The fp_contraindicated_is_zero + tp_contraindicated_at_least_seven
     booleans from the BitNet confusion matrix must propagate into the
-    manifest. If either flips, the entire manifest is invalid."""
+    manifest. If either flips, the entire manifest is invalid.
+
+    Iter-117 ratchet: floor key bumped 'at_least_six' -> 'at_least_seven'
+    because BitNet has held TP=7 since iter 104.
+    """
     inv = manifest["artifacts"]["bitnet_confusion_matrix"]["safety_invariants"]
     assert inv.get("fp_contraindicated_is_zero") is True, (
         "Layer 4.5 false-positive on contraindicated invalidates the "
         "manifest. Re-run scripts/build_bitnet_confusion_matrix.py and "
         "investigate the weight rotation before re-building the manifest."
     )
-    assert inv.get("tp_contraindicated_at_least_six") is True, (
-        "Layer 4.5 contraindicated TP dropped below the floor of 6. "
+    assert inv.get("tp_contraindicated_at_least_seven") is True, (
+        "Layer 4.5 contraindicated TP dropped below the floor of 7. "
         "Re-run scripts/build_bitnet_confusion_matrix.py and investigate."
     )
 
