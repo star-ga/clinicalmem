@@ -1180,9 +1180,10 @@ tailwind.config = {
           <!-- Footer caption -->
           <text x="60"  y="126" font-family="Lexend, sans-serif" font-size="8" fill="#475569" text-anchor="end">ground truth &darr;</text>
           <text x="160" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#059669" text-anchor="middle">contraindicated · precision = 6 / 6 = 100%</text>
-          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 20 = 33%</text>
+          <text x="285" y="126" font-family="JetBrains Mono, monospace" font-size="8" fill="#94a3b8" text-anchor="end">recall = 6 / 20 = 30%</text>
         </svg>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_six</strong> (the recall floor). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Retrain v2 staged</strong> at <code class="font-mono text-[10px]">retrain_runpod/</code> — augmented corpus (3,257 rows = base 3,247 + 10 cache contraindicated anchors) + gated train script (rejects any weight rotation that breaks <code class="font-mono">fp_contraindicated_is_zero</code> OR fails to hit 20/20 recall). Awaiting GPU; runs ~30 s on a 3090.</p>
       </div>
     </article>
   </div>
