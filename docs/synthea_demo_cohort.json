@@ -6398,6 +6398,307 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-023",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-023",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-023"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Whitfield",
+            "given": [
+              "Eleanor"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1968-02-14",
+        "address": [
+          {
+            "use": "home",
+            "city": "Charleston",
+            "state": "SC",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-023a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-023a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "313039003",
+              "display": "Renal transplant recipient"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "Z94.0",
+              "display": "Kidney transplant status"
+            }
+          ],
+          "text": "Renal transplant 2023; chronic immunosuppression"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-023"
+        },
+        "onsetDateTime": "2023-09-21"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-023b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-023b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "428171000",
+              "display": "Invasive pulmonary aspergillosis"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B44.0",
+              "display": "Invasive pulmonary aspergillosis"
+            }
+          ],
+          "text": "Invasive pulmonary aspergillosis (galactomannan + on BAL)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-023"
+        },
+        "onsetDateTime": "2026-05-02"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-023a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-023a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "10000",
+              "display": "tacrolimus"
+            }
+          ],
+          "text": "tacrolimus 4 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-023"
+        },
+        "effectiveDateTime": "2023-09-21",
+        "dosage": [
+          {
+            "text": "tacrolimus 4 mg PO BID for renal-transplant immunosuppression",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 4,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-023b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-023b",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "11248",
+              "display": "voriconazole"
+            }
+          ],
+          "text": "voriconazole 200 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-023"
+        },
+        "effectiveDateTime": "2026-05-02",
+        "dosage": [
+          {
+            "text": "voriconazole 200 mg PO BID for invasive pulmonary aspergillosis",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 200,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-023a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-023a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1991282108"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Olufemi",
+            "given": [
+              "Sara"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Transplant Nephrology"
+            }
+          }
+        ]
+      }
     }
   ]
 }

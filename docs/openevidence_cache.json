@@ -1827,5 +1827,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "voriconazole",
+    "drug_b": "tacrolimus",
+    "drug_pair_canonical": [
+      "tacrolimus",
+      "voriconazole"
+    ],
+    "severity": "major",
+    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; tacrolimus is a CYP3A4 substrate with a narrow therapeutic index. Co-administration raises tacrolimus AUC approximately 3-5 fold, with prospective transplant-pharmacokinetic studies (Romero et al., Clin Pharmacol Ther 2002; Capone et al., Transpl Infect Dis 2010) reporting \u22653x trough-level escalations within 48 hours of starting voriconazole. Reported toxicities include acute kidney injury, neurotoxicity, hyperkalemia, and infection from compounded over-immunosuppression. The FDA voriconazole label and the AST infectious-diseases guideline recommend an empirical 67% reduction of the tacrolimus dose at voriconazole initiation, with serial trough monitoring (target 5-8 ng/mL) every 2-3 days for the first two weeks. Discontinuation of voriconazole requires symmetric titration back up to maintain therapeutic immunosuppression.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s032lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/12235459",
+      "https://onlinelibrary.wiley.com/doi/10.1111/ctr.13544"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

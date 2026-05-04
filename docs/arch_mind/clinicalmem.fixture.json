@@ -12,7 +12,7 @@
     "redundancy_excess": 0,
     "pure_modules": 21,
     "sum_decision_points": 494,
-    "sum_evidence_calls": 119,
+    "sum_evidence_calls": 123,
     "max_mcp_tool_overlap": 0,
     "sum_protected_decls": 0
   },
