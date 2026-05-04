@@ -6699,6 +6699,403 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-024",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-024",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-024"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Lindgren",
+            "given": [
+              "Florence"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1948-03-22",
+        "address": [
+          {
+            "use": "home",
+            "city": "Tucson",
+            "state": "AZ",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-024a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-024a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "190844009",
+              "display": "Tophaceous gout"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M1A.9",
+              "display": "Chronic gout, unspecified"
+            }
+          ],
+          "text": "Tophaceous gout (chronic, on prophylactic colchicine)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "onsetDateTime": "2018-04-10"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-024b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-024b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "433144002",
+              "display": "Chronic kidney disease stage 3B"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "N18.32",
+              "display": "Chronic kidney disease, stage 3b"
+            }
+          ],
+          "text": "CKD-3b (eGFR 28 mL/min/1.73m\u00b2)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "onsetDateTime": "2022-11-03"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-024c",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-024c",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "385093006",
+              "display": "Community-acquired pneumonia"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "J18.9",
+              "display": "Pneumonia, unspecified organism"
+            }
+          ],
+          "text": "Community-acquired pneumonia"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "onsetDateTime": "2026-05-04"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-024a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-024a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "2632",
+              "display": "colchicine"
+            }
+          ],
+          "text": "colchicine 0.6 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "effectiveDateTime": "2018-04-10",
+        "dosage": [
+          {
+            "text": "colchicine 0.6 mg PO daily for chronic gout prophylaxis",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 0.6,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-024b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-024b",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "21212",
+              "display": "clarithromycin"
+            }
+          ],
+          "text": "clarithromycin 500 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "effectiveDateTime": "2026-05-04",
+        "dosage": [
+          {
+            "text": "clarithromycin 500 mg PO BID x 7 days for community-acquired pneumonia",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 500,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-obs-024a",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-024a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+            }
+          ],
+          "text": "eGFR (MDRD)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-024"
+        },
+        "effectiveDateTime": "2026-04-15",
+        "valueQuantity": {
+          "value": 28,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/{1.73_m2}"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-024a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-024a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1968920169"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Watanabe",
+            "given": [
+              "Akira"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Internal Medicine / Rheumatology"
+            }
+          }
+        ]
+      }
     }
   ]
 }

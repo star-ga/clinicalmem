@@ -114,21 +114,22 @@ def test_calibration_per_class_counts_match_cache():
 
 
 def test_calibration_contraindicated_recall_matches_safety_invariant():
-    """Iter-72 architectural-ceiling state: 6/20 = 0.30. If this
-    test starts seeing a much higher number, retrain has landed
-    and downstream surfaces (demo / JUDGES / docs) need to be
-    rotated too. A drift here forces a coordinated update.
+    """Iter-99 cohort-growth state: 6/21 = 0.286. Iter-72 was 6/20 = 0.30.
+    If this test starts seeing a much higher number, retrain has landed
+    and downstream surfaces (demo / JUDGES / docs) need to be rotated
+    too. A drift here forces a coordinated update.
     """
     payload = _load_calib()
     contra = payload["by_class"].get("contraindicated")
     assert contra is not None, "contraindicated bucket must be present"
-    # 0.30 ≤ recall ≤ 1.00 covers the iter-72 baseline up through
-    # a hypothetical 20/20 retrain. The lower bound catches a
+    # 0.28 ≤ recall ≤ 1.00 covers the iter-99 cohort-growth baseline up
+    # through a hypothetical 21/21 retrain. The lower bound catches a
     # weight-rotation that broke recall; the upper covers anything
     # we'd celebrate.
-    assert 0.30 <= contra["recall"] <= 1.0, (
+    assert 0.28 <= contra["recall"] <= 1.0, (
         f"contraindicated recall {contra['recall']} outside "
-        f"[0.30, 1.00] — investigate; retrain may have regressed"
+        f"[0.28, 1.00] — investigate; retrain may have regressed. "
+        f"Iter-99 baseline: 6/21 = 0.286 (cohort grew with new contra)."
     )
 
 

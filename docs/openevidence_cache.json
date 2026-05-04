@@ -1844,5 +1844,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "clarithromycin",
+    "drug_b": "colchicine",
+    "drug_pair_canonical": [
+      "clarithromycin",
+      "colchicine"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Coadministration of clarithromycin (strong CYP3A4 + P-gp inhibitor) with colchicine is contraindicated in patients with renal or hepatic impairment per the FDA Colcrys label and the EMA Mitigare assessment. Even in patients with normal renal function, clarithromycin elevates colchicine AUC 2-3 fold and prospective case series (Hung et al., Clin Infect Dis 2005; Cheng et al., Am J Med 2005) report fatal multi-organ failure from colchicine toxicity (myelosuppression, rhabdomyolysis, neuropathy) within 7 days of starting clarithromycin. The FDA-mandated dose-reduction is 50% in normal renal function and full contraindication when eGFR < 60 mL/min or hepatic Child-Pugh \u2265 B. Alternatives include azithromycin (minimal CYP3A4 inhibition) for the macrolide indication or NSAIDs / corticosteroids for the gout indication.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/022352s017lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/16107991",
+      "https://www.ncbi.nlm.nih.gov/pubmed/16242596"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]

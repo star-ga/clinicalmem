@@ -58,9 +58,10 @@ def test_heatmap_footer_recall_is_correct():
     """The confusion-matrix heatmap footer must show 6/20 = 30%
     (not the stale iter-49 33%)."""
     text = _DEMO.read_text()
-    assert "recall = 6 / 20 = 30%" in text, (
-        "Heatmap footer recall must be 6/20 = 30% — iter-49's 33% "
-        "(when total was 18) is stale."
+    assert "recall = 6 / 21 = 29%" in text, (
+        "Heatmap footer recall must be 6/21 = 29% — iter-99 cohort "
+        "growth (pt-024 contraindicated) bumped denominator 20 → 21."
     )
-    assert "recall = 6 / 20 = 33%" not in text
+    assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale (denom was 18)
+    assert "recall = 6 / 20 = 30%" not in text  # iter-93 era stale (now 21 contras)
     assert "recall = 6 / 19" not in text  # iter-49 era 6/19 also stale
