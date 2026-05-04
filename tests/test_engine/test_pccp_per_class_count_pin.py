@@ -29,7 +29,7 @@ _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 _EXPECTED_CONTRAINDICATED = 22
 _EXPECTED_SERIOUS = 69
 _EXPECTED_MODERATE = 22
-_EXPECTED_MAJOR = 3  # iter 93: 3rd major (voriconazole + tacrolimus) joined iter-83's clarithromycin + digoxin and iter-39's tamoxifen + paroxetine
+_EXPECTED_MAJOR = 4  # iter 109: 4th major (dronedarone + dabigatran) joined iter-93 voriconazole+tacrolimus, iter-83 clarithromycin+digoxin, iter-39 tamoxifen+paroxetine
 
 
 def _live_counts() -> dict[str, int]:

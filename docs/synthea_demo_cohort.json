@@ -7397,6 +7397,348 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-026",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-026",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-026"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Goldstein",
+            "given": [
+              "Reuben"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1951-04-22",
+        "address": [
+          {
+            "use": "home",
+            "city": "Burlington",
+            "state": "VT",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-026a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-026a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49436004",
+              "display": "Atrial fibrillation"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I48.0",
+              "display": "Paroxysmal atrial fibrillation"
+            }
+          ],
+          "text": "Paroxysmal atrial fibrillation (CHA\u2082DS\u2082-VASc 4)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-026"
+        },
+        "onsetDateTime": "2022-08-19"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-026b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-026b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "17338001",
+              "display": "Ventricular premature complexes"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "I49.3",
+              "display": "Ventricular premature depolarization"
+            }
+          ],
+          "text": "Frequent symptomatic ventricular ectopy on Holter (28% PVC burden)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-026"
+        },
+        "onsetDateTime": "2026-04-29"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-obs-026a",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "synthea-obs-026a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "text": "eGFR (CKD-EPI)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-026"
+        },
+        "effectiveDateTime": "2026-04-15",
+        "valueQuantity": {
+          "value": 47,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/{1.73_m2}"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-026a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-026a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1037045",
+              "display": "dabigatran"
+            }
+          ],
+          "text": "dabigatran etexilate 150 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-026"
+        },
+        "effectiveDateTime": "2022-09-01",
+        "dosage": [
+          {
+            "text": "dabigatran etexilate 150 mg PO BID for AF stroke prophylaxis",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 150,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-med-026b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-med-026b",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "857055",
+              "display": "dronedarone"
+            }
+          ],
+          "text": "dronedarone 400 mg"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-026"
+        },
+        "effectiveDateTime": "2026-05-04",
+        "dosage": [
+          {
+            "text": "dronedarone 400 mg PO BID with meals for AF rhythm control + VPC suppression",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 400,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-026a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-026a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1406856009"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Mehta",
+            "given": [
+              "Anjali"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Cardiology / Electrophysiology"
+            }
+          }
+        ]
+      }
     }
   ]
 }

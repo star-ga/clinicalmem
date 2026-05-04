@@ -981,6 +981,17 @@
       ],
       "atc": "N02CC01",
       "note": "5-HT1B/1D agonist; abortive triptan; MAO-A substrate"
+    },
+    "dronedarone": {
+      "flags": [
+        "is_p_gp_inhibitor",
+        "is_cyp3a4_strong_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/022425s014lbl.pdf"
+      ],
+      "atc": "C01BD07",
+      "note": "class III antiarrhythmic; moderate P-gp inhibitor + moderate CYP3A4 inhibitor"
     }
   }
 }

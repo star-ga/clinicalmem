@@ -1878,5 +1878,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "dabigatran",
+    "drug_b": "dronedarone",
+    "drug_pair_canonical": [
+      "dabigatran",
+      "dronedarone"
+    ],
+    "severity": "major",
+    "clinical_summary": "Dronedarone (class III antiarrhythmic for AF rhythm control) is a moderate P-glycoprotein inhibitor; dabigatran (direct thrombin inhibitor anticoagulant) is a P-gp substrate without alternate elimination pathways. Coadministration raises dabigatran AUC by 70-100% (Pradaxa FDA label, Section 7.1) and proportionally elevates major-bleeding risk. The PALLAS trial (Connolly et al., NEJM 2011) and ENGAGE-AF subgroup analyses report 1.7-2.3x increased GI/intracranial bleeding when DOACs and dronedarone are co-prescribed. The FDA Pradaxa label requires dose reduction to 75 mg BID in patients with CrCl 30-50 mL/min concurrently receiving dronedarone, and contraindicates the combination when CrCl < 30 mL/min. Alternatives: amiodarone for rhythm control (but also a P-gp inhibitor \u2014 same caution), beta-blocker rate control with apixaban (lower P-gp interaction profile).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/022512s007lbl.pdf",
+      "https://www.ncbi.nlm.nih.gov/pubmed/22078551",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/022425s014lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-04",
+    "source": "CACHED"
   }
 ]
