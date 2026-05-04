@@ -107,8 +107,22 @@ def _parse_verdict(text: str, model: str) -> LLMVerdict:
             confidence=max(0.0, min(1.0, float(data.get("confidence", 0.5)))),
             reasoning=str(data.get("reasoning", ""))[:300],
         )
-    except (json.JSONDecodeError, ValueError, TypeError):
-        # If we can't parse JSON, check for agreement keywords
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        # If we can't parse JSON, check for agreement keywords. Log at
+        # DEBUG so SaMD operators can audit how often each provider's
+        # output is non-JSON without raw text leaking into production
+        # INFO logs. PHI / secret discipline: model + parse_error_type
+        # + response_length only — NEVER the response body itself
+        # (the LLM may quote the prompt verbatim including any drug
+        # names that passed through the redaction layer).
+        logger.debug(
+            "consensus_verdict_unparseable",
+            extra={
+                "model": model,
+                "parse_error_type": type(e).__name__,
+                "response_length": len(text),
+            },
+        )
         lower = text.lower()
         agrees = any(w in lower for w in ["agree", "yes", "genuine", "real concern", "confirmed"])
         return LLMVerdict(
@@ -161,6 +175,22 @@ async def _call_google(prompt: str, api_key: str, model_id: str, label: str) -> 
             raise RuntimeError(f"{label} returned {resp.status_code}")
         candidates = resp.json().get("candidates", [])
         if not candidates:
+            # Google returns 200 with empty candidates when the prompt
+            # is filtered by Gemini's safety classifiers (e.g. clinical
+            # content flagged as medical advice). Distinct failure mode
+            # from a non-200 response — log it separately so operators
+            # can distinguish API outages from safety-filter false-
+            # positives. Provider label only; never the prompt or the
+            # response body (Google echoes the prompt in some error
+            # paths and we redact PHI upstream, but defense-in-depth).
+            logger.warning(
+                "consensus_provider_no_candidates",
+                extra={
+                    "provider": label,
+                    "status_code": resp.status_code,
+                    "reason": "empty_candidates_likely_safety_filter",
+                },
+            )
             raise RuntimeError(f"{label} returned no candidates")
         text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
         return _parse_verdict(text, label)
