@@ -122,12 +122,19 @@ def test_bitnet_live_precision_recall_pinned():
     #           Upstream Layer 1 (FDA Zanaflex § 4) +
     #           DOWNGRADE_DISAGREEMENT preserve contra.
     # Lower bound 0.25 catches the iter-145 floor.
+    # Iter-155: cohort grew (29 → 30, febuxostat+azathioprine), TP=8 →
+    #           recall = 8/30 = 0.267. BitNet predicted "none" on the
+    #           new pair (XO×thiopurine slot has only 1 example in
+    #           training, allopurinol+azathioprine — generalization to
+    #           febuxostat is weak). Upstream Layer 1 (FDA Uloric § 4)
+    #           + DOWNGRADE_DISAGREEMENT preserve contra.
+    # Lower bound 0.25 still catches the iter-155 floor (0.267 > 0.25).
     assert 0.25 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.25, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 29, f"contraindicated cohort size drifted: live={total}, pinned=29"
+    assert total == 30, f"contraindicated cohort size drifted: live={total}, pinned=30"
 
 
 def test_dashboard_displays_live_precision_number():

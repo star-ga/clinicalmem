@@ -68,8 +68,8 @@ def test_heatmap_footer_recall_is_correct():
     TP stays at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 29 = 28%" in text, (
-        "Heatmap footer recall must be 8/29 = 28% — iter-145 cohort "
+    assert "recall = 8 / 30 = 27%" in text, (
+        "Heatmap footer recall must be 8/30 = 27% — iter-155 cohort "
         "growth (fluvoxamine+tizanidine) bumped denominator 28 → 29. "
         "BitNet predicted 'none' on the new pair; TP stays at 8."
     )
@@ -83,7 +83,8 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 8 / 25 = 32%" not in text  # iter-124 era stale
     assert "recall = 8 / 26 = 31%" not in text  # iter-129 era stale
     assert "recall = 8 / 27 = 30%" not in text  # iter-134 era stale
-    assert "recall = 8 / 28 = 29%" not in text  # iter-140 era stale (now 8/29)
+    assert "recall = 8 / 28 = 29%" not in text  # iter-140 era stale
+    assert "recall = 8 / 29 = 28%" not in text  # iter-145 era stale (now 8/30)
     assert "recall = 6 / 19" not in text  # iter-49 era stale
 
 
@@ -124,8 +125,8 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "29 / 29 contraindicated",                  # iter-145 live coverage
-        "100% live cache contraindicated recall",   # iter-146 milestone
+        "30 / 30 contraindicated cache entries (100% explanation coverage)",  # iter-155 cohort 29 -> 30 (explanation coverage)                  # iter-145 live coverage
+        "96.7% live cache contraindicated recall",  # iter-155 (Path A v3 frozen at 29/30 until v4 retrain)
         "326e3301",                                  # iter-146 bundle id
         "193-dim feature input",                    # iter-146 dim
     )

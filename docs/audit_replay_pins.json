@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T14:41:55.047906+00:00",
+  "dateCreated": "2026-05-05T19:14:16.981973+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -453,6 +453,20 @@
         -239163
       ],
       "repro_hash": "711c965f37bfba51f00813da9de71206e42da7e7c65bbf131bd53ac071d0654b",
+      "severity_name": "none"
+    },
+    {
+      "drug_a": "azathioprine",
+      "drug_b": "febuxostat",
+      "feature_hash": "cf72be9de184dd90692c5221b789fc4cd6cd0a1e491e4db1282162d6227fe621",
+      "logits_q16": [
+        1991402,
+        -5167033,
+        358683,
+        63252,
+        -3176484
+      ],
+      "repro_hash": "34ed3ea1d9b4b48afedfd97a83ea21062fd1c816f79162b11c5f47dea8d03041",
       "severity_name": "none"
     }
   ],

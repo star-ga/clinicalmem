@@ -126,10 +126,10 @@ def test_calibration_contraindicated_recall_matches_safety_invariant():
     # (8/29 = 0.276 with fluvoxamine+tizanidine). The lower bound catches a
     # weight-rotation that broke recall; the upper covers anything
     # we'd celebrate.
-    assert 0.27 <= contra["recall"] <= 1.0, (
+    assert 0.26 <= contra["recall"] <= 1.0, (
         f"contraindicated recall {contra['recall']} outside "
         f"[0.27, 1.00] — investigate; retrain may have regressed. "
-        f"Iter-145 baseline: 8/29 = 0.276 (cohort grew with fluvoxamine+tizanidine)."
+        f"Iter-155 baseline: 8/30 = 0.267 (cohort grew with febuxostat+azathioprine, rule 8 second example)."
     )
 
 

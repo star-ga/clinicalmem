@@ -35,6 +35,169 @@
     "is_cyp3a4_moderate_inhibitor"
   ],
   "drugs": {
+    "ace inhibitor": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019558s063,019777s060lbl.pdf"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "allopurinol": {
+      "flags": [
+        "is_xanthine_oxidase_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016084s045lbl.pdf"
+      ],
+      "atc": "M04AA01"
+    },
+    "alprazolam": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018276s050lbl.pdf"
+      ],
+      "atc": "N05BA12"
+    },
+    "amiodarone": {
+      "flags": [
+        "is_cyp2c9_inhibitor",
+        "is_p_gp_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018972s054lbl.pdf"
+      ],
+      "atc": "C01BD01"
+    },
+    "amitriptyline": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/085966s095,085969s084,085972s044,085974s041,085979s058lbl.pdf"
+      ],
+      "atc": "N06AA09"
+    },
+    "amlodipine": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019787s046lbl.pdf"
+      ],
+      "atc": "C08CA01"
+    },
+    "amoxicillin": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/050760s011,050761s011,050754s019,050542s025lbl.pdf"
+      ],
+      "atc": "J01CA04"
+    },
+    "apixaban": {
+      "flags": [
+        "is_anticoagulant",
+        "is_cyp3a4_substrate",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/202155s002lbl.pdf"
+      ],
+      "atc": "B01AF02"
+    },
+    "arb": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020386s059lbl.pdf"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "aspirin": {
+      "flags": [
+        "is_anticoagulant",
+        "is_nsaid"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/204417s003lbl.pdf"
+      ],
+      "atc": "B01AC06"
+    },
+    "atenolol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/018240s029,019416s019lbl.pdf"
+      ],
+      "atc": "C07AB03"
+    },
+    "atorvastatin": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_statin"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020702s056lbl.pdf"
+      ],
+      "atc": "C10AA05"
+    },
+    "azathioprine": {
+      "flags": [
+        "is_thiopurine"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016324s039lbl.pdf"
+      ],
+      "atc": "L04AX01"
+    },
+    "azithromycin": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/050670s029,050693s032,050730s032,050784s025lbl.pdf"
+      ],
+      "atc": "J01FA10",
+      "note": "macrolide but minimal CYP3A4 inhibition; QT prolongation risk via separate mechanism"
+    },
+    "benzodiazepine": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018276s050lbl.pdf"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "bisoprolol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/019982s019lbl.pdf"
+      ],
+      "atc": "C07AB07"
+    },
+    "carvedilol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020297s039lbl.pdf"
+      ],
+      "atc": "C07AG02"
+    },
+    "ciprofloxacin": {
+      "flags": [
+        "is_cyp1a2_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/019537s086lbl.pdf"
+      ],
+      "atc": "J01MA02"
+    },
+    "ckd": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
+      ],
+      "atc": null,
+      "note": "comorbidity, not a drug"
+    },
     "clarithromycin": {
       "flags": [
         "is_cyp3a4_strong_inhibitor",
@@ -45,6 +208,147 @@
         "https://www.ncbi.nlm.nih.gov/pubmed/9696727"
       ],
       "atc": "J01FA09"
+    },
+    "clopidogrel": {
+      "flags": [
+        "is_anticoagulant"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/020839s055lbl.pdf"
+      ],
+      "atc": "B01AC04",
+      "note": "antiplatelet; CYP2C19 prodrug activation"
+    },
+    "colchicine": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/022352s017lbl.pdf"
+      ],
+      "atc": "M04AC01",
+      "note": "narrow-TI antimitotic; CYP3A4 + P-gp dual substrate"
+    },
+    "contrast dye": {
+      "flags": [
+        "is_iodinated_contrast"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
+      ],
+      "atc": null
+    },
+    "cranberry": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/009218s108lbl.pdf"
+      ],
+      "atc": null,
+      "note": "potential CYP2C9 modulator (warfarin INR fluctuation reports)"
+    },
+    "cyclosporine": {
+      "flags": [
+        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_substrate",
+        "is_oatp1b1_inhibitor",
+        "is_p_gp_inhibitor",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/050573s041,050574s051,050625s055,050715s029lbl.pdf",
+        "https://www.ncbi.nlm.nih.gov/pubmed/16550448"
+      ],
+      "atc": "L04AD01"
+    },
+    "dabigatran": {
+      "flags": [
+        "is_anticoagulant",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/022512s007lbl.pdf"
+      ],
+      "atc": "B01AE07"
+    },
+    "digoxin": {
+      "flags": [
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020405s006lbl.pdf"
+      ],
+      "atc": "C01AA05"
+    },
+    "diltiazem": {
+      "flags": [
+        "is_cyp3a4_moderate_inhibitor",
+        "is_p_gp_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018602s044lbl.pdf"
+      ],
+      "atc": "C08DB01"
+    },
+    "diphenhydramine": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/091526s006lbl.pdf"
+      ],
+      "atc": "R06AA02"
+    },
+    "doxycycline": {
+      "flags": [
+        "is_tetracycline"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/050006s075lbl.pdf"
+      ],
+      "atc": "J01AA02"
+    },
+    "dronedarone": {
+      "flags": [
+        "is_cyp3a4_moderate_inhibitor",
+        "is_p_gp_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/022425s014lbl.pdf"
+      ],
+      "atc": "C01BD07",
+      "note": "class III antiarrhythmic; moderate P-gp inhibitor + moderate CYP3A4 inhibitor"
+    },
+    "elderly": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.fda.gov/drugs/drug-safety-and-availability/preventable-adverse-drug-reactions-focus-drug-interactions"
+      ],
+      "atc": null,
+      "note": "demographic, not a drug"
+    },
+    "enalapril": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018998s068lbl.pdf"
+      ],
+      "atc": "C09AA02",
+      "note": "ACE inhibitor"
+    },
+    "eplerenone": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021437s006lbl.pdf"
+      ],
+      "atc": "C03DA04",
+      "note": "selective MRA"
+    },
+    "ergotamine": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/005489s032lbl.pdf"
+      ],
+      "atc": "N02CA02"
     },
     "erythromycin": {
       "flags": [
@@ -57,13 +361,174 @@
       "atc": "J01FA01",
       "notes": ""
     },
-    "azithromycin": {
+    "esomeprazole": {
       "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/050670s029,050693s032,050730s032,050784s025lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021153s032,021689s011lbl.pdf"
       ],
-      "atc": "J01FA10",
-      "note": "macrolide but minimal CYP3A4 inhibition; QT prolongation risk via separate mechanism"
+      "atc": "A02BC05"
+    },
+    "febuxostat": {
+      "flags": [
+        "is_xanthine_oxidase_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/021856s000lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/19553215"
+      ],
+      "atc_class": "M04AA03",
+      "_notes": "Non-purine selective xanthine oxidase inhibitor. FDA approved 2009 (Uloric). Stronger XO selectivity than allopurinol but same DDI mechanism: contraindicated with azathioprine + 6-mercaptopurine via XO inhibition \u2192 6-MP accumulation \u2192 myelosuppression."
+    },
+    "felodipine": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019834s041lbl.pdf"
+      ],
+      "atc": "C08CA02"
+    },
+    "fentanyl": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019813s057lbl.pdf"
+      ],
+      "atc": "N02AB03"
+    },
+    "fluconazole": {
+      "flags": [
+        "is_cyp2c9_inhibitor",
+        "is_cyp3a4_moderate_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019949s060lbl.pdf"
+      ],
+      "atc": "J02AC01",
+      "note": "moderate CYP3A4 inhibitor; classified strong above 200 mg/day"
+    },
+    "fluoxetine": {
+      "flags": [
+        "is_cyp2d6_inhibitor",
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018936s103lbl.pdf"
+      ],
+      "atc": "N06AB03"
+    },
+    "fluvoxamine": {
+      "flags": [
+        "is_cyp1a2_inhibitor",
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021519s015lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/16553505/"
+      ],
+      "atc": "N06AB08",
+      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 \u00b5M, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label \u00a7 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
+    },
+    "furosemide": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/016273s068lbl.pdf"
+      ],
+      "atc": "C03CA01"
+    },
+    "gabapentin": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020235s066,020882s048,021129s049lbl.pdf"
+      ],
+      "atc": "N03AX12"
+    },
+    "gemfibrozil": {
+      "flags": [
+        "is_oatp1b1_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018422s039lbl.pdf",
+        "https://www.ncbi.nlm.nih.gov/pubmed/15229465"
+      ],
+      "atc": "C10AB04",
+      "note": "fibrate; OATP1B1 inhibitor \u2014 contraindicated with simvastatin per FDA Lopid label"
+    },
+    "glipizide": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/017783s040lbl.pdf"
+      ],
+      "atc": "A10BB07",
+      "note": "sulfonylurea"
+    },
+    "grapefruit": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.fda.gov/consumers/consumer-updates/grapefruit-juice-and-some-drugs-dont-mix"
+      ],
+      "atc": null,
+      "note": "intestinal CYP3A4 inhibitor; treat as CYP3A4 strong inhibitor in clinical context"
+    },
+    "haloperidol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/015923s085,016366s066lbl.pdf"
+      ],
+      "atc": "N05AD01"
+    },
+    "hydrochlorothiazide": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/040735s007lbl.pdf"
+      ],
+      "atc": "C03AA03"
+    },
+    "hydrocodone": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/202880s001lbl.pdf"
+      ],
+      "atc": "R05DA03"
+    },
+    "ibuprofen": {
+      "flags": [
+        "is_nsaid"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/017463s094lbl.pdf"
+      ],
+      "atc": "M01AE01"
+    },
+    "iodine": {
+      "flags": [
+        "is_iodinated_contrast"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
+      ],
+      "atc": null,
+      "note": "iodinated contrast; lactic acidosis with metformin"
+    },
+    "isosorbide mononitrate": {
+      "flags": [
+        "is_nitrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019091s048lbl.pdf"
+      ],
+      "atc": "C01DA14",
+      "note": "organic nitrate; potentiates PDE5 inhibitor hypotension"
+    },
+    "isotretinoin": {
+      "flags": [
+        "is_retinoid"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/018662s058lbl.pdf"
+      ],
+      "atc": "D10BA01"
     },
     "itraconazole": {
       "flags": [
@@ -85,162 +550,6 @@
       ],
       "atc": "J02AB02"
     },
-    "voriconazole": {
-      "flags": [
-        "is_cyp2c9_inhibitor",
-        "is_cyp3a4_strong_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s032lbl.pdf"
-      ],
-      "atc": "J02AC03"
-    },
-    "fluconazole": {
-      "flags": [
-        "is_cyp2c9_inhibitor",
-        "is_cyp3a4_moderate_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019949s060lbl.pdf"
-      ],
-      "atc": "J02AC01",
-      "note": "moderate CYP3A4 inhibitor; classified strong above 200 mg/day"
-    },
-    "cyclosporine": {
-      "flags": [
-        "is_cyp3a4_strong_inhibitor",
-        "is_cyp3a4_substrate",
-        "is_oatp1b1_inhibitor",
-        "is_p_gp_inhibitor",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/050573s041,050574s051,050625s055,050715s029lbl.pdf",
-        "https://www.ncbi.nlm.nih.gov/pubmed/16550448"
-      ],
-      "atc": "L04AD01"
-    },
-    "tacrolimus": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/050708s033,050709s032lbl.pdf"
-      ],
-      "atc": "L04AD02"
-    },
-    "simvastatin": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_p_gp_substrate",
-        "is_statin"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s085lbl.pdf"
-      ],
-      "atc": "C10AA01"
-    },
-    "atorvastatin": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_statin"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020702s056lbl.pdf"
-      ],
-      "atc": "C10AA05"
-    },
-    "rosuvastatin": {
-      "flags": [
-        "is_statin"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021366s016lbl.pdf"
-      ],
-      "atc": "C10AA07",
-      "note": "minimal CYP3A4 metabolism; OATP1B1 substrate instead"
-    },
-    "warfarin": {
-      "flags": [
-        "is_anticoagulant"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/009218s108lbl.pdf"
-      ],
-      "atc": "B01AA03",
-      "note": "CYP2C9 substrate (S-enantiomer); narrow therapeutic index"
-    },
-    "rivaroxaban": {
-      "flags": [
-        "is_anticoagulant",
-        "is_cyp3a4_substrate",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/202439s001lbl.pdf"
-      ],
-      "atc": "B01AF01"
-    },
-    "apixaban": {
-      "flags": [
-        "is_anticoagulant",
-        "is_cyp3a4_substrate",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/202155s002lbl.pdf"
-      ],
-      "atc": "B01AF02"
-    },
-    "dabigatran": {
-      "flags": [
-        "is_anticoagulant",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/022512s007lbl.pdf"
-      ],
-      "atc": "B01AE07"
-    },
-    "aspirin": {
-      "flags": [
-        "is_anticoagulant",
-        "is_nsaid"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/204417s003lbl.pdf"
-      ],
-      "atc": "B01AC06"
-    },
-    "clopidogrel": {
-      "flags": [
-        "is_anticoagulant"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/020839s055lbl.pdf"
-      ],
-      "atc": "B01AC04",
-      "note": "antiplatelet; CYP2C19 prodrug activation"
-    },
-    "ibuprofen": {
-      "flags": [
-        "is_nsaid"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/017463s094lbl.pdf"
-      ],
-      "atc": "M01AE01"
-    },
-    "naproxen": {
-      "flags": [
-        "is_nsaid"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021341s011lbl.pdf"
-      ],
-      "atc": "M01AE02"
-    },
     "ketorolac": {
       "flags": [
         "is_nsaid"
@@ -250,187 +559,15 @@
       ],
       "atc": "M01AB15"
     },
-    "phenelzine": {
+    "linezolid": {
       "flags": [
         "is_maoi"
       ],
+      "atc": "J01XX08",
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/011909s038lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf"
       ],
-      "atc": "N06AF03"
-    },
-    "selegiline": {
-      "flags": [
-        "is_maoi"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021639s016lbl.pdf"
-      ],
-      "atc": "N04BD01"
-    },
-    "tranylcypromine": {
-      "flags": [
-        "is_maoi"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/012342s065lbl.pdf"
-      ],
-      "atc": "N06AF04"
-    },
-    "fluoxetine": {
-      "flags": [
-        "is_cyp2d6_inhibitor",
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018936s103lbl.pdf"
-      ],
-      "atc": "N06AB03"
-    },
-    "paroxetine": {
-      "flags": [
-        "is_cyp2d6_inhibitor",
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/020031s067,020710s031lbl.pdf"
-      ],
-      "atc": "N06AB05"
-    },
-    "sertraline": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/019839s074,020990s035lbl.pdf"
-      ],
-      "atc": "N06AB06"
-    },
-    "venlafaxine": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020151s066lbl.pdf"
-      ],
-      "atc": "N06AX16"
-    },
-    "tramadol": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020281s032s033lbl.pdf"
-      ],
-      "atc": "N02AX02"
-    },
-    "ondansetron": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/020007s045,020403s019lbl.pdf"
-      ],
-      "atc": "A04AA01",
-      "note": "5-HT3 antagonist; QT prolongation"
-    },
-    "amitriptyline": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/085966s095,085969s084,085972s044,085974s041,085979s058lbl.pdf"
-      ],
-      "atc": "N06AA09"
-    },
-    "nortriptyline": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018012s029,018013s057lbl.pdf"
-      ],
-      "atc": "N06AA10"
-    },
-    "sildenafil": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_pde5_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020895s039s042lbl.pdf"
-      ],
-      "atc": "G04BE03"
-    },
-    "tadalafil": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_pde5_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/021368s022lbl.pdf"
-      ],
-      "atc": "G04BE08"
-    },
-    "vardenafil": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_pde5_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021400s023lbl.pdf"
-      ],
-      "atc": "G04BE09"
-    },
-    "isosorbide mononitrate": {
-      "flags": [
-        "is_nitrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019091s048lbl.pdf"
-      ],
-      "atc": "C01DA14",
-      "note": "organic nitrate; potentiates PDE5 inhibitor hypotension"
-    },
-    "verapamil": {
-      "flags": [
-        "is_cyp3a4_moderate_inhibitor",
-        "is_p_gp_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/018817s033lbl.pdf"
-      ],
-      "atc": "C08DA01",
-      "note": "moderate CYP3A4 inhibitor; classified strong by some references"
-    },
-    "diltiazem": {
-      "flags": [
-        "is_cyp3a4_moderate_inhibitor",
-        "is_p_gp_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018602s044lbl.pdf"
-      ],
-      "atc": "C08DB01"
-    },
-    "amiodarone": {
-      "flags": [
-        "is_cyp2c9_inhibitor",
-        "is_p_gp_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018972s054lbl.pdf"
-      ],
-      "atc": "C01BD01"
-    },
-    "digoxin": {
-      "flags": [
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/020405s006lbl.pdf"
-      ],
-      "atc": "C01AA05"
+      "notes": "Reversible MAOI (oxazolidinone). FDA black-box vs serotonergic drugs."
     },
     "lisinopril": {
       "flags": [
@@ -441,112 +578,6 @@
       ],
       "atc": "C09AA03",
       "note": "ACE inhibitor"
-    },
-    "enalapril": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018998s068lbl.pdf"
-      ],
-      "atc": "C09AA02",
-      "note": "ACE inhibitor"
-    },
-    "losartan": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020386s059lbl.pdf"
-      ],
-      "atc": "C09CA01",
-      "note": "angiotensin II receptor blocker"
-    },
-    "valsartan": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020665s033lbl.pdf"
-      ],
-      "atc": "C09CA03",
-      "note": "ARB"
-    },
-    "sacubitril": {
-      "flags": [
-        "is_neprilysin_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207620s000lbl.pdf"
-      ],
-      "atc": "C09DX04",
-      "note": "neprilysin inhibitor; combined with valsartan"
-    },
-    "spironolactone": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/012151s076lbl.pdf"
-      ],
-      "atc": "C03DA01",
-      "note": "potassium-sparing diuretic; aldosterone antagonist"
-    },
-    "eplerenone": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021437s006lbl.pdf"
-      ],
-      "atc": "C03DA04",
-      "note": "selective MRA"
-    },
-    "metoprolol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/017963s064,018704s033lbl.pdf"
-      ],
-      "atc": "C07AB02"
-    },
-    "carvedilol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020297s039lbl.pdf"
-      ],
-      "atc": "C07AG02"
-    },
-    "atenolol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/018240s029,019416s019lbl.pdf"
-      ],
-      "atc": "C07AB03"
-    },
-    "amlodipine": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019787s046lbl.pdf"
-      ],
-      "atc": "C08CA01"
-    },
-    "felodipine": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019834s041lbl.pdf"
-      ],
-      "atc": "C08CA02"
-    },
-    "metformin": {
-      "flags": [
-        "is_metformin"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
-      ],
-      "atc": "A10BA02"
-    },
-    "glipizide": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/017783s040lbl.pdf"
-      ],
-      "atc": "A10BB07",
-      "note": "sulfonylurea"
     },
     "lithium": {
       "flags": [],
@@ -562,167 +593,6 @@
       ],
       "atc": "N05AN01"
     },
-    "phenytoin": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/008762s039lbl.pdf"
-      ],
-      "atc": "N03AB02",
-      "note": "CYP2C9 substrate; narrow TI"
-    },
-    "methotrexate": {
-      "flags": [
-        "is_folate_antagonist"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/008085s066lbl.pdf"
-      ],
-      "atc": "L01BA01"
-    },
-    "trimethoprim": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
-      ],
-      "atc": "J01EA01"
-    },
-    "sulfamethoxazole": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
-      ],
-      "atc": "J01EE01"
-    },
-    "trimethoprim-sulfamethoxazole": {
-      "flags": [
-        "is_folate_antagonist"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
-      ],
-      "atc": "J01EE01"
-    },
-    "allopurinol": {
-      "flags": [
-        "is_xanthine_oxidase_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016084s045lbl.pdf"
-      ],
-      "atc": "M04AA01"
-    },
-    "azathioprine": {
-      "flags": [
-        "is_thiopurine"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016324s039lbl.pdf"
-      ],
-      "atc": "L04AX01"
-    },
-    "tamoxifen": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/017970s059lbl.pdf"
-      ],
-      "atc": "L02BA01",
-      "note": "CYP2D6 substrate (active metabolite endoxifen)"
-    },
-    "doxycycline": {
-      "flags": [
-        "is_tetracycline"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/050006s075lbl.pdf"
-      ],
-      "atc": "J01AA02"
-    },
-    "isotretinoin": {
-      "flags": [
-        "is_retinoid"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/018662s058lbl.pdf"
-      ],
-      "atc": "D10BA01"
-    },
-    "ergotamine": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/005489s032lbl.pdf"
-      ],
-      "atc": "N02CA02"
-    },
-    "ciprofloxacin": {
-      "flags": [
-        "is_cyp1a2_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/019537s086lbl.pdf"
-      ],
-      "atc": "J01MA02"
-    },
-    "tizanidine": {
-      "flags": [
-        "is_cyp1a2_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020397s032,021447s015lbl.pdf"
-      ],
-      "atc": "M03BX02",
-      "note": "CYP1A2 substrate; severe hypotension with cipro"
-    },
-    "amoxicillin": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/050760s011,050761s011,050754s019,050542s025lbl.pdf"
-      ],
-      "atc": "J01CA04"
-    },
-    "penicillin": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/060002s050lbl.pdf"
-      ],
-      "atc": "J01CE02"
-    },
-    "gemfibrozil": {
-      "flags": [
-        "is_oatp1b1_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018422s039lbl.pdf",
-        "https://www.ncbi.nlm.nih.gov/pubmed/15229465"
-      ],
-      "atc": "C10AB04",
-      "note": "fibrate; OATP1B1 inhibitor — contraindicated with simvastatin per FDA Lopid label"
-    },
-    "omeprazole": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019810s108lbl.pdf"
-      ],
-      "atc": "A02BC01",
-      "note": "PPI; CYP2C19 inhibitor"
-    },
-    "esomeprazole": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021153s032,021689s011lbl.pdf"
-      ],
-      "atc": "A02BC05"
-    },
-    "alprazolam": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018276s050lbl.pdf"
-      ],
-      "atc": "N05BA12"
-    },
     "lorazepam": {
       "flags": [],
       "evidence_urls": [
@@ -730,23 +600,42 @@
       ],
       "atc": "N05BA06"
     },
-    "midazolam": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
+    "losartan": {
+      "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018654s068,020932s029lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020386s059lbl.pdf"
       ],
-      "atc": "N05CD08"
+      "atc": "C09CA01",
+      "note": "angiotensin II receptor blocker"
     },
-    "fentanyl": {
+    "maoi": {
       "flags": [
-        "is_cyp3a4_substrate"
+        "is_maoi"
       ],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019813s057lbl.pdf"
+        "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/serotonin-syndrome"
       ],
-      "atc": "N02AB03"
+      "atc": null,
+      "note": "drug class"
+    },
+    "meperidine": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "atc": "N02AB02",
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/006134s054lbl.pdf"
+      ],
+      "notes": "Weak SRI + active normeperidine metabolite has serotonergic activity. MAOI co-admin = serotonin syndrome / hyperpyrexic crisis (FDA black-box)."
+    },
+    "metformin": {
+      "flags": [
+        "is_metformin"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
+      ],
+      "atc": "A10BA02"
     },
     "methadone": {
       "flags": [
@@ -758,6 +647,38 @@
       ],
       "atc": "N07BC02"
     },
+    "methotrexate": {
+      "flags": [
+        "is_folate_antagonist"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/008085s066lbl.pdf"
+      ],
+      "atc": "L01BA01"
+    },
+    "metoprolol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/017963s064,018704s033lbl.pdf"
+      ],
+      "atc": "C07AB02"
+    },
+    "metoprolol succinate": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/017963s064,018704s033lbl.pdf"
+      ],
+      "atc": "C07AB02"
+    },
+    "midazolam": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018654s068,020932s029lbl.pdf"
+      ],
+      "atc": "N05CD08"
+    },
     "morphine": {
       "flags": [],
       "evidence_urls": [
@@ -765,64 +686,114 @@
       ],
       "atc": "N02AA01"
     },
-    "hydrocodone": {
+    "naproxen": {
+      "flags": [
+        "is_nsaid"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021341s011lbl.pdf"
+      ],
+      "atc": "M01AE02"
+    },
+    "nitroglycerin": {
+      "flags": [
+        "is_nitrate"
+      ],
+      "atc": "C01DA02",
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/021134s016lbl.pdf"
+      ],
+      "notes": "Organic nitrate; cGMP-mediated vasodilation. PDE5 inhibitor co-admin = severe hypotension (FDA Cialis/Viagra/Levitra black-box)."
+    },
+    "nortriptyline": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018012s029,018013s057lbl.pdf"
+      ],
+      "atc": "N06AA10"
+    },
+    "nsaid": {
+      "flags": [
+        "is_nsaid"
+      ],
+      "evidence_urls": [
+        "https://www.fda.gov/drugs/drug-safety-and-availability/fda-strengthens-warning-non-aspirin-nonsteroidal-anti-inflammatory-drugs-nsaids-can-cause-heart"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "omeprazole": {
       "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/202880s001lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019810s108lbl.pdf"
       ],
-      "atc": "R05DA03"
+      "atc": "A02BC01",
+      "note": "PPI; CYP2C19 inhibitor"
     },
-    "haloperidol": {
+    "ondansetron": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/020007s045,020403s019lbl.pdf"
+      ],
+      "atc": "A04AA01",
+      "note": "5-HT3 antagonist; QT prolongation"
+    },
+    "opioid": {
       "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/015923s085,016366s066lbl.pdf"
+        "https://www.fda.gov/drugs/information-drug-class/information-about-opioid-products"
       ],
-      "atc": "N05AD01"
+      "atc": null,
+      "note": "drug class"
     },
-    "diphenhydramine": {
+    "paroxetine": {
+      "flags": [
+        "is_cyp2d6_inhibitor",
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/020031s067,020710s031lbl.pdf"
+      ],
+      "atc": "N06AB05"
+    },
+    "penicillin": {
       "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/091526s006lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/060002s050lbl.pdf"
       ],
-      "atc": "R06AA02"
+      "atc": "J01CE02"
     },
-    "zolpidem": {
+    "phenelzine": {
+      "flags": [
+        "is_maoi"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2007/011909s038lbl.pdf"
+      ],
+      "atc": "N06AF03"
+    },
+    "phenytoin": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/008762s039lbl.pdf"
+      ],
+      "atc": "N03AB02",
+      "note": "CYP2C9 substrate; narrow TI"
+    },
+    "pimozide": {
       "flags": [
         "is_cyp3a4_substrate"
       ],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019908s037lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/017473s041lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/9384188/"
       ],
-      "atc": "N05CF02"
-    },
-    "gabapentin": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020235s066,020882s048,021129s049lbl.pdf"
-      ],
-      "atc": "N03AX12"
-    },
-    "theophylline": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018510s057lbl.pdf"
-      ],
-      "atc": "R03DA04",
-      "note": "CYP1A2 substrate; narrow TI"
-    },
-    "hydrochlorothiazide": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/040735s007lbl.pdf"
-      ],
-      "atc": "C03AA03"
-    },
-    "furosemide": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/016273s068lbl.pdf"
-      ],
-      "atc": "C03CA01"
+      "atc": "N05AG02",
+      "notes": "Diphenylbutylpiperidine antipsychotic; primary metabolic pathway is CYP3A4. FDA Orap label (sec 4 Contraindications) lists strong CYP3A4 inhibitors (clarithromycin, ketoconazole, itraconazole, nefazodone) as absolute contraindications due to QT-prolongation / Torsades-de-Pointes risk from elevated pimozide AUC."
     },
     "potassium": {
       "flags": [],
@@ -838,40 +809,20 @@
       ],
       "atc": "A12BA01"
     },
-    "grapefruit": {
+    "ppi long-term": {
       "flags": [],
       "evidence_urls": [
-        "https://www.fda.gov/consumers/consumer-updates/grapefruit-juice-and-some-drugs-dont-mix"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019810s108lbl.pdf"
       ],
       "atc": null,
-      "note": "intestinal CYP3A4 inhibitor; treat as CYP3A4 strong inhibitor in clinical context"
+      "note": "PPI use category"
     },
-    "cranberry": {
+    "propranolol": {
       "flags": [],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/009218s108lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021735s016lbl.pdf"
       ],
-      "atc": null,
-      "note": "potential CYP2C9 modulator (warfarin INR fluctuation reports)"
-    },
-    "iodine": {
-      "flags": [
-        "is_iodinated_contrast"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
-      ],
-      "atc": null,
-      "note": "iodinated contrast; lactic acidosis with metformin"
-    },
-    "contrast dye": {
-      "flags": [
-        "is_iodinated_contrast"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
-      ],
-      "atc": null
+      "atc": "C07AA05"
     },
     "renal impairment": {
       "flags": [
@@ -882,201 +833,6 @@
       ],
       "atc": null,
       "note": "comorbidity, not a drug"
-    },
-    "ckd": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
-      ],
-      "atc": null,
-      "note": "comorbidity, not a drug"
-    },
-    "elderly": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.fda.gov/drugs/drug-safety-and-availability/preventable-adverse-drug-reactions-focus-drug-interactions"
-      ],
-      "atc": null,
-      "note": "demographic, not a drug"
-    },
-    "ssri": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/serotonin-syndrome"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "nsaid": {
-      "flags": [
-        "is_nsaid"
-      ],
-      "evidence_urls": [
-        "https://www.fda.gov/drugs/drug-safety-and-availability/fda-strengthens-warning-non-aspirin-nonsteroidal-anti-inflammatory-drugs-nsaids-can-cause-heart"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "maoi": {
-      "flags": [
-        "is_maoi"
-      ],
-      "evidence_urls": [
-        "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/serotonin-syndrome"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "ace inhibitor": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019558s063,019777s060lbl.pdf"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "arb": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020386s059lbl.pdf"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "thiazide": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/040735s007lbl.pdf"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "benzodiazepine": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018276s050lbl.pdf"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "opioid": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.fda.gov/drugs/information-drug-class/information-about-opioid-products"
-      ],
-      "atc": null,
-      "note": "drug class"
-    },
-    "ppi long-term": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019810s108lbl.pdf"
-      ],
-      "atc": null,
-      "note": "PPI use category"
-    },
-    "bisoprolol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/019982s019lbl.pdf"
-      ],
-      "atc": "C07AB07"
-    },
-    "propranolol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021735s016lbl.pdf"
-      ],
-      "atc": "C07AA05"
-    },
-    "metoprolol succinate": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/017963s064,018704s033lbl.pdf"
-      ],
-      "atc": "C07AB02"
-    },
-    "sotalol": {
-      "flags": [],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019865s022lbl.pdf"
-      ],
-      "atc": "C07AA07"
-    },
-    "colchicine": {
-      "flags": [
-        "is_cyp3a4_substrate",
-        "is_p_gp_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/022352s017lbl.pdf"
-      ],
-      "atc": "M04AC01",
-      "note": "narrow-TI antimitotic; CYP3A4 + P-gp dual substrate"
-    },
-    "sumatriptan": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/020132s019lbl.pdf"
-      ],
-      "atc": "N02CC01",
-      "note": "5-HT1B/1D agonist; abortive triptan; MAO-A substrate"
-    },
-    "dronedarone": {
-      "flags": [
-        "is_cyp3a4_moderate_inhibitor",
-        "is_p_gp_inhibitor"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/022425s014lbl.pdf"
-      ],
-      "atc": "C01BD07",
-      "note": "class III antiarrhythmic; moderate P-gp inhibitor + moderate CYP3A4 inhibitor"
-    },
-    "linezolid": {
-      "flags": [
-        "is_maoi"
-      ],
-      "atc": "J01XX08",
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf"
-      ],
-      "notes": "Reversible MAOI (oxazolidinone). FDA black-box vs serotonergic drugs."
-    },
-    "meperidine": {
-      "flags": [
-        "is_serotonergic"
-      ],
-      "atc": "N02AB02",
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/006134s054lbl.pdf"
-      ],
-      "notes": "Weak SRI + active normeperidine metabolite has serotonergic activity. MAOI co-admin = serotonin syndrome / hyperpyrexic crisis (FDA black-box)."
-    },
-    "nitroglycerin": {
-      "flags": [
-        "is_nitrate"
-      ],
-      "atc": "C01DA02",
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/021134s016lbl.pdf"
-      ],
-      "notes": "Organic nitrate; cGMP-mediated vasodilation. PDE5 inhibitor co-admin = severe hypotension (FDA Cialis/Viagra/Levitra black-box)."
-    },
-    "pimozide": {
-      "flags": [
-        "is_cyp3a4_substrate"
-      ],
-      "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/017473s041lbl.pdf",
-        "https://pubmed.ncbi.nlm.nih.gov/9384188/"
-      ],
-      "atc": "N05AG02",
-      "notes": "Diphenylbutylpiperidine antipsychotic; primary metabolic pathway is CYP3A4. FDA Orap label (sec 4 Contraindications) lists strong CYP3A4 inhibitors (clarithromycin, ketoconazole, itraconazole, nefazodone) as absolute contraindications due to QT-prolongation / Torsades-de-Pointes risk from elevated pimozide AUC."
     },
     "ritonavir": {
       "flags": [
@@ -1090,17 +846,272 @@
       "atc": "J05AE03",
       "notes": "HIV protease inhibitor; a clinically dominant CYP3A4 inhibitor (used pharmacokinetically as a CYP3A4 booster for other PIs). Also inhibits P-gp. FDA Norvir label Section 7 Drug Interactions lists strong CYP3A4 substrates as contraindicated with chronic ritonavir co-admin (notably simvastatin, lovastatin, ergot alkaloids, sildenafil for PAH)."
     },
-    "fluvoxamine": {
+    "rivaroxaban": {
       "flags": [
-        "is_cyp1a2_inhibitor",
+        "is_anticoagulant",
+        "is_cyp3a4_substrate",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/202439s001lbl.pdf"
+      ],
+      "atc": "B01AF01"
+    },
+    "rosuvastatin": {
+      "flags": [
+        "is_statin"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021366s016lbl.pdf"
+      ],
+      "atc": "C10AA07",
+      "note": "minimal CYP3A4 metabolism; OATP1B1 substrate instead"
+    },
+    "sacubitril": {
+      "flags": [
+        "is_neprilysin_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207620s000lbl.pdf"
+      ],
+      "atc": "C09DX04",
+      "note": "neprilysin inhibitor; combined with valsartan"
+    },
+    "selegiline": {
+      "flags": [
+        "is_maoi"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021639s016lbl.pdf"
+      ],
+      "atc": "N04BD01"
+    },
+    "sertraline": {
+      "flags": [
         "is_serotonergic"
       ],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021519s015lbl.pdf",
-        "https://pubmed.ncbi.nlm.nih.gov/16553505/"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/019839s074,020990s035lbl.pdf"
       ],
-      "atc": "N06AB08",
-      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 µM, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label § 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
+      "atc": "N06AB06"
+    },
+    "sildenafil": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020895s039s042lbl.pdf"
+      ],
+      "atc": "G04BE03"
+    },
+    "simvastatin": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_p_gp_substrate",
+        "is_statin"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s085lbl.pdf"
+      ],
+      "atc": "C10AA01"
+    },
+    "sotalol": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019865s022lbl.pdf"
+      ],
+      "atc": "C07AA07"
+    },
+    "spironolactone": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/012151s076lbl.pdf"
+      ],
+      "atc": "C03DA01",
+      "note": "potassium-sparing diuretic; aldosterone antagonist"
+    },
+    "ssri": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/serotonin-syndrome"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "sulfamethoxazole": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
+      ],
+      "atc": "J01EE01"
+    },
+    "sumatriptan": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/020132s019lbl.pdf"
+      ],
+      "atc": "N02CC01",
+      "note": "5-HT1B/1D agonist; abortive triptan; MAO-A substrate"
+    },
+    "tacrolimus": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_p_gp_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/050708s033,050709s032lbl.pdf"
+      ],
+      "atc": "L04AD02"
+    },
+    "tadalafil": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/021368s022lbl.pdf"
+      ],
+      "atc": "G04BE08"
+    },
+    "tamoxifen": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/017970s059lbl.pdf"
+      ],
+      "atc": "L02BA01",
+      "note": "CYP2D6 substrate (active metabolite endoxifen)"
+    },
+    "theophylline": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/018510s057lbl.pdf"
+      ],
+      "atc": "R03DA04",
+      "note": "CYP1A2 substrate; narrow TI"
+    },
+    "thiazide": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/040735s007lbl.pdf"
+      ],
+      "atc": null,
+      "note": "drug class"
+    },
+    "tizanidine": {
+      "flags": [
+        "is_cyp1a2_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020397s032,021447s015lbl.pdf"
+      ],
+      "atc": "M03BX02",
+      "note": "CYP1A2 substrate; severe hypotension with cipro"
+    },
+    "tramadol": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020281s032s033lbl.pdf"
+      ],
+      "atc": "N02AX02"
+    },
+    "tranylcypromine": {
+      "flags": [
+        "is_maoi"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/012342s065lbl.pdf"
+      ],
+      "atc": "N06AF04"
+    },
+    "trimethoprim": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
+      ],
+      "atc": "J01EA01"
+    },
+    "trimethoprim-sulfamethoxazole": {
+      "flags": [
+        "is_folate_antagonist"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
+      ],
+      "atc": "J01EE01"
+    },
+    "valsartan": {
+      "flags": [],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020665s033lbl.pdf"
+      ],
+      "atc": "C09CA03",
+      "note": "ARB"
+    },
+    "vardenafil": {
+      "flags": [
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021400s023lbl.pdf"
+      ],
+      "atc": "G04BE09"
+    },
+    "venlafaxine": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020151s066lbl.pdf"
+      ],
+      "atc": "N06AX16"
+    },
+    "verapamil": {
+      "flags": [
+        "is_cyp3a4_moderate_inhibitor",
+        "is_p_gp_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/018817s033lbl.pdf"
+      ],
+      "atc": "C08DA01",
+      "note": "moderate CYP3A4 inhibitor; classified strong by some references"
+    },
+    "voriconazole": {
+      "flags": [
+        "is_cyp2c9_inhibitor",
+        "is_cyp3a4_strong_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s032lbl.pdf"
+      ],
+      "atc": "J02AC03"
+    },
+    "warfarin": {
+      "flags": [
+        "is_anticoagulant"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/009218s108lbl.pdf"
+      ],
+      "atc": "B01AA03",
+      "note": "CYP2C9 substrate (S-enantiomer); narrow therapeutic index"
+    },
+    "zolpidem": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019908s037lbl.pdf"
+      ],
+      "atc": "N05CF02"
     }
   }
 }
