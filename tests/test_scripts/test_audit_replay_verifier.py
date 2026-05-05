@@ -162,3 +162,46 @@ def test_pins_cover_canonical_safety_classes(pins):
         f"audit-replay pin set must include canonical safety-class "
         f"pairs; missing: {sorted(missing)}"
     )
+
+
+def test_judges_audit_replay_count_matches_live_pins(pins):
+    """Iter-137 (T3 round 27) drift catch: JUDGES.md row 116 cites a
+    specific pair count for the audit-replay pin set ('N pairs as of
+    iter-X'). Iter-85 wrote 23 pairs / 20 contras; cohort has since
+    grown to 30 pairs / 27 contras (iter-134). The bare count drifted
+    silently for ~50 iterations because no pin enforced parity between
+    the JUDGES claim and the live pin file.
+
+    This test asserts JUDGES.md cites the *live* total + the *live*
+    contra count. Future cohort growth that forgets to bump the
+    JUDGES sentence fails this gate immediately.
+
+    The existing JUDGES schema is:
+      "**N pairs** as of iter-X: 3 non-contra anchors ... plus
+       **every contraindicated cache entry**, currently M)."
+
+    Where N = live total in audit_replay_pins.json (3 anchors + M)
+    and M = live contraindicated cache count.
+    """
+    judges_path = _REPO_ROOT / "JUDGES.md"
+    judges = judges_path.read_text()
+    live_total = len(pins["pairs"])
+    cache = json.load(
+        (_REPO_ROOT / "docs" / "openevidence_cache.json").open()
+    )
+    live_contra = sum(1 for e in cache if e.get("severity") == "contraindicated")
+
+    expected_total_phrase = f"**{live_total} pairs**"
+    expected_contra_phrase = f"currently {live_contra}"
+    assert expected_total_phrase in judges, (
+        f"JUDGES.md must cite {expected_total_phrase!r} (the live "
+        f"audit-replay pin set total). Found stale or missing claim. "
+        f"Update the audit-replay row in JUDGES.md row 116 to match "
+        f"live state. Live total: {live_total}; live contras: {live_contra}."
+    )
+    assert expected_contra_phrase in judges, (
+        f"JUDGES.md must cite {expected_contra_phrase!r} (the live "
+        f"contraindicated cache count). The 'currently N' contra "
+        f"clause has drifted from the live value. Update JUDGES.md "
+        f"row 116 to match. Live contras: {live_contra}."
+    )
