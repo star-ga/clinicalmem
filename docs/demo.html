@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1073 / 1073 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1074 / 1074 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -1209,6 +1209,9 @@ tailwind.config = {
     <div id="fhir-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
     </div>
+    <p class="text-xs text-slate-500 mt-6 leading-relaxed border-l-2 border-clinical-blue/40 pl-3 bg-blue-50/30 py-2 rounded-r max-w-3xl mx-auto">
+      <strong class="text-slate-700">Beyond Sarah Mitchell &mdash;</strong> the live cohort is <strong>29 synthetic patients · 46 NPIs</strong> in <code class="font-mono text-[10px]">docs/synthea_demo_cohort.json</code> (233 FHIR R4 entries). Cohort integrity is gated by <code class="font-mono text-[10px]">tests/test_engine/test_synthea_cohort_integrity_pin.py</code> &mdash; <strong>8 invariants</strong> a future commit cannot silently break: FHIR R4 Bundle top-level shape; Patient count floor &ge; 29; Practitioner count floor &ge; 46; every Practitioner has a <code class="font-mono text-[10px]">us-npi</code> identifier; every NPI passes the CMS Luhn check digit (80840 prefix + 9 digits + check digit); every identity-bearing resource carries <code class="font-mono text-[10px]">meta._synthetic = true</code>; every Practitioner carries <code class="font-mono text-[10px]">meta.npi_source = "DEMO_LUHN_GENERATED"</code> (fail-safe against fictional NPIs polluting future real-EHR ingest); zero NPI collision with the known-real clinical-validation NPI 1932159530. Every Synthea-generated identifier is auditable from the test suite, not just the live demo.
+    </p>
   </div>
 </section>
 
@@ -1353,10 +1356,10 @@ tests/test_scripts/
       </div>
       <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Sample audit-chain hashes (one canonical run; nonces randomize per emit)</p>
       <pre class="text-xs font-mono text-slate-700 bg-po-paper/40 p-4 rounded border border-slate-200 overflow-x-auto leading-relaxed"><code>Site A (Mass General) egress  preimage_hash:
-  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10736c14404
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10746c14404
 
 Site B (Mayo Clinic) ingress preimage_hash:
-  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10736c14404
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10746c14404
 
   ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.
   ↑ Specific value differs per run (128-bit nonce); the *equality* of
@@ -1890,7 +1893,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1073 / 1073</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1074 / 1074</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">120 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">29 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>

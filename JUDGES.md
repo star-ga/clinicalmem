@@ -84,7 +84,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1073+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1074+ passed**.
 
 ---
 
@@ -107,7 +107,7 @@ artifact. Audit map:
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain) |
 | `Federation control plane LIVE — mind-mem v3.9.0 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |
-| `29 synthetic patients · 46 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). Cohort integrity is independently pinned by `tests/test_engine/test_synthea_cohort_integrity_pin.py` (8 tests: FHIR R4 Bundle top-level shape; Patient count floor ≥ 29; Practitioner count floor ≥ 46; every Practitioner has an NPI; every NPI passes CMS Luhn check; every Patient + Practitioner carries `meta._synthetic = true`; every Practitioner carries `meta.npi_source = "DEMO_LUHN_GENERATED"`; no demo NPI collides with the known-real clinical-validation NPI 1932159530). |
+| `29 synthetic patients · 46 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). Cohort integrity is independently pinned by `tests/test_engine/test_synthea_cohort_integrity_pin.py` (9 tests: FHIR R4 Bundle top-level shape; Patient count floor ≥ 29; Practitioner count floor ≥ 46; every Practitioner has an NPI; every NPI passes CMS Luhn check; every Patient + Practitioner carries `meta._synthetic = true`; every Practitioner carries `meta.npi_source = "DEMO_LUHN_GENERATED"`; demo cites this pin file with the cohort-integrity callout (iter-126 surfacing extension); no demo NPI collides with the known-real clinical-validation NPI 1932159530). |
 | `21 CFR Part 11 audit export` | `engine/audit_export_part11.py` (30 tests) |
 | `Apache-2.0 + patent grant` | `LICENSE` (top of repo) |
 | `IRB-exempt synthetic cohort` | `docs/irb_exemption.md` (45 C.F.R. § 46.102(e)(1)) |

@@ -35,6 +35,7 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _BUNDLE = _REPO_ROOT / "docs" / "synthea_demo_cohort.json"
+_DEMO = _REPO_ROOT / "docs" / "demo.html"
 
 
 def _load_bundle() -> dict:
@@ -223,6 +224,47 @@ def test_every_practitioner_has_demo_luhn_npi_source_tag():
         f"'DEMO_LUHN_GENERATED'`: {offenders}. Required to prevent "
         f"a future real-EHR ingest path from accidentally querying "
         f"CMS NPPES with these synthetic NPIs."
+    )
+
+
+def test_demo_cites_this_pin_file():
+    """Demo must cite this pin file near the cohort-integrity callout.
+
+    Iter 126 (T2 surfacing) added a post-FHIR-grid blue-rule callout
+    in docs/demo.html that names the 8 cohort-integrity invariants
+    and references this pin file. A future copy edit could silently
+    drop the reference, making the cohort-integrity claim look
+    unguarded even though the tests still pass internally. This pin
+    enforces the demo surfacing.
+
+    Same pattern as iter-110 + iter-115 + iter-121's "demo cites pin
+    file" cross-checks: test layer and user-facing surface stay in
+    sync.
+    """
+    text = _DEMO.read_text()
+    pin_filename = "test_synthea_cohort_integrity_pin.py"
+    assert pin_filename in text, (
+        f"docs/demo.html must cite "
+        f"`tests/test_engine/{pin_filename}` near the FHIR cohort-"
+        f"integrity callout so judges can trace the 29-patient / "
+        f"46-NPI / Luhn-validated claims to their enforcing pin file. "
+        f"Same drift class as iter-107 JUDGES manifest description fix."
+    )
+    # Anchor: the callout must appear with a recognizable phrase so
+    # a copy edit can't strip the rationale and leave just the filename
+    # (which would still pass the substring check above but lose
+    # judge-readable context).
+    locality_anchors = (
+        "8 invariants",
+        "Cohort integrity is gated",
+        "FHIR R4 Bundle top-level shape",
+    )
+    has_anchor = any(a in text for a in locality_anchors)
+    assert has_anchor, (
+        f"Demo's pin-file citation must appear with a locality anchor "
+        f"such as '8 invariants' / 'Cohort integrity is gated' / "
+        f"'FHIR R4 Bundle top-level shape'. None found near the FHIR "
+        f"cohort callout — copy edit may have stripped the rationale."
     )
 
 
