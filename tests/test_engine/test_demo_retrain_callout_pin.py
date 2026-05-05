@@ -126,9 +126,10 @@ def test_path_a_callout_iter140_numbers_not_stale():
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
         "31 / 31 contraindicated cache entries (100% explanation coverage)",  # iter-164 cohort 30 -> 31 (atazanavir+simvastatin)
-        "31 / 31 = 100% live cache contraindicated recall",  # iter-164 (Path A v3 picks up atazanavir+simvastatin via cyp3a4_strong_inh x statin rule, well-saturated slot with 6 prior examples)
-        "326e3301",                                  # iter-146 bundle id
+        "31 / 31 contraindicated (100%) + 4 / 4 major (100%) + 0 FP",  # iter-166 (Path A v5 h128 architectural breakthrough under Q16.16)
+        "1ff61a6a",                                  # iter-166 v5 bundle id
         "193-dim feature input",                    # iter-146 dim
+        "128 hidden",                                # iter-166 architectural extension
     )
     for phrase in required_post_iter140:
         assert phrase in text, (

@@ -1,57 +1,35 @@
 # Copyright 2026 STARGA Inc. — Apache-2.0
-"""Pin Path A v3 (eea0e637) live-cache contraindicated recall.
+"""Pin Path A v3 (eea0e637, h=64) live-cache contraindicated recall.
 
-Iter 164 added the 31st contraindicated entry (atazanavir + simvastatin)
-and corrected an iter-155 measurement artifact. The original iter-155
-demo claim — "Path A v3 = 29/30 = 96.7% (regressed by febuxostat +
-azathioprine cohort growth)" — was incorrect. The
-``is_xanthine_oxidase_inhibitor × is_thiopurine`` pair-derived rule
-fires for both ``allopurinol+azathioprine`` AND
-``febuxostat+azathioprine``, and v3's trained weights project both
-through the same hidden activation, so v3 actually catches the
-febuxostat+azathioprine pair.
+Iter 166 correction: an earlier iter-164/iter-165 framing claimed
+Path A v3 hit 31/31 = 100% on the iter-164 live cache. That number
+was measured with a NumPy float forward-pass, NOT the cross-arch
+Q16.16 fixed-point inference path that the engine actually runs.
+Under Q16.16 (the bit-identical inference path the demo's
+deterministic-veto claim relies on), v3 hits **29/31 = 93.5%** with
+**1 FP** (amlodipine + simvastatin) — matching the iter-155 demo
+claim. The float-NumPy "31/31" was the measurement artifact.
 
-This pin locks the corrected measurement: Path A v3 (eea0e637) hits
-**31/31 = 100%** on the iter-164 live cache. The pin fires on any
-of the following:
+This pin locks the corrected Q16.16 v3 baseline. v3 stays the
+historical optimum at 64 hidden; the new Path A v5 (h=128) bundle
+saved iter-166 supersedes v3 with 31/31 + 0 FP — pinned separately
+in ``test_path_a_v5_live_recall_pin.py``.
 
-  * The staged Path A v3 bundle's contraindicated recall regresses
-    below the iter-164 floor (live-cache contras → 30 or fewer hits)
-  * The bundle's ``bundle_id_hex`` is swapped without updating this
-    pin — a future Path A v4/v5/etc. promotion must replace the
-    pinned bundle_id explicitly
-  * Cohort growth introduces a contra that the existing v3 weights
-    do NOT catch via the existing pair-derived rules — that's a
-    BOOST_KEYS-add or retrain signal, NOT a silent regression
-
-Why this pin matters
-====================
-Path A v3 is the staged engine candidate (deferred behind the 4-6 h
-encoder cascade refactor). Live-cache recall on the staged candidate
-is one of the most load-bearing claims in the demo. Pinning it
-prevents a measurement-artifact recurrence and gives the engine
-promotion path a hard contract: the bundle must hit 31/31 before it
-can be promoted, and any cohort growth that v3 misses fires the
-pin in CI.
-
-Pair-derived rule coverage
-==========================
-v3's 100% live-cache recall is achieved entirely through the 13
-pair-derived DDI-rule bits in ``encode_pair``. Each contra in the
-cohort fires at least one rule; the trained 64-hidden weights
-project all rule-firing pairs through a hidden-activation that
-projects to the contraindicated logit being argmax. A future cohort
-growth that does NOT fire any existing pair-derived rule will fail
-this pin — that's the design signal to add a new pair-derived rule
-+ BOOST_KEYS entry + retrain.
+Why Q16.16 inference matters for this pin
+=========================================
+The engine's BitNet forward pass is deterministic across CPU, GPU,
+and NPU only when computed in Q16.16 fixed-point (no float rounding
+ambiguity). This pin uses the same Q16.16 ternary-multiplication
+classifier path as the engine's deterministic veto. A bundle that
+"works" under float NumPy but fails under Q16.16 is unsafe for the
+audit-replay anchor — it must pass this pin under the Q16.16 path
+to be eligible for engine promotion.
 """
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
-
-import numpy as np
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(_REPO_ROOT))
@@ -61,32 +39,52 @@ from retrain_runpod.train_bitnet_v3_full import encode_pair  # noqa: E402
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 _BUNDLE = _REPO_ROOT / "retrain_runpod" / "bitnet_weights_v3_full.json"
 
-# Frozen bundle identity for Path A v3. A future Path A v4 promotion
-# replaces this constant; CI fires the pin until the constant matches
-# the live bundle so the test must be re-pinned in the same commit.
 _PATH_A_V3_BUNDLE_ID = (
     "eea0e637b537507352950feeb413da33d81775e41fb7c7ec2aaed94f464dcb2c"
 )
 
-# Iter-164 baseline: 31/31 contras on the live cache.
-_IT164_CONTRA_FLOOR = 31
+# Q16.16 baseline measurements on iter-164 31-contra cohort.
+_V3_CONTRA_HITS = 29
+_V3_CONTRA_TOTAL = 31
+_V3_FP_COUNT = 1  # amlodipine + simvastatin (safety-conservative)
+_V3_FP_PAIR = ("amlodipine", "simvastatin")
 
-_LABEL_NAMES = ("none", "moderate", "serious", "major", "contraindicated")
+_Q16_ONE = 1 << 16
 
 
-def _load_bundle() -> dict:
-    return json.loads(_BUNDLE.read_text())
+def _classify_q16(da: str, db: str, bundle: dict) -> str:
+    """Q16.16 ternary forward pass — bit-identical to the engine.
 
+    No float arithmetic. Hidden activations and output logits are
+    Q16.16 integers; argmax is taken over the integer logits.
+    """
+    feat = encode_pair(da, db)
+    feat_q16 = [v * _Q16_ONE for v in feat]
 
-def _classify(da: str, db: str, weights: dict) -> str:
-    feat = np.array(encode_pair(da, db), dtype=np.float32)
-    W1 = np.array(weights["hidden_w"], dtype=np.float32)
-    b1 = np.array(weights["hidden_b"], dtype=np.float32)
-    W2 = np.array(weights["output_w"], dtype=np.float32)
-    b2 = np.array(weights["output_b"], dtype=np.float32)
-    h = np.maximum(0.0, W1 @ feat + b1)
-    out = W2 @ h + b2
-    return _LABEL_NAMES[int(np.argmax(out))]
+    h_w = bundle["hidden_w"]
+    h_b = bundle["hidden_b"]
+    o_w = bundle["output_w"]
+    o_b = bundle["output_b"]
+
+    def _dot_t(act: list[int], tw: list[int]) -> int:
+        s = 0
+        for a, t in zip(act, tw):
+            if t == 1:
+                s += a
+            elif t == -1:
+                s -= a
+        return s
+
+    hidden = []
+    for j, row in enumerate(h_w):
+        v = _dot_t(feat_q16, row) + h_b[j]
+        hidden.append(v if v > 0 else 0)
+    logits = []
+    for k, row in enumerate(o_w):
+        v = _dot_t(hidden, row) + o_b[k]
+        logits.append(v)
+    labels = ("none", "moderate", "serious", "major", "contraindicated")
+    return labels[max(range(len(logits)), key=lambda i: logits[i])]
 
 
 def _live_contras() -> list[dict]:
@@ -94,114 +92,77 @@ def _live_contras() -> list[dict]:
     return [e for e in cache if e.get("severity") == "contraindicated"]
 
 
+def _live_non_contras() -> list[dict]:
+    cache = json.loads(_CACHE.read_text())
+    return [e for e in cache if e.get("severity") != "contraindicated"]
+
+
 def test_path_a_v3_bundle_id_pinned() -> None:
-    """The staged Path A v3 bundle's `_meta.bundle_id` must equal the
-    pinned constant. A future bundle rotation must replace this pin
-    in the same commit so the recall-pin (below) is re-validated
-    against the new bundle."""
-    bundle = _load_bundle()
+    """The v3 bundle's `_meta.bundle_id` must equal the pinned constant.
+    Recovered from iter-155 commit 1a7210c at iter-166 after a v5 sweep
+    accidentally overwrote this file."""
+    bundle = json.loads(_BUNDLE.read_text())
     live_id = bundle["_meta"]["bundle_id"]
     assert live_id == _PATH_A_V3_BUNDLE_ID, (
         f"Path A v3 bundle drift: live={live_id!r}, "
-        f"pinned={_PATH_A_V3_BUNDLE_ID!r}. A new bundle was staged "
-        f"without updating this pin. Update _PATH_A_V3_BUNDLE_ID + "
-        f"_IT164_CONTRA_FLOOR in the same commit so recall is "
-        f"re-validated against the new bundle."
+        f"pinned={_PATH_A_V3_BUNDLE_ID!r}. v3 was recovered from git "
+        f"at iter-166; do not overwrite this file. New bundles should "
+        f"go to bitnet_weights_v5_h128.json (or higher version)."
     )
 
 
-def test_path_a_v3_hits_all_live_contras() -> None:
-    """Path A v3 must catch every contra in the live cache. iter-164
-    cohort: 31/31 = 100%. A miss fires the pin and signals either:
-      (a) cohort growth introduced a contra not covered by any
-          existing pair-derived DDI rule (add the rule + BOOST_KEYS
-          + retrain), OR
-      (b) the staged bundle's weights regressed against the rule
-          (retrain or roll back).
-    """
-    bundle = _load_bundle()
+def test_path_a_v3_q16_recall_pinned_at_29_of_31() -> None:
+    """Q16.16 inference: v3 hits 29 of 31 live-cache contras (the
+    iter-155 claim, corrected back at iter-166 after the iter-164
+    float-NumPy measurement artifact was caught). Misses are
+    expected to be the ones whose flag-pair patterns the 64-hidden
+    architecture cannot saturate."""
+    bundle = json.loads(_BUNDLE.read_text())
     contras = _live_contras()
-    assert len(contras) == _IT164_CONTRA_FLOOR, (
+    assert len(contras) == _V3_CONTRA_TOTAL, (
         f"Live cache contraindicated count drifted: "
-        f"live={len(contras)}, pinned={_IT164_CONTRA_FLOOR}. "
-        f"Cohort growth requires bumping _IT164_CONTRA_FLOOR + "
-        f"re-validating that v3 still hits all of them."
+        f"live={len(contras)}, pinned={_V3_CONTRA_TOTAL}."
     )
-    misses: list[tuple[str, str, str]] = []
-    for entry in contras:
-        da = entry["drug_a"]
-        db = entry["drug_b"]
-        pred = _classify(da, db, bundle)
-        if pred != "contraindicated":
-            misses.append((da, db, pred))
-    assert not misses, (
-        f"Path A v3 ({_PATH_A_V3_BUNDLE_ID[:16]}...) regressed on "
-        f"{len(misses)} live-cache contraindicated pair(s): {misses}. "
-        f"Either add the missed pair to BOOST_KEYS + retrain, or roll "
-        f"back to the bundle that achieved 31/31 at iter-164."
-    )
-
-
-def test_path_a_v3_recall_floor_invariant() -> None:
-    """Iter-164 baseline locks 100% live-cache recall. Any future
-    cohort growth that v3 doesn't catch fires this floor pin first
-    (the per-pair miss list above is the diagnostic; this is the
-    aggregate)."""
-    bundle = _load_bundle()
-    contras = _live_contras()
     hits = sum(
         1 for e in contras
-        if _classify(e["drug_a"], e["drug_b"], bundle) == "contraindicated"
+        if _classify_q16(e["drug_a"], e["drug_b"], bundle) == "contraindicated"
     )
-    assert hits >= _IT164_CONTRA_FLOOR, (
-        f"Path A v3 live-cache contra recall regressed: "
-        f"hits={hits}, floor={_IT164_CONTRA_FLOOR}. The staged "
-        f"bundle no longer satisfies the iter-164 live-cache "
-        f"recall claim shipped to demo + JUDGES."
+    assert hits == _V3_CONTRA_HITS, (
+        f"Path A v3 Q16.16 contra recall drifted: "
+        f"live={hits}/{len(contras)}, pinned={_V3_CONTRA_HITS}/{_V3_CONTRA_TOTAL}."
+    )
+
+
+def test_path_a_v3_q16_fp_pinned_at_amlodipine_simvastatin() -> None:
+    """Q16.16 inference: v3 has exactly 1 FP on the live cache, the
+    safety-conservative amlodipine + simvastatin (FDA Zocor labels
+    simvastatin 20 mg with amlodipine; ground truth = moderate, model
+    = contraindicated). This is a documented miscalibration, not a
+    dangerous classifier failure."""
+    bundle = json.loads(_BUNDLE.read_text())
+    fps = [
+        (e["drug_a"], e["drug_b"]) for e in _live_non_contras()
+        if _classify_q16(e["drug_a"], e["drug_b"], bundle) == "contraindicated"
+    ]
+    assert len(fps) == _V3_FP_COUNT, (
+        f"Path A v3 Q16.16 FP count drifted: "
+        f"live={len(fps)}, pinned={_V3_FP_COUNT}. fps={fps}"
+    )
+    assert _V3_FP_PAIR in fps or (_V3_FP_PAIR[1], _V3_FP_PAIR[0]) in fps, (
+        f"Path A v3 Q16.16 FP must include {_V3_FP_PAIR}; got {fps}"
     )
 
 
 def test_path_a_v3_meta_block_consistency() -> None:
     """The bundle's `_meta` block must report the architecture
     invariants the demo claims (193-dim feature input, 64-hidden,
-    13 pair-derived rules, 26 ATC flag keys). A future promotion
-    must re-pin all four numbers in lockstep."""
-    bundle = _load_bundle()
+    13 pair-derived rules, 26 ATC flag keys)."""
+    bundle = json.loads(_BUNDLE.read_text())
     meta = bundle["_meta"]
-    assert meta["in_features"] == 193, (
-        f"Path A v3 in_features drifted: live={meta['in_features']}, "
-        f"pinned=193 (64 hash trits + 26 flag bits per drug × 2 + "
-        f"13 pair-derived = 193)"
-    )
-    assert meta["hidden_features"] == 64, (
-        f"Path A v3 hidden_features drifted: "
-        f"live={meta['hidden_features']}, pinned=64. The 64-hidden "
-        f"ceiling on the strict curated 30/30+4/4+≤1FP gate is the "
-        f"architectural finding shipped in iter-161; bumping to 128 "
-        f"requires the engine cascade refactor."
-    )
-    assert meta["out_features"] == 5, (
-        f"Path A v3 out_features drifted: "
-        f"live={meta['out_features']}, pinned=5 (none, moderate, "
-        f"serious, major, contraindicated)"
-    )
-    assert meta["pair_derived_rule_count"] == 13, (
-        f"Path A v3 pair-derived rule count drifted: "
-        f"live={meta['pair_derived_rule_count']}, pinned=13. Adding "
-        f"a new rule requires re-encoding + retraining the bundle."
-    )
-    assert meta["flag_keys_count"] == 26, (
-        f"Path A v3 flag_keys_count drifted: "
-        f"live={meta['flag_keys_count']}, pinned=26 (13 baseline "
-        f"iter-96 + 12 iter-140 closure + 1 iter-146 FDA-correct "
-        f"re-tier)"
-    )
-    assert meta["weight_dtype"] == "ternary", (
-        f"Path A v3 weight_dtype drifted: "
-        f"live={meta['weight_dtype']}, pinned=ternary (BitNet b1.58)"
-    )
-    assert meta["bias_dtype"] == "q16.16", (
-        f"Path A v3 bias_dtype drifted: "
-        f"live={meta['bias_dtype']}, pinned=q16.16 (Q16.16 fixed "
-        f"point for cross-arch determinism)"
-    )
+    assert meta["in_features"] == 193
+    assert meta["hidden_features"] == 64
+    assert meta["out_features"] == 5
+    assert meta["pair_derived_rule_count"] == 13
+    assert meta["flag_keys_count"] == 26
+    assert meta["weight_dtype"] == "ternary"
+    assert meta["bias_dtype"] == "q16.16"
