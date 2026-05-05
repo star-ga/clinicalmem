@@ -256,11 +256,28 @@ tailwind.config = {
     }
     @supports (animation-timeline: view()) {
       /* Skip the hero (id-less or the first section) — its own .hero-fade
-       * already handles entrance. Every other section[id] fades in once. */
+       * already handles entrance. Every other section[id] fades in once.
+       * Iter-149 fix: range tightened from `entry 0% cover 30%` to
+       * `entry 0% entry 80%` so sections reach full opacity *as soon as*
+       * they finish entering the viewport, not after they've scrolled
+       * 30% past it. The original range left the user looking at sections
+       * at ~50% opacity for hundreds of pixels of scroll — when the
+       * What-If simulator triggered a DOM update, the user's eye was on
+       * sections below the simulator that were stuck at low opacity. */
       body > section[id]:not(:first-of-type) {
         animation: section-reveal linear both;
         animation-timeline: view();
-        animation-range: entry 0% cover 30%;
+        animation-range: entry 0% entry 80%;
+      }
+      /* Disable the subtle entrance animation on mobile — phone screens
+         are short, so a section can be both "entering" AND "the only
+         section visible" simultaneously. Users see a permanently-faded
+         page. Static sections render fully on mobile. */
+      @media (max-width: 767px) {
+        body > section[id]:not(:first-of-type) {
+          animation: none;
+          opacity: 1;
+        }
       }
     }
   }
