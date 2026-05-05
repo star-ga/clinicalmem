@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-1151%20passed-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-1156%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -385,7 +385,7 @@ clinicalmem/
 
 ## Tests
 
-**1151 tests** across `tests/test_engine/`, `tests/test_scripts/`,
+**1156 tests** across `tests/test_engine/`, `tests/test_scripts/`,
 `tests/test_mcp/`, `tests/test_a2a/`, and `tests/test_agent/`.
 The canonical list is `python3 -m pytest --co -q`.
 
