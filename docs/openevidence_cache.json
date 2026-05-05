@@ -1980,5 +1980,22 @@
     ],
     "retrieved_at": "2026-05-05",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "ritonavir",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": [
+      "ritonavir",
+      "simvastatin"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Ritonavir is a clinically dominant CYP3A4 inhibitor used as a pharmacokinetic booster in HIV antiretroviral therapy. Co-administration with simvastatin elevates simvastatin AUC by an order of magnitude (3-30x in pharmacokinetic studies of PI/statin combinations), producing severe rhabdomyolysis, myoglobinuric acute kidney injury, and life-threatening myopathy from elevated simvastatin lactone exposure. The FDA Norvir (ritonavir) label Section 7 Drug Interactions and the FDA Zocor (simvastatin) label Section 4 Contraindications both list this combination as an absolute contraindication. Recommended alternative for HIV patients on chronic protease-inhibitor therapy: pravastatin or rosuvastatin (CYP3A4-independent metabolic pathways), with dose adjustment per the HHS adult antiretroviral therapy guidelines. Reference: Fichtenbaum 1999 (AIDS Clin Care), FDA Norvir labeling 2010, HHS Antiretroviral Guidelines.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/019412s033lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/019766s085lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/15750396/"
+    ],
+    "retrieved_at": "2026-05-05",
+    "source": "CACHED"
   }
 ]

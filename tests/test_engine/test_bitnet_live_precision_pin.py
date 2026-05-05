@@ -106,14 +106,21 @@ def test_bitnet_live_precision_recall_pinned():
     #           from the flag firing). Upstream Layer 1 (FDA Orap
     #           label boxed warning) + DOWNGRADE_DISAGREEMENT preserve
     #           the contra verdict.
-    # Lower bound 0.27 catches the iter-134 floor; upper 0.45
-    # covers a future weight rotation that lifts recall to ~12/27.
-    assert 0.27 <= recall <= 0.45, (
+    # Iter-140: cohort grew (27 → 28, ritonavir+simvastatin), TP=8 →
+    #           recall = 8/28 = 0.286. BitNet predicted "none" on the
+    #           new pair (HIV protease inhibitor sub-class less
+    #           represented in training; CYP3A4-inhib × statin slot is
+    #           saturated with antibiotics + antifungals, not PIs).
+    #           Upstream Layer 1 (FDA Norvir/Zocor labels) +
+    #           DOWNGRADE_DISAGREEMENT preserve the contra verdict.
+    # Lower bound 0.26 catches the iter-140 floor; upper 0.45
+    # covers a future weight rotation that lifts recall to ~12/28.
+    assert 0.26 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
-        f"live={recall:.4f}, allowed=[0.27, 0.45]"
+        f"live={recall:.4f}, allowed=[0.26, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 27, f"contraindicated cohort size drifted: live={total}, pinned=27"
+    assert total == 28, f"contraindicated cohort size drifted: live={total}, pinned=28"
 
 
 def test_dashboard_displays_live_precision_number():

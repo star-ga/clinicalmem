@@ -3,18 +3,18 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-05T11:30:27.865762+00:00",
+  "dateCreated": "2026-05-05T13:11:32.175622+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "72d2923590455a481038600c8c46947adb2d3c03",
+  "git_head": "c4a970014d38a2d317c89e1b74e7f2b052ac0a68",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
-      "sha256": "cbdab7912d7dac98791be616ad72b4d9c5c9be6a118e3adfb38b00278e2cd3ff",
-      "entry_count": 122,
+      "sha256": "7b545f4abbdbf7d335aab049d53b665faa5eb2a9f704323bc5764a256df65918",
+      "entry_count": 123,
       "per_class_counts": {
         "serious": 69,
-        "contraindicated": 27,
+        "contraindicated": 28,
         "moderate": 22,
         "major": 4
       }
@@ -27,16 +27,16 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "4c5b15453eded888eba768abd56afd5558eb1238b1c93486e19c9f034b957842",
+      "sha256": "2d040ed58ac43bac59eb75932c48b36f31b1c4d1727f3ecc79a55be9d38f990c",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
         "tp_contraindicated_at_least_seven": true
       },
-      "cache_pairs_total": 122
+      "cache_pairs_total": 123
     },
     "cohort_coverage_matrix": {
       "path": "docs/cohort_coverage_matrix.md",
-      "sha256": "763582a3d96ad13b2410d56158af6082b856715342d73cc90ca73e341652afa5"
+      "sha256": "049c8d65db05c9971d7f371ded636dae83e5adda304524f3dd222453f2e11873"
     },
     "synthea_demo_cohort": {
       "path": "docs/synthea_demo_cohort.json",
@@ -47,21 +47,21 @@
     },
     "bitnet_calibration": {
       "path": "docs/bitnet_calibration.json",
-      "sha256": "a4d97a344b02ffe0a3864eea6f31e9746ce803abc6209629f89481a840edcdd9",
+      "sha256": "02768be0e87c96e11b48fe26620e7fa7e8be77d977d3bb581127090349672eb3",
       "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-      "total_pairs": 122,
-      "contraindicated_recall": 0.2962962962962963
+      "total_pairs": 123,
+      "contraindicated_recall": 0.2857142857142857
     },
     "audit_replay_pins": {
       "path": "docs/audit_replay_pins.json",
-      "sha256": "75cf1dd8080feaaa9bef1d6d1a87c3d9011ac30fdff0d0205593dbb3f2e3271b",
+      "sha256": "e77a62b136ab8226281be333559bb488b28aa484e08981912ab60a94cce14935",
       "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-      "pair_count": 30
+      "pair_count": 31
     },
     "pharmacology_flags": {
       "path": "docs/pharmacology_flags.json",
-      "sha256": "1c9fae18e6b8dfbdb79dec8b2647efd5116160aead455bfae185a51e48410866",
-      "drug_count": 117,
+      "sha256": "e82a997ab2cb31a3dcdf57ef8e85aa7c41f2214521db1e27478e8d195df31a1d",
+      "drug_count": 118,
       "flag_keys": [
         "is_cyp3a4_strong_inhibitor",
         "is_cyp3a4_substrate",
@@ -75,7 +75,19 @@
         "is_maoi",
         "is_serotonergic",
         "is_nsaid",
-        "is_pde5_inhibitor"
+        "is_pde5_inhibitor",
+        "is_iodinated_contrast",
+        "is_metformin",
+        "is_renal_state",
+        "is_cyp1a2_inhibitor",
+        "is_cyp1a2_substrate",
+        "is_xanthine_oxidase_inhibitor",
+        "is_thiopurine",
+        "is_folate_antagonist",
+        "is_tetracycline",
+        "is_retinoid",
+        "is_ace_inhibitor",
+        "is_neprilysin_inhibitor"
       ],
       "schema_version": "v1"
     },
@@ -96,6 +108,6 @@
     "arch_mind_l1": "PASS",
     "audit_replay": "PASS"
   },
-  "test_count": 1107,
+  "test_count": 1108,
   "audit_replay_hint": "To verify: (1) check git_head matches the auditor's expected commit, (2) recompute SHA-256 of every artifact path and compare, (3) recompute flow plan_hashes via engine.flow_runner.compute_plan_hash, (4) re-run the four gate scripts, (5) run pytest tests/test_engine tests/test_scripts and confirm test_count is at or above the manifested value."
 }

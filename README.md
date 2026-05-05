@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-1107%20passed-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-1108%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -127,11 +127,11 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
 | 4 | **Multi-LLM Consensus** | 5 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar | ~3s |
-| 4.5 | **BitNet b1.58 reproducibility primitive** | **High-precision deterministic veto + audit-replay anchor** (NOT a primary classifier — primary recall comes from layers 1-4). 8,512 ternary weights + 69 Q16.16 biases (8,581 total parameters); **bit-identical Q16.16 forward pass across CPU/GPU/NPU**. **85.7% per-class accuracy on held-out test subset (n=42)** + **100% live deployment precision on `contraindicated`** (8 / 8 of its contraindicated predictions are correct on the 27-pair cache; recall 29.6% by design — high-precision veto). Every output carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms`. Trained on 3,247-pair clinical-pharmacology corpus. | < 1ms |
+| 4.5 | **BitNet b1.58 reproducibility primitive** | **High-precision deterministic veto + audit-replay anchor** (NOT a primary classifier — primary recall comes from layers 1-4). 8,512 ternary weights + 69 Q16.16 biases (8,581 total parameters); **bit-identical Q16.16 forward pass across CPU/GPU/NPU**. **85.7% per-class accuracy on held-out test subset (n=42)** + **100% live deployment precision on `contraindicated`** (8 / 8 of its contraindicated predictions are correct on the 28-pair cache; recall 28.6% by design — high-precision veto). Every output carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms`. Trained on 3,247-pair clinical-pharmacology corpus. | < 1ms |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
 
-> **What Layer 4.5 actually is.** It is **not** the primary DDI classifier — primary recall comes from Layers 1–4 (RxNorm canonical lookup + OpenEvidence + NIH RxNav + 5-LLM consensus). Layer 4.5 exists to make every clinical decision **bit-identical across CPU, GPU, and NPU** for FDA SaMD audit replay. Its job is *deterministic verification*, not headline accuracy. **85.7% per-class accuracy on the held-out test subset (n=42)** is the training-side signal; **100% live deployment precision on `contraindicated`** (8/8 of its contraindicated predictions are correct on the 27-pair live cache, 29.6% recall by design) is what matters for safety: when Layer 4.5 disagrees with the upstream pipeline by predicting `none` or `minor` on a `contraindicated` pair, that disagreement triggers a `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` alert and the safer (more severe) verdict always wins. The audit chain records both verdicts and any auditor with the 19 KB weights bundle can replay any decision decades later, no proprietary toolchain required.
+> **What Layer 4.5 actually is.** It is **not** the primary DDI classifier — primary recall comes from Layers 1–4 (RxNorm canonical lookup + OpenEvidence + NIH RxNav + 5-LLM consensus). Layer 4.5 exists to make every clinical decision **bit-identical across CPU, GPU, and NPU** for FDA SaMD audit replay. Its job is *deterministic verification*, not headline accuracy. **85.7% per-class accuracy on the held-out test subset (n=42)** is the training-side signal; **100% live deployment precision on `contraindicated`** (8/8 of its contraindicated predictions are correct on the 28-pair live cache, 29.6% recall by design) is what matters for safety: when Layer 4.5 disagrees with the upstream pipeline by predicting `none` or `minor` on a `contraindicated` pair, that disagreement triggers a `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` alert and the safer (more severe) verdict always wins. The audit chain records both verdicts and any auditor with the 19 KB weights bundle can replay any decision decades later, no proprietary toolchain required.
 
 **Validated against narrow-therapeutic-index drugs (warfarin, digoxin, lithium, phenytoin, methotrexate; n=35 pairs):**
 **100% recall on contraindicated, 89% recall on major, zero false-negatives on contraindicated.** Full confusion matrix + reproducibility recipe: [`docs/clinical_validation.md`](docs/clinical_validation.md).
@@ -197,7 +197,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-grade) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
-| **Test coverage** | 1107+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
+| **Test coverage** | 1108+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ### vs. Commercial Clinical Decision Support
@@ -370,7 +370,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run tests on push (1107+ tests across engine + scripts)
+│   ├── test.yaml               # CI: Run tests on push (1108+ tests across engine + scripts)
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -385,7 +385,7 @@ clinicalmem/
 
 ## Tests
 
-**1107 tests** across `tests/test_engine/`, `tests/test_scripts/`,
+**1108 tests** across `tests/test_engine/`, `tests/test_scripts/`,
 `tests/test_mcp/`, `tests/test_a2a/`, and `tests/test_agent/`.
 The canonical list is `python3 -m pytest --co -q`.
 
@@ -462,7 +462,7 @@ Coverage includes:
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
 | **Five-model LLM consensus** | ~3-5s (all 5 US-based models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
-| **Test suite execution** | ~40 s for 1107+ engine + script tests (full suite ~5 min including a2a/mcp) |
+| **Test suite execution** | ~40 s for 1108+ engine + script tests (full suite ~5 min including a2a/mcp) |
 | **Code coverage** | Per-suite line coverage measured via `pytest --cov`; not enforced as a CI gate (see Tests section for canonical test count) |
 
 ### Cost Analysis (per patient safety check)
@@ -526,7 +526,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 
 ### Current State (Hackathon)
 
-- &check; 1107+ automated tests including adversarial cases (negation detection, boundary conditions)
+- &check; 1108+ automated tests including adversarial cases (negation detection, boundary conditions)
 - &check; SSRF protection validated against RFC 1918, link-local, and IPv6 private ranges
 - &check; PHI detection tested against 25 patterns (SSN, MRN, phone, email, DOB, address)
 - &check; Hallucination detection validated against fabricated citations and unsupported claims

@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T10:11:47.114601+00:00",
+  "dateCreated": "2026-05-05T11:48:50.622694+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -426,6 +426,20 @@
       ],
       "repro_hash": "59ceea87335a375c44465508fc4db56bcf0b61dc8663849712b10b171fd98f79",
       "severity_name": "major"
+    },
+    {
+      "drug_a": "ritonavir",
+      "drug_b": "simvastatin",
+      "feature_hash": "7cb7f7feca7d8a040f1067d52683d0e7470830091a9d02fbec00ffce14679d60",
+      "logits_q16": [
+        392744,
+        -102854,
+        -256975,
+        138117,
+        -196442
+      ],
+      "repro_hash": "f19a43fd070826598ac23ec2549ea7039c4eb6419d1c2c381f77a79056f65252",
+      "severity_name": "none"
     }
   ],
   "version": "1.0.0"

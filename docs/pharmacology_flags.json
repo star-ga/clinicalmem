@@ -19,7 +19,19 @@
     "is_maoi",
     "is_serotonergic",
     "is_nsaid",
-    "is_pde5_inhibitor"
+    "is_pde5_inhibitor",
+    "is_iodinated_contrast",
+    "is_metformin",
+    "is_renal_state",
+    "is_cyp1a2_inhibitor",
+    "is_cyp1a2_substrate",
+    "is_xanthine_oxidase_inhibitor",
+    "is_thiopurine",
+    "is_folate_antagonist",
+    "is_tetracycline",
+    "is_retinoid",
+    "is_ace_inhibitor",
+    "is_neprilysin_inhibitor"
   ],
   "drugs": {
     "clarithromycin": {
@@ -73,8 +85,8 @@
     },
     "voriconazole": {
       "flags": [
-        "is_cyp3a4_strong_inhibitor",
-        "is_cyp2c9_inhibitor"
+        "is_cyp2c9_inhibitor",
+        "is_cyp3a4_strong_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s032lbl.pdf"
@@ -96,9 +108,9 @@
       "flags": [
         "is_cyp3a4_strong_inhibitor",
         "is_cyp3a4_substrate",
+        "is_oatp1b1_inhibitor",
         "is_p_gp_inhibitor",
-        "is_p_gp_substrate",
-        "is_oatp1b1_inhibitor"
+        "is_p_gp_substrate"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/050573s041,050574s051,050625s055,050715s029lbl.pdf",
@@ -119,8 +131,8 @@
     "simvastatin": {
       "flags": [
         "is_cyp3a4_substrate",
-        "is_statin",
-        "is_p_gp_substrate"
+        "is_p_gp_substrate",
+        "is_statin"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s085lbl.pdf"
@@ -265,8 +277,8 @@
     },
     "fluoxetine": {
       "flags": [
-        "is_serotonergic",
-        "is_cyp2d6_inhibitor"
+        "is_cyp2d6_inhibitor",
+        "is_serotonergic"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018936s103lbl.pdf"
@@ -275,8 +287,8 @@
     },
     "paroxetine": {
       "flags": [
-        "is_serotonergic",
-        "is_cyp2d6_inhibitor"
+        "is_cyp2d6_inhibitor",
+        "is_serotonergic"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/020031s067,020710s031lbl.pdf"
@@ -340,8 +352,8 @@
     },
     "sildenafil": {
       "flags": [
-        "is_pde5_inhibitor",
-        "is_cyp3a4_substrate"
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020895s039s042lbl.pdf"
@@ -350,8 +362,8 @@
     },
     "tadalafil": {
       "flags": [
-        "is_pde5_inhibitor",
-        "is_cyp3a4_substrate"
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/021368s022lbl.pdf"
@@ -360,8 +372,8 @@
     },
     "vardenafil": {
       "flags": [
-        "is_pde5_inhibitor",
-        "is_cyp3a4_substrate"
+        "is_cyp3a4_substrate",
+        "is_pde5_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021400s023lbl.pdf"
@@ -419,7 +431,9 @@
       "atc": "C01AA05"
     },
     "lisinopril": {
-      "flags": [],
+      "flags": [
+        "is_ace_inhibitor"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019558s063,019777s060lbl.pdf"
       ],
@@ -451,7 +465,9 @@
       "note": "ARB"
     },
     "sacubitril": {
-      "flags": [],
+      "flags": [
+        "is_neprilysin_inhibitor"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207620s000lbl.pdf"
       ],
@@ -514,7 +530,9 @@
       "atc": "C08CA02"
     },
     "metformin": {
-      "flags": [],
+      "flags": [
+        "is_metformin"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
       ],
@@ -551,7 +569,9 @@
       "note": "CYP2C9 substrate; narrow TI"
     },
     "methotrexate": {
-      "flags": [],
+      "flags": [
+        "is_folate_antagonist"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2016/008085s066lbl.pdf"
       ],
@@ -572,21 +592,27 @@
       "atc": "J01EE01"
     },
     "trimethoprim-sulfamethoxazole": {
-      "flags": [],
+      "flags": [
+        "is_folate_antagonist"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/017598s044,017599s046lbl.pdf"
       ],
       "atc": "J01EE01"
     },
     "allopurinol": {
-      "flags": [],
+      "flags": [
+        "is_xanthine_oxidase_inhibitor"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016084s045lbl.pdf"
       ],
       "atc": "M04AA01"
     },
     "azathioprine": {
-      "flags": [],
+      "flags": [
+        "is_thiopurine"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/016324s039lbl.pdf"
       ],
@@ -601,14 +627,18 @@
       "note": "CYP2D6 substrate (active metabolite endoxifen)"
     },
     "doxycycline": {
-      "flags": [],
+      "flags": [
+        "is_tetracycline"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/050006s075lbl.pdf"
       ],
       "atc": "J01AA02"
     },
     "isotretinoin": {
-      "flags": [],
+      "flags": [
+        "is_retinoid"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/018662s058lbl.pdf"
       ],
@@ -624,14 +654,18 @@
       "atc": "N02CA02"
     },
     "ciprofloxacin": {
-      "flags": [],
+      "flags": [
+        "is_cyp1a2_inhibitor"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/019537s086lbl.pdf"
       ],
       "atc": "J01MA02"
     },
     "tizanidine": {
-      "flags": [],
+      "flags": [
+        "is_cyp1a2_substrate"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020397s032,021447s015lbl.pdf"
       ],
@@ -819,7 +853,9 @@
       "note": "potential CYP2C9 modulator (warfarin INR fluctuation reports)"
     },
     "iodine": {
-      "flags": [],
+      "flags": [
+        "is_iodinated_contrast"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
       ],
@@ -827,14 +863,18 @@
       "note": "iodinated contrast; lactic acidosis with metformin"
     },
     "contrast dye": {
-      "flags": [],
+      "flags": [
+        "is_iodinated_contrast"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
       ],
       "atc": null
     },
     "renal impairment": {
-      "flags": [],
+      "flags": [
+        "is_renal_state"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021202s021s022lbl.pdf"
       ],
@@ -986,8 +1026,8 @@
     },
     "dronedarone": {
       "flags": [
-        "is_p_gp_inhibitor",
-        "is_cyp3a4_strong_inhibitor"
+        "is_cyp3a4_strong_inhibitor",
+        "is_p_gp_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/022425s014lbl.pdf"
@@ -1035,6 +1075,18 @@
       ],
       "atc": "N05AG02",
       "notes": "Diphenylbutylpiperidine antipsychotic; primary metabolic pathway is CYP3A4. FDA Orap label (sec 4 Contraindications) lists strong CYP3A4 inhibitors (clarithromycin, ketoconazole, itraconazole, nefazodone) as absolute contraindications due to QT-prolongation / Torsades-de-Pointes risk from elevated pimozide AUC."
+    },
+    "ritonavir": {
+      "flags": [
+        "is_cyp3a4_strong_inhibitor",
+        "is_p_gp_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/019412s033lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/9590341/"
+      ],
+      "atc": "J05AE03",
+      "notes": "HIV protease inhibitor; a clinically dominant CYP3A4 inhibitor (used pharmacokinetically as a CYP3A4 booster for other PIs). Also inhibits P-gp. FDA Norvir label Section 7 Drug Interactions lists strong CYP3A4 substrates as contraindicated with chronic ritonavir co-admin (notably simvastatin, lovastatin, ergot alkaloids, sildenafil for PAH)."
     }
   }
 }
