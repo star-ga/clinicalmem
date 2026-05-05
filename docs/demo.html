@@ -24,7 +24,8 @@
 <meta name="twitter:description" content="Persistent clinical memory for healthcare AI. Catches drug interactions, allergy conflicts, and provider contradictions with UMLS terminology and tamper-proof audit trails.">
 
 <!-- Favicon: lightweight ClinicalMem mark (currentColor; trust-teal default) -->
-<link rel="icon" type="image/svg+xml" href="logo-mark.svg">
+<link rel="icon" type="image/svg+xml" href="clinicalmem-logo-clean.svg">
+<link rel="apple-touch-icon" href="clinicalmem-logo-clean.svg">
 <meta name="theme-color" content="#0F766E">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -125,10 +126,28 @@ tailwind.config = {
     -moz-osx-font-smoothing: grayscale;
     color: #0f172a;
   }
-  /* Mobile defensive: ensure the hero copy column actually fills the
-     viewport on phones (otherwise lg:col-span-7 styling can leave dead
-     space where a sm-stylesheet doesn't reset). */
+  /* Iter-148 mobile audit (puppeteer @ 390px viewport): root cause of
+     "smushed left + space right" was unwrapped <code> blocks with
+     long SHA-256 / module-path strings forcing parent flex/grid items
+     to their natural intrinsic width (455-585px observed) — wider
+     than the 390px viewport, content gets clipped by overflow:hidden
+     on the right. Fix: force long strings to break, force flex/grid
+     children to allow shrinkage below content width. */
+  code {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  pre code {
+    /* <pre><code> is for code BLOCKS — keep its own line-break logic
+       (the <pre> already has overflow-x:auto via Tailwind), but still
+       allow words longer than container to break. */
+    word-break: break-all;
+  }
+  /* Allow flex/grid items to shrink below their intrinsic content width.
+     Without this, a flex column with long text or wide SVG inside is
+     stuck at content width, creating horizontal overflow on mobile. */
   @media (max-width: 1023px) {
+    .flex > *, .grid > * { min-width: 0; }
     section .max-w-7xl,
     section .max-w-5xl,
     section .max-w-6xl {
@@ -138,6 +157,25 @@ tailwind.config = {
        layout left when measured by a stricter mobile renderer. */
     section.relative > [class*="absolute"] {
       max-width: calc(100vw - 1rem);
+    }
+    /* Ring composition + similar absolute SVGs that intentionally
+     extend past their parent box on desktop must be clipped to viewport
+     width on mobile. */
+    .ring-slow, .ring-med, .ring-fast { max-width: 100% !important; }
+    /* <pre> blocks must clip — otherwise a long Mermaid line / mock-
+       audit-chain text will push the page wider than viewport. */
+    pre {
+      max-width: 100%;
+      overflow-x: auto;
+      word-break: normal;
+    }
+    /* Long inline <code> tokens (file paths, SHA-256 prefixes, identifier
+       names like JointMemoryFederation.flow.mind) MUST break into the
+       current line on mobile rather than forcing the parent paragraph
+       wider than the screen. */
+    p code, li code, td code, span code {
+      word-break: break-all !important;
+      overflow-wrap: anywhere !important;
     }
   }
   h1, h2, h3, h4, h5, h6, .font-display {
@@ -413,43 +451,12 @@ tailwind.config = {
 <nav class="nav-light fixed top-0 left-0 right-0 z-50 border-b border-slate-200">
   <div class="max-w-5xl mx-auto px-4">
     <div class="flex items-center justify-between h-14">
-      <a href="#" class="flex items-center gap-2.5 text-trust-600 hover:text-trust-700 transition-colors" aria-label="ClinicalMem home">
-        <!-- Full logo-mark.svg embedded inline: 6-segment audit ring + petals + cross + hash signature -->
-        <svg class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0" viewBox="0 0 48 48" fill="currentColor" stroke="none" aria-hidden="true">
-          <!-- 6-segment audit-chain ring (segments = TAG_v1 record boundaries) -->
-          <g opacity="0.88">
-            <path d="M24 4 a20 20 0 0 1 17.32 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M44 22 a20 20 0 0 1 -2.68 12"  fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M37.32 38 a20 20 0 0 1 -10.66 5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M21.34 43.86 a20 20 0 0 1 -10.66 -5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M6.68 34 a20 20 0 0 1 -2.68 -12"  fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M6.68 14 a20 20 0 0 1 17.32 -10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </g>
-          <!-- SHA-256 audit-chain hash signature (top-right) -->
-          <g opacity="0.7">
-            <line x1="38" y1="9"  x2="42" y2="9"  stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-            <line x1="38" y1="12" x2="42" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-            <line x1="40.5" y1="6.5" x2="39.5" y2="14.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-          </g>
-          <!-- Six safety-layer petals (one per pipeline layer) -->
-          <g opacity="0.18">
-            <g transform="translate(24 24)">
-              <path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/>
-              <g transform="rotate(60)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
-              <g transform="rotate(120)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
-              <g transform="rotate(180)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
-              <g transform="rotate(240)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
-              <g transform="rotate(300)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
-            </g>
-          </g>
-          <!-- Center clinical cross + verification dot -->
-          <rect x="20" y="14" width="8" height="20" rx="2.4"/>
-          <rect x="14" y="20" width="20" height="8" rx="2.4"/>
-          <circle cx="24" cy="11" r="1.6" opacity="0.9"/>
-        </svg>
+      <a href="#" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity" aria-label="ClinicalMem home">
+        <!-- Original brand logo (VTracer SVG of ClinicalMem-Logo.jpg) -->
+        <img src="clinicalmem-logo-clean.svg" alt="ClinicalMem" class="h-8 sm:h-9 w-auto flex-shrink-0">
         <span class="font-display font-bold text-lg text-slate-900 tracking-tight">ClinicalMem</span>
       </a>
-      <div class="hidden md:flex items-center gap-4 lg:gap-5 text-sm text-slate-500">
+      <div class="hidden lg:flex items-center gap-4 lg:gap-5 text-sm text-slate-500">
         <a href="#patient" class="hover:text-slate-900 transition-colors">Patient</a>
         <a href="#findings" class="hover:text-slate-900 transition-colors">Findings</a>
         <a href="#flows" class="hover:text-slate-900 transition-colors">Flows</a>
@@ -468,13 +475,13 @@ tailwind.config = {
           <span class="w-1.5 h-1.5 rounded-full bg-clinical-green animate-pulse"></span>
           Live Demo
         </span>
-        <button id="nav-hamburger" class="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Menu" aria-expanded="false">
+        <button id="nav-hamburger" class="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Menu" aria-expanded="false">
           <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
       </div>
     </div>
   </div>
-  <div id="mobile-nav" class="hidden md:hidden border-t border-slate-200 bg-white">
+  <div id="mobile-nav" class="hidden lg:hidden border-t border-slate-200 bg-white">
     <div class="max-w-5xl mx-auto px-4 py-2 flex flex-col text-sm text-slate-600">
       <a href="#patient" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Patient</a>
       <a href="#findings" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Findings</a>
@@ -558,7 +565,7 @@ tailwind.config = {
         </p>
       </div>
       <p class="hero-fade text-sm sm:text-base text-slate-600 mt-5 max-w-2xl lg:mx-0 mx-auto leading-relaxed" style="animation-delay:0.12s">
-        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on contraindicated</strong> for the NTI cohort, 21 typed federation invariants enforcing PHI gates and X25519 + ChaCha20-Poly1305 payload encryption by construction, and an Apache-2.0 license carrying an explicit patent grant for healthcare deployment.
+        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on contraindicated</strong> for the NTI cohort, 21 typed federation invariants enforcing PHI gates and X25519 + ChaCha20-Poly1305 payload encryption by construction, and an Apache-2.0 license for healthcare deployment.
       </p>
 
       <!-- Primary + secondary CTA -->
@@ -669,10 +676,10 @@ tailwind.config = {
   <!-- Trust bar — runs full-width below the hero composition -->
   <div class="hero-fade max-w-7xl mx-auto mt-12 px-4" style="animation-delay:0.42s">
     <div class="rounded-2xl bg-white/70 backdrop-blur border border-slate-200 shadow-soft px-5 py-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Apache-2.0 + patent grant</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Apache-2.0 licensed</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Q16.16 bit-identical</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1117 / 1117 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
@@ -718,50 +725,61 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Patient details -->
-      <div class="p-5 sm:p-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <!-- Demographics -->
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Demographics</h4>
+      <!-- Patient details — three uniform sub-cards (Demographics +
+           Conditions + Medications) so the live-EHR data has the same
+           visual weight as the rest of the dashboard. -->
+      <div class="p-4 sm:p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <!-- Demographics sub-card -->
+          <div class="rounded-xl border border-slate-200 bg-slate-50/40 p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-1 h-4 rounded-full bg-trust-600 flex-shrink-0"></span>
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.16em] text-trust-700">Demographics</h4>
+            </div>
             <div class="space-y-2 text-sm">
-              <div class="flex justify-between"><span class="text-slate-500">Age</span><span class="font-medium text-slate-900">67</span></div>
-              <div class="flex justify-between"><span class="text-slate-500">Sex</span><span class="font-medium text-slate-900">Female</span></div>
-              <div class="flex justify-between"><span class="text-slate-500">Providers</span><span class="font-medium text-clinical-blue">4 Active</span></div>
-              <div class="flex justify-between"><span class="text-slate-500">Medications</span><span class="font-medium text-clinical-amber">7 Active</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Age</span><span class="font-semibold text-slate-900">67</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Sex</span><span class="font-semibold text-slate-900">Female</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Providers</span><span class="font-semibold text-clinical-blue">4 Active</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Medications</span><span class="font-semibold text-clinical-amber">7 Active</span></div>
             </div>
           </div>
 
-          <!-- Conditions -->
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Active Conditions</h4>
+          <!-- Conditions sub-card -->
+          <div class="rounded-xl border border-slate-200 bg-slate-50/40 p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-1 h-4 rounded-full bg-clinical-red flex-shrink-0"></span>
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.16em] text-clinical-red">Active Conditions</h4>
+            </div>
             <div class="space-y-1.5">
-              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span>Type 2 Diabetes</span></div>
-              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span>Hypertension</span></div>
-              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber flex-shrink-0"></span><span>CKD Stage 3b</span></div>
-              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber flex-shrink-0"></span><span>Atrial Fibrillation</span></div>
+              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span class="text-slate-800">Type 2 Diabetes</span></div>
+              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-red flex-shrink-0"></span><span class="text-slate-800">Hypertension</span></div>
+              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber flex-shrink-0"></span><span class="text-slate-800">CKD Stage 3b</span></div>
+              <div class="flex items-center gap-2 text-sm"><span class="w-1.5 h-1.5 rounded-full bg-clinical-amber flex-shrink-0"></span><span class="text-slate-800">Atrial Fibrillation</span></div>
             </div>
           </div>
 
-          <!-- Medications -->
-          <div>
-            <h4 class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Active Medications</h4>
+          <!-- Medications sub-card (highlight conflict rows in red glow) -->
+          <div class="rounded-xl border border-slate-200 bg-slate-50/40 p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-1 h-4 rounded-full bg-clinical-amber flex-shrink-0"></span>
+              <h4 class="text-[11px] font-bold uppercase tracking-[0.16em] text-clinical-amber">Active Medications</h4>
+            </div>
             <div class="space-y-1.5 text-sm" id="med-list">
-              <div class="flex items-center gap-2 med-conflict-row" data-med="warfarin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#ef4444"/></svg><span>Warfarin 5mg</span></div>
-              <div class="flex items-center gap-2 med-conflict-row" data-med="ibuprofen"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#dc2626"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg><span>Ibuprofen 400mg</span></div>
-              <div class="flex items-center gap-2" data-med="metformin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#d97706"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span>Metformin 1000mg</span></div>
-              <div class="flex items-center gap-2" data-med="lisinopril"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span>Lisinopril 20mg</span></div>
-              <div class="flex items-center gap-2" data-med="amlodipine"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span>Amlodipine 10mg</span></div>
-              <div class="flex items-center gap-2" data-med="amoxicillin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#fca5a5"/></svg><span>Amoxicillin 500mg</span></div>
-              <div class="flex items-center gap-2" data-med="atorvastatin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#94a3b8"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span>Atorvastatin 40mg</span></div>
+              <div class="flex items-center gap-2 med-conflict-row" data-med="warfarin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#ef4444"/></svg><span class="text-slate-800">Warfarin 5mg</span></div>
+              <div class="flex items-center gap-2 med-conflict-row" data-med="ibuprofen"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#dc2626"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.5"/></svg><span class="text-slate-800">Ibuprofen 400mg</span></div>
+              <div class="flex items-center gap-2" data-med="metformin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#d97706"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span class="text-slate-800">Metformin 1000mg</span></div>
+              <div class="flex items-center gap-2" data-med="lisinopril"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span class="text-slate-800">Lisinopril 20mg</span></div>
+              <div class="flex items-center gap-2" data-med="amlodipine"><svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#94a3b8"/><line x1="3" y1="8" x2="13" y2="8" stroke="white" stroke-width="0.8" opacity="0.4"/></svg><span class="text-slate-800">Amlodipine 10mg</span></div>
+              <div class="flex items-center gap-2" data-med="amoxicillin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 20 14"><rect x="0" y="1" width="10" height="12" rx="6" fill="#dc2626"/><rect x="10" y="1" width="10" height="12" rx="6" fill="#fca5a5"/></svg><span class="text-slate-800">Amoxicillin 500mg</span></div>
+              <div class="flex items-center gap-2" data-med="atorvastatin"><svg class="w-4 h-3 flex-shrink-0" viewBox="0 0 18 12"><rect x="0" y="0" width="18" height="12" rx="6" fill="#94a3b8"/><line x1="9" y1="0" x2="9" y2="12" stroke="white" stroke-width="0.6" opacity="0.4"/></svg><span class="text-slate-800">Atorvastatin 40mg</span></div>
             </div>
           </div>
         </div>
 
-        <!-- Allergies bar -->
-        <div class="mt-5 p-3 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2">
-          <svg class="w-4 h-4 text-clinical-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-          <span class="text-sm font-medium text-red-800">Allergies: <strong>Penicillin</strong> (anaphylaxis)</span>
+        <!-- Allergies bar — full-width banner at the bottom of the EHR card -->
+        <div class="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2.5">
+          <svg class="w-5 h-5 text-clinical-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+          <span class="text-sm font-medium text-red-800">Allergies: <strong class="font-bold">Penicillin</strong> <span class="text-red-700/75">(anaphylaxis)</span></span>
         </div>
       </div>
     </div>
@@ -970,8 +988,6 @@ tailwind.config = {
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">BitNet b1.58 &middot; bit-identical</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200">SQLCipher at-rest &middot; HIPAA</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">arch-mind 9/9 rules</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">Apache-2.0 patent grant</span>
       </div>
     </div>
 
@@ -1404,7 +1420,7 @@ tailwind.config = {
     node quorum    = @native severity_quorum(verified.payload, peer_quorum, 3, 5)
     node local_record = @native mind_mem_ingest(inbound_scrub.payload, ...)
 }</code></pre>
-      <p class="text-xs text-slate-400 mt-3">Transport rides <strong>STARGA's patent-pending MIC@2 / MAP / binary protocols</strong> in <a href="https://pypi.org/project/mind-mem/" class="text-po-orange hover:underline" target="_blank" rel="noopener">mind-mem</a> (Apache-2.0). Apache § 3 patent grant applies to all ClinicalMem deployments. Full architecture: <a href="federated_memory.md" class="text-po-orange hover:underline">docs/federated_memory.md</a>.</p>
+      <p class="text-xs text-slate-400 mt-3">Transport rides STARGA's MIC@2 / MAP / binary protocols in <a href="https://pypi.org/project/mind-mem/" class="text-po-orange hover:underline" target="_blank" rel="noopener">mind-mem</a> (Apache-2.0). Full architecture: <a href="federated_memory.md" class="text-po-orange hover:underline">docs/federated_memory.md</a>.</p>
     </article>
 
     <!-- Live demo (mock transport) card -->
@@ -1946,19 +1962,9 @@ Site B (Mayo Clinic) ingress preimage_hash:
 <footer class="border-t border-slate-200 py-8">
   <div class="max-w-5xl mx-auto px-4">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2 text-trust-600">
-        <svg class="w-6 h-6" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">
-          <g opacity="0.85">
-            <path d="M24 4 a20 20 0 0 1 17.32 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M44 22 a20 20 0 0 1 -2.68 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M37.32 38 a20 20 0 0 1 -10.66 5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M21.34 43.86 a20 20 0 0 1 -10.66 -5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M6.68 34 a20 20 0 0 1 -2.68 -12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M6.68 14 a20 20 0 0 1 17.32 -10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </g>
-          <rect x="20" y="14" width="8" height="20" rx="2.4"/>
-          <rect x="14" y="20" width="20" height="8" rx="2.4"/>
-        </svg>
+      <div class="flex items-center gap-2">
+        <!-- Same brand logo as the navbar — single source of truth. -->
+        <img src="clinicalmem-logo-clean.svg" alt="ClinicalMem" class="h-7 w-auto flex-shrink-0">
         <span class="font-display font-bold text-sm text-slate-900">ClinicalMem</span>
         <span class="text-xs text-slate-400 font-mono">v4.1.0</span>
       </div>

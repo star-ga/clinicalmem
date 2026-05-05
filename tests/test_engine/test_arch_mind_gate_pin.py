@@ -141,8 +141,19 @@ def test_canonical_rule_count_in_judges_demo_claim():
     assert "9 / 9" in judges or "9/9" in judges, (
         "JUDGES.md must reference the 9/9 rule pass count somewhere"
     )
-    assert "arch-mind 9 / 9" in demo or "arch-mind 9/9" in demo, (
-        "docs/demo.html trust-bar must show 'arch-mind 9 / 9 rules' (or "
-        "tighter form). If rule count changes, update demo + JUDGES + "
-        "this pin together."
+    # Iter-149: trust-bar chip relabelled (user removed `arch-mind 9/9 rules`
+    # marketing pill; the live count stays in the governance-section H2 body
+    # `9/9 pass` which is the authoritative claim). Accept any of the live
+    # surface forms so the pin still mechanically enforces "live count must
+    # appear on the demo".
+    assert (
+        "arch-mind 9 / 9" in demo
+        or "arch-mind 9/9" in demo
+        or '"arch-pass-count"' in demo  # the JS anchor that fills in 9/9 live
+    ), (
+        "docs/demo.html must reference the arch-mind 9/9 rule-pass count "
+        "somewhere — either as a trust-bar chip ('arch-mind 9/9 rules'), "
+        "as a JS-filled span (id='arch-pass-count'), or as an inline body "
+        "claim. If rule count changes, update demo + JUDGES + this pin "
+        "together."
     )

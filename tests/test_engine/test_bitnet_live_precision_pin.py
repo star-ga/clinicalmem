@@ -138,7 +138,10 @@ def test_dashboard_displays_live_precision_number():
         "(not the bare '85.7% precision on contraindicated' which conflated "
         "held-out test-set accuracy with deployment precision)."
     )
-    # Must contain the 100% live precision claim
-    assert "6 / 6 contraindicated · live cache" in demo_html, (
-        "Hero stat chip footnote must show the live cache TP/total breakdown"
+    # Must contain the 100% live precision claim — live TP is 8 since
+    # iter-148 (8/8 = 100% precision on contraindicated, 0 FP).
+    assert "8 / 8 contraindicated · live cache" in demo_html, (
+        "Hero stat chip footnote must show the live cache TP/total breakdown "
+        "(8/8 since iter-148 — TP raised from 6 → 7 → 8 across the cohort-"
+        "growth ratchets; precision held at 100% throughout)."
     )
