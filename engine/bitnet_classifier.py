@@ -237,16 +237,68 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
     output_b = list(payload["output_b"])
 
     if len(hidden_w) != 64:
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "hidden_w",
+                "expected_rows": 64,
+                "actual_rows": len(hidden_w),
+                "path": str(path),
+            },
+        )
         raise ValueError(f"hidden_w must have 64 rows (one per hidden unit); got {len(hidden_w)}")
     if any(len(row) != 128 for row in hidden_w):
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "hidden_w",
+                "expected_cols": 128,
+                "path": str(path),
+            },
+        )
         raise ValueError("hidden_w rows must all be length 128 (drug-pair feature dim)")
     if len(hidden_b) != 64:
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "hidden_b",
+                "expected_len": 64,
+                "actual_len": len(hidden_b),
+                "path": str(path),
+            },
+        )
         raise ValueError(f"hidden_b must have 64 entries; got {len(hidden_b)}")
     if len(output_w) != 5:
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "output_w",
+                "expected_rows": 5,
+                "actual_rows": len(output_w),
+                "path": str(path),
+            },
+        )
         raise ValueError(f"output_w must have 5 rows (one per severity class); got {len(output_w)}")
     if any(len(row) != 64 for row in output_w):
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "output_w",
+                "expected_cols": 64,
+                "path": str(path),
+            },
+        )
         raise ValueError("output_w rows must all be length 64 (hidden dim)")
     if len(output_b) != 5:
+        logger.error(
+            "bitnet_weights_shape_mismatch",
+            extra={
+                "field": "output_b",
+                "expected_len": 5,
+                "actual_len": len(output_b),
+                "path": str(path),
+            },
+        )
         raise ValueError(f"output_b must have 5 entries; got {len(output_b)}")
 
     for matrix_name, matrix in (("hidden_w", hidden_w), ("output_w", output_w)):
@@ -432,6 +484,19 @@ def classifier_layer(drug_a: str, drug_b: str) -> BitNetResult:
             # silent-tampering bugs.
             current = load_weights()
             if current.bundle_id != _PINNED_BUNDLE_ID:
+                # Pre-raise structured CRITICAL — this is a release-blocking
+                # FDA SaMD integrity violation. Bundle IDs are SHA-256
+                # prefixes of the canonical-JSON weights file, safe to log
+                # (they ARE the integrity primitive, not secret material).
+                logger.critical(
+                    "bitnet_weights_tamper_detected",
+                    extra={
+                        "pinned_bundle_id": (
+                            _PINNED_BUNDLE_ID[:16] if _PINNED_BUNDLE_ID else None
+                        ),
+                        "on_disk_bundle_id": current.bundle_id[:16],
+                    },
+                )
                 raise WeightsTamperError(
                     f"bitnet_weights.json bundle_id changed under the running "
                     f"process: pinned {_PINNED_BUNDLE_ID[:16]}... "
