@@ -117,11 +117,17 @@ def test_path_a_callout_iter140_numbers_not_stale():
             f"reflect that the curated table is SHIPPED, with only "
             f"engine-bundle integration deferred."
         )
-    # Required post-iter-140 phrasing (must mention the new numbers).
+    # Required post-iter-140 phrasing (must mention the live numbers).
+    # Iter-146 bumped flag count 25 -> 26 (added is_cyp3a4_moderate_inhibitor)
+    # and proved the Path A v2 bundle at 29/29 = 100% recall + 1 FP
+    # (bundle_id 326e3301, 193-dim feature input).
     required_post_iter140 = (
-        "25-flag",                                  # the live count
-        "13 pair-derived DDI-rule bits",            # the live count
-        "29 / 29 contraindicated",                  # the live coverage (iter-145)
+        "26-flag",                                  # iter-146 live count
+        "13 pair-derived DDI-rule bits",            # iter-140 live count
+        "29 / 29 contraindicated",                  # iter-145 live coverage
+        "100% live cache contraindicated recall",   # iter-146 milestone
+        "326e3301",                                  # iter-146 bundle id
+        "193-dim feature input",                    # iter-146 dim
     )
     for phrase in required_post_iter140:
         assert phrase in text, (
