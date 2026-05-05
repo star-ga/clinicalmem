@@ -95,12 +95,40 @@ _PHI_PATTERNS: list[tuple[str, re.Pattern, float]] = [
 ]
 
 
+_PHI_INPUT_SIZE_ANOMALY_BYTES = 500_000
+
+
 def detect_phi(text: str) -> list[PHIMatch]:
     """
     Scan text for all PHI categories.
 
     Returns a list of PHIMatch objects sorted by position.
     """
+    if not text:
+        # Empty/None input is usually an upstream bug (caller forgot
+        # to pass the text). Surface at DEBUG so operators reading
+        # the SaMD audit log can correlate empty-input events with
+        # caller-side fixes. PHI-safe: only the absence is logged.
+        logger.debug(
+            "phi_detect_empty_input",
+            extra={"text_length": 0 if text == "" else None},
+        )
+        return []
+
+    if len(text) > _PHI_INPUT_SIZE_ANOMALY_BYTES:
+        # Very large input is a DoS vector for regex backtracking
+        # AND a sign of upstream PHI-bundle accumulation that wasn't
+        # supposed to reach the detector. WARNING-level: operators
+        # should see this even at default log levels.
+        # PHI-safe: only the LENGTH, never any slice of the content.
+        logger.warning(
+            "phi_input_size_anomaly",
+            extra={
+                "text_length": len(text),
+                "anomaly_threshold_bytes": _PHI_INPUT_SIZE_ANOMALY_BYTES,
+            },
+        )
+
     matches = []
     for category, pattern, confidence in _PHI_PATTERNS:
         for m in pattern.finditer(text):
@@ -179,6 +207,18 @@ def scan_phi(text: str) -> PHIReport:
                 "match_count": len(matches),
                 "categories": categories,
                 "is_safe": False,
+            },
+        )
+    else:
+        # Clean scan — emit DEBUG with text_length for baseline traffic
+        # observability. Without this signal an operator can't compute
+        # the PHI-rate (matches per scan) or distinguish "no scans" from
+        # "scans with no PHI". PHI-safe: text_length only.
+        logger.debug(
+            "phi_scan_clean",
+            extra={
+                "text_length": len(text),
+                "is_safe": True,
             },
         )
 
