@@ -21,6 +21,16 @@ form. The pin file enforces:
   2. Each new structured event has a stable name + error_type field.
 
 Future maintainers re-introducing `%s, e` patterns fail the gate.
+
+iter 138 (T4 round 27) extension:
+The module had grown to 1081 LOC at 9.3 calls/kloc — LOWEST density
+of any module in the engine. Five safety-critical query methods went
+silent (medication_safety_check, detect_contradictions,
+verify_audit_chain success path, patient_summary, clinical_handoff).
+Net 10 -> 18 logger calls (+8 events, density 9.3 -> 15.1/kloc).
+PHI-safe metadata: patient_id (synthetic Synthea), counts only —
+NEVER medication names, allergens, condition names, observation
+values, or audit-chain entry content.
 """
 from __future__ import annotations
 
@@ -124,3 +134,178 @@ def test_ingest_failure_logs_error_type_only(caplog, tmp_path):
                 f"clinical_memory_medications_ingest_failed leaked "
                 f"str(e) sentinel into structured log"
             )
+
+
+# ─── iter-138 (T4 round 27) ratchet — five new structured events ─────────
+
+_EXPECTED_LOGGER_FLOOR_ITER138 = 18  # was 10 pre-iter-138
+
+
+def test_clinical_memory_logger_floor_iter138():
+    """Pin a logger-call floor (>= 18) so silent-removal regressions of
+    the iter-138 events fail the gate.
+
+    Iter-138 added 5 structured events on previously-silent paths
+    (med_safety_check, contradictions_check, audit_chain_verification_ok,
+    patient_summary, handoff_generated) plus 3 restructured WARNING events
+    on verify_audit_chain failure paths. Net 10 -> 18 logger calls.
+    """
+    src = _MODULE_PATH.read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= _EXPECTED_LOGGER_FLOOR_ITER138, (
+        f"engine/clinical_memory.py logger-call count regressed: "
+        f"{len(calls)} < floor {_EXPECTED_LOGGER_FLOOR_ITER138}. "
+        f"A structured event from iter-138 was silently removed."
+    )
+
+
+def test_med_safety_check_emits_info_event_iter138(caplog, tmp_path):
+    """`medication_safety_check` emits `clinical_memory_med_safety_check`
+    INFO. Pre-iter-138 the load-bearing safety query was silent."""
+    from engine.clinical_memory import ClinicalMemEngine
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter138_a"))
+    with caplog.at_level(logging.INFO, logger="engine.clinical_memory"):
+        engine.medication_safety_check("pt-test-iter138")
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.INFO
+        and "clinical_memory_med_safety_check" in r.getMessage()
+    ]
+    assert matched, (
+        "medication_safety_check emitted no "
+        "`clinical_memory_med_safety_check` INFO event."
+    )
+    rec = matched[0]
+    assert getattr(rec, "patient_id", None) == "pt-test-iter138"
+    assert getattr(rec, "med_count", "MISSING") == 0
+    assert getattr(rec, "interaction_count", "MISSING") == 0
+
+
+def test_detect_contradictions_emits_info_event_iter138(caplog, tmp_path):
+    """`detect_contradictions` emits
+    `clinical_memory_contradictions_check` INFO."""
+    from engine.clinical_memory import ClinicalMemEngine
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter138_b"))
+    with caplog.at_level(logging.INFO, logger="engine.clinical_memory"):
+        engine.detect_contradictions("pt-test-iter138-b")
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.INFO
+        and "clinical_memory_contradictions_check" in r.getMessage()
+    ]
+    assert matched, (
+        "detect_contradictions emitted no "
+        "`clinical_memory_contradictions_check` INFO event."
+    )
+    rec = matched[0]
+    assert getattr(rec, "patient_id", None) == "pt-test-iter138-b"
+    assert getattr(rec, "contradiction_count", "MISSING") == 0
+
+
+def test_verify_audit_chain_success_emits_debug_event_iter138(caplog, tmp_path):
+    """`verify_audit_chain` emits
+    `clinical_memory_audit_chain_verification_ok` DEBUG on the success
+    path. Pre-iter-138 only failures logged, success was silent."""
+    from engine.clinical_memory import ClinicalMemEngine
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter138_c"))
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+        engine.verify_audit_chain()
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "clinical_memory_audit_chain_verification_ok" in r.getMessage()
+    ]
+    assert matched, (
+        "verify_audit_chain success path emitted no "
+        "`clinical_memory_audit_chain_verification_ok` DEBUG event."
+    )
+
+
+def test_patient_summary_log_contains_no_phi_content_iter138(caplog, tmp_path):
+    """`clinical_memory_patient_summary` must NEVER include medication
+    names, allergens, condition names, or observation values in any
+    field of the log record.
+
+    Same paranoia as iter-103/108/113/118/123/128/133 sentinel-leak
+    scrubs.
+    """
+    from engine.clinical_memory import ClinicalBlock, ClinicalMemEngine
+
+    sentinel_med = "ZZZ_LEAK_SENTINEL_MED_iter138"
+    sentinel_allergen = "ZZZ_LEAK_SENTINEL_ALLERGEN_iter138"
+    sentinel_condition = "ZZZ_LEAK_SENTINEL_COND_iter138"
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter138_d"))
+    pid = "pt-test-iter138-d"
+    engine._patient_blocks[pid] = [
+        ClinicalBlock(
+            block_id="b1", patient_id=pid,
+            resource_type="MedicationRequest",
+            title="med", content="med content",
+            metadata={"medication_name": sentinel_med},
+            timestamp="2026-01-01", source="test",
+        ),
+        ClinicalBlock(
+            block_id="b2", patient_id=pid,
+            resource_type="AllergyIntolerance",
+            title="allergy", content="allergy content",
+            metadata={"allergen": sentinel_allergen},
+            timestamp="2026-01-01", source="test",
+        ),
+        ClinicalBlock(
+            block_id="b3", patient_id=pid,
+            resource_type="Condition",
+            title="condition", content="condition content",
+            metadata={"condition_name": sentinel_condition},
+            timestamp="2026-01-01", source="test",
+        ),
+    ]
+
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+        engine.patient_summary(pid)
+
+    sentinels = (sentinel_med, sentinel_allergen, sentinel_condition)
+    for rec in caplog.records:
+        for s in sentinels:
+            assert s not in rec.getMessage(), (
+                f"PHI sentinel leaked into log message"
+            )
+        for value in vars(rec).values():
+            if isinstance(value, str):
+                for s in sentinels:
+                    assert s not in value, (
+                        f"PHI sentinel leaked into record attribute"
+                    )
+            elif isinstance(value, (list, tuple)):
+                for item in value:
+                    if isinstance(item, str):
+                        for s in sentinels:
+                            assert s not in item, (
+                                f"PHI sentinel leaked into record list"
+                            )
+
+
+def test_module_exports_remain_stable_iter138():
+    """Source-level pin: the public class + key methods that downstream
+    callers (run_clinical_regression_eval.py, federation_mock_demo.py)
+    import by name must remain stable."""
+    text = _MODULE_PATH.read_text()
+    for required in (
+        "class ClinicalMemEngine",
+        "def medication_safety_check(",
+        "def detect_contradictions(",
+        "def verify_audit_chain(",
+        "def patient_summary(",
+        "def clinical_handoff(",
+    ):
+        assert required in text, (
+            f"engine/clinical_memory.py removed or renamed {required!r} — "
+            f"this is part of the public API the SaMD audit-replay "
+            f"harness depends on."
+        )

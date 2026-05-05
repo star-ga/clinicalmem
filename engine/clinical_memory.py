@@ -738,6 +738,22 @@ class ClinicalMemEngine:
             },
         )
 
+        # Safety-critical query — INFO level so operators see every
+        # invocation in the audit log even at default log levels. PHI-safe:
+        # patient_id is the synthetic Synthea identifier (not real PHI);
+        # only counts are logged, never drug names or allergens.
+        logger.info(
+            "clinical_memory_med_safety_check",
+            extra={
+                "patient_id": patient_id,
+                "med_count": len(med_names),
+                "allergy_count": len(allergy_names),
+                "interaction_count": len(interactions),
+                "allergy_conflict_count": len(allergy_conflicts),
+                "audit_hash_prefix": audit_hash[:16] if audit_hash else None,
+            },
+        )
+
         return MedicationSafetyReport(
             patient_id=patient_id,
             medications=med_names,
@@ -861,12 +877,27 @@ class ClinicalMemEngine:
                 "blocks_involved": [pc.provider_a, pc.provider_b],
             })
 
+        types_found = sorted({c["type"] for c in contradictions})
         self._append_audit(
             "detect_contradictions",
             {
                 "patient_id": patient_id,
                 "contradiction_count": len(contradictions),
-                "types_found": list({c["type"] for c in contradictions}),
+                "types_found": types_found,
+            },
+        )
+
+        # Contradiction-detection results are safety signals — INFO level
+        # so operators see contradiction load per patient. PHI-safe:
+        # patient_id + counts + structural type names only (e.g.
+        # "lab_medication_contraindication"), never block content.
+        logger.info(
+            "clinical_memory_contradictions_check",
+            extra={
+                "patient_id": patient_id,
+                "block_count": len(blocks),
+                "contradiction_count": len(contradictions),
+                "types_found": types_found,
             },
         )
 
@@ -899,17 +930,65 @@ class ClinicalMemEngine:
         if self._audit_chain_mm is not None:
             is_valid, errors = self._audit_chain_mm.verify()
             if errors:
-                logger.warning("Audit chain verification errors: %s", errors)
+                # Convert error strings to a count + sample of error TYPES
+                # only — verbatim error messages may include record content
+                # which is downstream PHI / clinical detail.
+                logger.warning(
+                    "clinical_memory_audit_chain_verification_failed",
+                    extra={
+                        "is_valid": is_valid,
+                        "error_count": len(errors),
+                        "backend": "mind_mem",
+                    },
+                )
+            else:
+                # Pin the success path at DEBUG so the audit log carries a
+                # baseline event for every verification call. Without this
+                # an operator can't compute the verification rate (passes
+                # per call) or distinguish "no calls" from "all clean".
+                logger.debug(
+                    "clinical_memory_audit_chain_verification_ok",
+                    extra={"is_valid": is_valid, "backend": "mind_mem"},
+                )
             return is_valid
         # Fallback verification
         fallback = getattr(self, "_audit_chain_fallback", [])
         for i, entry in enumerate(fallback):
             if i == 0:
                 if entry.get("prev_hash") != "genesis":
+                    logger.warning(
+                        "clinical_memory_audit_chain_verification_failed",
+                        extra={
+                            "is_valid": False,
+                            "reason": "genesis_prev_hash_mismatch",
+                            "chain_length": len(fallback),
+                            "backend": "fallback",
+                        },
+                    )
                     return False
             else:
                 if entry.get("prev_hash") != fallback[i - 1]["hash"]:
+                    logger.warning(
+                        "clinical_memory_audit_chain_verification_failed",
+                        extra={
+                            "is_valid": False,
+                            "reason": "prev_hash_chain_break",
+                            "broken_at_index": i,
+                            "chain_length": len(fallback),
+                            "backend": "fallback",
+                        },
+                    )
                     return False
+        # Fallback success path — baseline DEBUG event so every verify call
+        # leaves a footprint in the audit log.
+        logger.debug(
+            "clinical_memory_audit_chain_verification_ok",
+            extra={
+                "is_valid": True,
+                "chain_length": len(fallback),
+                "backend": "fallback",
+            },
+        )
         return True
 
     # ── Patient Summary ───────────────────────────────────────────────────
@@ -962,6 +1041,21 @@ class ClinicalMemEngine:
 
         audit_hash = self._append_audit(
             "patient_summary", {"patient_id": patient_id}
+        )
+
+        # DEBUG event so the audit log carries a baseline summary event.
+        # PHI-safe: patient_id (synthetic) + counts only, never med /
+        # condition / allergen names.
+        logger.debug(
+            "clinical_memory_patient_summary",
+            extra={
+                "patient_id": patient_id,
+                "block_count": len(blocks),
+                "medication_count": len(meds),
+                "condition_count": len(conditions),
+                "allergy_count": len(allergies),
+                "observation_count": len(observations),
+            },
         )
 
         return {
@@ -1075,6 +1169,23 @@ class ClinicalMemEngine:
                 "abstained": narrative.abstained,
                 "model_used": narrative.model_used,
                 "citations": len(narrative.evidence_citations),
+            },
+        )
+
+        # INFO level — clinician-ready handoff is a high-stakes SaMD
+        # event. PHI-safe: patient_id (synthetic) + counts + abstention
+        # flag + model name (a structural identifier, not patient data).
+        logger.info(
+            "clinical_memory_handoff_generated",
+            extra={
+                "patient_id": patient_id,
+                "block_count": len(blocks),
+                "contradiction_count": len(contradictions),
+                "interaction_count": safety_report["interaction_count"],
+                "allergy_conflict_count": safety_report["allergy_conflict_count"],
+                "abstained": narrative.abstained,
+                "model_used": narrative.model_used,
+                "citation_count": len(narrative.evidence_citations),
             },
         )
 
