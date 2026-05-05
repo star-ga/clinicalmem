@@ -490,6 +490,7 @@ tailwind.config = {
         <a href="#pipeline" class="hover:text-slate-900 transition-colors">Pipeline</a>
         <a href="#terminology" class="hover:text-slate-900 transition-colors">Terminology</a>
         <a href="#audit" class="hover:text-slate-900 transition-colors">Audit</a>
+        <a href="#validation" class="hover:text-slate-900 transition-colors">Validation</a>
         <a href="#tools" class="hover:text-slate-900 transition-colors">Tools</a>
         <a href="#architecture" class="hover:text-slate-900 transition-colors">Architecture</a>
       </div>
@@ -516,6 +517,7 @@ tailwind.config = {
       <a href="#pipeline" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Pipeline</a>
       <a href="#terminology" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Terminology</a>
       <a href="#audit" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Audit</a>
+      <a href="#validation" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Validation</a>
       <a href="#tools" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Tools</a>
       <a href="#architecture" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Architecture</a>
     </div>
@@ -1864,6 +1866,91 @@ Site B (Mayo Clinic) ingress preimage_hash:
 
       <p class="text-[10px] text-slate-400 mt-3 leading-relaxed">Pinned by <code class="font-mono">tests/test_scripts/test_reproducibility_manifest.py</code> (12 tests): SHA-format check, flow-set parity, BitNet safety-invariant pass-through, all-5-gates-PASS, test_count floor, git_head format, live↔on-disk parity via <code class="font-mono">--check</code>, every load-bearing artifact tracked (8 SHA-tracked + flow_plan_hashes), calibration + audit-replay weights_id ↔ engine bundle_id cross-checks, pharmacology-flags drug-count floor + flag-key set integrity. Re-run <code>scripts/build_reproducibility_manifest.py</code> after any artifact change.</p>
     </article>
+  </div>
+</section>
+
+<!-- Validation Methodology — addresses the "synthetic-only data, no
+     comparison vs typical CDS" concern auditors flagged. -->
+<section id="validation" class="py-14 sm:py-20 bg-gradient-to-b from-white via-trust-50/40 to-white">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-trust-700 mb-3">Validation methodology</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
+        Honest about synthetic data. Honest about what's verified.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+        Every metric on this page traces to a checked-in artifact + a CI gate. No claim survives without an evidence path.
+      </p>
+    </div>
+
+    <!-- Three columns: cohort, comparison, deferred -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+
+      <!-- Column 1: what we DO measure -->
+      <div class="card p-5 bg-white">
+        <div class="flex items-center gap-2 mb-3 pb-3 border-b border-clinical-green/20">
+          <span class="w-2 h-2 rounded-full bg-clinical-green flex-shrink-0"></span>
+          <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-clinical-green">Verified on synthetic + curated cohorts</span>
+        </div>
+        <ul class="space-y-2.5 text-sm text-slate-700">
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>124-pair recall cohort</strong> (29 contraindicated · 4 major · 22 moderate · 69 serious). 100% recall on every severity class · 0 FN.</span></li>
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>10-entry negative-control cohort</strong> with 4 boundary cases (clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim). 0 / 10 false positives.</span></li>
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>Cross-architecture determinism stress</strong> — 1200 / 1200 bit-identical replays (12 pairs × 100 iterations). Pinned by <code class="font-mono text-xs">tests/test_scripts/test_bitnet_determinism.py</code>.</span></li>
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>Python ↔ JS bit-identity</strong> — the in-browser BitNet forward pass produces the same <code class="font-mono text-xs">repro_hash</code> as the server-side path (warfarin + ibuprofen verified byte-for-byte).</span></li>
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>NPI Luhn-validity</strong> — every Practitioner identifier in the 233-entry FHIR cohort passes the CMS Luhn check digit; zero collision with the known-real validation NPI.</span></li>
+        </ul>
+      </div>
+
+      <!-- Column 2: capability comparison -->
+      <div class="card p-5 bg-white">
+        <div class="flex items-center gap-2 mb-3 pb-3 border-b border-clinical-blue/20">
+          <span class="w-2 h-2 rounded-full bg-clinical-blue flex-shrink-0"></span>
+          <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-clinical-blue">Capability vs typical CDS tiers</span>
+        </div>
+        <div class="overflow-x-auto -mx-2 px-2">
+          <table class="w-full text-[11px] sm:text-xs text-slate-700 border-collapse min-w-[260px]">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="text-left font-semibold text-slate-500 py-1.5 pr-2">Capability</th>
+                <th class="text-center font-semibold text-slate-500 py-1.5 px-1">RxNorm-only</th>
+                <th class="text-center font-semibold text-slate-500 py-1.5 px-1">DrugBank-tier</th>
+                <th class="text-center font-semibold text-clinical-blue py-1.5 pl-1">ClinicalMem</th>
+              </tr>
+            </thead>
+            <tbody class="font-mono">
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Pair lookup</td><td class="text-center text-clinical-green">✓</td><td class="text-center text-clinical-green">✓</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">CYP3A4 cross-mech</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Allergy ↔ class</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Provider conflict</td><td class="text-center text-slate-300">—</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Lab trend gate</td><td class="text-center text-slate-300">—</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Audit-replay hash</td><td class="text-center text-slate-300">—</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr class="border-b border-slate-100"><td class="py-1.5 pr-2 font-sans">Bit-identical / chip</td><td class="text-center text-slate-300">—</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td></tr>
+              <tr><td class="py-1.5 pr-2 font-sans">Federated · PHI gate</td><td class="text-center text-slate-300">—</td><td class="text-center text-slate-300">—</td><td class="text-center text-clinical-green">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-3 leading-relaxed">Rows are <em>capability presence</em>, not headline accuracy. Detection-rate comparisons across CDS systems require IRB-approved, vendor-blinded prospective trials (a 4-12 week regulatory exercise — see column 3). Sources: NIH RxNav RxClass API · Bate, ICPE 2017 (Drug-Drug Interaction Detection in EHR Systems).</p>
+      </div>
+
+      <!-- Column 3: what's NOT yet validated (honesty column) -->
+      <div class="card p-5 bg-white">
+        <div class="flex items-center gap-2 mb-3 pb-3 border-b border-po-orange/30">
+          <span class="w-2 h-2 rounded-full bg-po-orange flex-shrink-0"></span>
+          <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-po-orange">Deferred · requires real-world rollout</span>
+        </div>
+        <ul class="space-y-2.5 text-sm text-slate-700">
+          <li class="flex items-start gap-2"><span class="text-po-orange mt-0.5">○</span><span><strong>Adverse-event reduction outcomes</strong> on real patient data &mdash; requires IRB-approved cohort; review is 4&ndash;12 weeks. Not a hackathon-week deliverable.</span></li>
+          <li class="flex items-start gap-2"><span class="text-po-orange mt-0.5">○</span><span><strong>NPI-attributed prospective study</strong> against a deployed CDS baseline (Epic BPA / Cerner First Databank) &mdash; requires a clinical-validation NPI partner (a separate engagement track, not the synthetic-data submission this demo represents).</span></li>
+          <li class="flex items-start gap-2"><span class="text-po-orange mt-0.5">○</span><span><strong>Alert-fatigue measurement</strong> on real prescribing flow &mdash; the override rate of typical CDS systems (~30% per Olakotan & Yusof, IJMI 2020) is the comparator we need a real deployment to measure against.</span></li>
+        </ul>
+        <p class="text-[10px] text-slate-400 mt-3 leading-relaxed">This column is intentional. A hackathon-week submission cannot honestly claim adverse-event-reduction validation; it can claim a precision-respecting safety primitive ready to enter that validation, which is what the 8 capability gates above demonstrate.</p>
+      </div>
+    </div>
+
+    <p class="text-xs text-slate-500 mt-6 leading-relaxed border-l-2 border-trust-600/40 pl-3 bg-trust-50/40 py-2 rounded-r max-w-3xl mx-auto">
+      <strong class="text-slate-700">Synthetic-data caveat &mdash;</strong>
+      every patient identifier in this demo carries <code class="font-mono text-[10px]">meta._synthetic = true</code> and zero NPI collision with a known-real practitioner is enforced by <code class="font-mono text-[10px]">tests/test_engine/test_synthea_cohort_integrity_pin.py</code>. The <em>capability</em> rows in column 2 are exhaustively tested against the synthetic 124-pair cohort; the <em>outcome</em> claims (column 3) are explicitly out of scope for this submission.
+    </p>
   </div>
 </section>
 
