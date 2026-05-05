@@ -309,3 +309,143 @@ def test_module_exports_remain_stable_iter138():
             f"this is part of the public API the SaMD audit-replay "
             f"harness depends on."
         )
+
+
+# ─── iter-171 (T4 round 33) ratchet — 5 new structured events ───────────────
+
+_EXPECTED_LOGGER_FLOOR_ITER171 = 23  # was 18 pre-iter-171
+
+
+def test_clinical_memory_logger_floor_iter171():
+    """Floor bump 18 -> 23 after iter-171 closed 4 silent paths:
+    bundle ingest entry, empty-patient recall abstention, audit-trail
+    read (mind-mem + fallback both logged), explain-conflict abstention.
+    Net 18 -> 23 logger calls (density 15.1 -> 18.2/kloc)."""
+    src = _MODULE_PATH.read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= _EXPECTED_LOGGER_FLOOR_ITER171, (
+        f"engine/clinical_memory.py logger-call count regressed: "
+        f"{len(calls)} < floor {_EXPECTED_LOGGER_FLOOR_ITER171}. "
+        f"A structured event from iter-171 was silently removed."
+    )
+
+
+def test_bundle_ingest_emits_debug_event_iter171(caplog):
+    """`ingest_from_bundle` emits `clinical_memory_bundle_ingest_start`
+    DEBUG with per-resource-type counts but never resource bodies."""
+    from engine.clinical_memory import ClinicalMemEngine
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        engine = ClinicalMemEngine(data_dir=tmp)
+        bundle = {
+            "entry": [
+                {"resource": {"resourceType": "Patient", "id": "p1"}},
+                {"resource": {"resourceType": "Condition", "id": "c1",
+                              "code": {"text": "ZZZ_PHI_SENTINEL_CONDITION"}}},
+                {"resource": {"resourceType": "Condition", "id": "c2",
+                              "code": {"text": "ZZZ_PHI_SENTINEL_CONDITION_2"}}},
+            ],
+        }
+        with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+            engine.ingest_from_bundle(bundle, "p1")
+
+    matches = [r for r in caplog.records
+               if r.message == "clinical_memory_bundle_ingest_start"]
+    assert matches, "bundle_ingest_start event missing"
+    rec = matches[0]
+    assert rec.levelno == logging.DEBUG
+    assert rec.patient_id == "p1"
+    assert rec.total_entries == 3
+    assert rec.resource_type_counts.get("Condition") == 2
+
+    # PHI sentinel must NOT leak into any record attribute
+    for r in caplog.records:
+        for value in vars(r).values():
+            if isinstance(value, str):
+                assert "ZZZ_PHI_SENTINEL_CONDITION" not in value, (
+                    "PHI sentinel leaked into log record"
+                )
+
+
+def test_recall_empty_patient_emits_info_event_iter171(caplog):
+    """`recall` on a patient with zero blocks emits
+    `clinical_memory_recall_empty_patient` INFO. The query string must
+    NOT appear in any log record (queries can carry clinician narrative)."""
+    from engine.clinical_memory import ClinicalMemEngine
+    import tempfile
+
+    sentinel_query = "ZZZ_PHI_SENTINEL_QUERY_drug_allergy_for_John"
+    with tempfile.TemporaryDirectory() as tmp:
+        engine = ClinicalMemEngine(data_dir=tmp)
+        with caplog.at_level(logging.INFO, logger="engine.clinical_memory"):
+            result = engine.recall("never-ingested-patient", sentinel_query)
+
+    assert result.blocks == []
+    matches = [r for r in caplog.records
+               if r.message == "clinical_memory_recall_empty_patient"]
+    assert matches, "recall_empty_patient event missing"
+    rec = matches[0]
+    assert rec.levelno == logging.INFO
+    assert rec.patient_id == "never-ingested-patient"
+    assert rec.block_count == 0
+    assert rec.results == 0
+
+    # Query string MUST NOT appear in any log record (downstream PHI)
+    for r in caplog.records:
+        for value in vars(r).values():
+            if isinstance(value, str):
+                assert sentinel_query not in value, (
+                    "PHI sentinel query leaked into log record"
+                )
+
+
+def test_audit_trail_read_emits_debug_event_iter171(caplog):
+    """`get_audit_trail` emits `clinical_memory_audit_trail_read` DEBUG
+    on both mind-mem-backed and fallback backends."""
+    from engine.clinical_memory import ClinicalMemEngine
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        engine = ClinicalMemEngine(data_dir=tmp)
+        with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+            entries = engine.get_audit_trail(limit=5)
+
+    matches = [r for r in caplog.records
+               if r.message == "clinical_memory_audit_trail_read"]
+    assert matches, "audit_trail_read event missing"
+    rec = matches[0]
+    assert rec.levelno == logging.DEBUG
+    assert rec.limit == 5
+    assert rec.backend in ("mind_mem", "fallback")
+    assert isinstance(rec.returned_count, int)
+    assert rec.returned_count == len(entries)
+
+
+def test_explain_conflict_abstained_emits_info_event_iter171(caplog):
+    """`explain_clinical_conflict` emits
+    `clinical_memory_explain_conflict_abstained` INFO when the
+    abstention gate fires. The reason field is a structural string,
+    not patient narrative."""
+    from engine.clinical_memory import ClinicalMemEngine
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        engine = ClinicalMemEngine(data_dir=tmp)
+        with caplog.at_level(logging.INFO, logger="engine.clinical_memory"):
+            narrative = engine.explain_clinical_conflict(
+                "no-such-patient", conflict_index=0
+            )
+
+    assert narrative.abstained is True
+    matches = [r for r in caplog.records
+               if r.message == "clinical_memory_explain_conflict_abstained"]
+    assert matches, "explain_conflict_abstained event missing"
+    rec = matches[0]
+    assert rec.levelno == logging.INFO
+    assert rec.patient_id == "no-such-patient"
+    assert rec.reason in ("no_conflicts", "conflict_index_out_of_range")
+    assert rec.contradiction_count == 0

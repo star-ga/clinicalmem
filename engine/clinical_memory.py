@@ -211,6 +211,21 @@ class ClinicalMemEngine:
             rt = res.get("resourceType", "")
             resources_by_type.setdefault(rt, []).append(res)
 
+        # DEBUG entry log — PHI-safe: per-resource-type counts + total
+        # only. Never log resource bodies (which carry PHI by HIPAA Safe
+        # Harbor: dosage strings, condition narratives, allergen names).
+        # Operators use this to spot bundle-shape drift across versions.
+        logger.debug(
+            "clinical_memory_bundle_ingest_start",
+            extra={
+                "patient_id": patient_id,
+                "total_entries": len(entries),
+                "resource_type_counts": {
+                    rt: len(resources_by_type[rt]) for rt in sorted(resources_by_type)
+                },
+            },
+        )
+
         fhir = BundleFHIRClient(resources_by_type, patient_id)
         return self.ingest_from_fhir(fhir)
 
@@ -477,6 +492,23 @@ class ClinicalMemEngine:
             audit_hash = self._append_audit(
                 "recall",
                 {"patient_id": patient_id, "query": query, "results": 0},
+            )
+            # INFO — empty-patient recall is a SaMD-relevant abstention
+            # path (no clinical context = no recall = engine returns
+            # zero blocks). Operators must see this firing rate to
+            # distinguish "patient not yet ingested" from real recall
+            # misses. PHI-safe: patient_id (synthetic) + zero counts;
+            # query string is NOT logged (clinician queries can carry
+            # narrative — "drug allergy details for John" — and are
+            # downstream PHI).
+            logger.info(
+                "clinical_memory_recall_empty_patient",
+                extra={
+                    "patient_id": patient_id,
+                    "block_count": 0,
+                    "results": 0,
+                    "audit_hash_prefix": audit_hash[:16] if audit_hash else None,
+                },
             )
             return ClinicalRecallResult(
                 blocks=[],
@@ -908,9 +940,33 @@ class ClinicalMemEngine:
     def get_audit_trail(self, limit: int = 50) -> list[dict[str, Any]]:
         """Return the hash-chain audit trail."""
         if self._audit_chain_mm is not None:
-            return self._get_audit_trail_mindmem(limit)
+            entries = self._get_audit_trail_mindmem(limit)
+            # DEBUG — audit-trail reads are themselves auditable events
+            # for FDA SaMD chain-of-custody. PHI-safe: backend label +
+            # limit + returned-count only; entry bodies carry action
+            # names + counts that are downstream-safe but not logged
+            # here (the trail itself is the surface).
+            logger.debug(
+                "clinical_memory_audit_trail_read",
+                extra={
+                    "backend": "mind_mem",
+                    "limit": limit,
+                    "returned_count": len(entries),
+                },
+            )
+            return entries
         fallback = getattr(self, "_audit_chain_fallback", [])
-        return fallback[-limit:]
+        result = fallback[-limit:]
+        logger.debug(
+            "clinical_memory_audit_trail_read",
+            extra={
+                "backend": "fallback",
+                "limit": limit,
+                "returned_count": len(result),
+                "chain_length": len(fallback),
+            },
+        )
+        return result
 
     def _get_audit_trail_mindmem(self, limit: int) -> list[dict[str, Any]]:
         """Read audit trail from mind-mem's JSONL ledger."""
@@ -1083,13 +1139,32 @@ class ClinicalMemEngine:
         """
         contradictions = self.detect_contradictions(patient_id)
         if not contradictions or conflict_index >= len(contradictions):
+            # INFO — abstention gate firing is a SAFETY-CRITICAL signal:
+            # the LLM-synthesis path refused to generate a narrative
+            # because there's nothing to explain. Operators must see
+            # how often this fires per patient to distinguish "no
+            # conflicts found" from "synthesis bug suppressing output".
+            # PHI-safe: patient_id + structural reason + index only.
+            reason = (
+                "no_conflicts" if not contradictions
+                else "conflict_index_out_of_range"
+            )
+            logger.info(
+                "clinical_memory_explain_conflict_abstained",
+                extra={
+                    "patient_id": patient_id,
+                    "reason": reason,
+                    "conflict_index": conflict_index,
+                    "contradiction_count": len(contradictions),
+                },
+            )
             return ClinicalNarrative(
                 narrative="ABSTAIN: No conflicts detected for this patient.",
                 evidence_citations=[],
                 confidence_score=0.0,
                 abstained=True,
                 model_used="abstention_gate",
-                audit_context={"reason": "no_conflicts"},
+                audit_context={"reason": reason},
             )
 
         conflict = contradictions[conflict_index]
