@@ -1,0 +1,450 @@
+{
+  "round": "round_5_post_iter140",
+  "timestamp_utc": "2026-05-05T14:13:36.643608+00:00",
+  "n_models": 8,
+  "n_valid": 6,
+  "average_composite": 9.183,
+  "average_per_category": {
+    "technical_depth": 9.33,
+    "innovation_differentiation": 9.17,
+    "clinical_credibility": 8.33,
+    "open_source_ecosystem_fit": 9.17,
+    "reproducibility_fda_defensibility": 9.83,
+    "demo_quality_judge_wow": 9.17,
+    "documentation_polish": 9.5,
+    "license_ip_clarity": 9.33,
+    "test_coverage_evidence": 9.5,
+    "ui_visual_design": 8.33
+  },
+  "high_priority_gaps_freq_ge_2": {
+    "clinical_credibility": [
+      {
+        "model": "grok-4.3",
+        "gap": "Advisor review pending + fully synthetic cohort",
+        "smallest_fix": "Add signed letter from Dr. Afonicheva + one real de-identified EHR pilot snippet"
+      },
+      {
+        "model": "mistral-large-latest",
+        "gap": "No live EHR pilot or IRB/clinician panel sign-off; synthetic data only.",
+        "smallest_fix": "Add a signed letter from the clinical advisor (Dr. Afonicheva) explicitly endorsing the safety pipeline for integration use (not point-of-care)."
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "Clinician panel sign-off still pending; only one advisor (Dr. Afonicheva) with review yet to be finalized; no real-patient data used.",
+        "smallest_fix": "Complete clinical review and publish signed endorsement from Dr. Afonicheva with any adjustments; optionally add a second clinician review for broader validation."
+      },
+      {
+        "model": "glm-5",
+        "gap": "Clinical advisor endorsement pending (briefing delivered 2026-05-02, review window open through 2026-05-09)",
+        "smallest_fix": "Add explicit endorsement quote from Dr. Afonicheva to clinical_validation.md before submission deadline"
+      },
+      {
+        "model": "gemini-2.5-pro",
+        "gap": "Clinical advisor's endorsement is documented as 'pending review'.",
+        "smallest_fix": "Secure and add the final endorsement quote to clinical_validation.md."
+      }
+    ],
+    "demo_quality_judge_wow": [
+      {
+        "model": "grok-4.3",
+        "gap": "Some Azure live endpoints not reachable from static Pages demo",
+        "smallest_fix": "Embed one-click runnable Replit or Streamlit mirror of the 5-min gate script"
+      },
+      {
+        "model": "glm-5",
+        "gap": "Dashboard is functional but lacks motion/animation for immediate visual impact",
+        "smallest_fix": "Add subtle CSS animations on finding cards (pulse on CRITICAL, slide-in on load) and a hero animation showing the 6-layer pipeline flow"
+      }
+    ],
+    "ui_visual_design": [
+      {
+        "model": "mistral-large-latest",
+        "gap": "Minor visual polish gaps (e.g., lab trend chart axis labels could be clearer).",
+        "smallest_fix": "Tighten typography and add tooltips for lab trend axes in the demo dashboard."
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "The demo dashboard is functional but relies heavily on text cards; visual hierarchy and professional styling could be enhanced for a healthcare audience.",
+        "smallest_fix": "Add a dedicated visual summary page with charts, timelines, and a clearer step-through of the pipeline, using design language familiar to clinicians."
+      },
+      {
+        "model": "glm-5",
+        "gap": "Visual hierarchy is clear but typography and spacing feel utilitarian",
+        "smallest_fix": "Add a distinctive display font for headlines, increase contrast on key metrics, and add subtle shadows/depth to cards"
+      },
+      {
+        "model": "gemini-2.5-pro",
+        "gap": "The UI is highly professional and clean, but follows conventional dashboard design patterns.",
+        "smallest_fix": "Incorporate a more novel data visualization, e.g., an interactive graph of the Merkle audit chain."
+      }
+    ]
+  },
+  "all_gaps_by_category": {
+    "clinical_credibility": [
+      {
+        "model": "grok-4.3",
+        "gap": "Advisor review pending + fully synthetic cohort",
+        "smallest_fix": "Add signed letter from Dr. Afonicheva + one real de-identified EHR pilot snippet"
+      },
+      {
+        "model": "mistral-large-latest",
+        "gap": "No live EHR pilot or IRB/clinician panel sign-off; synthetic data only.",
+        "smallest_fix": "Add a signed letter from the clinical advisor (Dr. Afonicheva) explicitly endorsing the safety pipeline for integration use (not point-of-care)."
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "Clinician panel sign-off still pending; only one advisor (Dr. Afonicheva) with review yet to be finalized; no real-patient data used.",
+        "smallest_fix": "Complete clinical review and publish signed endorsement from Dr. Afonicheva with any adjustments; optionally add a second clinician review for broader validation."
+      },
+      {
+        "model": "glm-5",
+        "gap": "Clinical advisor endorsement pending (briefing delivered 2026-05-02, review window open through 2026-05-09)",
+        "smallest_fix": "Add explicit endorsement quote from Dr. Afonicheva to clinical_validation.md before submission deadline"
+      },
+      {
+        "model": "gemini-2.5-pro",
+        "gap": "Clinical advisor's endorsement is documented as 'pending review'.",
+        "smallest_fix": "Secure and add the final endorsement quote to clinical_validation.md."
+      }
+    ],
+    "demo_quality_judge_wow": [
+      {
+        "model": "grok-4.3",
+        "gap": "Some Azure live endpoints not reachable from static Pages demo",
+        "smallest_fix": "Embed one-click runnable Replit or Streamlit mirror of the 5-min gate script"
+      },
+      {
+        "model": "glm-5",
+        "gap": "Dashboard is functional but lacks motion/animation for immediate visual impact",
+        "smallest_fix": "Add subtle CSS animations on finding cards (pulse on CRITICAL, slide-in on load) and a hero animation showing the 6-layer pipeline flow"
+      }
+    ],
+    "ui_visual_design": [
+      {
+        "model": "mistral-large-latest",
+        "gap": "Minor visual polish gaps (e.g., lab trend chart axis labels could be clearer).",
+        "smallest_fix": "Tighten typography and add tooltips for lab trend axes in the demo dashboard."
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "The demo dashboard is functional but relies heavily on text cards; visual hierarchy and professional styling could be enhanced for a healthcare audience.",
+        "smallest_fix": "Add a dedicated visual summary page with charts, timelines, and a clearer step-through of the pipeline, using design language familiar to clinicians."
+      },
+      {
+        "model": "glm-5",
+        "gap": "Visual hierarchy is clear but typography and spacing feel utilitarian",
+        "smallest_fix": "Add a distinctive display font for headlines, increase contrast on key metrics, and add subtle shadows/depth to cards"
+      },
+      {
+        "model": "gemini-2.5-pro",
+        "gap": "The UI is highly professional and clean, but follows conventional dashboard design patterns.",
+        "smallest_fix": "Incorporate a more novel data visualization, e.g., an interactive graph of the Merkle audit chain."
+      }
+    ],
+    "technical_depth": [
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "Layer 4.5 BitNet is a small ternary classifier (8,581 params) and not the primary DDI classifier; its architectural depth is modest, though its role is specialized.",
+        "smallest_fix": "Expand BitNet to handle more pharmacology features (Path A) to improve standalone major recall, or clearly separate depth claims for primary vs. verification layers in documentation."
+      }
+    ],
+    "innovation_differentiation": [
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "While bit-identical replay is novel, the base pipeline (multi-LLM consensus, drug interaction checks) overlaps with existing CDS approaches; the differentiator is the verification anchor, not a breakthrough in DDI discovery.",
+        "smallest_fix": "Strengthen the novelty narrative around the unique combination of Q16.16 verification with multi-tier API consensus, highlighting the integrated ecosystem."
+      }
+    ],
+    "open_source_ecosystem_fit": [
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "MIC@2/MAP/binary wire formats are patent-pending and inside mind-mem; while Apache\u20112.0 applies, some transitive IP clarity may be questioned until patents are granted.",
+        "smallest_fix": "Provide a clear IP licensing FAQ explaining how patent-grant applies to format users and confirm Apache\u20112.0 compatibility."
+      }
+    ],
+    "reproducibility_fda_defensibility": [
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "LLM consensus layer (5 US models) is non\u2011deterministic and vendor-dependent; the audit chain records model versions but can't guarantee bit\u2011identical replay of the full pipeline.",
+        "smallest_fix": "Document versioning and fallback to deterministic layers so that the core safety verdict remains reproducible; consider freezing a specific model API version for regulatory demonstration."
+      }
+    ],
+    "license_ip_clarity": [
+      {
+        "model": "deepseek-v4-pro",
+        "gap": "Patent-pending elements (MIC@2, etc.) are mentioned but no patent filing numbers or explicit coverage statement under accompanying grant are provided.",
+        "smallest_fix": "Add a PATENTS file or update LICENSE with filing details and explicit confirmation that the grant covers all claimed patent claims."
+      }
+    ],
+    "federation": [
+      {
+        "model": "nvidia-llama-3.3-70b",
+        "gap": "live transport implementation",
+        "smallest_fix": "awaiting mind-mem v3.10 for MIC@2 federation-transport adapter"
+      }
+    ]
+  },
+  "per_model": [
+    {
+      "model": "grok-4.3",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 9,
+        "clinical_credibility": 7,
+        "open_source_ecosystem_fit": 9,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 8,
+        "documentation_polish": 10,
+        "license_ip_clarity": 9,
+        "test_coverage_evidence": 9,
+        "ui_visual_design": 8
+      },
+      "composite_arithmetic_mean": 8.8,
+      "verdict": "STRONG_CONTENDER",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "Advisor review pending + fully synthetic cohort",
+          "smallest_fix": "Add signed letter from Dr. Afonicheva + one real de-identified EHR pilot snippet"
+        },
+        {
+          "category": "demo_quality_judge_wow",
+          "gap": "Some Azure live endpoints not reachable from static Pages demo",
+          "smallest_fix": "Embed one-click runnable Replit or Streamlit mirror of the 5-min gate script"
+        }
+      ],
+      "strengths": [
+        "JUDGES.md + 5-min single-command audit path is judge-optimized",
+        "BitNet Q16.16 + SHA-256 Merkle replay is genuinely novel for open-source clinical AI",
+        "1112 tests + 13+ pin gates + reproducibility manifest show engineering rigor",
+        "Apache-2.0 + explicit patent grant + MCP/A2A/FHIR interop",
+        "Interactive what-if simulator + Sarah Mitchell scenario delivers immediate visual impact"
+      ],
+      "latency_ms": 36804.16965484619
+    },
+    {
+      "model": "mistral-large-latest",
+      "scores": {
+        "technical_depth": 10,
+        "innovation_differentiation": 10,
+        "clinical_credibility": 9,
+        "open_source_ecosystem_fit": 10,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 10,
+        "documentation_polish": 10,
+        "license_ip_clarity": 10,
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 9
+      },
+      "composite_arithmetic_mean": 9.8,
+      "verdict": "WIN_LIKELY",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "No live EHR pilot or IRB/clinician panel sign-off; synthetic data only.",
+          "smallest_fix": "Add a signed letter from the clinical advisor (Dr. Afonicheva) explicitly endorsing the safety pipeline for integration use (not point-of-care)."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "Minor visual polish gaps (e.g., lab trend chart axis labels could be clearer).",
+          "smallest_fix": "Tighten typography and add tooltips for lab trend axes in the demo dashboard."
+        }
+      ],
+      "strengths": [
+        "Bit-identical Q16.16 reproducibility primitive with SHA-256 audit replay (FDA SaMD-ready).",
+        "6-layer safety pipeline with 100% recall on contraindicated NTI drugs (35/35).",
+        "Apache-2.0 + explicit patent grant + 21 typed federation invariants (PHI gates, X25519 sealing).",
+        "1112 tests + 13 pin gates + arch-mind 9/9 rules enforced in CI.",
+        "Vanilla-JS BitNet port (bit-identical with Python) for in-browser audit replay.",
+        "5-minute single-command audit gate (`python3 scripts/run_all_gates.py`)."
+      ],
+      "latency_ms": 14934.563159942627
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 9,
+        "clinical_credibility": 8,
+        "open_source_ecosystem_fit": 9,
+        "reproducibility_fda_defensibility": 9,
+        "demo_quality_judge_wow": 10,
+        "documentation_polish": 10,
+        "license_ip_clarity": 9,
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 9
+      },
+      "composite_arithmetic_mean": 9.2,
+      "verdict": "WIN_LIKELY",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "Clinician panel sign-off still pending; only one advisor (Dr. Afonicheva) with review yet to be finalized; no real-patient data used.",
+          "smallest_fix": "Complete clinical review and publish signed endorsement from Dr. Afonicheva with any adjustments; optionally add a second clinician review for broader validation."
+        },
+        {
+          "category": "technical_depth",
+          "gap": "Layer 4.5 BitNet is a small ternary classifier (8,581 params) and not the primary DDI classifier; its architectural depth is modest, though its role is specialized.",
+          "smallest_fix": "Expand BitNet to handle more pharmacology features (Path A) to improve standalone major recall, or clearly separate depth claims for primary vs. verification layers in documentation."
+        },
+        {
+          "category": "innovation_differentiation",
+          "gap": "While bit-identical replay is novel, the base pipeline (multi-LLM consensus, drug interaction checks) overlaps with existing CDS approaches; the differentiator is the verification anchor, not a breakthrough in DDI discovery.",
+          "smallest_fix": "Strengthen the novelty narrative around the unique combination of Q16.16 verification with multi-tier API consensus, highlighting the integrated ecosystem."
+        },
+        {
+          "category": "open_source_ecosystem_fit",
+          "gap": "MIC@2/MAP/binary wire formats are patent-pending and inside mind-mem; while Apache\u20112.0 applies, some transitive IP clarity may be questioned until patents are granted.",
+          "smallest_fix": "Provide a clear IP licensing FAQ explaining how patent-grant applies to format users and confirm Apache\u20112.0 compatibility."
+        },
+        {
+          "category": "reproducibility_fda_defensibility",
+          "gap": "LLM consensus layer (5 US models) is non\u2011deterministic and vendor-dependent; the audit chain records model versions but can't guarantee bit\u2011identical replay of the full pipeline.",
+          "smallest_fix": "Document versioning and fallback to deterministic layers so that the core safety verdict remains reproducible; consider freezing a specific model API version for regulatory demonstration."
+        },
+        {
+          "category": "license_ip_clarity",
+          "gap": "Patent-pending elements (MIC@2, etc.) are mentioned but no patent filing numbers or explicit coverage statement under accompanying grant are provided.",
+          "smallest_fix": "Add a PATENTS file or update LICENSE with filing details and explicit confirmation that the grant covers all claimed patent claims."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "The demo dashboard is functional but relies heavily on text cards; visual hierarchy and professional styling could be enhanced for a healthcare audience.",
+          "smallest_fix": "Add a dedicated visual summary page with charts, timelines, and a clearer step-through of the pipeline, using design language familiar to clinicians."
+        }
+      ],
+      "strengths": [
+        "Bit\u2011identical Q16.16 reproducibility anchor with SHA\u2011256 audit chain \u2013 unique for open-source clinical AI.",
+        "6\u2011layer safety pipeline with 100% recall on contraindicated drugs in NTI stress test.",
+        "Extensive test suite (1112 tests) and 13 integrity\u2011pinning gates ensuring bit\u2011traceability.",
+        "Apache\u20112.0 license with explicit patent grant, promoting open healthcare deployment.",
+        "Rich MCP/A2A protocol support with 18+13 tools and live Azure/Cloudflare deployment.",
+        "Detailed audit trail linking every dashboard number to a checked\u2011in artifact, enabling regulatory replay.",
+        "Interactive in\u2011browser BitNet inference demo and What\u2011If simulation enhancing judge wow factor."
+      ],
+      "latency_ms": 80328.2642364502
+    },
+    {
+      "model": "glm-5",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 9,
+        "clinical_credibility": 8,
+        "open_source_ecosystem_fit": 9,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 8,
+        "documentation_polish": 9,
+        "license_ip_clarity": 9,
+        "test_coverage_evidence": 9,
+        "ui_visual_design": 8
+      },
+      "composite_arithmetic_mean": 8.8,
+      "verdict": "STRONG_CONTENDER",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "Clinical advisor endorsement pending (briefing delivered 2026-05-02, review window open through 2026-05-09)",
+          "smallest_fix": "Add explicit endorsement quote from Dr. Afonicheva to clinical_validation.md before submission deadline"
+        },
+        {
+          "category": "demo_quality_judge_wow",
+          "gap": "Dashboard is functional but lacks motion/animation for immediate visual impact",
+          "smallest_fix": "Add subtle CSS animations on finding cards (pulse on CRITICAL, slide-in on load) and a hero animation showing the 6-layer pipeline flow"
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "Visual hierarchy is clear but typography and spacing feel utilitarian",
+          "smallest_fix": "Add a distinctive display font for headlines, increase contrast on key metrics, and add subtle shadows/depth to cards"
+        }
+      ],
+      "strengths": [
+        "Q16.16 fixed-point BitNet delivers genuine bit-identical replay across CPU/GPU/NPU \u2014 the FDA SaMD reproducibility primitive is real, not marketing",
+        "100% recall on contraindicated NTI drugs (35/35) with zero false-negatives \u2014 the safety-critical metric is validated",
+        "1112 tests with 13 pin gates create an auditable integrity lattice that survives weight rotations and cache growth",
+        "Dual protocol support (MCP 18 tools + A2A 13 tools) positions for both Anthropic and Google agent ecosystems",
+        "Apache-2.0 with explicit patent grant removes deployment friction for healthcare systems",
+        "In-browser vanilla-JS BitNet inference (bit-identical to Python) proves the cross-platform determinism claim",
+        "Honest limitations section builds trust \u2014 no live EHR, no FDA filing, federation transport is mock"
+      ],
+      "latency_ms": 52703.80187034607
+    },
+    {
+      "model": "sonar-pro",
+      "error": "Max retries (3) exceeded"
+    },
+    {
+      "model": "nvidia-nemotron-ultra-253b",
+      "error": "Max retries (3) exceeded"
+    },
+    {
+      "model": "gemini-2.5-pro",
+      "scores": {
+        "technical_depth": 10,
+        "innovation_differentiation": 10,
+        "clinical_credibility": 9,
+        "open_source_ecosystem_fit": 10,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 10,
+        "documentation_polish": 10,
+        "license_ip_clarity": 10,
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 9
+      },
+      "composite_arithmetic_mean": 9.8,
+      "verdict": "WIN_LIKELY",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "Clinical advisor's endorsement is documented as 'pending review'.",
+          "smallest_fix": "Secure and add the final endorsement quote to clinical_validation.md."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "The UI is highly professional and clean, but follows conventional dashboard design patterns.",
+          "smallest_fix": "Incorporate a more novel data visualization, e.g., an interactive graph of the Merkle audit chain."
+        }
+      ],
+      "strengths": [
+        "Groundbreaking use of a deterministic BitNet for bit-identical, FDA-defensible audit trails.",
+        "Exceptional documentation with a verifiable 'audit trail' for every major claim in JUDGES.md.",
+        "Immense technical substance, including fixed-point math, typed invariants, and architectural pinning tests.",
+        "Strong clinical realism, validated against NTI drugs with a named, verifiable clinical advisor.",
+        "Perfect open-source execution: Apache-2.0 with an explicit patent grant and multi-protocol support.",
+        "Polished, high-impact live demo featuring an in-browser, bit-identical JS inference engine."
+      ]
+    },
+    {
+      "model": "nvidia-llama-3.3-70b",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 8,
+        "clinical_credibility": 9,
+        "open_source_ecosystem_fit": 8,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 9,
+        "documentation_polish": 8,
+        "license_ip_clarity": 9,
+        "test_coverage_evidence": 9,
+        "ui_visual_design": 7
+      },
+      "composite_arithmetic_mean": 8.7,
+      "verdict": "WIN_LIKELY",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "federation",
+          "gap": "live transport implementation",
+          "smallest_fix": "awaiting mind-mem v3.10 for MIC@2 federation-transport adapter"
+        }
+      ],
+      "strengths": [
+        "bit-identical clinical decisions",
+        "decade-stable audit replay",
+        "Q16.16 fixed-point ternary verification anchor",
+        "100% recall on contraindicated for NTI cohort",
+        "21 typed federation invariants",
+        "Apache-2.0 license with explicit patent grant"
+      ],
+      "latency_ms": 12517.749786376953
+    }
+  ]
+}
