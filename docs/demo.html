@@ -1026,19 +1026,17 @@ tailwind.config = {
 
     <!-- Footer: how plan_hash works -->
     <div class="mt-10 max-w-3xl mx-auto card p-5 sm:p-6 bg-white">
-      <div class="flex items-start gap-3">
-        <div class="w-8 h-8 rounded-lg bg-po-orange/10 flex items-center justify-center flex-shrink-0 text-po-orange">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.1.9-2 2-2h.01M9 16h6M9 8h.01M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-        </div>
-        <div class="text-sm text-slate-600 leading-relaxed">
-          <p class="font-semibold text-slate-900 mb-1.5">How replay works</p>
-          <p>
-            Every audit-chain entry stores <code class="font-mono text-xs">(flow_name, plan_hash, input_hash, output_hash)</code>.
-            Three months later, a regulator types the <code class="font-mono text-xs">plan_hash</code> into ClinicalMem's verifier &mdash;
-            <code class="font-mono text-xs">engine/flow_runner.py</code> recomputes SHA-256 over the canonical
-            <code class="font-mono text-xs">.flow.mind</code> source. A mismatch is a release-blocking integrity event.
-          </p>
-        </div>
+      <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100">
+        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-po-orange">Audit replay</span>
+      </div>
+      <div class="text-sm text-slate-600 leading-relaxed">
+        <p class="font-semibold text-slate-900 mb-2">How replay works</p>
+        <p>
+          Every audit-chain entry stores <code class="font-mono text-xs">(flow_name, plan_hash, input_hash, output_hash)</code>.
+          Three months later, a regulator types the <code class="font-mono text-xs">plan_hash</code> into ClinicalMem's verifier &mdash;
+          <code class="font-mono text-xs">engine/flow_runner.py</code> recomputes SHA-256 over the canonical
+          <code class="font-mono text-xs">.flow.mind</code> source. A mismatch is a release-blocking integrity event.
+        </p>
       </div>
     </div>
   </div>
@@ -1064,15 +1062,13 @@ tailwind.config = {
     </div>
 
     <div class="mt-8 max-w-3xl mx-auto card p-5 sm:p-6 bg-po-paper/40">
-      <div class="flex items-start gap-3">
-        <div class="w-8 h-8 rounded-lg bg-po-orange/10 flex items-center justify-center flex-shrink-0 text-po-orange">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        </div>
-        <div class="text-sm text-slate-600 leading-relaxed">
-          <p class="font-semibold text-slate-900 mb-1.5">Forcing function: <code class="font-mono text-xs">summary_sha256</code></p>
-          <p>Each scan emits a SHA-256 over <code class="font-mono text-xs">.arch-mind/last_summary.json</code>. The audit chain records this hash alongside every clinical decision; a regulator with the hash + the public <code class="font-mono text-xs">arch-mind</code> binary recomputes the metrics and asserts byte-identity. Any drift halts merges.</p>
-          <p class="mt-2 text-xs font-mono text-slate-400 break-all"><span id="arch-summary-hash">loading…</span></p>
-        </div>
+      <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-200/70">
+        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-po-orange">Forcing function</span>
+        <code class="font-mono text-[10px] text-slate-500">summary_sha256</code>
+      </div>
+      <div class="text-sm text-slate-600 leading-relaxed">
+        <p>Each scan emits a SHA-256 over <code class="font-mono text-xs">.arch-mind/last_summary.json</code>. The audit chain records this hash alongside every clinical decision; a regulator with the hash + the public <code class="font-mono text-xs">arch-mind</code> binary recomputes the metrics and asserts byte-identity. Any drift halts merges.</p>
+        <p class="mt-2 text-xs font-mono text-slate-400 break-all"><span id="arch-summary-hash">loading…</span></p>
       </div>
     </div>
 
