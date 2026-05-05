@@ -133,10 +133,18 @@ def test_bitnet_live_precision_recall_pinned():
 def test_dashboard_displays_live_precision_number():
     """Dashboard's hero precision card shows the live 100% number."""
     demo_html = (_REPO_ROOT / "docs" / "demo.html").read_text()
-    assert "Layer 4.5 · live precision" in demo_html, (
-        "Hero stat chip must label the precision number 'live precision' "
-        "(not the bare '85.7% precision on contraindicated' which conflated "
-        "held-out test-set accuracy with deployment precision)."
+    # Iter-150: hero stat chip relabelled "Layer 4.5 · live precision"
+    # -> "Live precision · L4.5" (mobile-fit). Either form satisfies
+    # the pin's intent: a "live precision" label, NOT the bare 85.7%
+    # held-out-accuracy framing this test exists to forbid.
+    assert (
+        "Layer 4.5 · live precision" in demo_html
+        or "Live precision · L4.5" in demo_html
+    ), (
+        "Hero stat chip must label the precision number with a 'live "
+        "precision' framing (not the bare '85.7% precision on "
+        "contraindicated' which conflated held-out test-set accuracy "
+        "with deployment precision)."
     )
     # Must contain the 100% live precision claim — live TP is 8 since
     # iter-148 (8/8 = 100% precision on contraindicated, 0 FP).
