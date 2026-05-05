@@ -1099,8 +1099,21 @@ tailwind.config = {
         Bit-identical clinical decisions. Decade-stable audit replay.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Layer 4.5 is <strong>not</strong> the primary DDI classifier &mdash; primary recall comes from RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus (layers 1&ndash;4). Layer 4.5 exists to make every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay. Its job is <em>deterministic verification</em>, not headline accuracy. <strong>85.7% per-class accuracy on the held-out test set's <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42)</strong>; on the live OpenEvidence cache (<span id="bitnet-body-contra-total" class="font-bold">n=29 contraindicated</span>) the deployment-side numbers are <strong>precision 100% / recall <span id="bitnet-body-contra-recall">27.6%</span></strong> &mdash; a high-precision veto by design. When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono">none</code>/<code class="font-mono">minor</code> on a <code class="font-mono">contraindicated</code> pair, the safer verdict always wins and an alert fires. Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a>.
+        Layer 4.5 isn't the primary DDI classifier &mdash; it's the <strong>deterministic verification anchor</strong> that makes every clinical decision <strong>bit-identical across CPU, GPU, and NPU</strong> for FDA SaMD audit replay.
+        On the live cache (<span id="bitnet-body-contra-total" class="font-bold">n=29 contraindicated</span>): <strong>precision 100% / recall <span id="bitnet-body-contra-recall">27.6%</span></strong> &mdash; high-precision veto by design.
       </p>
+      <details class="mt-3 text-sm text-slate-500 max-w-2xl mx-auto">
+        <summary class="cursor-pointer text-trust-700 font-semibold inline-flex items-center gap-1 hover:text-trust-800 transition-colors select-none">
+          More about Layer 4.5
+          <svg class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="mt-3 text-left space-y-2 leading-relaxed">
+          <p>Primary recall comes from layers 1&ndash;4: RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus. Layer 4.5's job is <em>deterministic verification</em>, not headline accuracy.</p>
+          <p>Held-out test-set accuracy: <strong>85.7%</strong> per-class on the <code class="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42).</p>
+          <p>When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono text-xs">none</code>/<code class="font-mono text-xs">minor</code> on a <code class="font-mono text-xs">contraindicated</code> pair, the safer verdict always wins and an alert fires.</p>
+          <p>Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a> (BitNet b1.58, Ma et al. 2024).</p>
+        </div>
+      </details>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">85.7% held-out · 100% live precision</span>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">8,512 ternary weights + 69 Q16.16 biases / 19 KB</span>
