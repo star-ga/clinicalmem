@@ -110,6 +110,13 @@ tailwind.config = {
      healthcare UI accessibility (NIH-recommended, Hippocratic AI,
      Mayo Clinic apps). Source Sans 3 = body. Baloo 2 retained only
      for the small "Submitted to Agents Assemble" hackathon badge. */
+  html, body {
+    /* Prevent any rogue child element (fixed-width SVG, long mono span,
+       absolute frame chrome) from creating horizontal scroll on a
+       narrow phone viewport. */
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     background: #f8fafc;
     font-family: "Source Sans 3", Inter, system-ui, -apple-system, sans-serif;
@@ -117,6 +124,21 @@ tailwind.config = {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #0f172a;
+  }
+  /* Mobile defensive: ensure the hero copy column actually fills the
+     viewport on phones (otherwise lg:col-span-7 styling can leave dead
+     space where a sm-stylesheet doesn't reset). */
+  @media (max-width: 1023px) {
+    section .max-w-7xl,
+    section .max-w-5xl,
+    section .max-w-6xl {
+      width: 100%;
+    }
+    /* Prevent absolute frame-chrome at top of hero from pulling the
+       layout left when measured by a stricter mobile renderer. */
+    section.relative > [class*="absolute"] {
+      max-width: calc(100vw - 1rem);
+    }
   }
   h1, h2, h3, h4, h5, h6, .font-display {
     font-family: Lexend, "Source Sans 3", Inter, system-ui, sans-serif;
@@ -127,17 +149,49 @@ tailwind.config = {
     font-family: "Baloo 2", Lexend, system-ui, sans-serif;
   }
   ::selection { background: rgba(15, 118, 110, 0.20); color: #0f172a; }
-  /* Stronger card depth + smoother hover for the new clinical aesthetic */
+  /* Stronger card depth + smoother hover for the new clinical aesthetic.
+     Iter-148 designer pass: cards now carry a *resting* ambient shadow
+     so every section reads with the same "premium clinical hardware"
+     depth the hero centerpiece uses (ref: warfarin+ibuprofen card with
+     bdaf385a5caf7c9a repro_hash, the visual benchmark). */
   .card {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 1rem;
-    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    box-shadow:
+      0 1px 2px rgba(15,23,42,0.04),
+      0 4px 12px rgba(15,23,42,0.04);
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
   }
   .card:hover {
-    box-shadow: 0 1px 2px rgba(15,23,42,0.05), 0 8px 28px rgba(15,23,42,0.08);
+    box-shadow:
+      0 1px 2px rgba(15,23,42,0.06),
+      0 12px 36px rgba(15,118,110,0.10),
+      0 2px 8px rgba(15,118,110,0.05);
     transform: translateY(-2px);
-    border-color: #cbd5e1;
+    border-color: #99F6E4;
+  }
+  /* Section header common rule: kicker label above every section title
+     matches the hero's tracking-[0.22em] kicker — keeps a shared visual
+     rhythm across all 12+ sections. */
+  .section-kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #0F766E;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .section-kicker::before,
+  .section-kicker::after {
+    content: "";
+    display: inline-block;
+    width: 1.25rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #99F6E4, transparent);
+    vertical-align: middle;
+    margin: 0 0.5rem;
   }
   /* Trust-ring inline accent for FDA / clinical tiles */
   .clinical-tile {
@@ -360,18 +414,38 @@ tailwind.config = {
   <div class="max-w-5xl mx-auto px-4">
     <div class="flex items-center justify-between h-14">
       <a href="#" class="flex items-center gap-2.5 text-trust-600 hover:text-trust-700 transition-colors" aria-label="ClinicalMem home">
-        <svg class="w-7 h-7" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">
-          <g opacity="0.85">
+        <!-- Full logo-mark.svg embedded inline: 6-segment audit ring + petals + cross + hash signature -->
+        <svg class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0" viewBox="0 0 48 48" fill="currentColor" stroke="none" aria-hidden="true">
+          <!-- 6-segment audit-chain ring (segments = TAG_v1 record boundaries) -->
+          <g opacity="0.88">
             <path d="M24 4 a20 20 0 0 1 17.32 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M44 22 a20 20 0 0 1 -2.68 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M44 22 a20 20 0 0 1 -2.68 12"  fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
             <path d="M37.32 38 a20 20 0 0 1 -10.66 5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
             <path d="M21.34 43.86 a20 20 0 0 1 -10.66 -5.86" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M6.68 34 a20 20 0 0 1 -2.68 -12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M6.68 34 a20 20 0 0 1 -2.68 -12"  fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
             <path d="M6.68 14 a20 20 0 0 1 17.32 -10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
           </g>
+          <!-- SHA-256 audit-chain hash signature (top-right) -->
+          <g opacity="0.7">
+            <line x1="38" y1="9"  x2="42" y2="9"  stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="38" y1="12" x2="42" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="40.5" y1="6.5" x2="39.5" y2="14.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+          </g>
+          <!-- Six safety-layer petals (one per pipeline layer) -->
+          <g opacity="0.18">
+            <g transform="translate(24 24)">
+              <path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/>
+              <g transform="rotate(60)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
+              <g transform="rotate(120)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
+              <g transform="rotate(180)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
+              <g transform="rotate(240)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
+              <g transform="rotate(300)"><path d="M0 -14 a4 4 0 0 1 4 6 a4 4 0 0 1 -8 0 a4 4 0 0 1 4 -6 z"/></g>
+            </g>
+          </g>
+          <!-- Center clinical cross + verification dot -->
           <rect x="20" y="14" width="8" height="20" rx="2.4"/>
           <rect x="14" y="20" width="20" height="8" rx="2.4"/>
-          <circle cx="24" cy="11" r="1.6"/>
+          <circle cx="24" cy="11" r="1.6" opacity="0.9"/>
         </svg>
         <span class="font-display font-bold text-lg text-slate-900 tracking-tight">ClinicalMem</span>
       </a>
@@ -522,7 +596,7 @@ tailwind.config = {
         <div class="rounded-xl bg-white border border-trust-100 px-4 py-3 shadow-trust">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-trust-700">Layer 4.5 · live precision</div>
           <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">100<span class="text-trust-600">%</span></div>
-          <div class="text-[10px] text-slate-400 mt-1 font-mono">6 / 6 contraindicated · live cache</div>
+          <div class="text-[10px] text-slate-400 mt-1 font-mono">8 / 8 contraindicated · live cache</div>
         </div>
         <a href="edge_pi_offline.md" class="rounded-xl bg-white border border-premium-400/30 px-4 py-3 shadow-premium block hover:border-premium-500 transition-colors cursor-pointer">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-premium-600">BitNet weights</div>
@@ -539,7 +613,9 @@ tailwind.config = {
 
     <!-- RIGHT: motion composition (audit-chain rings + 6-layer pipeline + stamp) -->
     <div class="lg:col-span-5 flex justify-center lg:justify-end">
-      <div class="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px]">
+      <!-- Mobile-safe sizing: capped at 90vw so it never overflows narrow viewports;
+           min(...) keeps the original 320/400 caps on tablet+ -->
+      <div class="relative w-[min(90vw,320px)] h-[min(90vw,320px)] sm:w-[400px] sm:h-[400px]">
         <!-- Outer audit-chain ring (slow) — labels co-rotate -->
         <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full ring-slow" aria-hidden="true">
           <circle cx="200" cy="200" r="190" fill="none" stroke="#0F766E" stroke-opacity="0.25" stroke-width="0.6" stroke-dasharray="2 6"/>
@@ -573,7 +649,7 @@ tailwind.config = {
         </svg>
         <!-- Static centerpiece: drug-pair card + Q16.16 stamp -->
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-white rounded-2xl shadow-lift border border-slate-200 px-5 py-4 w-[230px] text-center">
+          <div class="bg-white rounded-2xl shadow-lift border border-slate-200 px-5 py-4 w-[min(80vw,230px)] text-center">
             <div class="text-[10px] font-mono uppercase tracking-[0.16em] text-slate-400 mb-1">Layer 4.5 · BitNet b1.58</div>
             <div class="font-display font-bold text-base text-slate-900 leading-tight">warfarin <span class="text-trust-600">+</span> ibuprofen</div>
             <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200 stamp">
@@ -940,10 +1016,10 @@ tailwind.config = {
     <div class="text-center mb-10">
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-po-orange mb-3">L1 Architectural Governance</p>
       <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 leading-tight mb-3">
-        Same kernel as the rest of STARGA's MIND ecosystem.
+        Nine governance rules. Every commit. Every release.
       </h2>
       <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
-        Nine Q16.16 architectural-governance rules enforced in CI on every commit &mdash; the same nine-rule kernel that gates rfn-mind, MindLLM, mind-mem, mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind, and ***REMOVED***. Today: <span id="arch-pass-count" class="font-bold text-clinical-green">9/9</span> pass.
+        Nine Q16.16 architectural-governance rules enforced in CI on every commit. Today: <span id="arch-pass-count" class="font-bold text-clinical-green">9/9</span> pass.
       </p>
     </div>
 
@@ -1448,7 +1524,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
                   <circle cx="45" cy="45" r="40" fill="none" stroke="#f1f5f9" stroke-width="5"/>
                   <circle cx="45" cy="45" r="40" fill="none" stroke="#7c3aed" stroke-width="5"
                     class="consensus-ring"/>
-                  <text x="45" y="43" text-anchor="middle" class="text-[13px] font-black" fill="#7c3aed">6/6</text>
+                  <text x="45" y="43" text-anchor="middle" class="text-[13px] font-black" fill="#7c3aed">5/5</text>
                   <text x="45" y="55" text-anchor="middle" class="text-[7px]" fill="#94a3b8">AGREE</text>
                 </svg>
               </div>
