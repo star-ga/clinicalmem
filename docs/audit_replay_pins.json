@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T07:13:10.023441+00:00",
+  "dateCreated": "2026-05-05T08:28:30.672028+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -397,6 +397,20 @@
         417276
       ],
       "repro_hash": "7875b9a3a268f7300d57eaae09dd160dcaa9d86adc04c4e770b67b3d99e41aa1",
+      "severity_name": "none"
+    },
+    {
+      "drug_a": "nitroglycerin",
+      "drug_b": "tadalafil",
+      "feature_hash": "3ed918eef855b3da791288b4e6dde6d7f2d445a094c185f7234765957e00e597",
+      "logits_q16": [
+        1879361,
+        -8964433,
+        -1905197,
+        -167509,
+        -5713641
+      ],
+      "repro_hash": "bd8b80991a093ce71b614a7178618600bdea08b2ded6300809b293dea48555bf",
       "severity_name": "none"
     }
   ],

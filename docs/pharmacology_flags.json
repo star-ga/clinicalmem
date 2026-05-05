@@ -369,7 +369,9 @@
       "atc": "G04BE09"
     },
     "isosorbide mononitrate": {
-      "flags": [],
+      "flags": [
+        "is_nitrate"
+      ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019091s048lbl.pdf"
       ],
@@ -1012,6 +1014,16 @@
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/006134s054lbl.pdf"
       ],
       "notes": "Weak SRI + active normeperidine metabolite has serotonergic activity. MAOI co-admin = serotonin syndrome / hyperpyrexic crisis (FDA black-box)."
+    },
+    "nitroglycerin": {
+      "flags": [
+        "is_nitrate"
+      ],
+      "atc": "C01DA02",
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/021134s016lbl.pdf"
+      ],
+      "notes": "Organic nitrate; cGMP-mediated vasodilation. PDE5 inhibitor co-admin = severe hypotension (FDA Cialis/Viagra/Levitra black-box)."
     }
   }
 }

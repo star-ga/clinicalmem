@@ -3,18 +3,18 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-05T08:19:14.991310+00:00",
+  "dateCreated": "2026-05-05T08:34:31.360702+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "cb13cac013ac455d42ac37b599473998619cce16",
+  "git_head": "0295813a59b2282864896ab2e6e612d95d0c6f83",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
-      "sha256": "4ef90ea7e96abb63286f105bc28281899ec9a024758909605daeb1b7ce0eca9b",
-      "entry_count": 120,
+      "sha256": "27e1a9cee0800f6cff651efe195c5941771570fe6b9ac988b3510ec02155cad9",
+      "entry_count": 121,
       "per_class_counts": {
         "serious": 69,
-        "contraindicated": 25,
+        "contraindicated": 26,
         "moderate": 22,
         "major": 4
       }
@@ -27,41 +27,41 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "34fce06c5071f91b85b1b9e5e5ca7545c122cd61a333f1a3c865227f2df718a3",
+      "sha256": "4158cf43acf6b6429f51ff4e0e8202b62361ec652bf87f9ea4f4e4ce95f85882",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
         "tp_contraindicated_at_least_seven": true
       },
-      "cache_pairs_total": 120
+      "cache_pairs_total": 121
     },
     "cohort_coverage_matrix": {
       "path": "docs/cohort_coverage_matrix.md",
-      "sha256": "c0ab350c47e5b567b06766f8ed29e3efb9ea7c59a683dfbec781b8986fd98227"
+      "sha256": "7648d4fb0324f3d55b117f16fd1fe1da84360122438f928681ef4e86976305bb"
     },
     "synthea_demo_cohort": {
       "path": "docs/synthea_demo_cohort.json",
-      "sha256": "61087a5d8adbfe0c2984438f25e3267268116194e2b521fb19ef393f540f3da2",
-      "patient_count": 29,
-      "practitioner_count": 46,
-      "entry_count": 233
+      "sha256": "c9548b48e8be53b15196906aec5e11f7202d2457155314883792d33734f2f5b3",
+      "patient_count": 30,
+      "practitioner_count": 47,
+      "entry_count": 239
     },
     "bitnet_calibration": {
       "path": "docs/bitnet_calibration.json",
-      "sha256": "a13af79512249cc3612fb4862fb4c2065d21f241cef840a8fc4e5fc8b1fbeb12",
+      "sha256": "ce2936e494e084fc2ff03dacfc01a4f57b46dbdbab6eb301637040726d3baa55",
       "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-      "total_pairs": 120,
-      "contraindicated_recall": 0.32
+      "total_pairs": 121,
+      "contraindicated_recall": 0.3076923076923077
     },
     "audit_replay_pins": {
       "path": "docs/audit_replay_pins.json",
-      "sha256": "3ddc7aa204922e3acbe7010be37cc17be3085ca30620b9e9e85c44b49394467e",
+      "sha256": "998c31e49aae011ff41f0b32b4680dd9880c508a847eaf771afee03e6700e644",
       "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-      "pair_count": 28
+      "pair_count": 29
     },
     "pharmacology_flags": {
       "path": "docs/pharmacology_flags.json",
-      "sha256": "512f9fb859929a69eacd7c9ac7142dd970d0494653ee0721357fe01ab5b22acb",
-      "drug_count": 115,
+      "sha256": "e512aa4db32131dbebd1ecfb88f395f9901107481ab1d2aa8e56a7210fcbbb97",
+      "drug_count": 116,
       "flag_keys": [
         "is_cyp3a4_strong_inhibitor",
         "is_cyp3a4_substrate",

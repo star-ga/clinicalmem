@@ -55,19 +55,18 @@ def test_callout_acknowledges_safety_floor():
 
 
 def test_heatmap_footer_recall_is_correct():
-    """The confusion-matrix heatmap footer must show 8/25 = 32%
-    (iter-124 cohort growth pt-029 selegiline+meperidine bumped
-    denominator 24→25 but BitNet did not catch the new pair —
-    selegiline MAO-B sub-class less represented in training; TP
-    stays at 8).
+    """The confusion-matrix heatmap footer must show 8/26 = 31%
+    (iter-129 cohort growth pt-030 tadalafil+nitroglycerin bumped
+    denominator 25→26 but BitNet did not catch the new pair —
+    pde5_nitrate flag class only has 1 example in training, weak
+    generalization; TP stays at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 25 = 32%" in text, (
-        "Heatmap footer recall must be 8/25 = 32% — iter-124 cohort "
-        "growth (pt-029 selegiline+meperidine) bumped denominator "
-        "24 → 25. BitNet did not catch the new pair (selegiline "
-        "MAO-B sub-class less represented in training); TP stays "
-        "at 8."
+    assert "recall = 8 / 26 = 31%" in text, (
+        "Heatmap footer recall must be 8/26 = 31% — iter-129 cohort "
+        "growth (pt-030 tadalafil+nitroglycerin) bumped denominator "
+        "25 → 26. BitNet did not catch the new pair (pde5_nitrate "
+        "flag class had only 1 example in training); TP stays at 8."
     )
     # Block historical phrasings so prior values can't reappear.
     assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale (different denom)
@@ -75,5 +74,6 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 6 / 21 = 29%" not in text  # iter-99 era stale
     assert "recall = 7 / 22 = 32%" not in text  # iter-104 era stale
     assert "recall = 7 / 23 = 30%" not in text  # iter-114 era stale
-    assert "recall = 8 / 24 = 33%" not in text  # iter-119 era stale (now 8/25)
+    assert "recall = 8 / 24 = 33%" not in text  # iter-119 era stale
+    assert "recall = 8 / 25 = 32%" not in text  # iter-124 era stale (now 8/26)
     assert "recall = 6 / 19" not in text  # iter-49 era stale

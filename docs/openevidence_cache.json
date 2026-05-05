@@ -1946,5 +1946,22 @@
     ],
     "retrieved_at": "2026-05-05",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "nitroglycerin",
+    "drug_b": "tadalafil",
+    "drug_pair_canonical": [
+      "nitroglycerin",
+      "tadalafil"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Tadalafil is a long-acting PDE5 inhibitor (terminal half-life ~17.5h, cGMP-mediated vasodilation persists 24-36 hours after dose). Co-administration with nitrate-class vasodilators (nitroglycerin sublingual, IV, or transdermal) produces additive cGMP-mediated systemic vasodilation, causing severe hypotension, syncope, MI, and death. The FDA Cialis (tadalafil) label contains a BLACK-BOX absolute contraindication: nitrates in any form must NOT be administered within 48 hours of the last tadalafil dose (vs 24h washout for sildenafil/vardenafil due to their shorter half-lives). Critical for ED patients with concurrent stable angina who carry sublingual nitroglycerin for chest pain \u2014 the longer washout window makes tadalafil functionally incompatible with rescue nitrate use. Reference: Kloner 2003 (J Am Coll Cardiol), FDA Cialis labeling 2018.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/021368s033lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/12821269/",
+      "https://www.fda.gov/drugs/postmarket-drug-safety-information-patients-and-providers/information-tadalafil-marketed-cialis"
+    ],
+    "retrieved_at": "2026-05-05",
+    "source": "CACHED"
   }
 ]

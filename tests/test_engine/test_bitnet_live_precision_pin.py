@@ -91,14 +91,20 @@ def test_bitnet_live_precision_recall_pinned():
     #           training; predicted "none"); upstream Layer 1 +
     #           BITNET_SAFETY_DOWNGRADE_DISAGREEMENT preserve the
     #           contra verdict.
+    # Iter-129: cohort grew (25 → 26, tadalafil+nitroglycerin), TP=8 →
+    #           recall = 8/26 = 0.308. BitNet did not catch the new
+    #           pair (predicted "none"); pde5_nitrate flag class only
+    #           had 1 example in training (isosorbide+sildenafil) so
+    #           generalization to tadalafil+NTG is weak. Upstream
+    #           Layer 1 + DOWNGRADE_DISAGREEMENT preserve contra.
     # Lower bound 0.28 catches the iter-99 baseline; upper 0.45
-    # covers a future weight rotation that lifts recall to ~11/25.
+    # covers a future weight rotation that lifts recall to ~11/26.
     assert 0.28 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.28, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 25, f"contraindicated cohort size drifted: live={total}, pinned=25"
+    assert total == 26, f"contraindicated cohort size drifted: live={total}, pinned=26"
 
 
 def test_dashboard_displays_live_precision_number():

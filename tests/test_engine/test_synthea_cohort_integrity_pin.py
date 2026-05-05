@@ -84,7 +84,7 @@ def test_bundle_top_level_shape():
 
 
 def test_patient_count_floor():
-    """Patient count must be >= 29 (iter-124 floor).
+    """Patient count must be >= 30 (iter-129 floor).
 
     Future cohort growth is healthy but must be visible — adding a new
     patient without bumping this floor means the patient-count claims
@@ -93,22 +93,22 @@ def test_patient_count_floor():
     bundle = _load_bundle()
     by = _resources_by_type(bundle)
     patients = by.get("Patient", [])
-    assert len(patients) >= 29, (
+    assert len(patients) >= 30, (
         f"Patient count regressed: live={len(patients)}, "
-        f"floor=29 (iter-124). Either a Patient was deleted, or the "
+        f"floor=30 (iter-129). Either a Patient was deleted, or the "
         f"floor needs lifting in the same commit as a deliberate "
         f"cohort change."
     )
 
 
 def test_practitioner_count_floor():
-    """Practitioner count must be >= 46 (iter-124 floor)."""
+    """Practitioner count must be >= 47 (iter-129 floor)."""
     bundle = _load_bundle()
     by = _resources_by_type(bundle)
     practitioners = by.get("Practitioner", [])
-    assert len(practitioners) >= 46, (
+    assert len(practitioners) >= 47, (
         f"Practitioner count regressed: live={len(practitioners)}, "
-        f"floor=46 (iter-124)."
+        f"floor=47 (iter-129)."
     )
 
 
