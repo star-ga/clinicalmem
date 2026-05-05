@@ -50,6 +50,7 @@ _DEMO = _REPO_ROOT / "docs" / "demo.html"
 _JUDGES = _REPO_ROOT / "JUDGES.md"
 _README = _REPO_ROOT / "README.md"
 _ARCH_DOC = _REPO_ROOT / "docs" / "architecture.md"
+_ARCH_FEDERATION_AUDIT = _REPO_ROOT / "docs" / "arch_mind_federation_audit.md"
 
 
 _FORBIDDEN_PHRASES = (
@@ -60,6 +61,11 @@ _FORBIDDEN_PHRASES = (
     "v3.9.0 federation transport",
     "v3.9 wire transport",
     "v3.9.0 wire transport",
+    # iter-132 additions: caught in arch_mind_federation_audit.md
+    "v3.9 wire-transport",
+    "v3.9.0 wire-transport",
+    "v3.9 transport not yet shipped",
+    "v3.9.0 transport not yet shipped",
     # Indirect "v3.9 ships federation" claims.
     "mind-mem v3.9 ships federation",
     "mind-mem v3.9.0 ships federation",
@@ -67,7 +73,11 @@ _FORBIDDEN_PHRASES = (
     "mind-mem v3.9.0 ships the federation transport",
 )
 
-_USER_FACING = (_DEMO, _JUDGES, _README, _ARCH_DOC)
+# iter-132: extended _USER_FACING from 4 → 5 docs to include
+# arch_mind_federation_audit.md, which had survived iter-122's
+# initial sweep with two stale "v3.9 transport not shipped" /
+# "v3.9 wire-transport" claims.
+_USER_FACING = (_DEMO, _JUDGES, _README, _ARCH_DOC, _ARCH_FEDERATION_AUDIT)
 
 
 def test_no_doc_claims_v39_ships_federation_transport():
