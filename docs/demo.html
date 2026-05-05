@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1057 / 1057 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1060 / 1060 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -974,7 +974,7 @@ tailwind.config = {
         </div>
         <div class="text-sm text-slate-700 leading-relaxed">
           <p class="font-semibold text-slate-900 mb-1.5">Phase B &mdash; 6 healthcare-specific invariants <span class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-trust-600 text-white">already enforced at runtime + tests</span></p>
-          <p>The 9 generic kernel rules above are what every MIND repo runs. ClinicalMem also keeps <strong>6 healthcare-specific invariants</strong> &mdash; PHI-gate coverage, audit-chain anchor density, BitNet 4.5 invocation discipline, federation-invariant density (spec: 21 typed invariants in <code class="font-mono text-xs">JointMemoryFederation.flow.mind</code>; live mock demo exercises 16 — the 5 X25519 sealing invariants are <em>declared</em> but await mind-mem v3.9 wire transport before the demo can verify them end-to-end), NPI Luhn coverage (every Practitioner), and clinician-attestation present. Already enforced at runtime + in <code class="font-mono text-xs">tests/</code>; the arch-mind L1 gate will mechanically verify them when the commercial v0.2 release ships the <code class="font-mono text-xs">clinical_invariants</code> profile. Full spec: <a href="clinicalmem_invariants.md" class="text-trust-700 underline hover:text-trust-800">docs/clinicalmem_invariants.md</a>.</p>
+          <p>The 9 generic kernel rules above are what every MIND repo runs. ClinicalMem also keeps <strong>6 healthcare-specific invariants</strong> &mdash; PHI-gate coverage, audit-chain anchor density, BitNet 4.5 invocation discipline, federation-invariant density (spec: 21 typed invariants in <code class="font-mono text-xs">JointMemoryFederation.flow.mind</code>; live mock demo exercises 16 — the 5 X25519 sealing invariants are <em>declared</em> but await the dedicated MIC@2 federation-transport adapter (mind-mem v3.10 target) before the demo can verify them end-to-end. <strong>v3.9.0 is already shipped + pinned</strong>, but its <code class="font-mono text-xs">http_transport.py</code> is a single-workspace REST adapter for non-MCP clients, not p2p federation), NPI Luhn coverage (every Practitioner), and clinician-attestation present. Already enforced at runtime + in <code class="font-mono text-xs">tests/</code>; the arch-mind L1 gate will mechanically verify them when the commercial v0.2 release ships the <code class="font-mono text-xs">clinical_invariants</code> profile. Full spec: <a href="clinicalmem_invariants.md" class="text-trust-700 underline hover:text-trust-800">docs/clinicalmem_invariants.md</a>.</p>
         </div>
       </div>
     </div>
@@ -1353,10 +1353,10 @@ tests/test_scripts/
       </div>
       <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Sample audit-chain hashes (one canonical run; nonces randomize per emit)</p>
       <pre class="text-xs font-mono text-slate-700 bg-po-paper/40 p-4 rounded border border-slate-200 overflow-x-auto leading-relaxed"><code>Site A (Mass General) egress  preimage_hash:
-  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10576c14404
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10606c14404
 
 Site B (Mayo Clinic) ingress preimage_hash:
-  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10576c14404
+  ddcc76726c999f116b5d688a750106eea444c0361c6c76bb57d7f10606c14404
 
   ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.
   ↑ Specific value differs per run (128-bit nonce); the *equality* of
@@ -1890,7 +1890,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1057 / 1057</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1060 / 1060</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">119 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">28 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>

@@ -84,7 +84,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1057+ passed**.
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1060+ passed**.
 
 ---
 
