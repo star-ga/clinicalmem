@@ -145,6 +145,11 @@ def test_no_historical_bitnet_recall_phrases_in_readme():
         "20-pair cache",
         "30.0% recall",
         "30 / 20",
+        # iter-148 ratchet: caught a stale "29.6% recall" in README L134
+        # while L130 correctly said "27.6%". 29.6% = 8/27 from a pre-
+        # iter-145 cohort-26 era. Block this so the same drift cannot
+        # re-appear if cache shrinks-and-grows in audit-replay mode.
+        "29.6% recall",
     )
     text = _README.read_text()
     for stale in historical:
