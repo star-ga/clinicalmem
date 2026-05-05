@@ -1087,6 +1087,18 @@
       ],
       "atc": "J05AE03",
       "notes": "HIV protease inhibitor; a clinically dominant CYP3A4 inhibitor (used pharmacokinetically as a CYP3A4 booster for other PIs). Also inhibits P-gp. FDA Norvir label Section 7 Drug Interactions lists strong CYP3A4 substrates as contraindicated with chronic ritonavir co-admin (notably simvastatin, lovastatin, ergot alkaloids, sildenafil for PAH)."
+    },
+    "fluvoxamine": {
+      "flags": [
+        "is_cyp1a2_inhibitor",
+        "is_serotonergic"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021519s015lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/16553505/"
+      ],
+      "atc": "N06AB08",
+      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 µM, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label § 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
     }
   }
 }

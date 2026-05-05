@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T11:48:50.622694+00:00",
+  "dateCreated": "2026-05-05T14:41:55.047906+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -439,6 +439,20 @@
         -196442
       ],
       "repro_hash": "f19a43fd070826598ac23ec2549ea7039c4eb6419d1c2c381f77a79056f65252",
+      "severity_name": "none"
+    },
+    {
+      "drug_a": "fluvoxamine",
+      "drug_b": "tizanidine",
+      "feature_hash": "1357c04958df60f035a4a13e11abf02b9435af39d79aa10b36d573c9ce7bf770",
+      "logits_q16": [
+        1095925,
+        -1453546,
+        350925,
+        -373564,
+        -239163
+      ],
+      "repro_hash": "711c965f37bfba51f00813da9de71206e42da7e7c65bbf131bd53ac071d0654b",
       "severity_name": "none"
     }
   ],

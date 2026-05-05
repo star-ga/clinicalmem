@@ -61,19 +61,17 @@ def test_callout_acknowledges_safety_floor():
 
 
 def test_heatmap_footer_recall_is_correct():
-    """The confusion-matrix heatmap footer must show 8/28 = 29%
-    (iter-140 cohort growth ritonavir+simvastatin bumped
-    denominator 27→28 but BitNet did not catch the new pair —
-    HIV protease inhibitor sub-class less represented in training;
-    predicted 'none', TP stays at 8).
+    """The confusion-matrix heatmap footer must show 8/29 = 28%
+    (iter-145 cohort growth fluvoxamine+tizanidine bumped
+    denominator 28→29 but BitNet predicted 'none' on the new pair
+    (CYP1A2 inhib×substrate sub-class less represented in training;
+    TP stays at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 28 = 29%" in text, (
-        "Heatmap footer recall must be 8/28 = 29% — iter-140 cohort "
-        "growth (ritonavir+simvastatin) bumped denominator 27 → 28. "
-        "BitNet predicted 'none' on the new pair (HIV protease "
-        "inhibitor sub-class less represented in training); "
-        "TP stays at 8."
+    assert "recall = 8 / 29 = 28%" in text, (
+        "Heatmap footer recall must be 8/29 = 28% — iter-145 cohort "
+        "growth (fluvoxamine+tizanidine) bumped denominator 28 → 29. "
+        "BitNet predicted 'none' on the new pair; TP stays at 8."
     )
     # Block historical phrasings so prior values can't reappear.
     assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale (different denom)
@@ -84,7 +82,8 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 8 / 24 = 33%" not in text  # iter-119 era stale
     assert "recall = 8 / 25 = 32%" not in text  # iter-124 era stale
     assert "recall = 8 / 26 = 31%" not in text  # iter-129 era stale
-    assert "recall = 8 / 27 = 30%" not in text  # iter-134 era stale (now 8/28)
+    assert "recall = 8 / 27 = 30%" not in text  # iter-134 era stale
+    assert "recall = 8 / 28 = 29%" not in text  # iter-140 era stale (now 8/29)
     assert "recall = 6 / 19" not in text  # iter-49 era stale
 
 
@@ -122,7 +121,7 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "25-flag",                                  # the live count
         "13 pair-derived DDI-rule bits",            # the live count
-        "28 / 28 contraindicated",                  # the live coverage
+        "29 / 29 contraindicated",                  # the live coverage (iter-145)
     )
     for phrase in required_post_iter140:
         assert phrase in text, (

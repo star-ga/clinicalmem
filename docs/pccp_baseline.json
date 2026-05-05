@@ -5,7 +5,7 @@
   "recall_moderate": 1.0,
   "fnr_contraindicated": 0.0,
   "fnr_major": 0.0,
-  "total_pairs": 123,
+  "total_pairs": 124,
   "weights_bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "weights_preimage_hash": "4078396f17124c89df2f1788b7b28a71b6d14233a97d0b2ead87915f809dfec9"
 }

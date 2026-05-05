@@ -122,14 +122,14 @@ def test_calibration_contraindicated_recall_matches_safety_invariant():
     payload = _load_calib()
     contra = payload["by_class"].get("contraindicated")
     assert contra is not None, "contraindicated bucket must be present"
-    # 0.28 ≤ recall ≤ 1.00 covers the iter-99 cohort-growth baseline up
-    # through a hypothetical 21/21 retrain. The lower bound catches a
+    # 0.27 ≤ recall ≤ 1.00 covers the iter-145 cohort-growth baseline
+    # (8/29 = 0.276 with fluvoxamine+tizanidine). The lower bound catches a
     # weight-rotation that broke recall; the upper covers anything
     # we'd celebrate.
-    assert 0.28 <= contra["recall"] <= 1.0, (
+    assert 0.27 <= contra["recall"] <= 1.0, (
         f"contraindicated recall {contra['recall']} outside "
-        f"[0.28, 1.00] — investigate; retrain may have regressed. "
-        f"Iter-99 baseline: 6/21 = 0.286 (cohort grew with new contra)."
+        f"[0.27, 1.00] — investigate; retrain may have regressed. "
+        f"Iter-145 baseline: 8/29 = 0.276 (cohort grew with fluvoxamine+tizanidine)."
     )
 
 

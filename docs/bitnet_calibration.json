@@ -4,13 +4,13 @@
   "by_class": {
     "contraindicated": {
       "correct_count": 8,
-      "count": 28,
+      "count": 29,
       "max_margin_wrong_q16": 2046870,
       "mean_margin_correct_q16": 675762,
-      "mean_margin_wrong_q16": 631691,
+      "mean_margin_wrong_q16": 637087,
       "min_margin_wrong_q16": 90199,
-      "recall": 0.2857142857142857,
-      "wrong_count": 20
+      "recall": 0.27586206896551724,
+      "wrong_count": 21
     },
     "major": {
       "correct_count": 3,
@@ -2197,11 +2197,28 @@
       "predicted": "none",
       "top1_class": "none",
       "top2_class": "major"
+    },
+    {
+      "correct": false,
+      "drug_a": "fluvoxamine",
+      "drug_b": "tizanidine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1095925,
+        -1453546,
+        350925,
+        -373564,
+        -239163
+      ],
+      "margin_q16": 745000,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 123,
+  "total_pairs": 124,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

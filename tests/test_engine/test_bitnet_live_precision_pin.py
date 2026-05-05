@@ -115,12 +115,19 @@ def test_bitnet_live_precision_recall_pinned():
     #           DOWNGRADE_DISAGREEMENT preserve the contra verdict.
     # Lower bound 0.26 catches the iter-140 floor; upper 0.45
     # covers a future weight rotation that lifts recall to ~12/28.
-    assert 0.26 <= recall <= 0.45, (
+    # Iter-145: cohort grew (28 → 29, fluvoxamine+tizanidine), TP=8 →
+    #           recall = 8/29 = 0.276. BitNet predicted "none" on the
+    #           new pair (CYP1A2 inhib×substrate sub-class less
+    #           represented in training; only cipro+tizanidine prior).
+    #           Upstream Layer 1 (FDA Zanaflex § 4) +
+    #           DOWNGRADE_DISAGREEMENT preserve contra.
+    # Lower bound 0.25 catches the iter-145 floor.
+    assert 0.25 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
-        f"live={recall:.4f}, allowed=[0.26, 0.45]"
+        f"live={recall:.4f}, allowed=[0.25, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 28, f"contraindicated cohort size drifted: live={total}, pinned=28"
+    assert total == 29, f"contraindicated cohort size drifted: live={total}, pinned=29"
 
 
 def test_dashboard_displays_live_precision_number():

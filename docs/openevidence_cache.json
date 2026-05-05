@@ -1997,5 +1997,22 @@
     ],
     "retrieved_at": "2026-05-05",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "fluvoxamine",
+    "drug_b": "tizanidine",
+    "drug_pair_canonical": [
+      "fluvoxamine",
+      "tizanidine"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Fluvoxamine is a potent CYP1A2 inhibitor (Ki on the order of 0.03-0.6 µM, an order of magnitude more potent than ciprofloxacin) due to its imidazole moiety. Tizanidine is almost exclusively metabolized by CYP1A2; co-administration with fluvoxamine produces a 33-fold increase in tizanidine AUC (Granfors 2004, Clin Pharmacol Ther) — far exceeding the ~10-fold AUC rise seen with ciprofloxacin. Clinical consequences include severe hypotension, profound psychomotor impairment, and prolonged sedation. The FDA Zanaflex (tizanidine) label Section 4 Contraindications explicitly lists 'concomitant use of tizanidine with potent inhibitors of CYP1A2 (such as fluvoxamine or ciprofloxacin) is contraindicated'. Reference: Granfors et al. 2004 (Clin Pharmacol Ther), FDA Zanaflex label 2013.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020397s032,021447s015lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021519s015lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/15536456/"
+    ],
+    "retrieved_at": "2026-05-05",
+    "source": "CACHED"
   }
 ]
