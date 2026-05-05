@@ -58,9 +58,14 @@ The clean-room Python implementation in `engine/bitnet_classifier.py`
   not silently overridden.
 - It is **not trained on patient data**. The shipped bundle's weights
   are deterministically derived from a public BLAKE2b sequence pinned
-  to spec version `v1.0`, with the per-pair severity classes calibrated
-  to match the deterministic table on a 200-pair regression set
-  (`tests/test_engine/test_bitnet_classifier.py`).
+  to spec version `v1.0`. Two complementary regression surfaces:
+  the 5-pair frozen anchor set in
+  `tests/test_engine/test_bitnet_classifier.py::test_known_pair_produces_severity`
+  (warfarin+ibuprofen, amoxicillin+penicillin, metformin+iodine,
+  atorvastatin+grapefruit, aspirin+warfarin) and the 120-pair live
+  OpenEvidence cohort with 25 contraindicated pairs in
+  `docs/openevidence_cache.json` driving the PCCP recall gate
+  (`scripts/run_clinical_regression_eval.py`).
 - It does **not generalise to arbitrary drug pairs** beyond the
   regression set's distribution. Generalisation is the consensus
   layer's job, and the abstention gate fires when Layer 4 disagrees
