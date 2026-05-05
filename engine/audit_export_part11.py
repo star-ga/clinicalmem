@@ -167,7 +167,21 @@ def _generate_demo_keypair() -> tuple[Ed25519PrivateKey, Ed25519PublicKey]:
     The rest of the pipeline is HSM-agnostic.
     """
     private_key = Ed25519PrivateKey.generate()
-    return private_key, private_key.public_key()
+    public_key = private_key.public_key()
+    # DEBUG: production audits MUST verify this event is NOT emitted
+    # — HSM-backed keys load via the production slot above. The public
+    # key fingerprint (first 16 hex of SHA-256(raw_pubkey)) is safe to
+    # log and lets audit-replay correlate exports back to the keypair
+    # that signed them. We never log the private key or signature.
+    key_fp = hashlib.sha256(public_key.public_bytes_raw()).hexdigest()[:16]
+    logger.debug(
+        "audit_export_demo_keypair_generated",
+        extra={
+            "public_key_fp": key_fp,
+            "production_slot": "_generate_demo_keypair",
+        },
+    )
+    return private_key, public_key
 
 
 def _sign(private_key: Ed25519PrivateKey, data: str) -> str:
@@ -309,6 +323,20 @@ def export_audit_trail(
 
     chain_root = running_hash
 
+    # PHI-safe Merkle-construction DEBUG: chain_seed and chain_root are
+    # cryptographic SHA-256 outputs (non-reversible). Operators correlate
+    # the prefix against the runtime audit chain when an export's root
+    # disagrees with the engine's running tally — the most common 21 CFR
+    # Part 11 anomaly path.
+    logger.debug(
+        "audit_export_chain_built",
+        extra={
+            "event_count": len(chain_events),
+            "chain_seed_prefix": _CHAIN_SEED[:16],
+            "chain_root_prefix": chain_root[:16],
+        },
+    )
+
     # 3. Build attestation event ───────────────────────────────────────────────
     private_key, public_key = _generate_demo_keypair()
     pub_bytes = public_key.public_bytes_raw()
@@ -325,6 +353,20 @@ def export_audit_trail(
         separators=(",", ":"),
     )
     signature = _sign(private_key, attestation_payload_str)
+
+    # PHI-safe attestation DEBUG: payload bytes + signature character
+    # length only — never the signed bytes themselves (a base64url
+    # signature is constant-length per algorithm but logging
+    # length-deltas helps catch upstream corruption silently mangling
+    # the canonical payload before signing).
+    logger.debug(
+        "audit_export_attestation_signed",
+        extra={
+            "signed_payload_bytes": len(attestation_payload_str),
+            "signature_b64url_chars": len(signature),
+            "algorithm": "Ed25519",
+        },
+    )
 
     time_range = {
         "earliest": sorted_events[0].timestamp_iso if sorted_events else "",
@@ -391,6 +433,19 @@ def export_audit_trail(
     serialised = json.dumps(document, indent=2, ensure_ascii=True)
     output_path.write_text(serialised, encoding="utf-8")
     total_bytes = len(serialised.encode("utf-8"))
+
+    # PHI-safe serialisation DEBUG: bytes written + format choices.
+    # Total bytes is a cardinality signal (large variance flags new
+    # event-type drift); indent and ensure_ascii are constants but
+    # logging them aids ops when comparing exports across versions.
+    logger.debug(
+        "audit_export_serialised",
+        extra={
+            "total_bytes": total_bytes,
+            "indent_spaces": 2,
+            "ensure_ascii": True,
+        },
+    )
 
     # PHI-safe completion log: counts + chain_root prefix (non-reversible,
     # but safe to truncate as a correlation aid for auditors).
@@ -483,6 +538,15 @@ def verify_audit_trail(path: Path | str) -> VerificationResult:
         anomalies.append(
             f"@context mismatch: expected '{_JSONLD_CONTEXT}', "
             f"got '{document.get('@context')}'"
+        )
+    else:
+        # DEBUG: @context check passed. Audit-replay debugging needs
+        # visibility into which verifier steps fired vs failed early —
+        # the WARNING at audit_verify_tampering_detected only fires at
+        # the end after all checks have run. PHI-safe: path only.
+        logger.debug(
+            "audit_verify_context_match",
+            extra={"path": str(path)},
         )
 
     # --- chain replay ---------------------------------------------------------
