@@ -597,7 +597,7 @@ tailwind.config = {
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> HIPAA by construction</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 7 typed-graph contracts</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> arch-mind 9 / 9 rules</div>
-      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1099 / 1099 engine tests</div>
+      <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> 1100 / 1100 engine tests</div>
       <div class="text-[11px] font-semibold text-slate-700"><span class="text-trust-600">●</span> Powered by mind-mem v3.9.0</div>
     </div>
 
@@ -1368,6 +1368,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
   ↑ Specific value differs per run (128-bit nonce); the *equality* of
     the two hashes is the load-bearing claim. Re-run the demo to verify.</code></pre>
       <p class="text-xs text-slate-400 mt-3">Control plane (peer registry, 7 sync scopes, per-scope conflict policy, sync audit log, governance pub/sub fan-out) is <strong class="text-trust-700">LIVE</strong> against <code class="font-mono">mind-mem v3.9.0</code> MemoryMesh + EventFanout (9 unit tests in <code class="font-mono text-xs">tests/test_engine/test_federation_transport.py</code>). The mock queue handles only the wire bytes between sites; it swaps out for the live MIC@2 federation-transport adapter when mind-mem v3.10 ships (v3.9.0's <code class="font-mono">http_transport.py</code> is a single-workspace REST adapter, not P2P federation), with no change above the <code class="font-mono text-xs">record_publish_event</code> / <code class="font-mono text-xs">record_ingest_event</code> boundary.</p>
+      <p class="text-[10px] text-slate-500 mt-3 leading-relaxed border-l-2 border-clinical-purple/60 pl-3 bg-purple-50/30 py-2 rounded-r">🔒 <strong>Cross-doc invariant-count integrity</strong> &mdash; the <strong>21 typed</strong> count above is independently pinned by <code class="font-mono">tests/test_scripts/test_federation_invariant_count_pin.py</code> across <strong>all 6 user-facing federation docs</strong>: <code class="font-mono text-[10px]">demo.html</code>, <code class="font-mono text-[10px]">JUDGES.md</code>, <code class="font-mono text-[10px]">docs/architecture.md</code>, <code class="font-mono text-[10px]">docs/clinical_validation.md</code>, <code class="font-mono text-[10px]">docs/fda_q_sub_draft.md</code>, <code class="font-mono text-[10px]">docs/federated_memory.md</code>. The 5 tests gate (1) live invariant count in flow file = 21; (2) demo's <code class="font-mono">INVARIANT_DESCRIPTIONS</code> exercises 16; (3) all 6 docs cite "21 typed"; (4) bare "16 invariants" / "16 typed runtime invariants" forbidden in any of those 6 docs unless paired with "21 typed" disambiguation in the same file (iter-135 scope-expansion catching the same insidious <em>scoped pin + unscoped doc</em> drift class iter-132 caught for the iter-122 transport-distinction claim &mdash; three regulatory-adjacent docs had silently lied about the count for ≥ 113 iterations); (5) the 16-of-21 gap explanation must remain ("5 X25519 sealing invariants await the MIC@2 federation-transport adapter targeting mind-mem v3.10").</p>
     </article>
   </div>
 </section>
@@ -1896,7 +1897,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
     <!-- Build provenance — every figure on this page traces to a checked-in artifact. -->
     <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[10px] font-mono text-slate-500 text-center">
       <div><span class="text-slate-400">build</span> <span class="text-trust-700">cfadb4f6</span></div>
-      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1099 / 1099</span></div>
+      <div><span class="text-slate-400">tests</span> <span class="text-trust-700">1100 / 1100</span></div>
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">122 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">30 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
