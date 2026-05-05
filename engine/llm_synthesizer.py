@@ -346,7 +346,31 @@ def explain_conflict(
     evidence_count = len(evidence_blocks)
     confidence = min(evidence_count / 3.0, 1.0)
 
+    # Entry-point DEBUG so operators can see synthesis-gate invocations.
+    # PHI-safe: counts + thresholds only; never the conflict description,
+    # patient details, or evidence content.
+    logger.debug(
+        "clinical_synthesis_start",
+        extra={
+            "conflict_type": conflict.get("type", "unknown"),
+            "conflict_severity": conflict.get("severity", "unknown"),
+            "evidence_count": evidence_count,
+            "threshold": confidence_threshold,
+            "confidence": round(confidence, 3),
+        },
+    )
+
     if confidence < confidence_threshold:
+        # Insufficient-evidence abstention — release-blocking signal that
+        # operators must see at default verbosity. PHI-safe: counts only.
+        logger.warning(
+            "clinical_synthesis_abstained_insufficient_evidence",
+            extra={
+                "conflict_type": conflict.get("type", "unknown"),
+                "evidence_count": evidence_count,
+                "threshold": confidence_threshold,
+            },
+        )
         return ClinicalNarrative(
             narrative="ABSTAIN: Insufficient evidence to provide clinical guidance. "
             f"Only {evidence_count} evidence block(s) available; "
@@ -407,7 +431,17 @@ def explain_conflict(
             audit_context={"reason": "llm_abstained", "evidence_count": evidence_count},
         )
 
-    # Fallback to template
+    # Fallback to template — INFO so operators see when degraded mode is
+    # used (no LLM key available, all cascade tiers exhausted, etc.).
+    # PHI-safe: counts only; narrative content NEVER logged.
+    logger.info(
+        "clinical_synthesis_template_fallback",
+        extra={
+            "conflict_type": conflict.get("type", "unknown"),
+            "evidence_count": evidence_count,
+            "confidence": round(confidence, 3),
+        },
+    )
     narrative = _template_conflict_explanation(conflict, patient_context)
     return ClinicalNarrative(
         narrative=narrative,
@@ -435,7 +469,30 @@ def generate_clinical_handoff(
     evidence_count = len(evidence_blocks)
     confidence = min(evidence_count / 5.0, 1.0)
 
+    # Entry-point INFO so operators can grep handoff-throughput. PHI-safe:
+    # aggregate counts only; never the patient_context or contradiction
+    # contents.
+    logger.info(
+        "clinical_handoff_start",
+        extra={
+            "evidence_count": evidence_count,
+            "contradiction_count": len(contradictions),
+            "medication_count": len(patient_context.get("medications", [])),
+            "condition_count": len(patient_context.get("conditions", [])),
+            "interaction_count": safety_report.get("interaction_count", 0),
+            "allergy_conflict_count": safety_report.get("allergy_conflict_count", 0),
+            "confidence": round(confidence, 3),
+        },
+    )
+
     if confidence < confidence_threshold:
+        logger.warning(
+            "clinical_handoff_abstained_insufficient_evidence",
+            extra={
+                "evidence_count": evidence_count,
+                "threshold": confidence_threshold,
+            },
+        )
         return ClinicalNarrative(
             narrative="ABSTAIN: Insufficient clinical data for a safe handoff summary. "
             f"Only {evidence_count} evidence block(s) available.",

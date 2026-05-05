@@ -699,3 +699,121 @@ class TestAsyncGeminiEdgeCases:
 
         assert text is None
         assert model == "none"
+
+
+# ─── Iter-160 logger-density ratchet pin (T4 round-32) ───────────────
+#
+# engine/llm_synthesizer.py was at 15.8 logger calls / kloc (8 logs /
+# 505 LOC, all of them logger.info retry/failure cascades). Same
+# ratchet pattern as iter-138/144/151/154/157.
+#
+# Five silent paths closed:
+#   1. explain_conflict entry → DEBUG clinical_synthesis_start
+#   2. explain_conflict abstention → WARNING
+#      clinical_synthesis_abstained_insufficient_evidence
+#   3. explain_conflict template-fallback → INFO
+#      clinical_synthesis_template_fallback (degraded mode visible)
+#   4. generate_clinical_handoff entry → INFO clinical_handoff_start
+#   5. generate_clinical_handoff abstention → WARNING
+#      clinical_handoff_abstained_insufficient_evidence
+#
+# Net: 8 → 13 logger calls (+5 events). Density 15.8 → 23.1/kloc.
+#
+# PHI-safe: every event records counts (evidence_count,
+# contradiction_count, medication_count, etc.) + threshold + confidence;
+# the conflict description, patient_context, evidence content, and
+# narrative text are NEVER logged.
+
+import logging
+
+from engine.llm_synthesizer import explain_conflict, generate_clinical_handoff
+
+
+class TestLLMSynthesizerLoggerRatchetIter160:
+    """Iter-160 T4 round-32 — logger density ratchet pin."""
+
+    def test_explain_conflict_entry_emits_debug(self, caplog):
+        with caplog.at_level(logging.DEBUG, logger='engine.llm_synthesizer'):
+            explain_conflict(
+                conflict={"type": "drug_interaction", "severity": "high",
+                          "description": "x+y interaction", "recommendation": "review"},
+                patient_context={"conditions": [], "medications": [], "allergies": []},
+                evidence_blocks=[],
+            )
+        starts = [r for r in caplog.records if r.message == 'clinical_synthesis_start']
+        assert len(starts) >= 1
+        rec = starts[0]
+        for field in ('conflict_type', 'evidence_count', 'threshold', 'confidence'):
+            assert hasattr(rec, field), f"clinical_synthesis_start missing {field}"
+
+    def test_explain_conflict_abstention_emits_warning(self, caplog):
+        """Abstention is a release-blocking signal — operators see WARNING."""
+        with caplog.at_level(logging.WARNING, logger='engine.llm_synthesizer'):
+            explain_conflict(
+                conflict={"type": "drug_interaction", "severity": "high"},
+                patient_context={},
+                evidence_blocks=[],   # zero evidence → confidence 0 → abstain
+            )
+        recs = [r for r in caplog.records
+                if r.message == 'clinical_synthesis_abstained_insufficient_evidence']
+        assert len(recs) >= 1, "abstention path must emit a WARNING event"
+
+    def test_handoff_entry_emits_info(self, caplog):
+        with caplog.at_level(logging.INFO, logger='engine.llm_synthesizer'):
+            generate_clinical_handoff(
+                patient_context={"conditions": [], "medications": [], "allergies": []},
+                contradictions=[],
+                safety_report={"interaction_count": 0, "allergy_conflict_count": 0},
+                evidence_blocks=[{"block_id": "b1"}, {"block_id": "b2"},
+                                 {"block_id": "b3"}, {"block_id": "b4"}, {"block_id": "b5"}],
+            )
+        recs = [r for r in caplog.records if r.message == 'clinical_handoff_start']
+        assert len(recs) >= 1
+        rec = recs[0]
+        for field in ('evidence_count', 'contradiction_count', 'medication_count',
+                      'condition_count', 'confidence'):
+            assert hasattr(rec, field), f"clinical_handoff_start missing {field}"
+
+    def test_logger_calls_never_log_narrative_or_phi(self, caplog):
+        """Paranoia scan: a sentinel patient detail + sentinel conflict
+        description must NOT appear in any log record."""
+        sentinel_med = "ZZZ_MEDICATION_PHI_LEAK"
+        sentinel_desc = "ZZZ_CONFLICT_DESC_PHI_LEAK"
+        with caplog.at_level(logging.DEBUG, logger='engine.llm_synthesizer'):
+            explain_conflict(
+                conflict={"type": "drug_interaction", "severity": "critical",
+                          "description": sentinel_desc, "recommendation": "review"},
+                patient_context={
+                    "conditions": [{"name": "diabetes"}],
+                    "medications": [{"name": sentinel_med}],
+                    "allergies": [],
+                },
+                evidence_blocks=[{"block_id": "b1"}],
+            )
+        for rec in caplog.records:
+            haystack = (
+                str(rec.message) + ' ' +
+                ' '.join(str(v) for v in vars(rec).values() if isinstance(v, (str, int, float)))
+            )
+            for slot in vars(rec).values():
+                if isinstance(slot, dict):
+                    haystack += ' ' + ' '.join(str(v) for v in slot.values())
+            assert sentinel_med not in haystack, (
+                f"PHI LEAK: medication name {sentinel_med!r} in log {rec.message!r}"
+            )
+            assert sentinel_desc not in haystack, (
+                f"PHI LEAK: conflict description {sentinel_desc!r} in log "
+                f"{rec.message!r}"
+            )
+
+    def test_logger_density_floor(self):
+        """Floor: llm_synthesizer.py must keep >= 13 logger calls."""
+        import re
+        from pathlib import Path
+        path = Path(__file__).resolve().parent.parent.parent / 'engine' / 'llm_synthesizer.py'
+        text = path.read_text()
+        count = len(re.findall(r'logger\.(debug|info|warning|error|critical)', text))
+        assert count >= 13, (
+            f"engine/llm_synthesizer.py logger density regressed: "
+            f"got {count}, floor=13 (iter-160 ratchet)"
+        )
