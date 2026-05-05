@@ -242,6 +242,39 @@ def test_bundle_meta_records_provenance():
     )
 
 
+def test_demo_cites_this_pin_file():
+    """Demo must cite this pin file near the trained-model section.
+
+    iter-131 (T2 surfacing) added a purple-rule callout below the
+    ternary-weight distribution paragraph that names all 8
+    integrity invariants and references this pin file. Same pattern
+    as iter-110/115/121/126's "demo cites pin file" cross-checks:
+    test layer and user-facing surface stay in sync.
+    """
+    text = _DEMO.read_text()
+    pin_filename = "test_bitnet_bundle_integrity_pin.py"
+    assert pin_filename in text, (
+        f"docs/demo.html must cite "
+        f"`tests/test_engine/{pin_filename}` near the trained-model "
+        f"section so judges can trace the bundle_id + 19 KB + sparsity "
+        f"claims to their enforcing pin file."
+    )
+    # Anchor: callout must appear with a recognizable phrase so a copy
+    # edit can't strip the rationale and leave just the filename.
+    locality_anchors = (
+        "Bundle integrity",
+        "eight invariants",
+        "bundle_id first-8",
+    )
+    has_anchor = any(a in text for a in locality_anchors)
+    assert has_anchor, (
+        f"Demo's pin-file citation must appear with a locality anchor "
+        f"such as 'Bundle integrity' / 'eight invariants' / "
+        f"'bundle_id first-8'. None found near the trained-model "
+        f"section — copy edit may have stripped the rationale."
+    )
+
+
 def test_bundle_meta_self_referenced_bundle_id_is_consistent():
     """If `_meta.bundle_id` is present, it must match the live SHA-256
     of the canonical-form weight matrices.
