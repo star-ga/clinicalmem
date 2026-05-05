@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-05T07:27:32.503383+00:00",
+  "dateCreated": "2026-05-05T07:30:56.891821+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "2a1b35b7468ee0e081fd2ff7bbb52f9a410a9569",
+  "git_head": "1070da1eac75180353759267c2cfb33c4ff47b43",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -96,6 +96,6 @@
     "arch_mind_l1": "PASS",
     "audit_replay": "PASS"
   },
-  "test_count": 1065,
+  "test_count": 1073,
   "audit_replay_hint": "To verify: (1) check git_head matches the auditor's expected commit, (2) recompute SHA-256 of every artifact path and compare, (3) recompute flow plan_hashes via engine.flow_runner.compute_plan_hash, (4) re-run the four gate scripts, (5) run pytest tests/test_engine tests/test_scripts and confirm test_count is at or above the manifested value."
 }
