@@ -2424,12 +2424,29 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.classList.toggle('bg-po-orange', false);
           btn.classList.toggle('bg-clinical-green', matches);
           btn.classList.toggle('bg-clinical-red', !matches);
+          // Visual feedback on the parent card: pulse the border green
+          // (or red) so the user sees the WHOLE flow card respond, not
+          // just the small button. The Mermaid diagram itself doesn't
+          // re-render — verify confirms the SHA, not the structure —
+          // but the card glow makes the success visible at a glance.
+          if (card) {
+            card.style.transition = 'border-color 0.4s, box-shadow 0.4s';
+            card.style.borderColor = matches ? '#16a34a' : '#dc2626';
+            card.style.boxShadow = matches
+              ? '0 0 0 3px rgba(22,163,74,0.20), 0 8px 24px rgba(22,163,74,0.18)'
+              : '0 0 0 3px rgba(220,38,38,0.20), 0 8px 24px rgba(220,38,38,0.18)';
+          }
           setTimeout(() => {
             btn.innerHTML = original;
             btn.disabled = false;
             btn.classList.toggle('bg-clinical-green', false);
             btn.classList.toggle('bg-clinical-red', false);
             btn.classList.toggle('bg-po-orange', true);
+            // Reset card visual state too.
+            if (card) {
+              card.style.borderColor = '';
+              card.style.boxShadow = '';
+            }
           }, 2400);
         } catch (err) {
           btn.innerHTML = `error: ${escapeHtml(err.message).slice(0, 30)}`;
