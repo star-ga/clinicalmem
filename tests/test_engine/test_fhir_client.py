@@ -204,3 +204,82 @@ class TestIPv6InPathExtraction:
             patient_id="p-1",
         )
         ctx.validate()  # should not raise — '::' in path but candidate is empty
+
+
+# ─── Iter-156 logger-density ratchet pin (T4 round-31) ───────────────
+#
+# engine/fhir_client.py was at 16.2 logger calls / kloc (4 logs / 247 LOC).
+# Same ratchet pattern as iter-138 / iter-144 / iter-151 / iter-154.
+#
+# Three silent paths closed:
+#   1. FHIRContext.validate() success (DEBUG fhir_ctx_validated) —
+#      logs hostname + scheme + patient_id (PHI-safe: hostname is
+#      server config, patient_id is the synthetic cohort identifier).
+#   2. FHIRClient.__init__ (DEBUG fhir_client_init) — logs URL host +
+#      patient_id; auth token NEVER logged.
+#   3. BundleFHIRClient.__init__ (DEBUG fhir_bundle_client_init) — logs
+#      aggregate counts (resource_types + total_resources); resource
+#      contents NEVER logged.
+#   4. Plus an explicit ERROR fhir_url_blocked_private_addr on the
+#      previously-silent RFC-1918 / loopback / link-local rejection
+#      path (was raising FHIRClientError without a structured log).
+#
+# Net: 4 -> 8 logger calls (+4 events). Density 16.2 -> 27.7/kloc.
+
+import logging
+
+
+class TestFHIRClientLoggerRatchetIter156:
+    """Iter-156 T4 round-31 — logger density ratchet pin."""
+
+    def test_validate_success_emits_debug(self, caplog):
+        ctx = FHIRContext(url="https://fhir.example.com/r4", token="t", patient_id="p-1")
+        with caplog.at_level(logging.DEBUG, logger='engine.fhir_client'):
+            ctx.validate()
+        recs = [r for r in caplog.records if r.message == 'fhir_ctx_validated']
+        assert len(recs) >= 1
+        rec = recs[0]
+        assert getattr(rec, 'hostname', None) == 'fhir.example.com'
+        assert getattr(rec, 'scheme', None) == 'https'
+        assert getattr(rec, 'patient_id', None) == 'p-1'
+
+    def test_client_init_emits_debug(self, caplog):
+        ctx = FHIRContext(url="https://fhir.example.com/r4", token="secrettoken", patient_id="p-2")
+        with caplog.at_level(logging.DEBUG, logger='engine.fhir_client'):
+            FHIRClient(ctx)
+        recs = [r for r in caplog.records if r.message == 'fhir_client_init']
+        assert len(recs) >= 1
+        rec = recs[0]
+        assert getattr(rec, 'host', None) == 'fhir.example.com'
+        assert getattr(rec, 'patient_id', None) == 'p-2'
+        # Token must NEVER appear in any log record
+        for r in caplog.records:
+            haystack = str(r.message) + ' ' + ' '.join(str(v) for v in vars(r).values()
+                                                        if isinstance(v, (str, int)))
+            assert 'secrettoken' not in haystack, (
+                "PHI/secret leak: bearer token leaked into log records"
+            )
+
+    def test_bundle_client_init_emits_debug(self, caplog):
+        with caplog.at_level(logging.DEBUG, logger='engine.fhir_client'):
+            BundleFHIRClient({"Patient": [{}], "MedicationRequest": [{}, {}]}, "p-3")
+        recs = [r for r in caplog.records if r.message == 'fhir_bundle_client_init']
+        assert len(recs) >= 1
+        rec = recs[0]
+        assert getattr(rec, 'patient_id', None) == 'p-3'
+        assert getattr(rec, 'resource_types', None) == 2
+        assert getattr(rec, 'total_resources', None) == 3
+
+    def test_logger_density_floor(self):
+        """Floor: fhir_client.py must keep >= 8 logger calls.
+        Iter-156 ratchet bumped 4 -> 8 (+4 events); future regressions
+        below 8 fail this gate."""
+        import re
+        from pathlib import Path
+        path = Path(__file__).resolve().parent.parent.parent / 'engine' / 'fhir_client.py'
+        text = path.read_text()
+        count = len(re.findall(r'logger\.(debug|info|warning|error|critical)', text))
+        assert count >= 8, (
+            f"engine/fhir_client.py logger density regressed: "
+            f"got {count}, floor=8 (iter-156 ratchet)"
+        )

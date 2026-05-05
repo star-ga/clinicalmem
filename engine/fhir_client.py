@@ -82,9 +82,33 @@ class FHIRContext:
                 try:
                     addr = ipaddress.ip_address(candidate)
                     if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved:
+                        logger.error(
+                            "fhir_url_blocked_private_addr",
+                            extra={
+                                "address_kind": (
+                                    "private" if addr.is_private else
+                                    "loopback" if addr.is_loopback else
+                                    "link_local" if addr.is_link_local else
+                                    "reserved"
+                                ),
+                                "patient_id": self.patient_id,
+                            },
+                        )
                         raise FHIRClientError("FHIR URL must not point to private network addresses")
                 except ValueError:
                     continue
+
+        # Successful validation — DEBUG so ops can see handshake throughput.
+        # PHI-safe: hostname only (server config), patient_id (FHIR
+        # identifier, synthetic in our cohort).
+        logger.debug(
+            "fhir_ctx_validated",
+            extra={
+                "hostname": bare_host,
+                "scheme": parsed.scheme,
+                "patient_id": self.patient_id,
+            },
+        )
 
 
 class FHIRClient:
@@ -98,6 +122,15 @@ class FHIRClient:
             "Accept": "application/fhir+json",
         }
         self._patient_id = ctx.patient_id
+        # DEBUG init log — PHI-safe (URL is server config, no token in extra).
+        from urllib.parse import urlparse
+        logger.debug(
+            "fhir_client_init",
+            extra={
+                "host": (urlparse(self._url).hostname or "unknown"),
+                "patient_id": self._patient_id,
+            },
+        )
 
     @property
     def patient_id(self) -> str:
@@ -190,6 +223,15 @@ class BundleFHIRClient:
     def __init__(self, resources_by_type: dict[str, list], patient_id: str):
         self._resources = resources_by_type
         self._patient_id = patient_id
+        # DEBUG init log — aggregate counts only, never resource contents.
+        logger.debug(
+            "fhir_bundle_client_init",
+            extra={
+                "patient_id": patient_id,
+                "resource_types": len(resources_by_type),
+                "total_resources": sum(len(v) for v in resources_by_type.values()),
+            },
+        )
 
     @property
     def patient_id(self) -> str:
