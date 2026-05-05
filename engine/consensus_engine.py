@@ -155,6 +155,18 @@ async def _call_openai(prompt: str, api_key: str) -> LLMVerdict:
             },
         )
         if resp.status_code != 200:
+            # Pre-raise structured WARNING — provider + status_code only
+            # (no body, which can include rate-limit messages that quote
+            # the prompt back). The downstream consensus_provider_error
+            # handler sees only RuntimeError type, which loses the HTTP
+            # status. This event preserves it for SaMD audit-replay.
+            logger.warning(
+                "consensus_provider_http_error",
+                extra={
+                    "provider": "OpenAI-GPT-5.5",
+                    "status_code": resp.status_code,
+                },
+            )
             raise RuntimeError(f"OpenAI returned {resp.status_code}")
         text = resp.json()["choices"][0]["message"]["content"]
         return _parse_verdict(text, "OpenAI-GPT-5.5")
@@ -172,6 +184,13 @@ async def _call_google(prompt: str, api_key: str, model_id: str, label: str) -> 
             },
         )
         if resp.status_code != 200:
+            logger.warning(
+                "consensus_provider_http_error",
+                extra={
+                    "provider": label,
+                    "status_code": resp.status_code,
+                },
+            )
             raise RuntimeError(f"{label} returned {resp.status_code}")
         candidates = resp.json().get("candidates", [])
         if not candidates:
@@ -219,6 +238,13 @@ async def _call_openai_compatible(
             },
         )
         if resp.status_code != 200:
+            logger.warning(
+                "consensus_provider_http_error",
+                extra={
+                    "provider": label,
+                    "status_code": resp.status_code,
+                },
+            )
             raise RuntimeError(f"{label} returned {resp.status_code}")
         text = resp.json()["choices"][0]["message"]["content"]
         return _parse_verdict(text, label)
@@ -241,6 +267,13 @@ async def _call_perplexity(prompt: str, api_key: str) -> LLMVerdict:
             },
         )
         if resp.status_code != 200:
+            logger.warning(
+                "consensus_provider_http_error",
+                extra={
+                    "provider": "Perplexity-Sonar-Pro",
+                    "status_code": resp.status_code,
+                },
+            )
             raise RuntimeError(f"Perplexity returned {resp.status_code}")
         text = resp.json()["choices"][0]["message"]["content"]
         return _parse_verdict(text, "Perplexity-Sonar-Pro")
@@ -265,6 +298,13 @@ async def _call_anthropic(prompt: str, api_key: str) -> LLMVerdict:
             },
         )
         if resp.status_code != 200:
+            logger.warning(
+                "consensus_provider_http_error",
+                extra={
+                    "provider": "Anthropic-Claude-Opus-4.7",
+                    "status_code": resp.status_code,
+                },
+            )
             raise RuntimeError(f"Anthropic returned {resp.status_code}")
         content = resp.json().get("content", [])
         text = content[0].get("text", "") if content else ""
@@ -294,7 +334,20 @@ async def verify_finding_consensus(
     try:
         from engine.phi_detector import redact_phi
         prompt, _ = redact_phi(_build_prompt(finding, evidence, patient_context))
-    except ImportError:
+    except ImportError as exc:
+        # WARNING level — PHI guard absence is operationally significant.
+        # The downstream prompt construction proceeds without redaction,
+        # which is acceptable when phi_detector is unavailable (e.g.
+        # development/test environments) but operators must see the
+        # absence in production logs. error_type only — no exception
+        # body which can include filesystem paths.
+        logger.warning(
+            "consensus_phi_guard_unavailable",
+            extra={
+                "error_type": type(exc).__name__,
+                "fallback": "prompt_constructed_without_redaction",
+            },
+        )
         prompt = _build_prompt(finding, evidence, patient_context)
 
     openai_key = os.environ.get("OPENAI_API_KEY")
