@@ -234,14 +234,15 @@ $99 SKU to doctor offices. Three deployment modes, all zero-config:
 
 ### Mode 1 — USB drop-in (the "thumb-drive deployment")
 
-```
-   ┌────────────────┐         USB-C        ┌────────────────────┐
-   │  Office PC     │ ◄──────────────────► │  ClinicalMem Box   │
-   │  (Win/Mac/Lin) │   gadget Ethernet    │  (Pi Zero 2 W)     │
-   └────────────────┘                       └────────────────────┘
-                                                    │
-                                          serves http://clinicalmem.local
-                                          via the office PC's browser
+```mermaid
+flowchart LR
+    pc["Office PC<br/>(Win / Mac / Lin)"]
+    box["ClinicalMem Box<br/>(Pi Zero 2 W)"]
+    pc <-->|"USB-C · gadget Ethernet"| box
+    box -.->|"serves http://clinicalmem.local"| browser["Office PC browser"]
+
+    classDef host fill:#F0FDFA,stroke:#0F766E,stroke-width:1.5px,color:#0F172A
+    class pc,box,browser host
 ```
 
 - Plug into any USB-C port → PC sees a new Ethernet device
@@ -253,17 +254,22 @@ $99 SKU to doctor offices. Three deployment modes, all zero-config:
 
 ### Mode 2 — Office router drop-in (the "set and forget")
 
-```
-   ┌────────────┐  Ethernet/Wi-Fi  ┌────────────────────┐
-   │  Router    │ ◄──────────────► │  ClinicalMem Box   │
-   └────────────┘                   └────────────────────┘
-        ▲                                     │
-        │                                     │
-   Office Wi-Fi                       serves http://clinicalmem.local
-        │                                     │
-   ┌────┴────┐  ┌─────────┐  ┌──────────┐
-   │ Workstn │  │ Tablet  │  │ Phone    │   any device on the office
-   └─────────┘  └─────────┘  └──────────┘   Wi-Fi reaches the Box
+```mermaid
+flowchart TB
+    router["Router"]
+    box["ClinicalMem Box<br/>(Pi Zero 2 W)"]
+    router <-->|"Ethernet · Wi-Fi"| box
+    subgraph clients["Any device on office Wi-Fi"]
+        direction LR
+        ws["Workstation"]
+        tablet["Tablet"]
+        phone["Phone"]
+    end
+    router --> clients
+    box -.->|"http://clinicalmem.local"| clients
+
+    classDef hw fill:#F0FDFA,stroke:#0F766E,stroke-width:1.5px,color:#0F172A
+    class router,box,ws,tablet,phone hw
 ```
 
 - Plug into the office router's spare Ethernet port (or Wi-Fi join)
@@ -274,12 +280,14 @@ $99 SKU to doctor offices. Three deployment modes, all zero-config:
 
 ### Mode 3 — EHR sidecar (the "API replacement")
 
-```
-   ┌─────────────┐           HTTP          ┌────────────────────┐
-   │ Epic / Cerner│ ◄────────────────────► │  ClinicalMem Box   │
-   │ HL7 / FHIR   │   localhost:8080       └────────────────────┘
-   │ adapter      │
-   └─────────────┘
+```mermaid
+flowchart LR
+    ehr["Epic / Cerner<br/>HL7 / FHIR adapter"]
+    box["ClinicalMem Box"]
+    ehr <-->|"HTTP · localhost:8080"| box
+
+    classDef hw fill:#F0FDFA,stroke:#0F766E,stroke-width:1.5px,color:#0F172A
+    class ehr,box hw
 ```
 
 - EHR vendor swaps their cloud DDI API base URL for the local Box

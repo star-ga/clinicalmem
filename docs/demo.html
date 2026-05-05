@@ -177,6 +177,11 @@ tailwind.config = {
       word-break: break-all !important;
       overflow-wrap: anywhere !important;
     }
+    /* Long slash-/dash-separated lists in plain prose (e.g.
+       "drug1/drug2/drug3/...") also need to wrap on mobile. */
+    p, li, td, dd, h2, h3, h4 {
+      overflow-wrap: anywhere;
+    }
   }
   h1, h2, h3, h4, h5, h6, .font-display {
     font-family: Lexend, "Source Sans 3", Inter, system-ui, sans-serif;
@@ -1228,7 +1233,7 @@ tailwind.config = {
           </svg>
           <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 124-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim). The cohort itself is pinned for integrity by <code class="font-mono">tests/test_engine/test_negative_control_cohort_integrity_pin.py</code> — 6 invariants gate <em>what</em> may live in the precision cohort: size = 10, every entry's <code class="font-mono">expected_severity</code> must be <code class="font-mono">"none"</code>, ZERO collision with cache <code class="font-mono">contraindicated</code> entries (a logical contradiction), every entry has ≥ 1 evidence URL, the 4 named CYP-pathway boundary cases must be present, and clean negatives may not silently include drugs from any cache contra context (with documented allow-listed exceptions for <code class="font-mono">metformin</code> and <code class="font-mono">lisinopril</code>, which deliberately demonstrate non-collision behavior).</p>
           <p class="text-xs text-slate-500 mt-3 leading-relaxed border-l-2 border-amber-300 pl-3 bg-amber-50/40 py-2 rounded-r">
-            <strong class="text-slate-700">⚠️ Layer 4.5 BitNet alone vs. engine final:</strong> the major sparkline above (<code class="font-mono">100% · 4 / 4</code>) is the <em>engine</em> final verdict. Layer 4.5 BitNet alone catches <strong>3 of 4</strong> majors — it misses <code class="font-mono">tacrolimus + voriconazole</code> (P-gp + strong CYP3A4 cross-mechanism, predicted "none"). The engine still emits <code class="font-mono">major</code> for that pair because Layer 4.5 <strong>preserves upstream</strong> when it disagrees by downgrading; <code class="font-mono">BITNET_SAFETY_DOWNGRADE_DISAGREEMENT</code> fires in <code class="font-mono">scripts/run_clinical_regression_eval.py</code> on every run, surfacing the disagreement for clinical review. This is the architectural ceiling of a hash-only encoder; pinned by <code class="font-mono">tests/test_engine/test_bitnet_alone_major_recall_pin.py</code>.
+            <strong class="text-slate-700">⚠️ Layer 4.5 BitNet alone vs. engine final:</strong> the major sparkline above (<code class="font-mono">100% · 4 / 4</code>) is the <em>engine</em> final verdict. The <strong>currently-shipped iter-72 bundle</strong> (<code class="font-mono">cfadb4f6</code>, hash-only 128-dim encoder) catches <strong>3 of 4</strong> majors — it misses <code class="font-mono">tacrolimus + voriconazole</code> (P-gp + strong CYP3A4 cross-mechanism, predicted "none"). The engine still emits <code class="font-mono">major</code> for that pair because Layer 4.5 <strong>preserves upstream</strong> when it disagrees by downgrading; <code class="font-mono">BITNET_SAFETY_DOWNGRADE_DISAGREEMENT</code> fires on every run. <strong class="text-clinical-green">Iter-148 broke the ceiling:</strong> the <strong>Path A v3 full-recall bundle</strong> (<code class="font-mono">eea0e637…</code>, 193-dim feature input with 26-flag ATC pharmacology table + 13 pair-derived DDI-rule bits, seed=5 of 30-seed sweep) hits <strong class="text-clinical-green">4 / 4 major (100%) AND 29 / 29 contraindicated (100%)</strong> on the live cache with 1 safety-conservative FP — staged at <code class="font-mono">retrain_runpod/bitnet_weights_v3_full.json</code>. Engine promotion of <code class="font-mono">eea0e637…</code> requires the load-bearing 4-6 h cascade (encoder refactor + JS bit-identity mirror + audit-replay regen + manifest SHA rotation + 32 audit-pin re-replay). Pinned by <code class="font-mono">tests/test_engine/test_bitnet_alone_major_recall_pin.py</code>.
           </p>
         </div>
       </div>
@@ -1315,7 +1320,7 @@ tailwind.config = {
         </svg>
         <p class="text-[10px] text-slate-500 mt-1 text-right font-mono">recall = 8 / 29 = 28% on contraindicated</p>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_seven</strong> (the recall floor — ratcheted iter-117 from 6 → 7 because BitNet has held TP=7 since iter-104). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
-        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Path A — curated pharmacology table SHIPPED (iter 140), bundle PROVEN AT 100% RECALL (iter 146), engine integration on the deferred 4-6 h cascade</strong> — <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a <strong>26-flag</strong> ATC pharmacology table (13 baseline iter-96 flags + 12 iter-140 closure flags covering iodinated-contrast, CYP1A2, xanthine-oxidase, thiopurine, folate-antagonist, tetracycline, retinoid, ACE, neprilysin, metformin, renal-state + 1 iter-146 FDA-correct re-tier flag <code class="font-mono text-[10px]">is_cyp3a4_moderate_inhibitor</code> separating clarithromycin/itraconazole/ketoconazole/ritonavir/voriconazole/cyclosporine STRONG class from erythromycin/diltiazem/verapamil/fluconazole/dronedarone MODERATE class) with FDA-label citations per drug, <strong>plus 13 pair-derived DDI-rule bits</strong> (was 6 pre-iter-140). The curated table now explains <strong class="text-clinical-green">29 / 29 contraindicated cache entries (100% explanation coverage)</strong>. <strong class="text-clinical-green">Iter 146 trained the Path A v2 bundle</strong> at <strong>193-dim feature input</strong> (64 hash trits + 26 flag bits per drug × 2 + 13 pair-derived = 193) hitting <strong class="text-clinical-green">29 / 29 = 100% live cache contraindicated recall</strong> with 1 FP (<code class="font-mono text-[10px]">amlodipine + simvastatin</code> — FDA Zocor label limits simvastatin 20mg with amlodipine; ground-truth labelled <em>moderate</em>, model labelled <em>contra</em> = safety-conservative miscalibration not a dangerous false-positive). Bundle saved at <code class="font-mono text-[10px]">retrain_runpod/bitnet_weights_v3_atc.json</code> with <code class="font-mono text-[10px]">bundle_id 326e3301…</code>; <strong>NOT auto-promoted to engine</strong> — the shipped <code class="font-mono text-[10px]">engine/bitnet_classifier.py::load_weights</code> hardcodes a 128-dim feature × 64-hidden architecture (the iter-72 baseline cfadb4f6, the precision-respecting 0-FP safety floor). Engine promotion of <code class="font-mono text-[10px]">326e3301</code> requires the load-bearing 4-6 h cascade (encoder refactor + JS bit-identity mirror + audit-replay regen + manifest SHA rotation + 32 audit-pin re-replay).</p>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Path A — curated pharmacology table SHIPPED (iter 140), bundle PROVEN AT 100% RECALL (iter 146), engine integration on the deferred 4-6 h cascade</strong> — <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a <strong>26-flag</strong> ATC pharmacology table (13 baseline iter-96 flags + 12 iter-140 closure flags covering iodinated-contrast, CYP1A2, xanthine-oxidase, thiopurine, folate-antagonist, tetracycline, retinoid, ACE, neprilysin, metformin, renal-state + 1 iter-146 FDA-correct re-tier flag <code class="font-mono text-[10px]">is_cyp3a4_moderate_inhibitor</code> separating clarithromycin, itraconazole, ketoconazole, ritonavir, voriconazole, cyclosporine STRONG class from erythromycin, diltiazem, verapamil, fluconazole, dronedarone MODERATE class) with FDA-label citations per drug, <strong>plus 13 pair-derived DDI-rule bits</strong> (was 6 pre-iter-140). The curated table now explains <strong class="text-clinical-green">29 / 29 contraindicated cache entries (100% explanation coverage)</strong>. <strong class="text-clinical-green">Iter 146 trained the Path A v2 bundle</strong> at <strong>193-dim feature input</strong> (64 hash trits + 26 flag bits per drug × 2 + 13 pair-derived = 193) hitting <strong class="text-clinical-green">29 / 29 = 100% live cache contraindicated recall</strong> with 1 FP (<code class="font-mono text-[10px]">amlodipine + simvastatin</code> — FDA Zocor label limits simvastatin 20mg with amlodipine; ground-truth labelled <em>moderate</em>, model labelled <em>contra</em> = safety-conservative miscalibration not a dangerous false-positive). Bundle saved at <code class="font-mono text-[10px]">retrain_runpod/bitnet_weights_v3_atc.json</code> with <code class="font-mono text-[10px]">bundle_id 326e3301…</code>; <strong>NOT auto-promoted to engine</strong> — the shipped <code class="font-mono text-[10px]">engine/bitnet_classifier.py::load_weights</code> hardcodes a 128-dim feature × 64-hidden architecture (the iter-72 baseline cfadb4f6, the precision-respecting 0-FP safety floor). Engine promotion of <code class="font-mono text-[10px]">326e3301</code> requires the load-bearing 4-6 h cascade (encoder refactor + JS bit-identity mirror + audit-replay regen + manifest SHA rotation + 32 audit-pin re-replay).</p>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">🎯 <strong>Calibration / margin diagnostic</strong> — <code class="font-mono text-[10px]">docs/bitnet_calibration.json</code> records every pair's top-1-vs-top-2 logit margin so an FDA reviewer can see <em>when</em> the model is uncertain, not just whether it's right. The smallest-margin contraindicated miss (<code class="font-mono">itraconazole + simvastatin</code>) is at Q16.16 margin <strong>90,199 ≈ 1.38</strong> — a close call, not a confident misclassification. Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_calibration.py</code>.</p>
         <details class="mt-2 group">
           <summary class="text-[10px] text-slate-700 leading-relaxed cursor-pointer select-none list-none flex items-start gap-1.5 hover:text-slate-900 transition-colors">
@@ -1345,7 +1350,7 @@ tailwind.config = {
         Every demo finding traces back to a typed FHIR R4 resource &mdash; <span id="fhir-resource-count" class="font-bold text-clinical-blue">18</span> resources covering Patient, 4 Practitioners (with HHS NPI identifiers, Luhn-validated), Conditions, AllergyIntolerance, MedicationStatements, and Observations. Same shape Epic, Cerner, and every certified EHR speak.
       </p>
     </div>
-    <div id="fhir-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div id="fhir-grid" class="space-y-5">
       <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
     </div>
     <p class="text-xs text-slate-500 mt-6 leading-relaxed border-l-2 border-clinical-blue/40 pl-3 bg-blue-50/30 py-2 rounded-r max-w-3xl mx-auto">
@@ -2520,20 +2525,200 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.addEventListener('click', bitnetClassify);
   }
 
-  // ─── FHIR R4 Bundle tile (sarah_mitchell_fhir.json) ─────────────────
-  const FHIR_ICONS = {
-    Patient: '\u{1F464}', Condition: '\u{1FA7A}', AllergyIntolerance: '⚠️',
-    MedicationStatement: '\u{1F48A}', Observation: '\u{1F4C8}',
-    Practitioner: '\u{1FA7A}\u{1F4DD}',
+  // ─── FHIR R4 Bundle (sarah_mitchell_fhir.json) ──────────────────────
+  // Resources grouped by type — one section per FHIR resource type with
+  // its own kicker, accent color, and inline-SVG icon (no emoji). The
+  // Practitioner group is the most visual: each doctor gets a circular
+  // avatar with role-coded color, full name + degree + specialty +
+  // NPI + Luhn-valid stamp.
+  const FHIR_GROUP_META = {
+    Patient: {
+      kicker: 'Patient',
+      color: 'blue',
+      hex: '#0369A1',
+    },
+    Practitioner: {
+      kicker: 'Care team',
+      color: 'indigo',
+      hex: '#4F46E5',
+    },
+    Condition: {
+      kicker: 'Active conditions',
+      color: 'amber',
+      hex: '#D97706',
+    },
+    AllergyIntolerance: {
+      kicker: 'Allergies',
+      color: 'red',
+      hex: '#DC2626',
+    },
+    MedicationStatement: {
+      kicker: 'Medications',
+      color: 'purple',
+      hex: '#7C3AED',
+    },
+    Observation: {
+      kicker: 'Lab observations',
+      color: 'green',
+      hex: '#059669',
+    },
   };
-  const FHIR_COLORS = {
-    Patient:               'bg-blue-50 text-clinical-blue border-blue-200',
-    Condition:             'bg-amber-50 text-clinical-amber border-amber-200',
-    AllergyIntolerance:    'bg-red-50 text-clinical-red border-red-200',
-    MedicationStatement:   'bg-purple-50 text-clinical-purple border-purple-200',
-    Observation:           'bg-green-50 text-clinical-green border-green-200',
-    Practitioner:          'bg-indigo-50 text-indigo-600 border-indigo-200',
-  };
+
+  // Specialty → initials + accent color for the Practitioner avatars
+  function practitionerInitials(name) {
+    if (!name) return '?';
+    const given = name.given?.[0] || '';
+    const family = name.family || '';
+    return ((given[0] || '') + (family[0] || '')).toUpperCase() || '?';
+  }
+
+  function specialtyAccent(qual) {
+    const t = (qual || '').toLowerCase();
+    if (t.includes('cardio')) return { bg: '#FEE2E2', fg: '#B91C1C' };       // heart
+    if (t.includes('nephro') || t.includes('renal')) return { bg: '#DBEAFE', fg: '#1D4ED8' };  // kidney
+    if (t.includes('endo') || t.includes('diabet')) return { bg: '#DCFCE7', fg: '#166534' };   // sugar
+    if (t.includes('emerg') || t.includes('er ')) return { bg: '#FEF3C7', fg: '#92400E' };
+    if (t.includes('pcp') || t.includes('family') || t.includes('primary')) return { bg: '#E0E7FF', fg: '#4338CA' };
+    if (t.includes('infect')) return { bg: '#FFE4E6', fg: '#9F1239' };
+    return { bg: '#F1F5F9', fg: '#475569' };
+  }
+
+  function patientCard(r) {
+    const name = r.name?.[0] ? `${r.name[0].given?.join(' ') || ''} ${r.name[0].family || ''}`.trim() : '?';
+    const dob = r.birthDate || '';
+    const gender = r.gender || '';
+    const mrn = (r.identifier || []).find(i => (i.type?.text || '').toLowerCase().includes('medical') || (i.system || '').includes('mrn'))?.value || '';
+    return `
+      <div class="card p-5 bg-gradient-to-br from-blue-50 to-white border-blue-200">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-clinical-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display font-bold text-base text-slate-900 truncate">${escapeHtml(name)}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(gender)}${gender ? ' · ' : ''}DOB ${escapeHtml(dob)}${mrn ? ' · MRN ' + escapeHtml(mrn) : ''}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function practitionerCard(r) {
+    const name = r.name?.[0] ? `${r.name[0].prefix?.[0] || ''} ${r.name[0].given?.join(' ') || ''} ${r.name[0].family || ''}`.replace(/\s+/g, ' ').trim() : '?';
+    const initials = practitionerInitials(r.name?.[0]);
+    const taxonomy = r.qualification?.[0]?.code?.text || '';
+    const npi = (r.identifier || []).find(i => (i.system || '').endsWith('us-npi'))?.value || '';
+    const accent = specialtyAccent(taxonomy);
+    return `
+      <article class="card p-4 bg-white hover:border-indigo-300 transition-colors">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 font-display font-bold text-sm" style="background:${accent.bg};color:${accent.fg}">${escapeHtml(initials)}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-display font-bold text-sm text-slate-900 leading-tight truncate" title="${escapeHtml(name)}">${escapeHtml(name)}</h4>
+            ${taxonomy ? `<p class="text-[11px] text-slate-500 mt-0.5 truncate">${escapeHtml(taxonomy)}</p>` : ''}
+          </div>
+        </div>
+        ${npi ? `
+        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+          <span class="text-[10px] font-mono text-indigo-600 break-all">NPI ${escapeHtml(npi)}</span>
+          <span class="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-50 text-clinical-green border border-green-200 flex-shrink-0">
+            <svg class="w-2.5 h-2.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/></svg>
+            Luhn
+          </span>
+        </div>` : ''}
+      </article>
+    `;
+  }
+
+  function conditionCard(r) {
+    const title = r.code?.text || r.code?.coding?.[0]?.display || r.id || 'Condition';
+    const code = r.code?.coding?.[0]?.code || '';
+    const system = (r.code?.coding?.[0]?.system || '').split('/').pop();
+    const status = r.clinicalStatus?.coding?.[0]?.code || r.status || '';
+    return `
+      <div class="rounded-lg border border-amber-200 bg-amber-50/40 px-3 py-2.5 flex items-start justify-between gap-2">
+        <div class="flex items-start gap-2 min-w-0 flex-1">
+          <span class="w-2 h-2 rounded-full bg-clinical-amber mt-1.5 flex-shrink-0"></span>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-slate-800 truncate">${escapeHtml(title)}</div>
+            ${code ? `<div class="text-[10px] font-mono text-slate-400 truncate">${escapeHtml(system)} ${escapeHtml(code)}${status ? ' · ' + escapeHtml(status) : ''}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function allergyCard(r) {
+    const title = r.code?.text || r.code?.coding?.[0]?.display || r.id;
+    const crit = r.criticality || '';
+    return `
+      <div class="rounded-lg border border-red-200 bg-red-50/40 px-3 py-2.5 flex items-start gap-2">
+        <svg class="w-4 h-4 text-clinical-red flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold text-slate-800">${escapeHtml(title)}</div>
+          ${crit ? `<div class="text-[10px] font-semibold uppercase tracking-wider text-clinical-red">criticality: ${escapeHtml(crit)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function medicationCard(r) {
+    const title = r.medicationCodeableConcept?.text || r.medicationCodeableConcept?.coding?.[0]?.display || r.id;
+    const code = r.medicationCodeableConcept?.coding?.[0]?.code || '';
+    const system = (r.medicationCodeableConcept?.coding?.[0]?.system || '').split('/').pop();
+    const status = r.status || '';
+    return `
+      <div class="rounded-lg border border-purple-200 bg-purple-50/40 px-3 py-2.5 flex items-start gap-2">
+        <svg class="w-4 h-4 text-clinical-purple flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2"/></svg>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold text-slate-800 truncate">${escapeHtml(title)}</div>
+          ${code ? `<div class="text-[10px] font-mono text-slate-400 truncate">${escapeHtml(system)} ${escapeHtml(code)}${status ? ' · ' + escapeHtml(status) : ''}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function observationCard(r) {
+    const title = r.code?.text || r.code?.coding?.[0]?.display || r.id;
+    const value = r.valueQuantity ? `${r.valueQuantity.value} ${r.valueQuantity.unit || ''}` : (r.valueCodeableConcept?.text || '');
+    const status = r.status || '';
+    return `
+      <div class="rounded-lg border border-emerald-200 bg-emerald-50/40 px-3 py-2.5 flex items-start gap-2">
+        <svg class="w-4 h-4 text-clinical-green flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l-2 2m0 0L5 6m4 4h6m-6 4h4m6-8v13a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h6l4 4z"/></svg>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold text-slate-800 truncate">${escapeHtml(title)}</div>
+          ${value ? `<div class="text-xs text-clinical-green font-mono">${escapeHtml(value)}${status ? ' · ' + escapeHtml(status) : ''}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  function groupSection(rt, cards, count) {
+    const meta = FHIR_GROUP_META[rt];
+    if (!meta || cards.length === 0) return '';
+    const colorMap = {
+      blue:   { ring: 'border-blue-200',   text: 'text-clinical-blue',  bg: 'bg-blue-50/30' },
+      indigo: { ring: 'border-indigo-200', text: 'text-indigo-600',     bg: 'bg-indigo-50/30' },
+      amber:  { ring: 'border-amber-200',  text: 'text-clinical-amber', bg: 'bg-amber-50/30' },
+      red:    { ring: 'border-red-200',    text: 'text-clinical-red',   bg: 'bg-red-50/30' },
+      purple: { ring: 'border-purple-200', text: 'text-clinical-purple',bg: 'bg-purple-50/30' },
+      green:  { ring: 'border-green-200',  text: 'text-clinical-green', bg: 'bg-green-50/30' },
+    };
+    const c = colorMap[meta.color];
+    const layoutClass = (rt === 'Practitioner' || rt === 'Patient')
+      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'
+      : 'grid grid-cols-1 sm:grid-cols-2 gap-2';
+    return `
+      <div class="rounded-2xl border ${c.ring} ${c.bg} p-4 sm:p-5">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-[0.16em] ${c.text}">${meta.kicker}</span>
+          <span class="text-[10px] font-mono text-slate-500">${count} resource${count === 1 ? '' : 's'}</span>
+        </div>
+        <div class="${layoutClass}">${cards.join('')}</div>
+      </div>
+    `;
+  }
+
   async function renderFhir() {
     const grid = document.getElementById('fhir-grid');
     const countEl = document.getElementById('fhir-resource-count');
@@ -2547,47 +2732,30 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (countEl) countEl.textContent = `${bundle.entry.length}`;
-    grid.innerHTML = bundle.entry.map(e => {
-      const r = e.resource;
-      const rt = r.resourceType;
-      const icon = FHIR_ICONS[rt] || '\u{1F4C4}';
-      const color = FHIR_COLORS[rt] || 'bg-slate-100 text-slate-600 border-slate-200';
-      const title = (
-        r.text || r.code?.text || r.code?.coding?.[0]?.display ||
-        r.medicationCodeableConcept?.text || r.medicationCodeableConcept?.coding?.[0]?.display ||
-        (r.name?.[0] ? `${r.name[0].given?.join(' ') || ''} ${r.name[0].family || ''}`.trim() : '') ||
-        r.id || rt
-      );
-      // NPI extraction (Practitioner only) — surface CMS identifier so
-      // judges immediately see real provider attribution, not a stub.
-      let npi = '';
-      if (rt === 'Practitioner' && Array.isArray(r.identifier)) {
-        const found = r.identifier.find(i => (i.system || '').endsWith('us-npi'));
-        if (found) npi = found.value;
+
+    const buckets = { Patient: [], Practitioner: [], Condition: [], AllergyIntolerance: [], MedicationStatement: [], Observation: [], Other: [] };
+    bundle.entry.forEach(e => {
+      const r = e.resource; const rt = r.resourceType;
+      switch (rt) {
+        case 'Patient':              buckets.Patient.push(patientCard(r)); break;
+        case 'Practitioner':         buckets.Practitioner.push(practitionerCard(r)); break;
+        case 'Condition':            buckets.Condition.push(conditionCard(r)); break;
+        case 'AllergyIntolerance':   buckets.AllergyIntolerance.push(allergyCard(r)); break;
+        case 'MedicationStatement':  buckets.MedicationStatement.push(medicationCard(r)); break;
+        case 'Observation':          buckets.Observation.push(observationCard(r)); break;
+        default:
+          buckets.Other.push(`<div class="rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2.5 text-xs text-slate-500">${escapeHtml(rt)}: ${escapeHtml(r.id || '')}</div>`);
       }
-      const taxonomy = (rt === 'Practitioner' && r.qualification?.[0]?.code?.text) || '';
-      const subtitle = r.criticality ? `criticality: ${r.criticality}` :
-                       r.valueQuantity ? `${r.valueQuantity.value} ${r.valueQuantity.unit}` :
-                       taxonomy ? taxonomy :
-                       r.status ? `status: ${r.status}` :
-                       r.gender ? `${r.gender} · born ${r.birthDate}` : '';
-      const code = r.code?.coding?.[0]?.code || r.medicationCodeableConcept?.coding?.[0]?.code || '';
-      const system = (r.code?.coding?.[0]?.system || r.medicationCodeableConcept?.coding?.[0]?.system || '').split('/').pop();
-      return `
-        <article class="card p-4 bg-white">
-          <div class="flex items-start gap-2 mb-2">
-            <div class="text-xl flex-shrink-0">${icon}</div>
-            <div class="flex-1 min-w-0">
-              <span class="inline-flex text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border ${color} mb-1">${rt}</span>
-              <h3 class="font-display font-bold text-sm text-slate-900 truncate" title="${escapeHtml(title)}">${escapeHtml(title)}</h3>
-              ${subtitle ? `<p class="text-xs text-slate-400 mt-0.5 truncate">${escapeHtml(subtitle)}</p>` : ''}
-            </div>
-          </div>
-          ${npi ? `<p class="text-[10px] font-mono text-indigo-600 mt-1">NPI: ${escapeHtml(npi)} <span class="text-slate-400">(CMS Luhn-valid)</span></p>` : ''}
-          ${code ? `<p class="text-[10px] font-mono text-slate-400 mt-1">${escapeHtml(system)}: ${escapeHtml(code)}</p>` : ''}
-        </article>
-      `;
-    }).join('');
+    });
+
+    const order = ['Patient', 'Practitioner', 'Condition', 'AllergyIntolerance', 'MedicationStatement', 'Observation'];
+    const html = order
+      .map(rt => groupSection(rt, buckets[rt], buckets[rt].length))
+      .filter(Boolean)
+      .join('');
+    grid.innerHTML = html + (buckets.Other.length
+      ? `<div class="rounded-2xl border border-slate-200 bg-slate-50/30 p-4 sm:p-5"><span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Other</span><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">${buckets.Other.join('')}</div></div>`
+      : '');
   }
 
   function init() {
