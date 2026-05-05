@@ -253,3 +253,137 @@ class TestBlockTermsEmptyAfterStopwords:
         ]
         result = verify_claim_against_blocks(claim, blocks)
         assert "b1" not in result.evidence_block_ids
+
+
+# ─── Iter-151 logger-density ratchet pin (T4 round-29) ───────────────
+#
+# engine/hallucination_detector.py was the lowest-density observability
+# file in engine/ at 14.4 logger calls / kloc (3 logs / 208 LOC). Same
+# ratchet pattern as iter-138 (engine/clinical_memory.py 13.7 -> 27.5)
+# and iter-144 (engine/flow_runner.py 12.3 -> 18.0).
+#
+# Four silent paths closed:
+#   1. ground_check entry  (DEBUG hallucination_check_start) — text_length
+#      + block_count + threshold; lets an operator see invocation rate.
+#   2. ground_check empty-evidence edge case (WARNING
+#      hallucination_check_no_evidence) — release-blocking
+#      misconfiguration where every claim auto-ungrounds.
+#   3. verify_claim_against_blocks stop-word-only path (DEBUG
+#      hallucination_claim_stop_word_only) — diagnostic for stop-word
+#      list tuning.
+#   4. ground_check completion (INFO hallucination_check_done) — always-
+#      emit summary with claim_count + grounded_count + ungrounded_count
+#      + grounding_score.
+#
+# Net: 3 -> 7 logger calls (+4 events). Density 14.4 -> 27.1/kloc.
+#
+# PHI-safe metadata across all 4 events: text_length, block_count,
+# claim_count, grounded_count, ungrounded_count, grounding_score,
+# threshold (numeric or constant). The events MUST NEVER include the
+# original text, claim text, block content, or evidence snippets —
+# pin the negative paranoia scan below.
+
+import logging
+
+
+class TestHallucinationLoggerRatchetIter151:
+    """Iter-151 T4 round-29 — logger density ratchet pin."""
+
+    def test_ground_check_entry_emits_debug_start(self, caplog):
+        with caplog.at_level(logging.DEBUG, logger='engine.hallucination_detector'):
+            ground_check("Patient takes metformin.", [
+                _block("b1", "metformin 500mg"),
+            ])
+        starts = [r for r in caplog.records if r.message == 'hallucination_check_start']
+        assert len(starts) >= 1, "ground_check must emit hallucination_check_start"
+        rec = starts[0]
+        for field in ('text_length', 'block_count', 'threshold'):
+            assert hasattr(rec, field), f"hallucination_check_start missing {field}"
+
+    def test_ground_check_empty_blocks_emits_warning(self, caplog):
+        """Release-blocking: empty blocks + non-empty text WARN."""
+        with caplog.at_level(logging.WARNING, logger='engine.hallucination_detector'):
+            ground_check("Patient takes metformin.", [])
+        warns = [r for r in caplog.records if r.message == 'hallucination_check_no_evidence']
+        assert len(warns) >= 1, (
+            "ground_check with empty patient_blocks must emit a WARNING "
+            "(operators see misconfigurations even at default verbosity)"
+        )
+        rec = warns[0]
+        assert getattr(rec, 'block_count', None) == 0
+        assert getattr(rec, 'text_length', 0) > 0
+
+    def test_ground_check_done_always_emits_info_summary(self, caplog):
+        with caplog.at_level(logging.INFO, logger='engine.hallucination_detector'):
+            ground_check("Patient takes metformin.", [
+                _block("b1", "metformin 500mg dosage"),
+            ])
+        dones = [r for r in caplog.records if r.message == 'hallucination_check_done']
+        assert len(dones) == 1, (
+            "ground_check must emit exactly one hallucination_check_done summary "
+            "per invocation"
+        )
+        rec = dones[0]
+        for field in ('text_length', 'block_count', 'claim_count',
+                      'grounded_count', 'ungrounded_count', 'grounding_score'):
+            assert hasattr(rec, field), f"hallucination_check_done missing {field}"
+
+    def test_stop_word_only_claim_emits_debug(self, caplog):
+        """The stop-word-only edge case fires a DEBUG event for tuning."""
+        with caplog.at_level(logging.DEBUG, logger='engine.hallucination_detector'):
+            verify_claim_against_blocks("the and for with", [_block("b1", "metformin")])
+        recs = [r for r in caplog.records
+                if r.message == 'hallucination_claim_stop_word_only']
+        assert len(recs) >= 1
+        assert hasattr(recs[0], 'claim_length')
+        assert hasattr(recs[0], 'block_count')
+
+    def test_logger_calls_never_log_phi_text(self, caplog):
+        """Paranoia scan: a sentinel medication name + sentinel block content
+        must NOT appear in ANY log record's message OR record attributes
+        (catches accidental %s text-leak regressions)."""
+        sentinel_med = "ZZZSENTINELDRUG_PHI_LEAK"
+        sentinel_block = "ZZZSENTINELBLOCK_PHI_LEAK"
+        with caplog.at_level(logging.DEBUG, logger='engine.hallucination_detector'):
+            ground_check(
+                f"Patient is taking {sentinel_med} 100mg daily.",
+                [_block("b1", sentinel_block)],
+            )
+        for rec in caplog.records:
+            # Stringify the entire record (message + extras + args) and
+            # paranoia-grep both sentinels.
+            haystack = (
+                str(rec.message) + ' ' + str(getattr(rec, 'msg', '')) + ' '
+                + ' '.join(str(v) for v in (rec.args or ()))
+            )
+            for slot in vars(rec).values():
+                # nested values (lists/tuples/dicts) might be in extra
+                if isinstance(slot, (list, tuple)):
+                    haystack += ' ' + ' '.join(str(s) for s in slot)
+                elif isinstance(slot, dict):
+                    haystack += ' ' + ' '.join(str(v) for v in slot.values())
+                else:
+                    haystack += ' ' + str(slot)
+            assert sentinel_med not in haystack, (
+                f"PHI LEAK: claim text '{sentinel_med}' appeared in log record "
+                f"{rec.message!r} — hallucination_detector must NEVER emit "
+                "claim text into structured logs."
+            )
+            assert sentinel_block not in haystack, (
+                f"PHI LEAK: block content '{sentinel_block}' appeared in log "
+                f"record {rec.message!r}"
+            )
+
+    def test_logger_density_floor(self):
+        """Floor: hallucination_detector.py must keep >= 7 logger calls.
+        Iter-151 ratchet bumped 3 -> 8 (+5 events including no-claims fast path); future regressions
+        below 7 fail this gate."""
+        import re
+        from pathlib import Path
+        path = Path(__file__).resolve().parent.parent.parent / 'engine' / 'hallucination_detector.py'
+        text = path.read_text()
+        count = len(re.findall(r'logger\.(debug|info|warning|error|critical)', text))
+        assert count >= 8, (
+            f"engine/hallucination_detector.py logger density regressed: "
+            f"got {count}, floor=8 (iter-151 ratchet)"
+        )

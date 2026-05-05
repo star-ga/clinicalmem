@@ -93,6 +93,15 @@ def verify_claim_against_blocks(
     claim_terms -= stop_words
 
     if not claim_terms:
+        # Stop-word-only claim — verifiable noise. Surface for diagnostic
+        # tuning of the stop-word list. PHI-safe: never logs the claim text.
+        logger.debug(
+            "hallucination_claim_stop_word_only",
+            extra={
+                "claim_length": len(claim),
+                "block_count": len(blocks),
+            },
+        )
         return ClaimVerification(
             claim=claim,
             grounded=False,
@@ -151,12 +160,50 @@ def ground_check(
 
     Returns a GroundingReport with per-claim verification and overall score.
     """
+    # Entry-point INFO log so an operator can see grounding-gate
+    # invocations on every clinical narrative without raising verbosity.
+    # PHI-safe: counts + threshold only; never the text or block content.
+    logger.debug(
+        "hallucination_check_start",
+        extra={
+            "text_length": len(text),
+            "block_count": len(patient_blocks),
+            "threshold": threshold,
+        },
+    )
+
+    # Empty-evidence is a release-blocking misconfiguration: a deployment
+    # with no blocks will mark every claim ungrounded. Operators must
+    # see this even at default verbosity.
+    if not patient_blocks and len(text.strip()) > 0:
+        logger.warning(
+            "hallucination_check_no_evidence",
+            extra={
+                "text_length": len(text),
+                "block_count": 0,
+                "threshold": threshold,
+            },
+        )
+
     claims = extract_clinical_claims(text)
 
     if not claims:
         logger.debug(
             "hallucination_check_no_claims",
             extra={"text_length": len(text), "block_count": len(patient_blocks)},
+        )
+        # Even on the no-claims fast path, emit the same INFO summary so
+        # an operator can grep `hallucination_check_done` for every call.
+        logger.info(
+            "hallucination_check_done",
+            extra={
+                "text_length": len(text),
+                "block_count": len(patient_blocks),
+                "claim_count": 0,
+                "grounded_count": 0,
+                "ungrounded_count": 0,
+                "grounding_score": 1.0,
+            },
         )
         return GroundingReport(
             text=text,
@@ -197,6 +244,22 @@ def ground_check(
                 "grounding_score": round(score, 3),
             },
         )
+
+    # Always emit a structured INFO summary on completion so an operator
+    # can see grounding-gate throughput + score distribution without
+    # raising to DEBUG (which would expose the no-claims/clean events
+    # too). PHI-safe: aggregate counts + score only.
+    logger.info(
+        "hallucination_check_done",
+        extra={
+            "text_length": len(text),
+            "block_count": len(patient_blocks),
+            "claim_count": len(verifications),
+            "grounded_count": len(grounded),
+            "ungrounded_count": len(ungrounded),
+            "grounding_score": round(score, 3),
+        },
+    )
 
     return GroundingReport(
         text=text,
