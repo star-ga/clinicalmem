@@ -51,27 +51,21 @@ Only the weights bundle and the drug-encoding table change.
 
 ### Network topology
 
-```
-                 ┌──────────────────────────────────────────────┐
-                 │  RxCUI[A] ──► 256-trit learned embed (table) │
-                 │  RxCUI[B] ──► 256-trit learned embed (table) │
-                 │           ──concat──►   512-trit pair input  │
-                 └──────────────────────────────────────────────┘
-                                        │
-                                        ▼
-                          ┌──────────────────────────┐
-                          │  Hidden 1   512 → 256    │  ternary, ReLU
-                          ├──────────────────────────┤
-                          │  Hidden 2   256 → 128    │  ternary, ReLU
-                          ├──────────────────────────┤
-                          │  Hidden 3   128 → 64     │  ternary, ReLU
-                          ├──────────────────────────┤
-                          │  Output      64 → 5      │  ternary, argmax
-                          └──────────────────────────┘
-                                        │
-                                        ▼
-                  severity ∈ {none, minor, moderate, major, contraindicated}
-                  + Q16.16 logits + SHA-256 repro_hash
+```mermaid
+flowchart TB
+    subgraph embed["Embedding (256-trit learned table per drug)"]
+        rxA["RxCUI[A] &mdash; 256 trits"]
+        rxB["RxCUI[B] &mdash; 256 trits"]
+    end
+    embed --> pair["512-trit pair input (concat)"]
+    pair --> h1["Hidden 1 &mdash; 512 → 256<br/>ternary, ReLU"]
+    h1 --> h2["Hidden 2 &mdash; 256 → 128<br/>ternary, ReLU"]
+    h2 --> h3["Hidden 3 &mdash; 128 → 64<br/>ternary, ReLU"]
+    h3 --> out["Output &mdash; 64 → 5<br/>ternary, argmax"]
+    out --> result["severity ∈ {none, minor, moderate, major, contraindicated}<br/>+ Q16.16 logits + SHA-256 repro_hash"]
+
+    classDef tier fill:#F0FDFA,stroke:#0F766E,stroke-width:1.5px,color:#0F172A
+    class embed,h1,h2,h3,out,result tier
 ```
 
 ### Parameter and disk budget

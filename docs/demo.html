@@ -656,7 +656,7 @@ tailwind.config = {
           <circle cx="200" cy="200" r="150" fill="none" stroke="#0369A1" stroke-opacity="0.18" stroke-width="0.6"/>
           <g font-family="JetBrains Mono, monospace" font-size="8" fill="#0369A1" letter-spacing="1.5">
             <text x="200" y="64"  text-anchor="middle">RXNORM · OPENEVIDENCE · NIH</text>
-            <text x="200" y="346" text-anchor="middle">5-LLM US-BASED CONSENSUS</text>
+            <text x="200" y="346" text-anchor="middle">6-LLM US-BASED CONSENSUS</text>
           </g>
         </svg>
         <!-- Inner ring (fastest) — six pipeline layers as dots -->
@@ -1108,7 +1108,7 @@ tailwind.config = {
           <svg class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </summary>
         <div class="mt-3 text-left space-y-2 leading-relaxed">
-          <p>Primary recall comes from layers 1&ndash;4: RxNorm, OpenEvidence, NIH RxNav, and 5-LLM consensus. Layer 4.5's job is <em>deterministic verification</em>, not headline accuracy.</p>
+          <p>Primary recall comes from layers 1&ndash;4: RxNorm, OpenEvidence, NIH RxNav, and 6-LLM US-based consensus. Layer 4.5's job is <em>deterministic verification</em>, not headline accuracy.</p>
           <p>Held-out test-set accuracy: <strong>85.7%</strong> per-class on the <code class="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">contraindicated</code> class (n=42).</p>
           <p>When Layer 4.5 disagrees with the upstream pipeline by predicting <code class="font-mono text-xs">none</code>/<code class="font-mono text-xs">minor</code> on a <code class="font-mono text-xs">contraindicated</code> pair, the safer verdict always wins and an alert fires.</p>
           <p>Reference: <a href="https://arxiv.org/abs/2402.17764" class="text-po-orange hover:underline" target="_blank" rel="noopener">arXiv:2402.17764</a> (BitNet b1.58, Ma et al. 2024).</p>
@@ -1133,7 +1133,7 @@ tailwind.config = {
         </div>
         <div class="space-y-2 mt-4 text-sm">
           <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-green mt-1.5 flex-shrink-0"></span><span><strong>Layer 1</strong> — deterministic table catches known pairs (microseconds, offline)</span></div>
-          <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span><span>Layer 2/3/4 &mdash; OpenEvidence + NIH RxNorm + 5-LLM consensus (online, cloud)</span></div>
+          <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span><span>Layer 2/3/4 &mdash; OpenEvidence + NIH RxNorm + 6-LLM US-based consensus (online, cloud)</span></div>
           <div class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-clinical-purple mt-1.5 flex-shrink-0"></span><span><strong>Layer 4.5 BitNet</strong> &mdash; runs after every reported interaction, emits <code class="font-mono text-xs">repro_hash</code> recorded into the audit chain alongside the upstream finding</span></div>
         </div>
       </article>
@@ -1255,7 +1255,7 @@ tailwind.config = {
         <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (124 pairs). Diagonal = correct. The empty <code class="font-mono">minor</code> (<strong>0 of 124</strong>) and <code class="font-mono">serious</code> (<strong>0 of 124</strong>) columns are by design &mdash; both classes are carried by the upstream 4-tier pipeline (RxNorm + OpenEvidence + NIH RxNav + 5-LLM consensus); Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>, sitting <em>below</em> those layers, not competing with them. Pinned by <code class="font-mono">tests/test_engine/test_bitnet_design_class_abstention_pin.py</code>.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drawn from <code class="font-mono text-[10px]">docs/bitnet_confusion_matrix.json</code> (124 pairs). Diagonal = correct. The empty <code class="font-mono">minor</code> (<strong>0 of 124</strong>) and <code class="font-mono">serious</code> (<strong>0 of 124</strong>) columns are by design &mdash; both classes are carried by the upstream 4-tier pipeline (RxNorm + OpenEvidence + NIH RxNav + 6-LLM US-based consensus); Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>, sitting <em>below</em> those layers, not competing with them. Pinned by <code class="font-mono">tests/test_engine/test_bitnet_design_class_abstention_pin.py</code>.</p>
           </div>
           <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">0 FP · contraindicated</span>
         </div>
@@ -1499,7 +1499,23 @@ Site B (Mayo Clinic) ingress preimage_hash:
   ↑ Identical — proves bit-identical TAG_v1 NUL-separated canonical encoding.
   ↑ Specific value differs per run (128-bit nonce); the *equality* of
     the two hashes is the load-bearing claim. Re-run the demo to verify.</code></pre>
-      <p class="text-xs text-slate-400 mt-3">Control plane (peer registry, 7 sync scopes, per-scope conflict policy, sync audit log, governance pub/sub fan-out) is <strong class="text-trust-700">LIVE</strong> against <code class="font-mono">mind-mem v3.9.0</code> MemoryMesh + EventFanout (9 unit tests in <code class="font-mono text-xs">tests/test_engine/test_federation_transport.py</code>). The mock queue handles only the wire bytes between sites; it swaps out for the live MIC@2 federation-transport adapter when mind-mem v3.10 ships (v3.9.0's <code class="font-mono">http_transport.py</code> is a single-workspace REST adapter, not P2P federation), with no change above the <code class="font-mono text-xs">record_publish_event</code> / <code class="font-mono text-xs">record_ingest_event</code> boundary.</p>
+      <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+        <div class="rounded-lg border border-trust-200/70 bg-trust-50/40 p-3">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-trust-700 mb-1">Control plane</div>
+          <div class="text-slate-700"><strong class="text-trust-700">LIVE</strong> on <code class="font-mono text-[10px]">mind-mem v3.9.0</code></div>
+          <div class="text-[10px] text-slate-500 mt-1">peer registry · 7 sync scopes · conflict policy · audit log · pub/sub fan-out</div>
+        </div>
+        <div class="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Wire bytes</div>
+          <div class="text-slate-700">mock queue (this iter) → MIC@2 (v3.10)</div>
+          <div class="text-[10px] text-slate-500 mt-1">no change above the <code class="font-mono text-[10px]">record_publish_event</code> / <code class="font-mono text-[10px]">record_ingest_event</code> boundary</div>
+        </div>
+        <div class="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Tests</div>
+          <div class="text-slate-700">9 unit tests</div>
+          <div class="text-[10px] text-slate-500 mt-1"><code class="font-mono text-[10px]">tests/test_engine/test_federation_transport.py</code></div>
+        </div>
+      </div>
       <p class="text-[10px] text-slate-500 mt-3 leading-relaxed border-l-2 border-clinical-purple/60 pl-3 bg-purple-50/30 py-2 rounded-r">🔒 <strong>Cross-doc invariant-count integrity</strong> &mdash; the <strong>21 typed</strong> count above is independently pinned by <code class="font-mono">tests/test_scripts/test_federation_invariant_count_pin.py</code> across <strong>all 6 user-facing federation docs</strong>: <code class="font-mono text-[10px]">demo.html</code>, <code class="font-mono text-[10px]">JUDGES.md</code>, <code class="font-mono text-[10px]">docs/architecture.md</code>, <code class="font-mono text-[10px]">docs/clinical_validation.md</code>, <code class="font-mono text-[10px]">docs/fda_q_sub_draft.md</code>, <code class="font-mono text-[10px]">docs/federated_memory.md</code>. The 5 tests gate (1) live invariant count in flow file = 21; (2) demo's <code class="font-mono">INVARIANT_DESCRIPTIONS</code> exercises 16; (3) all 6 docs cite "21 typed"; (4) bare "16 invariants" / "16 typed runtime invariants" forbidden in any of those 6 docs unless paired with "21 typed" disambiguation in the same file (iter-135 scope-expansion catching the same insidious <em>scoped pin + unscoped doc</em> drift class iter-132 caught for the iter-122 transport-distinction claim &mdash; three regulatory-adjacent docs had silently lied about the count for ≥ 113 iterations); (5) the 16-of-21 gap explanation must remain ("5 X25519 sealing invariants await the MIC@2 federation-transport adapter targeting mind-mem v3.10").</p>
     </article>
   </div>
@@ -1580,7 +1596,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
                   <circle cx="45" cy="45" r="40" fill="none" stroke="#f1f5f9" stroke-width="5"/>
                   <circle cx="45" cy="45" r="40" fill="none" stroke="#7c3aed" stroke-width="5"
                     class="consensus-ring"/>
-                  <text x="45" y="43" text-anchor="middle" class="text-[13px] font-black" fill="#7c3aed">5/5</text>
+                  <text x="45" y="43" text-anchor="middle" class="text-[13px] font-black" fill="#7c3aed">6/6</text>
                   <text x="45" y="55" text-anchor="middle" class="text-[7px]" fill="#94a3b8">AGREE</text>
                 </svg>
               </div>
@@ -1590,6 +1606,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
                 <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300" style="animation-delay:0.9s">Grok 4.3</span>
                 <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-50 text-orange-600 border border-orange-200" style="animation-delay:1.2s">Claude Opus 4.7</span>
                 <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-clinical-purple border border-purple-200" style="animation-delay:1.5s">Perplexity Sonar</span>
+                <span class="model-chip px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200" style="animation-delay:1.8s">NVIDIA Nemotron</span>
               </div>
             </div>
           </div>
@@ -1786,41 +1803,41 @@ Site B (Mayo Clinic) ingress preimage_hash:
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px] font-mono">
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">openevidence_cache</span>
-          <span class="text-slate-700">e61e8b101557dc27…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">openevidence_cache</span>
+          <span class="text-slate-700 break-all">e61e8b101557dc27…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">bitnet_weights</span>
-          <span class="text-slate-700">4078396f17124c89…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">bitnet_weights</span>
+          <span class="text-slate-700 break-all">4078396f17124c89…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">bitnet_confusion_matrix</span>
-          <span class="text-slate-700">eb7531acd3b042f0…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">bitnet_confusion_matrix</span>
+          <span class="text-slate-700 break-all">eb7531acd3b042f0…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">cohort_coverage_matrix</span>
-          <span class="text-slate-700">c081feb706c26c5b…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">cohort_coverage_matrix</span>
+          <span class="text-slate-700 break-all">c081feb706c26c5b…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">synthea_demo_cohort</span>
-          <span class="text-slate-700">c9548b48e8be53b1…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">synthea_demo_cohort</span>
+          <span class="text-slate-700 break-all">c9548b48e8be53b1…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">bitnet_calibration</span>
-          <span class="text-slate-700">5a845fb6b0f3c87c…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">bitnet_calibration</span>
+          <span class="text-slate-700 break-all">5a845fb6b0f3c87c…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">audit_replay_pins</span>
-          <span class="text-slate-700">5e45de68ad984113…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">audit_replay_pins</span>
+          <span class="text-slate-700 break-all">5e45de68ad984113…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">pharmacology_flags</span>
-          <span class="text-slate-700">bb0510aca078f4f6…</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">pharmacology_flags</span>
+          <span class="text-slate-700 break-all">bb0510aca078f4f6…</span>
         </div>
-        <div class="flex items-baseline justify-between gap-2 border-b border-slate-100 py-1">
-          <span class="text-slate-500">flow_plan_hashes</span>
-          <span class="text-slate-700">7 flows &middot; 64-char hex each</span>
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">flow_plan_hashes</span>
+          <span class="text-slate-700 break-all">7 flows &middot; 64-char hex each</span>
         </div>
       </div>
 

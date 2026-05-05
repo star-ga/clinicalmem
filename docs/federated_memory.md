@@ -74,22 +74,24 @@ running mind-mem as shipped**. This is the right scope:
 
 ## End-to-end flow
 
-```
-                  ┌─── SITE A (e.g. Mass General) ─────────────┐
-                  │                                            │
-                  │  finding ─► classify ─► phi_strip ─► sign  │
-                  │                                            │
-                  │                                       ▼    │
-                  └────────── over MIC@2 / MAP / binary ──────┘
-                                                  │
-                                                  │  (patent-pending
-                                                  │   STARGA transport)
-                                                  ▼
-                  ┌─── SITE B (e.g. Mayo Clinic) ──────────────┐
-                  │                                            │
-                  │  ingested ◄── ingest ◄── phi_recheck ◄── verify
-                  │                                            │
-                  └────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph siteA["SITE A &mdash; e.g. Mass General"]
+        direction LR
+        finding[finding] --> classify[classify]
+        classify --> phi_strip[phi_strip]
+        phi_strip --> sign[sign]
+    end
+    subgraph siteB["SITE B &mdash; e.g. Mayo Clinic"]
+        direction LR
+        verify[verify] --> phi_recheck[phi_recheck]
+        phi_recheck --> ingest[ingest]
+        ingest --> ingested[ingested]
+    end
+    siteA -->|"over MIC@2 / MAP / binary<br/>(STARGA transport)"| siteB
+
+    classDef site fill:#F0FDFA,stroke:#0F766E,stroke-width:2px,color:#0F172A
+    class siteA,siteB site
 ```
 
 Every step in both directions is enforced by a typed invariant in the
