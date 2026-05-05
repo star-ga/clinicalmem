@@ -619,6 +619,32 @@ tailwind.config = {
         </a>
       </div>
 
+      <!-- Three judge moments — distills the demo to the only three
+           interactions a hackathon judge needs in their first 30 seconds. -->
+      <div class="hero-fade mt-5 flex flex-col sm:flex-row gap-2 text-left" style="animation-delay:0.32s">
+        <a href="#patient" class="flex-1 group rounded-xl border border-slate-200 hover:border-trust-600 bg-white/80 backdrop-blur px-3.5 py-3 transition-colors min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="w-5 h-5 rounded-full bg-trust-50 text-trust-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0">1</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-trust-700">Ingest</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-snug">Sarah Mitchell · 18 FHIR R4 resources · 4 providers · 7 medications</p>
+        </a>
+        <a href="#findings" class="flex-1 group rounded-xl border border-slate-200 hover:border-clinical-red bg-white/80 backdrop-blur px-3.5 py-3 transition-colors min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="w-5 h-5 rounded-full bg-red-50 text-clinical-red flex items-center justify-center text-[10px] font-bold flex-shrink-0">2</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-clinical-red">Detect</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-snug">2 critical · 2 high · evidence-grounded · 6-layer safety pipeline</p>
+        </a>
+        <a href="#findings" class="flex-1 group rounded-xl border border-slate-200 hover:border-clinical-green bg-white/80 backdrop-blur px-3.5 py-3 transition-colors min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="w-5 h-5 rounded-full bg-green-50 text-clinical-green flex items-center justify-center text-[10px] font-bold flex-shrink-0">3</span>
+            <span class="text-[11px] font-semibold uppercase tracking-wider text-clinical-green">Resolve</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-snug">What-if simulation · ibuprofen → acetaminophen · 1 critical resolved</p>
+        </a>
+      </div>
+
       <!-- Stat chips — sparkline-inspired strip. Mobile-narrow labels
            with break-words so "contraindicated" wraps cleanly into a
            tight 2-col grid; full label restored from sm+. -->
