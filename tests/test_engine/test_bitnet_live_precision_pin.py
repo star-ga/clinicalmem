@@ -85,14 +85,20 @@ def test_bitnet_live_precision_recall_pinned():
     #           recall = 8/24 = 0.333. BitNet CAUGHT the new pair —
     #           MAOI×serotonergic flag pattern is well-represented in
     #           training (multiple existing phenelzine+SSRI pairs).
+    # Iter-124: cohort grew (24 → 25, selegiline+meperidine), TP=8 →
+    #           recall = 8/25 = 0.320. BitNet did not catch the new
+    #           pair (selegiline MAO-B sub-class less represented in
+    #           training; predicted "none"); upstream Layer 1 +
+    #           BITNET_SAFETY_DOWNGRADE_DISAGREEMENT preserve the
+    #           contra verdict.
     # Lower bound 0.28 catches the iter-99 baseline; upper 0.45
-    # covers a future weight rotation that lifts recall to ~10/24.
+    # covers a future weight rotation that lifts recall to ~11/25.
     assert 0.28 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.28, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 24, f"contraindicated cohort size drifted: live={total}, pinned=24"
+    assert total == 25, f"contraindicated cohort size drifted: live={total}, pinned=25"
 
 
 def test_dashboard_displays_live_precision_number():

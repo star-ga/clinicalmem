@@ -8284,6 +8284,251 @@
           }
         ]
       }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-pt-029",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "synthea-pt-029",
+        "meta": {
+          "_synthetic": true
+        },
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/mrn",
+            "value": "SYN-MRN-029"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Anand",
+            "given": [
+              "Priya"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1953-09-04",
+        "address": [
+          {
+            "use": "home",
+            "city": "Ann Arbor",
+            "state": "MI",
+            "country": "US"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-029a",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-029a",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "49049000",
+              "display": "Parkinson's disease"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "G20",
+              "display": "Parkinson disease"
+            }
+          ],
+          "text": "Idiopathic Parkinson's disease, Hoehn-Yahr 2 (stable on selegiline + carbidopa/levodopa, dx 2019-04)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-029"
+        },
+        "onsetDateTime": "2019-04-22"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-cond-029b",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "synthea-cond-029b",
+        "meta": {
+          "_synthetic": true
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "65966004",
+              "display": "Fracture of femur"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "S72.001A",
+              "display": "Fracture of unspecified part of neck of right femur"
+            }
+          ],
+          "text": "Right intertrochanteric femur fracture (mechanical fall, ED 2026-05-04, awaiting OR)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-029"
+        },
+        "onsetDateTime": "2026-05-04"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medstat-029a",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "synthea-medstat-029a",
+        "meta": {
+          "_synthetic": true
+        },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "9639",
+              "display": "selegiline"
+            }
+          ],
+          "text": "selegiline 5 mg PO BID (Parkinson's, stable 7y)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-029"
+        },
+        "effectiveDateTime": "2019-04-25"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-medreq-029b",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "synthea-medreq-029b",
+        "meta": {
+          "_synthetic": true,
+          "_proposed": true,
+          "_clinical_note": "FDA-contraindicated with concurrent selegiline (MAOI). Meperidine + MAOI = life-threatening serotonergic crisis / hyperpyrexic syndrome (FDA Eldepryl black-box). ClinicalMem fires upstream Layer 1 + Layer 4.5 alerts. Use morphine or hydromorphone instead."
+        },
+        "status": "draft",
+        "intent": "proposal",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "6754",
+              "display": "meperidine"
+            }
+          ],
+          "text": "meperidine 50 mg IM q4h PRN (proposed for fracture pain by ED)"
+        },
+        "subject": {
+          "reference": "Patient/synthea-pt-029"
+        },
+        "authoredOn": "2026-05-04",
+        "requester": {
+          "reference": "Practitioner/synthea-prac-029a"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:synthea-prac-029a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "synthea-prac-029a",
+        "meta": {
+          "_synthetic": true,
+          "npi_source": "DEMO_LUHN_GENERATED"
+        },
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1021028208"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Sandberg",
+            "given": [
+              "Linnea"
+            ],
+            "prefix": [
+              "Dr."
+            ]
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0360",
+                  "code": "MD",
+                  "display": "Doctor of Medicine"
+                }
+              ],
+              "text": "MD, Emergency Medicine"
+            }
+          }
+        ]
+      }
     }
   ]
 }

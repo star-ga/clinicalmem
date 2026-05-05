@@ -1002,6 +1002,16 @@
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf"
       ],
       "notes": "Reversible MAOI (oxazolidinone). FDA black-box vs serotonergic drugs."
+    },
+    "meperidine": {
+      "flags": [
+        "is_serotonergic"
+      ],
+      "atc": "N02AB02",
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/006134s054lbl.pdf"
+      ],
+      "notes": "Weak SRI + active normeperidine metabolite has serotonergic activity. MAOI co-admin = serotonin syndrome / hyperpyrexic crisis (FDA black-box)."
     }
   }
 }

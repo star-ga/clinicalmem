@@ -1929,5 +1929,22 @@
     ],
     "retrieved_at": "2026-05-04",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "meperidine",
+    "drug_b": "selegiline",
+    "drug_pair_canonical": [
+      "meperidine",
+      "selegiline"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Selegiline (MAO-B selective at low dose; both MAO-A and MAO-B at higher antidepressant doses) combined with meperidine produces life-threatening serotonergic crisis and hyperpyrexic syndrome via dual mechanism: meperidine is a weak serotonin-reuptake inhibitor + active normeperidine metabolite has serotonergic activity; MAOI block of 5-HT degradation amplifies synaptic 5-HT to toxic levels. Clinical features: rigidity, hyperthermia >40\u00b0C, autonomic instability, seizures, coma, death within hours. The FDA Eldepryl (selegiline) label contains a BLACK-BOX warning explicitly contraindicating meperidine; the same contraindication applies to all MAO inhibitors per Brown 1996, Browne 1986 case series, and Boyer & Shannon NEJM 2005 serotonin-syndrome review. Required: 14-day washout after MAOI discontinuation before meperidine; for ongoing MAOI therapy, use morphine or hydromorphone (NOT serotonergic) for analgesia.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018379s045lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/15784664/",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/006134s054lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-05",
+    "source": "CACHED"
   }
 ]
