@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T21:40:56.278557+00:00",
+  "dateCreated": "2026-05-05T23:44:45.667385+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -482,6 +482,20 @@
       ],
       "repro_hash": "566297708cb8bf0fed42d8a33e59a69d7b348dd7cff8c760160afe34db6b59c8",
       "severity_name": "none"
+    },
+    {
+      "drug_a": "isavuconazole",
+      "drug_b": "simvastatin",
+      "feature_hash": "4ac187bca5348507a07eed020b7d47c77ed32ca1eae3e9f6bdb3cd70857dbab4",
+      "logits_q16": [
+        664211,
+        -1562974,
+        -63575,
+        745248,
+        -1360708
+      ],
+      "repro_hash": "7d367d5c7796ee746362e727ec59e801ccd81e1515e3214ae9612e7642d5203f",
+      "severity_name": "major"
     }
   ],
   "version": "1.0.0"

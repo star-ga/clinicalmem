@@ -2050,5 +2050,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-164"
+  },
+  {
+    "drug_a": "isavuconazole",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": [
+      "isavuconazole",
+      "simvastatin"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Isavuconazole (Cresemba, Astellas, FDA approved 2015 for invasive aspergillosis + mucormycosis) is a triazole antifungal and strong CYP3A4 inhibitor (mean AUC increase 4-7x for sensitive substrates). Simvastatin is metabolised >90% by CYP3A4 to its active hydroxy acid; co-administration markedly elevates simvastatin exposure (5-10x AUC, comparable to itraconazole/ketoconazole/voriconazole) and drives rhabdomyolysis with acute renal failure. The FDA Cresemba label Section 7 Drug Interactions warns AVOID concomitant strong CYP3A4 substrates including simvastatin and lovastatin. The FDA Zocor label Section 4 Contraindications enumerates strong CYP3A4 inhibitors (itraconazole, ketoconazole, posaconazole, voriconazole, the HIV protease inhibitors, boceprevir, telaprevir, erythromycin, clarithromycin, telithromycin, nefazodone, cobicistat-containing products); the triazole class warning extends to isavuconazole by FDA's 'e.g.' enumeration. Switch the statin to pravastatin (no CYP3A4 metabolism) or rosuvastatin (low-dose ceiling per Crestor label).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207500Orig1s000lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s086lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/26646712/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-172"
   }
 ]

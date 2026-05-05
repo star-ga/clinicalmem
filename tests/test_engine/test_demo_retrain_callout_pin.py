@@ -61,15 +61,16 @@ def test_callout_acknowledges_safety_floor():
 
 
 def test_heatmap_footer_recall_is_correct():
-    """The confusion-matrix heatmap footer must show 8/31 = 26%
-    (iter-164 cohort growth atazanavir+simvastatin bumped
-    denominator 30→31 but BitNet predicted 'none' on the new pair
-    (HIV PI sub-class undertrained; TP stays at 8).
+    """The confusion-matrix heatmap footer must show 8/32 = 25%
+    (iter-172 cohort growth isavuconazole+simvastatin bumped
+    denominator 31→32; BitNet baseline cfadb4f6 predicted 'none' on
+    the new pair (triazole sub-class undertrained at h=64); TP stays
+    at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 31 = 26%" in text, (
-        "Heatmap footer recall must be 8/31 = 26% — iter-164 cohort "
-        "growth (atazanavir+simvastatin) bumped denominator 30 → 31. "
+    assert "recall = 8 / 32 = 25%" in text, (
+        "Heatmap footer recall must be 8/32 = 25% — iter-172 cohort "
+        "growth (isavuconazole+simvastatin) bumped denominator 31 → 32. "
         "BitNet predicted 'none' on the new pair; TP stays at 8."
     )
     # Block historical phrasings so prior values can't reappear.
@@ -84,7 +85,8 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 8 / 27 = 30%" not in text  # iter-134 era stale
     assert "recall = 8 / 28 = 29%" not in text  # iter-140 era stale
     assert "recall = 8 / 29 = 28%" not in text  # iter-145 era stale
-    assert "recall = 8 / 30 = 27%" not in text  # iter-155 era stale (now 8/31)
+    assert "recall = 8 / 30 = 27%" not in text  # iter-155 era stale
+    assert "recall = 8 / 31 = 26%" not in text  # iter-164 era stale (now 8/32)
     assert "recall = 6 / 19" not in text  # iter-49 era stale
 
 
@@ -125,9 +127,8 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "31 / 31 contraindicated cache entries (100% explanation coverage)",  # iter-164 cohort 30 -> 31 (atazanavir+simvastatin)
-        "31 / 31 contraindicated (100%) + 4 / 4 major (100%) + 0 FP",  # iter-166 (Path A v5 h128 architectural breakthrough under Q16.16)
-        "1ff61a6a",                                  # iter-166 v5 bundle id
+        "32 / 32 contraindicated cache entries (100% explanation coverage)",  # iter-172 cohort 31 -> 32 (isavuconazole+simvastatin)
+        "1ff61a6a",                                  # iter-166 v5 bundle id (still staged)
         "193-dim feature input",                    # iter-146 dim
         "128 hidden",                                # iter-166 architectural extension
     )

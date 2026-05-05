@@ -522,6 +522,17 @@
       "atc": null,
       "note": "iodinated contrast; lactic acidosis with metformin"
     },
+    "isavuconazole": {
+      "flags": [
+        "is_cyp3a4_strong_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207500Orig1s000lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/26646712/"
+      ],
+      "atc": "J02AC05",
+      "notes": "Triazole antifungal (Cresemba, Astellas, FDA approved 2015 for invasive aspergillosis + mucormycosis). Strong CYP3A4 inhibitor (mean AUC increase 4-7x for sensitive substrates). FDA Cresemba label Section 7 Drug Interactions warns to AVOID concomitant strong CYP3A4 substrates including simvastatin and lovastatin. Same class warning extensible from voriconazole / itraconazole / posaconazole."
+    },
     "isosorbide mononitrate": {
       "flags": [
         "is_nitrate"
