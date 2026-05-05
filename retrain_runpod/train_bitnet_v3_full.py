@@ -287,6 +287,12 @@ def main():
         "itraconazole::simvastatin",
         "ketoconazole::simvastatin",
         "gemfibrozil::simvastatin",
+        # Iter-156: febuxostat+azathioprine (30th contra, iter-155 cohort
+        # growth) needs explicit boost — XO×thiopurine slot was 1-example
+        # in iter-148 training corpus (allopurinol+azathioprine only); the
+        # 30-seed sweep on the iter-155 cohort couldn't find a 30/30 + 4/4
+        # + ≤1 FP seed without the boost.
+        "azathioprine::febuxostat",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing
