@@ -919,7 +919,7 @@
       "elderly"
     ],
     "severity": "serious",
-    "clinical_summary": "Diphenhydramine is a first-generation antihistamine with high anticholinergic activity listed on both the 2023 AGS Beers Criteria and the Anticholinergic Cognitive Burden (ACB) scale as strongly anticholinergic; in older adults it causes sedation, confusion, delirium, urinary retention, and impaired psychomotor performance \u2014 all of which contribute to fall and fracture risk. Chronic use for insomnia carries FDA safety communication warnings. Loratadine or cetirizine (second-generation, low ACB) should be used for allergic conditions; melatonin or low-dose doxepin for sleep in older adults.",
+    "clinical_summary": "Diphenhydramine is a first-generation antihistamine with high anticholinergic activity listed on both the 2023 AGS Beers Criteria and the Anticholinergic Cognitive Burden (ACB) scale as strongly anticholinergic; in older adults it causes sedation, confusion, delirium, urinary retention, and impaired psychomotor performance — all of which contribute to fall and fracture risk. Chronic use for insomnia carries FDA safety communication warnings. Loratadine or cetirizine (second-generation, low ACB) should be used for allergic conditions; melatonin or low-dose doxepin for sleep in older adults.",
     "evidence_urls": [
       "https://agsjournals.onlinelibrary.wiley.com/doi/10.1111/jgs.18372",
       "https://www.ncbi.nlm.nih.gov/pubmed/27027748"
@@ -1079,7 +1079,7 @@
       "potassium chloride"
     ],
     "severity": "moderate",
-    "clinical_summary": "Lisinopril (ACE inhibitor) reduces angiotensin II-mediated aldosterone secretion, impairing renal potassium excretion; supplemental potassium chloride in this setting can precipitate clinically significant hyperkalaemia. The RALES trial and real-world pharmacovigilance data show that inappropriately monitored potassium supplementation in ACE inhibitor-treated patients \u2014 particularly those with diabetes or CKD \u2014 is a common and preventable cause of hyperkalaemia-related hospitalisations. Serum potassium and renal function should be checked within 1 week of initiating or dose-changing potassium supplementation.",
+    "clinical_summary": "Lisinopril (ACE inhibitor) reduces angiotensin II-mediated aldosterone secretion, impairing renal potassium excretion; supplemental potassium chloride in this setting can precipitate clinically significant hyperkalaemia. The RALES trial and real-world pharmacovigilance data show that inappropriately monitored potassium supplementation in ACE inhibitor-treated patients — particularly those with diabetes or CKD — is a common and preventable cause of hyperkalaemia-related hospitalisations. Serum potassium and renal function should be checked within 1 week of initiating or dose-changing potassium supplementation.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/19546408",
       "https://www.ncbi.nlm.nih.gov/books/NBK482348/"
@@ -1415,7 +1415,7 @@
       "aspirin"
     ],
     "severity": "serious",
-    "clinical_summary": "Combining apixaban (direct factor Xa inhibitor) with aspirin (antiplatelet) produces additive impairment of haemostasis via complementary pathways \u2014 factor Xa inhibition and irreversible COX-1-mediated platelet dysfunction; the ARISTOTLE trial subgroup analysis showed significantly higher major bleeding rates with combined anticoagulant + antiplatelet use versus anticoagulant alone. This combination is appropriate after recent ACS or PCI (for a limited defined period) under guideline-directed dual antithrombotic therapy protocols, but requires explicit documentation of indication, duration, and bleeding risk reassessment.",
+    "clinical_summary": "Combining apixaban (direct factor Xa inhibitor) with aspirin (antiplatelet) produces additive impairment of haemostasis via complementary pathways — factor Xa inhibition and irreversible COX-1-mediated platelet dysfunction; the ARISTOTLE trial subgroup analysis showed significantly higher major bleeding rates with combined anticoagulant + antiplatelet use versus anticoagulant alone. This combination is appropriate after recent ACS or PCI (for a limited defined period) under guideline-directed dual antithrombotic therapy protocols, but requires explicit documentation of indication, duration, and bleeding risk reassessment.",
     "evidence_urls": [
       "https://www.ncbi.nlm.nih.gov/pubmed/21870978",
       "https://www.ncbi.nlm.nih.gov/pubmed/22886016"
@@ -1575,7 +1575,7 @@
       "azathioprine"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Allopurinol inhibits xanthine oxidase, the enzyme primarily responsible for catabolising 6-mercaptopurine \u2014 the active metabolite of azathioprine. Co-administration without dose reduction causes 6-MP accumulation and severe, sometimes fatal, myelosuppression (pancytopenia, agranulocytosis). The Beers Criteria and standard rheumatology / transplantation references (Lennard, Br J Clin Pharmacol 1992; FDA Imuran labeling) advise reducing azathioprine to ~25-33% of the usual dose if allopurinol is unavoidable, with weekly CBC monitoring. Febuxostat shares the same mechanism and carries the same contraindication. Safer alternative: switch the urate-lowering agent to probenecid (uricosuric, no XO inhibition).",
+    "clinical_summary": "Allopurinol inhibits xanthine oxidase, the enzyme primarily responsible for catabolising 6-mercaptopurine — the active metabolite of azathioprine. Co-administration without dose reduction causes 6-MP accumulation and severe, sometimes fatal, myelosuppression (pancytopenia, agranulocytosis). The Beers Criteria and standard rheumatology / transplantation references (Lennard, Br J Clin Pharmacol 1992; FDA Imuran labeling) advise reducing azathioprine to ~25-33% of the usual dose if allopurinol is unavoidable, with weekly CBC monitoring. Febuxostat shares the same mechanism and carries the same contraindication. Safer alternative: switch the urate-lowering agent to probenecid (uricosuric, no XO inhibition).",
     "evidence_urls": [
       "https://pubmed.ncbi.nlm.nih.gov/1493475",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/016324s039lbl.pdf",
@@ -1593,7 +1593,7 @@
       "metformin"
     ],
     "severity": "moderate",
-    "clinical_summary": "ACE inhibitors (lisinopril) and metformin are co-prescribed routinely in type 2 diabetes with hypertension or proteinuria, but the combination raises lactic-acidosis risk in chronic kidney disease (eGFR <45 mL/min/1.73m\u00b2): ACE-I-induced renal vasodilation can briefly drop GFR, reducing metformin clearance, while concurrent hyperkalaemia from the ACE-I is potentiated. The FDA Glucophage labelling and KDIGO 2022 guidance require eGFR-stratified dosing (full dose \u226545, halved 30-44, contraindicated <30) and serum-creatinine surveillance after any ACE-I dose change. Not a contraindication at preserved renal function, but a serious surveillance flag in CKD-3 / CKD-4 patients.",
+    "clinical_summary": "ACE inhibitors (lisinopril) and metformin are co-prescribed routinely in type 2 diabetes with hypertension or proteinuria, but the combination raises lactic-acidosis risk in chronic kidney disease (eGFR <45 mL/min/1.73m²): ACE-I-induced renal vasodilation can briefly drop GFR, reducing metformin clearance, while concurrent hyperkalaemia from the ACE-I is potentiated. The FDA Glucophage labelling and KDIGO 2022 guidance require eGFR-stratified dosing (full dose ≥45, halved 30-44, contraindicated <30) and serum-creatinine surveillance after any ACE-I dose change. Not a contraindication at preserved renal function, but a serious surveillance flag in CKD-3 / CKD-4 patients.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020357s037s039,021202s021s023lbl.pdf",
       "https://kdigo.org/wp-content/uploads/2022/10/KDIGO-2022-Diabetes-Management-GL_Public-Review-draft_1Mar2022.pdf"
@@ -1610,7 +1610,7 @@
       "furosemide"
     ],
     "severity": "moderate",
-    "clinical_summary": "Carvedilol (non-selective \u03b2-blocker with \u03b1\u2081-blockade) and furosemide (loop diuretic) are jointly indicated in heart failure with reduced ejection fraction and routinely co-prescribed. The interaction is haemodynamic: both lower blood pressure (additive), and furosemide-induced volume loss can amplify carvedilol's first-dose orthostatic hypotension. In CKD this is compounded \u2014 reduced renal clearance prolongs furosemide effect. Standard cardiology practice is to start carvedilol at 3.125 mg BID, uptitrate every 2 weeks, and adjust diuretic dose simultaneously; not a contraindication, but a moderate-severity surveillance flag (orthostatic vitals, daily weights).",
+    "clinical_summary": "Carvedilol (non-selective β-blocker with α₁-blockade) and furosemide (loop diuretic) are jointly indicated in heart failure with reduced ejection fraction and routinely co-prescribed. The interaction is haemodynamic: both lower blood pressure (additive), and furosemide-induced volume loss can amplify carvedilol's first-dose orthostatic hypotension. In CKD this is compounded — reduced renal clearance prolongs furosemide effect. Standard cardiology practice is to start carvedilol at 3.125 mg BID, uptitrate every 2 weeks, and adjust diuretic dose simultaneously; not a contraindication, but a moderate-severity surveillance flag (orthostatic vitals, daily weights).",
     "evidence_urls": [
       "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001062",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020297s033lbl.pdf"
@@ -1663,7 +1663,7 @@
       "verapamil"
     ],
     "severity": "serious",
-    "clinical_summary": "Metoprolol (\u03b2\u2081-selective \u03b2-blocker) and verapamil (non-dihydropyridine calcium channel blocker) both depress sinoatrial / atrioventricular nodal conduction and negative inotropy. Co-administration risks profound bradycardia, complete heart block, and cardiogenic shock \u2014 particularly in heart failure with reduced ejection fraction or pre-existing conduction disease. The 2023 ACC/AHA/HRS atrial-fibrillation guideline recommends against routine BB+non-DHP-CCB combinations except under specialist supervision with continuous ECG. If dual rate control is required, BB + dihydropyridine CCB (amlodipine) is hemodynamically safer.",
+    "clinical_summary": "Metoprolol (β₁-selective β-blocker) and verapamil (non-dihydropyridine calcium channel blocker) both depress sinoatrial / atrioventricular nodal conduction and negative inotropy. Co-administration risks profound bradycardia, complete heart block, and cardiogenic shock — particularly in heart failure with reduced ejection fraction or pre-existing conduction disease. The 2023 ACC/AHA/HRS atrial-fibrillation guideline recommends against routine BB+non-DHP-CCB combinations except under specialist supervision with continuous ECG. If dual rate control is required, BB + dihydropyridine CCB (amlodipine) is hemodynamically safer.",
     "evidence_urls": [
       "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001193",
       "https://pubmed.ncbi.nlm.nih.gov/2914393"
@@ -1680,7 +1680,7 @@
       "sildenafil"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "PDE5 inhibitors (sildenafil, tadalafil, vardenafil) potentiate the vasodilatory effect of organic nitrates (nitroglycerin, isosorbide mononitrate, isosorbide dinitrate) by blocking cGMP degradation. Co-administration causes severe, refractory hypotension; cases have been fatal. The FDA Viagra/Revatio labelling, the 2013 ACCF/AHA stable ischaemic heart disease guideline, and the 2019 ESC unstable angina/NSTEMI guideline all designate this combination an absolute contraindication. Window: at least 24 hours between sildenafil and any nitrate (longer for tadalafil \u2014 48 hours). Emergency nitrate use (acute MI in the field) is contraindicated for 24h+ after PDE5; alternatives include \u03b2-blockers and morphine for analgesia.",
+    "clinical_summary": "PDE5 inhibitors (sildenafil, tadalafil, vardenafil) potentiate the vasodilatory effect of organic nitrates (nitroglycerin, isosorbide mononitrate, isosorbide dinitrate) by blocking cGMP degradation. Co-administration causes severe, refractory hypotension; cases have been fatal. The FDA Viagra/Revatio labelling, the 2013 ACCF/AHA stable ischaemic heart disease guideline, and the 2019 ESC unstable angina/NSTEMI guideline all designate this combination an absolute contraindication. Window: at least 24 hours between sildenafil and any nitrate (longer for tadalafil — 48 hours). Emergency nitrate use (acute MI in the field) is contraindicated for 24h+ after PDE5; alternatives include β-blockers and morphine for analgesia.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/020895s039s042lbl.pdf",
       "https://www.ahajournals.org/doi/10.1161/CIR.0b013e3182776f83",
@@ -1707,7 +1707,7 @@
     "retrieved_at": "2026-05-03",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-39",
-    "_purpose": "First MAJOR-class entry \u2014 closes the major-class testing gap flagged in iter 35."
+    "_purpose": "First MAJOR-class entry — closes the major-class testing gap flagged in iter 35."
   },
   {
     "drug_a": "doxycycline",
@@ -1734,7 +1734,7 @@
       "ergotamine"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Coadministration of ergotamine (or other ergot alkaloids \u2014 dihydroergotamine, methylergonovine) with strong CYP3A4 inhibitors such as macrolide antibiotics (clarithromycin, erythromycin, telithromycin), azole antifungals (itraconazole, voriconazole), and protease inhibitors is CONTRAINDICATED. CYP3A4 inhibition reduces ergotamine clearance, producing supratherapeutic levels with severe peripheral vasoconstriction (ergotism) \u2014 manifesting as cold, painful, cyanotic extremities; arterial spasm; and in severe cases gangrene requiring amputation. Cerebral, coronary, and mesenteric ischemia have all been reported. The FDA Cafergot (ergotamine + caffeine) label carries a black-box warning. Substitute the macrolide with azithromycin (which does NOT inhibit CYP3A4 meaningfully) or use a non-macrolide alternative; if antibiotic is required, hold the ergotamine for the duration of therapy plus 48 hours.",
+    "clinical_summary": "Coadministration of ergotamine (or other ergot alkaloids — dihydroergotamine, methylergonovine) with strong CYP3A4 inhibitors such as macrolide antibiotics (clarithromycin, erythromycin, telithromycin), azole antifungals (itraconazole, voriconazole), and protease inhibitors is CONTRAINDICATED. CYP3A4 inhibition reduces ergotamine clearance, producing supratherapeutic levels with severe peripheral vasoconstriction (ergotism) — manifesting as cold, painful, cyanotic extremities; arterial spasm; and in severe cases gangrene requiring amputation. Cerebral, coronary, and mesenteric ischemia have all been reported. The FDA Cafergot (ergotamine + caffeine) label carries a black-box warning. Substitute the macrolide with azithromycin (which does NOT inhibit CYP3A4 meaningfully) or use a non-macrolide alternative; if antibiotic is required, hold the ergotamine for the duration of therapy plus 48 hours.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/006120s011lbl.pdf",
       "https://www.aan.com/Guidelines/home/GuidelineDetail/970",
@@ -1751,7 +1751,7 @@
       "sacubitril"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Concomitant use of sacubitril/valsartan (Entresto) with any ACE inhibitor (lisinopril, enalapril, ramipril, captopril, etc.) is CONTRAINDICATED due to additive bradykinin / substance-P potentiation by neprilysin inhibition, producing severe and potentially life-threatening angioedema (airway compromise, death). The FDA Entresto label requires a minimum 36-hour washout when switching FROM an ACE inhibitor TO sacubitril/valsartan; the same washout applies in reverse. ARBs (valsartan, losartan) do NOT require washout \u2014 sacubitril/valsartan already contains valsartan as the ARB component. Switching protocol: (a) discontinue ACE inhibitor; (b) wait \u2265 36 hours (typically next-morning dosing if last ACE-I dose was evening); (c) initiate sacubitril/valsartan at appropriate dose for renal function. Black-box warning: angioedema.",
+    "clinical_summary": "Concomitant use of sacubitril/valsartan (Entresto) with any ACE inhibitor (lisinopril, enalapril, ramipril, captopril, etc.) is CONTRAINDICATED due to additive bradykinin / substance-P potentiation by neprilysin inhibition, producing severe and potentially life-threatening angioedema (airway compromise, death). The FDA Entresto label requires a minimum 36-hour washout when switching FROM an ACE inhibitor TO sacubitril/valsartan; the same washout applies in reverse. ARBs (valsartan, losartan) do NOT require washout — sacubitril/valsartan already contains valsartan as the ARB component. Switching protocol: (a) discontinue ACE inhibitor; (b) wait ≥ 36 hours (typically next-morning dosing if last ACE-I dose was evening); (c) initiate sacubitril/valsartan at appropriate dose for renal function. Black-box warning: angioedema.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2015/207620Orig1s000lbl.pdf",
       "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063",
@@ -1768,7 +1768,7 @@
       "tramadol"
     ],
     "severity": "serious",
-    "clinical_summary": "Coadministration of gabapentin (or pregabalin) with opioid analgesics including tramadol produces additive CNS and respiratory depression that has been associated with serious adverse outcomes including death. The FDA issued a Drug Safety Communication in December 2019 warning that gabapentinoids increase the risk of opioid-induced respiratory depression, particularly in patients with respiratory risk factors (COPD, obstructive sleep apnea, age >65) or on benzodiazepines / other CNS depressants. Tramadol additionally carries serotonergic activity (SNRI-like mechanism) and lowers seizure threshold \u2014 both relevant when combined with gabapentinoids in patients with epilepsy history. Co-prescribing requires (a) lowest-effective-dose strategy for both agents, (b) overlap-period sleep-apnea screening, (c) naloxone co-prescription per CDC opioid guideline when MED >50, and (d) re-assessment at 1-2 weeks. Common in diabetic neuropathy or post-herpetic neuralgia patients who develop acute or post-surgical pain.",
+    "clinical_summary": "Coadministration of gabapentin (or pregabalin) with opioid analgesics including tramadol produces additive CNS and respiratory depression that has been associated with serious adverse outcomes including death. The FDA issued a Drug Safety Communication in December 2019 warning that gabapentinoids increase the risk of opioid-induced respiratory depression, particularly in patients with respiratory risk factors (COPD, obstructive sleep apnea, age >65) or on benzodiazepines / other CNS depressants. Tramadol additionally carries serotonergic activity (SNRI-like mechanism) and lowers seizure threshold — both relevant when combined with gabapentinoids in patients with epilepsy history. Co-prescribing requires (a) lowest-effective-dose strategy for both agents, (b) overlap-period sleep-apnea screening, (c) naloxone co-prescription per CDC opioid guideline when MED >50, and (d) re-assessment at 1-2 weeks. Common in diabetic neuropathy or post-herpetic neuralgia patients who develop acute or post-surgical pain.",
     "evidence_urls": [
       "https://www.fda.gov/drugs/drug-safety-and-availability/fda-warns-about-serious-breathing-problems-seizure-and-nerve-pain-medicines-gabapentin-neurontin",
       "https://www.cdc.gov/mmwr/volumes/71/rr/rr7103a1.htm",
@@ -1836,7 +1836,7 @@
       "voriconazole"
     ],
     "severity": "major",
-    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; tacrolimus is a CYP3A4 substrate with a narrow therapeutic index. Co-administration raises tacrolimus AUC approximately 3-5 fold, with prospective transplant-pharmacokinetic studies (Romero et al., Clin Pharmacol Ther 2002; Capone et al., Transpl Infect Dis 2010) reporting \u22653x trough-level escalations within 48 hours of starting voriconazole. Reported toxicities include acute kidney injury, neurotoxicity, hyperkalemia, and infection from compounded over-immunosuppression. The FDA voriconazole label and the AST infectious-diseases guideline recommend an empirical 67% reduction of the tacrolimus dose at voriconazole initiation, with serial trough monitoring (target 5-8 ng/mL) every 2-3 days for the first two weeks. Discontinuation of voriconazole requires symmetric titration back up to maintain therapeutic immunosuppression.",
+    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; tacrolimus is a CYP3A4 substrate with a narrow therapeutic index. Co-administration raises tacrolimus AUC approximately 3-5 fold, with prospective transplant-pharmacokinetic studies (Romero et al., Clin Pharmacol Ther 2002; Capone et al., Transpl Infect Dis 2010) reporting ≥3x trough-level escalations within 48 hours of starting voriconazole. Reported toxicities include acute kidney injury, neurotoxicity, hyperkalemia, and infection from compounded over-immunosuppression. The FDA voriconazole label and the AST infectious-diseases guideline recommend an empirical 67% reduction of the tacrolimus dose at voriconazole initiation, with serial trough monitoring (target 5-8 ng/mL) every 2-3 days for the first two weeks. Discontinuation of voriconazole requires symmetric titration back up to maintain therapeutic immunosuppression.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s032lbl.pdf",
       "https://www.ncbi.nlm.nih.gov/pubmed/12235459",
@@ -1853,7 +1853,7 @@
       "colchicine"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Coadministration of clarithromycin (strong CYP3A4 + P-gp inhibitor) with colchicine is contraindicated in patients with renal or hepatic impairment per the FDA Colcrys label and the EMA Mitigare assessment. Even in patients with normal renal function, clarithromycin elevates colchicine AUC 2-3 fold and prospective case series (Hung et al., Clin Infect Dis 2005; Cheng et al., Am J Med 2005) report fatal multi-organ failure from colchicine toxicity (myelosuppression, rhabdomyolysis, neuropathy) within 7 days of starting clarithromycin. The FDA-mandated dose-reduction is 50% in normal renal function and full contraindication when eGFR < 60 mL/min or hepatic Child-Pugh \u2265 B. Alternatives include azithromycin (minimal CYP3A4 inhibition) for the macrolide indication or NSAIDs / corticosteroids for the gout indication.",
+    "clinical_summary": "Coadministration of clarithromycin (strong CYP3A4 + P-gp inhibitor) with colchicine is contraindicated in patients with renal or hepatic impairment per the FDA Colcrys label and the EMA Mitigare assessment. Even in patients with normal renal function, clarithromycin elevates colchicine AUC 2-3 fold and prospective case series (Hung et al., Clin Infect Dis 2005; Cheng et al., Am J Med 2005) report fatal multi-organ failure from colchicine toxicity (myelosuppression, rhabdomyolysis, neuropathy) within 7 days of starting clarithromycin. The FDA-mandated dose-reduction is 50% in normal renal function and full contraindication when eGFR < 60 mL/min or hepatic Child-Pugh ≥ B. Alternatives include azithromycin (minimal CYP3A4 inhibition) for the macrolide indication or NSAIDs / corticosteroids for the gout indication.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/022352s017lbl.pdf",
       "https://www.ncbi.nlm.nih.gov/pubmed/16107991",
@@ -1870,7 +1870,7 @@
       "sumatriptan"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Sumatriptan (selective 5-HT1B/1D agonist for acute migraine abortive therapy) coadministered with phenelzine (irreversible monoamine oxidase inhibitor) is contraindicated per the FDA Imitrex label and the AHA/AAN headache-management guideline. Phenelzine inactivates MAO-A in the gut wall; sumatriptan is metabolised by MAO-A. The block raises sumatriptan AUC \u22652 fold and creates a high-risk substrate for serotonin syndrome via the additive 5-HT pathway (Krishnan et al., Headache 2008; Boyer & Shannon, NEJM 2005 review of serotonin syndrome). MAO-A recovery requires phenelzine washout of \u22652 weeks before any triptan can be considered. Alternatives: CGRP-receptor antagonists (rimegepant, ubrogepant), topiramate as preventive, or non-serotonergic abortive (NSAID + dihydroergotamine if ergot tolerated).",
+    "clinical_summary": "Sumatriptan (selective 5-HT1B/1D agonist for acute migraine abortive therapy) coadministered with phenelzine (irreversible monoamine oxidase inhibitor) is contraindicated per the FDA Imitrex label and the AHA/AAN headache-management guideline. Phenelzine inactivates MAO-A in the gut wall; sumatriptan is metabolised by MAO-A. The block raises sumatriptan AUC ≥2 fold and creates a high-risk substrate for serotonin syndrome via the additive 5-HT pathway (Krishnan et al., Headache 2008; Boyer & Shannon, NEJM 2005 review of serotonin syndrome). MAO-A recovery requires phenelzine washout of ≥2 weeks before any triptan can be considered. Alternatives: CGRP-receptor antagonists (rimegepant, ubrogepant), topiramate as preventive, or non-serotonergic abortive (NSAID + dihydroergotamine if ergot tolerated).",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/020132s019lbl.pdf",
       "https://www.ncbi.nlm.nih.gov/pubmed/15784664",
@@ -1887,7 +1887,7 @@
       "dronedarone"
     ],
     "severity": "major",
-    "clinical_summary": "Dronedarone (class III antiarrhythmic for AF rhythm control) is a moderate P-glycoprotein inhibitor; dabigatran (direct thrombin inhibitor anticoagulant) is a P-gp substrate without alternate elimination pathways. Coadministration raises dabigatran AUC by 70-100% (Pradaxa FDA label, Section 7.1) and proportionally elevates major-bleeding risk. The PALLAS trial (Connolly et al., NEJM 2011) and ENGAGE-AF subgroup analyses report 1.7-2.3x increased GI/intracranial bleeding when DOACs and dronedarone are co-prescribed. The FDA Pradaxa label requires dose reduction to 75 mg BID in patients with CrCl 30-50 mL/min concurrently receiving dronedarone, and contraindicates the combination when CrCl < 30 mL/min. Alternatives: amiodarone for rhythm control (but also a P-gp inhibitor \u2014 same caution), beta-blocker rate control with apixaban (lower P-gp interaction profile).",
+    "clinical_summary": "Dronedarone (class III antiarrhythmic for AF rhythm control) is a moderate P-glycoprotein inhibitor; dabigatran (direct thrombin inhibitor anticoagulant) is a P-gp substrate without alternate elimination pathways. Coadministration raises dabigatran AUC by 70-100% (Pradaxa FDA label, Section 7.1) and proportionally elevates major-bleeding risk. The PALLAS trial (Connolly et al., NEJM 2011) and ENGAGE-AF subgroup analyses report 1.7-2.3x increased GI/intracranial bleeding when DOACs and dronedarone are co-prescribed. The FDA Pradaxa label requires dose reduction to 75 mg BID in patients with CrCl 30-50 mL/min concurrently receiving dronedarone, and contraindicates the combination when CrCl < 30 mL/min. Alternatives: amiodarone for rhythm control (but also a P-gp inhibitor — same caution), beta-blocker rate control with apixaban (lower P-gp interaction profile).",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/022512s007lbl.pdf",
       "https://www.ncbi.nlm.nih.gov/pubmed/22078551",
@@ -1904,7 +1904,7 @@
       "voriconazole"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; co-administration with simvastatin produces a 10- to 20-fold increase in simvastatin AUC, substantially elevating the risk of severe myopathy and rhabdomyolysis (Neuvonen 2008; Backman 2016). The simvastatin label contraindicates concomitant use with strong CYP3A4 inhibitors including all azole antifungals except fluconazole and isavuconazole \u2014 voriconazole is explicitly named. Particularly relevant in solid-organ transplant patients on voriconazole antifungal prophylaxis. Simvastatin should be withheld for the duration of voriconazole therapy; rosuvastatin or pravastatin are safer statin alternatives because they are not primarily CYP3A4 metabolized.",
+    "clinical_summary": "Voriconazole is a strong CYP3A4 inhibitor; co-administration with simvastatin produces a 10- to 20-fold increase in simvastatin AUC, substantially elevating the risk of severe myopathy and rhabdomyolysis (Neuvonen 2008; Backman 2016). The simvastatin label contraindicates concomitant use with strong CYP3A4 inhibitors including all azole antifungals except fluconazole and isavuconazole — voriconazole is explicitly named. Particularly relevant in solid-organ transplant patients on voriconazole antifungal prophylaxis. Simvastatin should be withheld for the duration of voriconazole therapy; rosuvastatin or pravastatin are safer statin alternatives because they are not primarily CYP3A4 metabolized.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s091lbl.pdf",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/021266s033s034lbl.pdf",
@@ -1921,7 +1921,7 @@
       "sertraline"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Linezolid is a reversible monoamine oxidase inhibitor (MAOI; oxazolidinone antibiotic) with FDA black-box warning against concomitant use of serotonergic drugs including SSRIs. Co-administration with sertraline (5-HT reuptake inhibitor) elevates synaptic serotonin via dual mechanism \u2014 MAOI block of 5-HT degradation + SSRI block of 5-HT reuptake \u2014 risking serotonin syndrome (Lawrence 2006; Quinn 2009; Sun-Edelstein 2008). FDA Zyvox label requires a 2-week washout after MAOI discontinuation OR a 24-hour washout after the last sertraline dose with daily monitoring for serotonin-syndrome signs (hyperthermia, hyperreflexia, clonus, autonomic instability). When linezolid is needed for MRSA / VRE infections in patients on SSRIs, alternatives are vancomycin or daptomycin where susceptibility allows.",
+    "clinical_summary": "Linezolid is a reversible monoamine oxidase inhibitor (MAOI; oxazolidinone antibiotic) with FDA black-box warning against concomitant use of serotonergic drugs including SSRIs. Co-administration with sertraline (5-HT reuptake inhibitor) elevates synaptic serotonin via dual mechanism — MAOI block of 5-HT degradation + SSRI block of 5-HT reuptake — risking serotonin syndrome (Lawrence 2006; Quinn 2009; Sun-Edelstein 2008). FDA Zyvox label requires a 2-week washout after MAOI discontinuation OR a 24-hour washout after the last sertraline dose with daily monitoring for serotonin-syndrome signs (hyperthermia, hyperreflexia, clonus, autonomic instability). When linezolid is needed for MRSA / VRE infections in patients on SSRIs, alternatives are vancomycin or daptomycin where susceptibility allows.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021130s033lbl.pdf",
       "https://pubmed.ncbi.nlm.nih.gov/16630347/",
@@ -1938,7 +1938,7 @@
       "selegiline"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Selegiline (MAO-B selective at low dose; both MAO-A and MAO-B at higher antidepressant doses) combined with meperidine produces life-threatening serotonergic crisis and hyperpyrexic syndrome via dual mechanism: meperidine is a weak serotonin-reuptake inhibitor + active normeperidine metabolite has serotonergic activity; MAOI block of 5-HT degradation amplifies synaptic 5-HT to toxic levels. Clinical features: rigidity, hyperthermia >40\u00b0C, autonomic instability, seizures, coma, death within hours. The FDA Eldepryl (selegiline) label contains a BLACK-BOX warning explicitly contraindicating meperidine; the same contraindication applies to all MAO inhibitors per Brown 1996, Browne 1986 case series, and Boyer & Shannon NEJM 2005 serotonin-syndrome review. Required: 14-day washout after MAOI discontinuation before meperidine; for ongoing MAOI therapy, use morphine or hydromorphone (NOT serotonergic) for analgesia.",
+    "clinical_summary": "Selegiline (MAO-B selective at low dose; both MAO-A and MAO-B at higher antidepressant doses) combined with meperidine produces life-threatening serotonergic crisis and hyperpyrexic syndrome via dual mechanism: meperidine is a weak serotonin-reuptake inhibitor + active normeperidine metabolite has serotonergic activity; MAOI block of 5-HT degradation amplifies synaptic 5-HT to toxic levels. Clinical features: rigidity, hyperthermia >40°C, autonomic instability, seizures, coma, death within hours. The FDA Eldepryl (selegiline) label contains a BLACK-BOX warning explicitly contraindicating meperidine; the same contraindication applies to all MAO inhibitors per Brown 1996, Browne 1986 case series, and Boyer & Shannon NEJM 2005 serotonin-syndrome review. Required: 14-day washout after MAOI discontinuation before meperidine; for ongoing MAOI therapy, use morphine or hydromorphone (NOT serotonergic) for analgesia.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/018379s045lbl.pdf",
       "https://pubmed.ncbi.nlm.nih.gov/15784664/",
@@ -1955,7 +1955,7 @@
       "tadalafil"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Tadalafil is a long-acting PDE5 inhibitor (terminal half-life ~17.5h, cGMP-mediated vasodilation persists 24-36 hours after dose). Co-administration with nitrate-class vasodilators (nitroglycerin sublingual, IV, or transdermal) produces additive cGMP-mediated systemic vasodilation, causing severe hypotension, syncope, MI, and death. The FDA Cialis (tadalafil) label contains a BLACK-BOX absolute contraindication: nitrates in any form must NOT be administered within 48 hours of the last tadalafil dose (vs 24h washout for sildenafil/vardenafil due to their shorter half-lives). Critical for ED patients with concurrent stable angina who carry sublingual nitroglycerin for chest pain \u2014 the longer washout window makes tadalafil functionally incompatible with rescue nitrate use. Reference: Kloner 2003 (J Am Coll Cardiol), FDA Cialis labeling 2018.",
+    "clinical_summary": "Tadalafil is a long-acting PDE5 inhibitor (terminal half-life ~17.5h, cGMP-mediated vasodilation persists 24-36 hours after dose). Co-administration with nitrate-class vasodilators (nitroglycerin sublingual, IV, or transdermal) produces additive cGMP-mediated systemic vasodilation, causing severe hypotension, syncope, MI, and death. The FDA Cialis (tadalafil) label contains a BLACK-BOX absolute contraindication: nitrates in any form must NOT be administered within 48 hours of the last tadalafil dose (vs 24h washout for sildenafil/vardenafil due to their shorter half-lives). Critical for ED patients with concurrent stable angina who carry sublingual nitroglycerin for chest pain — the longer washout window makes tadalafil functionally incompatible with rescue nitrate use. Reference: Kloner 2003 (J Am Coll Cardiol), FDA Cialis labeling 2018.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/021368s033lbl.pdf",
       "https://pubmed.ncbi.nlm.nih.gov/12821269/",
@@ -2006,7 +2006,7 @@
       "tizanidine"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Fluvoxamine is a potent CYP1A2 inhibitor (Ki on the order of 0.03-0.6 \u00b5M, an order of magnitude more potent than ciprofloxacin) due to its imidazole moiety. Tizanidine is almost exclusively metabolized by CYP1A2; co-administration with fluvoxamine produces a 33-fold increase in tizanidine AUC (Granfors 2004, Clin Pharmacol Ther) \u2014 far exceeding the ~10-fold AUC rise seen with ciprofloxacin. Clinical consequences include severe hypotension, profound psychomotor impairment, and prolonged sedation. The FDA Zanaflex (tizanidine) label Section 4 Contraindications explicitly lists 'concomitant use of tizanidine with potent inhibitors of CYP1A2 (such as fluvoxamine or ciprofloxacin) is contraindicated'. Reference: Granfors et al. 2004 (Clin Pharmacol Ther), FDA Zanaflex label 2013.",
+    "clinical_summary": "Fluvoxamine is a potent CYP1A2 inhibitor (Ki on the order of 0.03-0.6 µM, an order of magnitude more potent than ciprofloxacin) due to its imidazole moiety. Tizanidine is almost exclusively metabolized by CYP1A2; co-administration with fluvoxamine produces a 33-fold increase in tizanidine AUC (Granfors 2004, Clin Pharmacol Ther) — far exceeding the ~10-fold AUC rise seen with ciprofloxacin. Clinical consequences include severe hypotension, profound psychomotor impairment, and prolonged sedation. The FDA Zanaflex (tizanidine) label Section 4 Contraindications explicitly lists 'concomitant use of tizanidine with potent inhibitors of CYP1A2 (such as fluvoxamine or ciprofloxacin) is contraindicated'. Reference: Granfors et al. 2004 (Clin Pharmacol Ther), FDA Zanaflex label 2013.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/020397s032,021447s015lbl.pdf",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021519s015lbl.pdf",
@@ -2023,7 +2023,7 @@
       "febuxostat"
     ],
     "severity": "contraindicated",
-    "clinical_summary": "Febuxostat (Uloric, FDA approved 2009) is a non-purine xanthine oxidase inhibitor that shares the mechanism by which allopurinol contraindicates azathioprine: XO catabolises 6-mercaptopurine, the active metabolite of azathioprine. Co-administration causes 6-MP accumulation and severe myelosuppression (pancytopenia, agranulocytosis). The FDA Uloric label \u00a7 4 explicitly contraindicates concomitant use with azathioprine or 6-mercaptopurine; the same warning applies to the related XO inhibitor topiroxostat. The contraindication is more absolute than for allopurinol because no dose-adjustment regimen is established (allopurinol's 25-33% AZA dose-reduction protocol does not transfer). Switch the urate-lowering agent to probenecid (uricosuric, no XO inhibition) when an azathioprine recipient develops gout.",
+    "clinical_summary": "Febuxostat (Uloric, FDA approved 2009) is a non-purine xanthine oxidase inhibitor that shares the mechanism by which allopurinol contraindicates azathioprine: XO catabolises 6-mercaptopurine, the active metabolite of azathioprine. Co-administration causes 6-MP accumulation and severe myelosuppression (pancytopenia, agranulocytosis). The FDA Uloric label § 4 explicitly contraindicates concomitant use with azathioprine or 6-mercaptopurine; the same warning applies to the related XO inhibitor topiroxostat. The contraindication is more absolute than for allopurinol because no dose-adjustment regimen is established (allopurinol's 25-33% AZA dose-reduction protocol does not transfer). Switch the urate-lowering agent to probenecid (uricosuric, no XO inhibition) when an azathioprine recipient develops gout.",
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2009/021856s000lbl.pdf",
       "https://pubmed.ncbi.nlm.nih.gov/19553215",
@@ -2032,5 +2032,23 @@
     "retrieved_at": "2026-05-05",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-155"
+  },
+  {
+    "drug_a": "atazanavir",
+    "drug_b": "simvastatin",
+    "drug_pair_canonical": [
+      "atazanavir",
+      "simvastatin"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Atazanavir (Reyataz) is a HIV-1 protease inhibitor and a strong CYP3A4 inhibitor; simvastatin (Zocor) is metabolised >90% by CYP3A4 to its active hydroxy acid. Co-administration markedly elevates simvastatin exposure (AUC increases of 5-10x are reported with strong CYP3A4 inhibitors of this class), driving rhabdomyolysis with acute renal failure. The FDA Zocor label § 4 Contraindications explicitly lists 'HIV protease inhibitors' alongside itraconazole, ketoconazole, posaconazole, voriconazole, erythromycin, clarithromycin, telithromycin, nefazodone and cobicistat-containing products. The FDA Reyataz label § 7 Drug Interactions independently lists simvastatin and lovastatin as contraindicated. Class warning applies to all PIs (lopinavir, indinavir, nelfinavir, saquinavir, tipranavir, darunavir) — switch the statin to pravastatin (no CYP3A4 metabolism) or rosuvastatin (low-dose ceiling per Crestor label).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2012/019766s086lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021567s044lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/16382067/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-164"
   }
 ]

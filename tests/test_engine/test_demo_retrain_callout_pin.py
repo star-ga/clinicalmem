@@ -61,16 +61,15 @@ def test_callout_acknowledges_safety_floor():
 
 
 def test_heatmap_footer_recall_is_correct():
-    """The confusion-matrix heatmap footer must show 8/29 = 28%
-    (iter-145 cohort growth fluvoxamine+tizanidine bumped
-    denominator 28→29 but BitNet predicted 'none' on the new pair
-    (CYP1A2 inhib×substrate sub-class less represented in training;
-    TP stays at 8).
+    """The confusion-matrix heatmap footer must show 8/31 = 26%
+    (iter-164 cohort growth atazanavir+simvastatin bumped
+    denominator 30→31 but BitNet predicted 'none' on the new pair
+    (HIV PI sub-class undertrained; TP stays at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 30 = 27%" in text, (
-        "Heatmap footer recall must be 8/30 = 27% — iter-155 cohort "
-        "growth (fluvoxamine+tizanidine) bumped denominator 28 → 29. "
+    assert "recall = 8 / 31 = 26%" in text, (
+        "Heatmap footer recall must be 8/31 = 26% — iter-164 cohort "
+        "growth (atazanavir+simvastatin) bumped denominator 30 → 31. "
         "BitNet predicted 'none' on the new pair; TP stays at 8."
     )
     # Block historical phrasings so prior values can't reappear.
@@ -84,7 +83,8 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 8 / 26 = 31%" not in text  # iter-129 era stale
     assert "recall = 8 / 27 = 30%" not in text  # iter-134 era stale
     assert "recall = 8 / 28 = 29%" not in text  # iter-140 era stale
-    assert "recall = 8 / 29 = 28%" not in text  # iter-145 era stale (now 8/30)
+    assert "recall = 8 / 29 = 28%" not in text  # iter-145 era stale
+    assert "recall = 8 / 30 = 27%" not in text  # iter-155 era stale (now 8/31)
     assert "recall = 6 / 19" not in text  # iter-49 era stale
 
 
@@ -125,8 +125,8 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "30 / 30 contraindicated cache entries (100% explanation coverage)",  # iter-155 cohort 29 -> 30 (explanation coverage)                  # iter-145 live coverage
-        "96.7% live cache contraindicated recall",  # iter-155 (Path A v3 frozen at 29/30 until v4 retrain)
+        "31 / 31 contraindicated cache entries (100% explanation coverage)",  # iter-164 cohort 30 -> 31 (atazanavir+simvastatin)
+        "31 / 31 = 100% live cache contraindicated recall",  # iter-164 (Path A v3 picks up atazanavir+simvastatin via cyp3a4_strong_inh x statin rule, well-saturated slot with 6 prior examples)
         "326e3301",                                  # iter-146 bundle id
         "193-dim feature input",                    # iter-146 dim
     )

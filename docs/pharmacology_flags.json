@@ -125,6 +125,17 @@
       ],
       "atc": "B01AC06"
     },
+    "atazanavir": {
+      "flags": [
+        "is_cyp3a4_strong_inhibitor"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/021567s044lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/16382067/"
+      ],
+      "atc": "J05AE08",
+      "notes": "HIV-1 protease inhibitor (Reyataz, BMS, FDA approved 2003). Strong CYP3A4 inhibitor (Ki ~ 1 microM unboosted; tighter when ritonavir-boosted). FDA Reyataz label Section 7 Drug Interactions calls out simvastatin and lovastatin as contraindicated due to risk of myopathy/rhabdomyolysis from elevated statin exposure; same class warning on the FDA Zocor (simvastatin) label Section 4 Contraindications under 'HIV protease inhibitors'."
+    },
     "atenolol": {
       "flags": [],
       "evidence_urls": [
@@ -377,7 +388,7 @@
         "https://pubmed.ncbi.nlm.nih.gov/19553215"
       ],
       "atc_class": "M04AA03",
-      "_notes": "Non-purine selective xanthine oxidase inhibitor. FDA approved 2009 (Uloric). Stronger XO selectivity than allopurinol but same DDI mechanism: contraindicated with azathioprine + 6-mercaptopurine via XO inhibition \u2192 6-MP accumulation \u2192 myelosuppression."
+      "_notes": "Non-purine selective xanthine oxidase inhibitor. FDA approved 2009 (Uloric). Stronger XO selectivity than allopurinol but same DDI mechanism: contraindicated with azathioprine + 6-mercaptopurine via XO inhibition → 6-MP accumulation → myelosuppression."
     },
     "felodipine": {
       "flags": [
@@ -428,7 +439,7 @@
         "https://pubmed.ncbi.nlm.nih.gov/16553505/"
       ],
       "atc": "N06AB08",
-      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 \u00b5M, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label \u00a7 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
+      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 µM, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label § 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
     },
     "furosemide": {
       "flags": [],
@@ -453,7 +464,7 @@
         "https://www.ncbi.nlm.nih.gov/pubmed/15229465"
       ],
       "atc": "C10AB04",
-      "note": "fibrate; OATP1B1 inhibitor \u2014 contraindicated with simvastatin per FDA Lopid label"
+      "note": "fibrate; OATP1B1 inhibitor — contraindicated with simvastatin per FDA Lopid label"
     },
     "glipizide": {
       "flags": [],

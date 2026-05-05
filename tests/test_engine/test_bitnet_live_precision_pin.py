@@ -128,13 +128,20 @@ def test_bitnet_live_precision_recall_pinned():
     #           training, allopurinol+azathioprine — generalization to
     #           febuxostat is weak). Upstream Layer 1 (FDA Uloric § 4)
     #           + DOWNGRADE_DISAGREEMENT preserve contra.
-    # Lower bound 0.25 still catches the iter-155 floor (0.267 > 0.25).
+    # Iter-164: cohort grew (30 → 31, atazanavir+simvastatin), TP=8 →
+    #           recall = 8/31 = 0.258. BitNet predicted "none" on the
+    #           new pair (HIV PI sub-class undertrained — same
+    #           architectural ceiling that misses ritonavir+simvastatin
+    #           in iter-140). Upstream Layer 1 (FDA Zocor § 4 explicit
+    #           "HIV protease inhibitors" contraindication, FDA Reyataz
+    #           § 7) + DOWNGRADE_DISAGREEMENT preserve contra.
+    # Lower bound 0.25 still catches the iter-164 floor (0.258 > 0.25).
     assert 0.25 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
         f"live={recall:.4f}, allowed=[0.25, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 30, f"contraindicated cohort size drifted: live={total}, pinned=30"
+    assert total == 31, f"contraindicated cohort size drifted: live={total}, pinned=31"
 
 
 def test_dashboard_displays_live_precision_number():
