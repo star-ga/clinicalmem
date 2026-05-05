@@ -1076,16 +1076,19 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Phase B: 6 healthcare-specific architectural invariants -->
+    <!-- Phase B: 6 healthcare-specific architectural invariants.
+         Iter-149 redesign: removed the left-column lock icon (squeezed
+         the body text against the right edge on mobile); kicker label
+         now sits above the body, full-width, so the text reads at the
+         same line-length as every other section card. -->
     <div class="mt-5 max-w-3xl mx-auto card p-5 sm:p-6 bg-trust-50 border-trust-200">
-      <div class="flex items-start gap-3">
-        <div class="w-8 h-8 rounded-lg bg-trust-600/10 flex items-center justify-center flex-shrink-0 text-trust-700">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        </div>
-        <div class="text-sm text-slate-700 leading-relaxed">
-          <p class="font-semibold text-slate-900 mb-1.5">Phase B &mdash; 6 healthcare-specific invariants <span class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-trust-600 text-white">already enforced at runtime + tests</span></p>
-          <p>The 9 generic kernel rules above are what every MIND repo runs. ClinicalMem also keeps <strong>6 healthcare-specific invariants</strong> &mdash; PHI-gate coverage, audit-chain anchor density, BitNet 4.5 invocation discipline, federation-invariant density (spec: 21 typed invariants in <code class="font-mono text-xs">JointMemoryFederation.flow.mind</code>; live mock demo exercises 16 — the 5 X25519 sealing invariants are <em>declared</em> but await the dedicated MIC@2 federation-transport adapter (mind-mem v3.10 target) before the demo can verify them end-to-end. <strong>v3.9.0 is already shipped + pinned</strong>, but its <code class="font-mono text-xs">http_transport.py</code> is a single-workspace REST adapter for non-MCP clients, not p2p federation), NPI Luhn coverage (every Practitioner), and clinician-attestation present. Already enforced at runtime + in <code class="font-mono text-xs">tests/</code>; the arch-mind L1 gate will mechanically verify them when the commercial v0.2 release ships the <code class="font-mono text-xs">clinical_invariants</code> profile. Full spec: <a href="clinicalmem_invariants.md" class="text-trust-700 underline hover:text-trust-800">docs/clinicalmem_invariants.md</a>.</p>
-        </div>
+      <div class="flex items-center gap-2 mb-3 pb-3 border-b border-trust-200/60">
+        <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-trust-700">Phase B</span>
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-trust-600 text-white">enforced at runtime + tests</span>
+      </div>
+      <div class="text-sm text-slate-700 leading-relaxed">
+        <p class="font-semibold text-slate-900 mb-2">6 healthcare-specific invariants on top of the 9-rule kernel.</p>
+        <p>The 9 generic kernel rules above are what every MIND repo runs. ClinicalMem also keeps <strong>6 healthcare-specific invariants</strong> &mdash; PHI-gate coverage, audit-chain anchor density, BitNet 4.5 invocation discipline, federation-invariant density (spec: 21 typed invariants in <code class="font-mono text-xs">JointMemoryFederation.flow.mind</code>; live mock demo exercises 16 — the 5 X25519 sealing invariants are <em>declared</em> but await the dedicated MIC@2 federation-transport adapter (mind-mem v3.10 target) before the demo can verify them end-to-end. <strong>v3.9.0 is already shipped + pinned</strong>, but its <code class="font-mono text-xs">http_transport.py</code> is a single-workspace REST adapter for non-MCP clients, not p2p federation), NPI Luhn coverage (every Practitioner), and clinician-attestation present. Already enforced at runtime + in <code class="font-mono text-xs">tests/</code>; the arch-mind L1 gate will mechanically verify them when the commercial v0.2 release ships the <code class="font-mono text-xs">clinical_invariants</code> profile. Full spec: <a href="clinicalmem_invariants.md" class="text-trust-700 underline hover:text-trust-800">docs/clinicalmem_invariants.md</a>.</p>
       </div>
     </div>
   </div>
