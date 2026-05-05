@@ -92,15 +92,18 @@ def test_every_evidence_url_is_https():
 
 def test_schema_version_and_flag_keys_present():
     """Iter-96 baseline schema: schema_version set + flag_keys non-empty
-    list. Removing either would silently break the audit chain."""
+    list. Iter-140 raised the floor 12 -> 25 (the 13 baseline flags +
+    12 new flags added by the 100% explanation-coverage closure)."""
     doc = _flags_doc()
     assert doc.get("schema_version"), (
         "pharmacology_flags.json must carry a schema_version field"
     )
     flag_keys = doc.get("flag_keys", [])
-    assert isinstance(flag_keys, list) and len(flag_keys) >= 12, (
-        f"flag_keys must be a non-empty list of >= 12 entries; "
-        f"got {len(flag_keys) if isinstance(flag_keys, list) else type(flag_keys).__name__}"
+    assert isinstance(flag_keys, list) and len(flag_keys) >= 25, (
+        f"flag_keys must be a non-empty list of >= 25 entries; "
+        f"got {len(flag_keys) if isinstance(flag_keys, list) else type(flag_keys).__name__}. "
+        f"Iter-140 added 12 new flag classes for 100%-coverage closure; "
+        f"removing any of them silently regresses the curated-table claim."
     )
 
 
@@ -127,4 +130,137 @@ def test_drug_names_in_flag_table_are_canonicalised_lowercase():
     assert not bad, (
         f"non-canonical drug-name keys: {bad[:5]}. "
         f"Each key must equal `' '.join(name.lower().split())`."
+    )
+
+
+# ─── iter-141 (T1 round 28) flag-key + rule canonical-name pins ─────────
+
+# The 13 baseline flag classes (iter-96 era).
+_BASELINE_FLAG_KEYS = frozenset({
+    "is_cyp3a4_strong_inhibitor",
+    "is_cyp3a4_substrate",
+    "is_cyp2c9_inhibitor",
+    "is_cyp2d6_inhibitor",
+    "is_p_gp_inhibitor",
+    "is_p_gp_substrate",
+    "is_oatp1b1_inhibitor",
+    "is_statin",
+    "is_anticoagulant",
+    "is_maoi",
+    "is_serotonergic",
+    "is_nsaid",
+    "is_pde5_inhibitor",
+})
+
+# The 12 iter-140 additions (the 100%-coverage closure flags).
+_ITER140_FLAG_KEYS = frozenset({
+    "is_iodinated_contrast",
+    "is_metformin",
+    "is_renal_state",
+    "is_cyp1a2_inhibitor",
+    "is_cyp1a2_substrate",
+    "is_xanthine_oxidase_inhibitor",
+    "is_thiopurine",
+    "is_folate_antagonist",
+    "is_tetracycline",
+    "is_retinoid",
+    "is_ace_inhibitor",
+    "is_neprilysin_inhibitor",
+})
+
+
+def test_baseline_flag_keys_present():
+    """The 13 baseline flag classes (iter-96 era) must remain in
+    `flag_keys`. Renaming any of them silently breaks
+    `_pair_derived_flags` rule lookups (rule 0 calls
+    `has_pair('is_cyp3a4_strong_inhibitor', 'is_cyp3a4_substrate')`)."""
+    flag_keys = set(_flags_doc()["flag_keys"])
+    missing = _BASELINE_FLAG_KEYS - flag_keys
+    assert not missing, (
+        f"{len(missing)} baseline flag class(es) missing from "
+        f"pharmacology_flags.json::flag_keys: {sorted(missing)}. "
+        f"These names are referenced by `_pair_derived_flags` rules 0-5 "
+        f"and a rename would silently regress 6 of the 13 rules."
+    )
+
+
+def test_iter140_flag_keys_present():
+    """The 12 iter-140 flag classes (added for 100%-coverage closure)
+    must remain in `flag_keys`. Renaming any silently regresses the
+    100%-coverage gate to 71.4% (the iter-105 baseline)."""
+    flag_keys = set(_flags_doc()["flag_keys"])
+    missing = _ITER140_FLAG_KEYS - flag_keys
+    assert not missing, (
+        f"{len(missing)} iter-140 flag class(es) missing from "
+        f"pharmacology_flags.json::flag_keys: {sorted(missing)}. "
+        f"These flags close the 8-mechanism documented-gap class for "
+        f"100% explanation coverage (iter-140); removing any of them "
+        f"silently regresses coverage to 71.4%."
+    )
+
+
+# Canonical example: each pair-derived rule index → (drug_a, drug_b)
+# from the live cache that MUST fire that rule. Catches both
+#   (a) a rule going dead (its named example stops firing it) and
+#   (b) a flag-table edit that removes the example's flag.
+_RULE_CANONICAL_EXAMPLES = (
+    # (idx, drug_a,        drug_b,           rule_name)
+    (0,  "clarithromycin", "simvastatin",    "cyp3a4_inhib_substrate"),
+    (1,  "gemfibrozil",    "simvastatin",    "oatp1b1_inhib_statin"),
+    (2,  "clarithromycin", "simvastatin",    "p_gp_inhib_substrate"),
+    # rule 3 (cyp2c9_inhib_anticoag): not yet exercised by any contra
+    # cache entry — placeholder for future warfarin+strong-CYP2C9
+    # additions. Skipped from canonical-example pin until populated.
+    (4,  "phenelzine",     "sertraline",     "maoi_serotonergic"),
+    (5,  "isosorbide mononitrate", "sildenafil", "pde5_nitrate"),
+    (6,  "iodine",         "metformin",      "iodinated_contrast_metformin"),
+    (7,  "ciprofloxacin",  "tizanidine",     "cyp1a2_inhib_substrate"),
+    (8,  "allopurinol",    "azathioprine",   "xo_thiopurine"),
+    (9,  "methotrexate",   "trimethoprim-sulfamethoxazole", "folate_antagonist_pair"),
+    (10, "doxycycline",    "isotretinoin",   "tetracycline_retinoid"),
+    (11, "lisinopril",     "sacubitril",     "ace_neprilysin"),
+    (12, "metformin",      "renal impairment", "metformin_renal"),
+)
+
+
+def test_each_rule_fires_on_canonical_example_pair():
+    """Iter-141 (T1 round 28): for every pair-derived rule that has a
+    cache contra example, assert the canonical example pair fires
+    that rule. Catches the silent-regression class:
+      (a) a rule disappears (the example pair stops firing it) — the
+          100%-coverage gate could still pass if another rule covers
+          the example, but the rule is dead;
+      (b) a flag-table edit removes the example drug's flag — the rule
+          still works in code but loses its only known cache example.
+
+    Same canonical-example pin pattern as iter-84 arch-mind 9-rule
+    canonical set + iter-94 cache shape.
+    """
+    import importlib
+    import sys
+    sys.path.insert(0, str(_REPO_ROOT / "retrain_runpod"))
+    import train_bitnet_v3_atc
+    importlib.reload(train_bitnet_v3_atc)
+    pair_derived = train_bitnet_v3_atc._pair_derived_flags
+
+    failures = []
+    for idx, da, db, name in _RULE_CANONICAL_EXAMPLES:
+        flags = pair_derived(da, db)
+        assert len(flags) == 13, (
+            f"_pair_derived_flags returned {len(flags)} bits "
+            f"(iter-141 expects 13)."
+        )
+        if flags[idx] != 1:
+            fired = [i for i, f in enumerate(flags) if f]
+            failures.append(
+                f"rule {idx} ({name}) — canonical example "
+                f"{da!r} + {db!r} did NOT fire rule {idx}; "
+                f"actually fired rules: {fired}"
+            )
+    assert not failures, (
+        "Canonical-example regression(s):\n  "
+        + "\n  ".join(failures)
+        + "\nEither restore the missing flag(s) on the example drugs "
+          "or update _RULE_CANONICAL_EXAMPLES with a new representative "
+          "pair."
     )
