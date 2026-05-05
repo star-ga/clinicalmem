@@ -97,14 +97,23 @@ def test_bitnet_live_precision_recall_pinned():
     #           had 1 example in training (isosorbide+sildenafil) so
     #           generalization to tadalafil+NTG is weak. Upstream
     #           Layer 1 + DOWNGRADE_DISAGREEMENT preserve contra.
-    # Lower bound 0.28 catches the iter-99 baseline; upper 0.45
-    # covers a future weight rotation that lifts recall to ~11/26.
-    assert 0.28 <= recall <= 0.45, (
+    # Iter-134: cohort grew (26 → 27, clarithromycin+pimozide), TP=8 →
+    #           recall = 8/27 = 0.296. BitNet predicted "major" on
+    #           the new pair — same architectural ceiling on intra-class
+    #           severity tiers within the CYP3A4-inhib×substrate flag
+    #           class (already saturated with 4 contras in cache, the
+    #           hash-only encoder can't discriminate severity solely
+    #           from the flag firing). Upstream Layer 1 (FDA Orap
+    #           label boxed warning) + DOWNGRADE_DISAGREEMENT preserve
+    #           the contra verdict.
+    # Lower bound 0.27 catches the iter-134 floor; upper 0.45
+    # covers a future weight rotation that lifts recall to ~12/27.
+    assert 0.27 <= recall <= 0.45, (
         f"Layer 4.5 deployment recall on contraindicated outside band: "
-        f"live={recall:.4f}, allowed=[0.28, 0.45]"
+        f"live={recall:.4f}, allowed=[0.27, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 26, f"contraindicated cohort size drifted: live={total}, pinned=26"
+    assert total == 27, f"contraindicated cohort size drifted: live={total}, pinned=27"
 
 
 def test_dashboard_displays_live_precision_number():

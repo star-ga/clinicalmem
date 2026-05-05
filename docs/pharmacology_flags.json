@@ -661,7 +661,7 @@
         "https://www.ncbi.nlm.nih.gov/pubmed/15229465"
       ],
       "atc": "C10AB04",
-      "note": "fibrate; OATP1B1 inhibitor \u2014 contraindicated with simvastatin per FDA Lopid label"
+      "note": "fibrate; OATP1B1 inhibitor — contraindicated with simvastatin per FDA Lopid label"
     },
     "omeprazole": {
       "flags": [],
@@ -1024,6 +1024,17 @@
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/021134s016lbl.pdf"
       ],
       "notes": "Organic nitrate; cGMP-mediated vasodilation. PDE5 inhibitor co-admin = severe hypotension (FDA Cialis/Viagra/Levitra black-box)."
+    },
+    "pimozide": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/017473s041lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/9384188/"
+      ],
+      "atc": "N05AG02",
+      "notes": "Diphenylbutylpiperidine antipsychotic; primary metabolic pathway is CYP3A4. FDA Orap label (sec 4 Contraindications) lists strong CYP3A4 inhibitors (clarithromycin, ketoconazole, itraconazole, nefazodone) as absolute contraindications due to QT-prolongation / Torsades-de-Pointes risk from elevated pimozide AUC."
     }
   }
 }
