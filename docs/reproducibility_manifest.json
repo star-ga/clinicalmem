@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-05T14:50:47.958070+00:00",
+  "dateCreated": "2026-05-05T15:18:10.833286+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "d18f7a40e526f1899529006efecccdcb3d7c3b98",
+  "git_head": "db05b4b36dd6f28e25db58afb823a773631b9e89",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -60,7 +60,7 @@
     },
     "pharmacology_flags": {
       "path": "docs/pharmacology_flags.json",
-      "sha256": "ce21ed035f3e853eef576c8ff9fa8a82e7c97f1b64135533b16a352681fb59ab",
+      "sha256": "bb0510aca078f4f6793dce44274560be45a01f7d25309ca55fb92988511756d0",
       "drug_count": 119,
       "flag_keys": [
         "is_cyp3a4_strong_inhibitor",
@@ -87,7 +87,8 @@
         "is_tetracycline",
         "is_retinoid",
         "is_ace_inhibitor",
-        "is_neprilysin_inhibitor"
+        "is_neprilysin_inhibitor",
+        "is_cyp3a4_moderate_inhibitor"
       ],
       "schema_version": "v1"
     },

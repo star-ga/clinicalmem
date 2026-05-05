@@ -31,7 +31,8 @@
     "is_tetracycline",
     "is_retinoid",
     "is_ace_inhibitor",
-    "is_neprilysin_inhibitor"
+    "is_neprilysin_inhibitor",
+    "is_cyp3a4_moderate_inhibitor"
   ],
   "drugs": {
     "clarithromycin": {
@@ -47,13 +48,14 @@
     },
     "erythromycin": {
       "flags": [
-        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_moderate_inhibitor",
         "is_p_gp_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/050207s071lbl.pdf"
       ],
-      "atc": "J01FA01"
+      "atc": "J01FA01",
+      "notes": ""
     },
     "azithromycin": {
       "flags": [],
@@ -96,7 +98,7 @@
     "fluconazole": {
       "flags": [
         "is_cyp2c9_inhibitor",
-        "is_cyp3a4_strong_inhibitor"
+        "is_cyp3a4_moderate_inhibitor"
       ],
       "evidence_urls": [
         "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/019949s060lbl.pdf"
@@ -392,7 +394,7 @@
     },
     "verapamil": {
       "flags": [
-        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_moderate_inhibitor",
         "is_p_gp_inhibitor"
       ],
       "evidence_urls": [
@@ -403,7 +405,7 @@
     },
     "diltiazem": {
       "flags": [
-        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_moderate_inhibitor",
         "is_p_gp_inhibitor"
       ],
       "evidence_urls": [
@@ -1026,7 +1028,7 @@
     },
     "dronedarone": {
       "flags": [
-        "is_cyp3a4_strong_inhibitor",
+        "is_cyp3a4_moderate_inhibitor",
         "is_p_gp_inhibitor"
       ],
       "evidence_urls": [

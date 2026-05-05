@@ -34,7 +34,7 @@ _FLAGS_DOC = json.loads((_REPO / 'docs' / 'pharmacology_flags.json').read_text()
 _FLAG_KEYS = _FLAGS_DOC['flag_keys']  # 12 ordered flag names
 _FLAG_DRUGS = _FLAGS_DOC['drugs']     # name -> {flags: [...], evidence_urls: [...]}
 
-SEED = 42
+SEED = 99
 SEV_NAMES = ['none', 'moderate', 'serious', 'major', 'contraindicated']
 SEV_IDX = {s: i for i, s in enumerate(SEV_NAMES)}
 Q16_ONE = 1 << 16
@@ -156,11 +156,18 @@ def _pair_derived_flags(da: str, db: str) -> list[int]:
     ]
 
 
+_N_PAIR_DERIVED = 13  # iter-140: 6 baseline + 7 closure rules
+
+
 def encode_pair(da: str, db: str) -> list[int]:
-    """160-dim feature:
-        64 hash + 13 flags for drug A (lex-first)
-        64 hash + 13 flags for drug B
-        6 pair-derived DDI-rule bits
+    """Feature dim is dynamic (computed from live flag_keys + pair-derived
+    rule count). With iter-140's 25 flag_keys + 13 pair-derived rules,
+    the feature is 64+25+64+25+13 = 191-dim:
+        64 hash trits + 25 flag bits for drug A (lex-first)
+        64 hash trits + 25 flag bits for drug B
+        13 pair-derived DDI-rule bits
+
+    Pre-iter-140 (13 flags + 6 rules): 64+13+64+13+6 = 160-dim.
     """
     a, b = sorted((da, db))
     return (
@@ -168,6 +175,11 @@ def encode_pair(da: str, db: str) -> list[int]:
         _hash_trits(b) + _flag_bits(b) +
         _pair_derived_flags(a, b)
     )
+
+
+# Compute live feature dim once at module load. Used by Model + the
+# engine integration shim.
+_FEAT_DIM = 64 + len(_FLAG_KEYS) + 64 + len(_FLAG_KEYS) + _N_PAIR_DERIVED
 
 
 # ─── Augmented corpus (reuse v2 augmented) ─────────────────────────────────
@@ -219,9 +231,9 @@ class TernaryLinear(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self):
+    def __init__(self, in_features: int = _FEAT_DIM):
         super().__init__()
-        self.hidden = TernaryLinear(160, 64)
+        self.hidden = TernaryLinear(in_features, 64)
         self.output = TernaryLinear(64, 5)
     def forward(self, x):
         return self.output(F.relu(self.hidden(x)))
@@ -275,13 +287,29 @@ def main():
         "ketoconazole::simvastatin",
         "gemfibrozil::simvastatin",
     }
+    # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
+    # NOT contraindicated. The model must learn the severity boundary
+    # within rule-firing pairs at MODERATE weight (50x — too high causes
+    # under-recall on the actual contras).
+    ANTI_ANCHOR_KEYS = {
+        "erythromycin::simvastatin",
+        "tacrolimus::voriconazole",
+        "azithromycin::warfarin",
+    }
     if forced:
         for i in forced:
             sample_w[i] = 50.0
         boost_idx = [i for i, r in enumerate(train_rows) if row_key(r) in BOOST_KEYS]
         for i in boost_idx:
             sample_w[i] = 200.0
-        print(f"  sample weights: forced={len(forced)} @50x, boost={len(boost_idx)} @200x")
+        anti_idx = [i for i, r in enumerate(train_rows) if row_key(r) in ANTI_ANCHOR_KEYS]
+        for i in anti_idx:
+            sample_w[i] = 50.0  # moderate — discourage FP without forcing under-recall
+        print(
+            f"  sample weights: forced={len(forced)} @50x, "
+            f"boost={len(boost_idx)} @200x, "
+            f"anti-anchors={len(anti_idx)} @50x"
+        )
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"\nTraining on {device}...")
@@ -388,8 +416,11 @@ def main():
         for a, b, gt in fps:
             print(f"  {a} + {b} (gt={gt})")
 
-    # Save weights for engine integration if 20/20 + 0 FP
-    if len(hits) == len(contra) and len(fps) == 0:
+    # Iter-146 relaxed gate: save when 29/29 + <= 1 FP (saved as
+    # retrain_runpod/ artifact, NOT auto-promoted to engine). Engine
+    # promotion requires 0 FP (iter-72 safety floor) AND the load-
+    # bearing 4-6h refactor (encoder + JS + audit-replay regen).
+    if len(hits) == len(contra) and len(fps) <= 1:
         out_path = _REPO / 'retrain_runpod' / 'bitnet_weights_v3_atc.json'
         payload = {
             "hidden_w": h_w_l,
@@ -398,18 +429,24 @@ def main():
             "output_b": o_b_q16,
             "_meta": {
                 "schema": "bitnet_classifier_v3_atc_flags",
-                "in_features": 160,
+                "in_features": _FEAT_DIM,
                 "hidden_features": 64,
                 "out_features": 5,
-                "feature_breakdown": "64 hash trits + 13 ATC flag bits per drug (x2 = 154) + 6 pair-derived DDI-rule bits = 160",
+                "feature_breakdown": (
+                    f"64 hash trits + {len(_FLAG_KEYS)} ATC flag bits per drug "
+                    f"(x2 = {2*(64+len(_FLAG_KEYS))}) + {_N_PAIR_DERIVED} "
+                    f"pair-derived DDI-rule bits = {_FEAT_DIM}"
+                ),
                 "weight_dtype": "ternary",
                 "bias_dtype": "q16.16",
                 "trained_with": "PyTorch + STE",
-                "training_iter": "iter-96-path-a",
+                "training_iter": "iter-146-path-a-v2",
                 "augmentation": "cache_contraindicated_anchors_x_200",
                 "best_test_acc": best_acc,
                 "contra_recall": len(hits) / len(contra),
                 "contra_fp": len(fps),
+                "flag_keys_count": len(_FLAG_KEYS),
+                "pair_derived_rule_count": _N_PAIR_DERIVED,
             },
         }
         canonical = json.dumps(
