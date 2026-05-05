@@ -91,17 +91,43 @@ def _luhn_check_digit(prefix: str) -> int:
 
 def validate_npi(npi: str) -> bool:
     """Return True if `npi` is a 10-digit string with a valid CMS Luhn check."""
+    # Log failures with the reason (operators see invalid-NPI rate from
+    # adversarial / malformed input). PHI-safe: log the failure REASON +
+    # length, NEVER the candidate NPI value (a probe could be a real PII
+    # attempt).
     if not isinstance(npi, str):
+        logger.debug(
+            "npi_validation_failed",
+            extra={"reason": "not_str", "type": type(npi).__name__},
+        )
         return False
     if len(npi) != 10:
+        logger.debug(
+            "npi_validation_failed",
+            extra={"reason": "wrong_length", "actual_length": len(npi)},
+        )
         return False
     if not npi.isdigit():
+        logger.debug(
+            "npi_validation_failed",
+            extra={"reason": "non_digit", "actual_length": len(npi)},
+        )
         return False
     if npi[0] not in ("1", "2"):
+        logger.debug(
+            "npi_validation_failed",
+            extra={"reason": "bad_type_prefix", "actual_length": len(npi)},
+        )
         return False
     base = npi[:9]
     expected = _luhn_check_digit(_CMS_LUHN_PREFIX + base)
-    return expected == int(npi[9])
+    if expected != int(npi[9]):
+        logger.debug(
+            "npi_validation_failed",
+            extra={"reason": "bad_luhn", "actual_length": len(npi)},
+        )
+        return False
+    return True
 
 
 def generate_test_npi(seed_string: str, *, individual: bool = True) -> str:
@@ -124,7 +150,21 @@ def generate_test_npi(seed_string: str, *, individual: bool = True) -> str:
     if len(base_str) != 9:
         raise RuntimeError(f"internal: base_str length {len(base_str)}")
     check = _luhn_check_digit(_CMS_LUHN_PREFIX + base_str)
-    return base_str + str(check)
+    npi = base_str + str(check)
+    # Synthetic-NPI generation should leave a structured trace so an
+    # auditor can verify zero-real-NPI-collision by replaying the
+    # cohort-integrity pin. PHI-safe: the GENERATED NPI is logged
+    # (synthetic by construction); the seed string is NOT (could
+    # contain real-name fragments from upstream callers).
+    logger.debug(
+        "npi_generated_synthetic",
+        extra={
+            "synthetic_npi": npi,
+            "individual": individual,
+            "seed_length": len(seed_string),
+        },
+    )
+    return npi
 
 
 # ─── NPPES API ─────────────────────────────────────────────────────────────
@@ -185,7 +225,7 @@ def lookup_npi(npi: str, *, timeout: float = 5.0) -> NPIRecord | None:
         name = basic.get("organization_name", "Unknown Organisation")
         credential = ""
 
-    return NPIRecord(
+    record = NPIRecord(
         npi=npi,
         enumeration_type=enumeration_type,
         name=name,
@@ -195,6 +235,21 @@ def lookup_npi(npi: str, *, timeout: float = 5.0) -> NPIRecord | None:
         practice_state=(practice.get("state") or "").strip(),
         practice_city=(practice.get("city") or "").strip(),
     )
+    # Successful lookup — INFO so operators can grep throughput +
+    # taxonomy distribution. PHI-safe: NPI itself is a public CMS
+    # identifier, and taxonomy codes / enumeration_type are public
+    # registry data; the practitioner's NAME and ADDRESS are NOT
+    # logged (they become identifying when paired with location).
+    logger.info(
+        "npi_lookup_success",
+        extra={
+            "npi": npi,
+            "enumeration_type": enumeration_type,
+            "taxonomy_code": record.primary_taxonomy_code,
+            "has_practice_location": bool(record.practice_state),
+        },
+    )
+    return record
 
 
 __all__ = [

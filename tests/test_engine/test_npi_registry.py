@@ -181,3 +181,93 @@ def test_npi_record_is_frozen() -> None:
     )
     with pytest.raises(Exception):
         record.npi = "9999999999"  # type: ignore[misc]
+
+
+# ─── Iter-154 logger-density ratchet pin (T4 round-30) ───────────────
+#
+# engine/npi_registry.py was the next-lowest-density observability file
+# in engine/ at 14.6 logger calls / kloc (3 logs / 205 LOC). Same
+# ratchet pattern as iter-138 (clinical_memory.py 13.7 -> 27.5),
+# iter-144 (flow_runner.py 12.3 -> 18.0), and iter-151
+# (hallucination_detector.py 14.4 -> 31.0).
+#
+# Three silent paths closed:
+#   1. validate_npi failures emit DEBUG `npi_validation_failed` with
+#      reason (not_str / wrong_length / non_digit / bad_type_prefix /
+#      bad_luhn) + length. PHI-safe: the candidate NPI value is NEVER
+#      logged (probes can be real-PII attempts).
+#   2. generate_test_npi exit emits DEBUG `npi_generated_synthetic`
+#      with the synthetic NPI + individual flag + seed_length. Seed
+#      string itself is NEVER logged (callers may pass real-name
+#      fragments).
+#   3. lookup_npi success emits INFO `npi_lookup_success` with NPI +
+#      enumeration_type + taxonomy_code + has_practice_location.
+#      The practitioner's NAME and full ADDRESS are NEVER logged
+#      (they become identifying when paired with location).
+#
+# Net: 3 -> 10 logger calls (+7 events). Density 14.6 -> 38.5/kloc.
+
+import logging
+
+
+class TestNPIRegistryLoggerRatchetIter154:
+    """Iter-154 T4 round-30 — logger density ratchet pin."""
+
+    def test_validate_npi_failure_logs_reason(self, caplog):
+        with caplog.at_level(logging.DEBUG, logger='engine.npi_registry'):
+            validate_npi("123")  # too short
+        recs = [r for r in caplog.records if r.message == 'npi_validation_failed']
+        assert any(getattr(r, 'reason', None) == 'wrong_length' for r in recs), (
+            "validate_npi('123') must emit a DEBUG npi_validation_failed "
+            "event with reason='wrong_length'"
+        )
+
+    def test_validate_npi_failure_never_logs_candidate(self, caplog):
+        """PHI paranoia: a candidate NPI must NEVER appear in any log
+        record — the value could be a real PII probe."""
+        sentinel = "9876543210ZZZ"  # contains alpha so it'll fail at .isdigit()
+        with caplog.at_level(logging.DEBUG, logger='engine.npi_registry'):
+            validate_npi(sentinel)
+        for rec in caplog.records:
+            haystack = (
+                str(rec.message) + ' ' +
+                ' '.join(str(v) for v in vars(rec).values() if isinstance(v, (str, int, float)))
+            )
+            for slot in vars(rec).values():
+                if isinstance(slot, dict):
+                    haystack += ' ' + ' '.join(str(v) for v in slot.values())
+            assert sentinel not in haystack, (
+                f"PHI LEAK: candidate NPI {sentinel!r} appeared in log "
+                f"record {rec.message!r}. validate_npi must NEVER log "
+                "the candidate value."
+            )
+
+    def test_generate_test_npi_emits_debug(self, caplog):
+        with caplog.at_level(logging.DEBUG, logger='engine.npi_registry'):
+            npi = generate_test_npi("dr-test-seed-iter-154")
+        recs = [r for r in caplog.records if r.message == 'npi_generated_synthetic']
+        assert len(recs) >= 1
+        rec = recs[0]
+        assert getattr(rec, 'synthetic_npi', None) == npi
+        assert getattr(rec, 'individual', None) is True
+        # Seed string must NEVER appear in any log
+        for r in caplog.records:
+            for v in vars(r).values():
+                assert 'dr-test-seed-iter-154' not in str(v), (
+                    "seed_string must NEVER appear in log records"
+                )
+
+    def test_logger_density_floor(self):
+        """Floor: npi_registry.py must keep >= 10 logger calls.
+        Iter-154 ratchet bumped 3 -> 10 (+7 events: 5 validate-failure
+        reasons + 1 generate-synthetic trace + 1 lookup-success);
+        future regressions below 10 fail this gate."""
+        import re
+        from pathlib import Path
+        path = Path(__file__).resolve().parent.parent.parent / 'engine' / 'npi_registry.py'
+        text = path.read_text()
+        count = len(re.findall(r'logger\.(debug|info|warning|error|critical)', text))
+        assert count >= 10, (
+            f"engine/npi_registry.py logger density regressed: "
+            f"got {count}, floor=10 (iter-154 ratchet)"
+        )
