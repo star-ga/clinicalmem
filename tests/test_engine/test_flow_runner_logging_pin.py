@@ -285,12 +285,127 @@ def test_flow_node_skipped_logs_at_debug_level(caplog, monkeypatch, first_flow_n
 
 def test_flow_runner_has_at_least_nine_structured_logs():
     """Iter-92 floor: flow_runner.py grew from 5 to 9+ logger calls.
+    Iter-144 raised to 14 (added 5 events: flow_resolve_ok DEBUG,
+    flow_catalogue_dir_missing WARNING, flow_catalogue_listed DEBUG,
+    flow_node_phi_scan INFO, flow_node_audit_emit INFO).
     Future evidence-chain regressions can't quietly slip below."""
     import re
     src = (_REPO_ROOT / "engine" / "flow_runner.py").read_text()
     pat = re.compile(r"\blogger\.(?:debug|info|warning|error|exception|critical)\(")
     count = len(pat.findall(src))
-    assert count >= 9, (
+    assert count >= 14, (
         f"engine/flow_runner.py has {count} logger calls; "
-        f"floor is 9 (iter-92 baseline)."
+        f"floor is 14 (iter-144 baseline; was 9 at iter-92)."
     )
+
+
+# ─── iter-144 (T4 round 28) logger ratchet — 4 new silent paths closed ─────
+
+
+def test_resolve_flow_path_success_emits_debug_event_iter144(caplog, first_flow_name):
+    """_resolve_flow_path success path emits `flow_resolve_ok` DEBUG.
+    Pre-iter-144 the success path was silent (only ERROR on FileNotFound)."""
+    from engine.flow_runner import _resolve_flow_path
+    with caplog.at_level(logging.DEBUG, logger="engine.flow_runner"):
+        _resolve_flow_path(first_flow_name)
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG and "flow_resolve_ok" in r.getMessage()
+    ]
+    assert matched, (
+        "_resolve_flow_path success path emitted no `flow_resolve_ok` "
+        "DEBUG event."
+    )
+
+
+def test_list_flow_names_missing_dir_emits_warning_iter144(caplog, tmp_path):
+    """list_flow_names against a non-existent dir emits
+    `flow_catalogue_dir_missing` WARNING. Pre-iter-144 a misconfigured
+    deployment with FLOWS_DIR pointing nowhere was silent."""
+    from engine.flow_runner import list_flow_names
+    nonexistent = tmp_path / "no_such_flows_dir_iter144"
+    with caplog.at_level(logging.WARNING, logger="engine.flow_runner"):
+        result = list_flow_names(flows_dir=nonexistent)
+    assert result == []
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.WARNING
+        and "flow_catalogue_dir_missing" in r.getMessage()
+    ]
+    assert matched, (
+        "list_flow_names against missing dir emitted no "
+        "`flow_catalogue_dir_missing` WARNING."
+    )
+
+
+def test_phi_scan_dispatch_emits_info_event_iter144(caplog):
+    """_phi_scan dispatch emits `flow_node_phi_scan` INFO. Pre-iter-144
+    the PHI gate (safety-critical first node) was silent in the dispatch
+    path."""
+    from engine.flow_runner import _dispatch_table
+    table = _dispatch_table()
+    phi_scan = table[("@native", "phi_scan")]
+    with caplog.at_level(logging.INFO, logger="engine.flow_runner"):
+        phi_scan({"medications": ["warfarin", "ibuprofen"]})
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.INFO and "flow_node_phi_scan" in r.getMessage()
+    ]
+    assert matched, (
+        "_phi_scan dispatch emitted no `flow_node_phi_scan` INFO event."
+    )
+    rec = matched[0]
+    assert getattr(rec, "med_count", 0) == 2
+    assert getattr(rec, "phi_match_count", -1) == 0  # no PHI in 'warfarin' / 'ibuprofen'
+
+
+def test_audit_chain_emit_dispatch_emits_info_event_iter144(caplog):
+    """_emit_audit_chain dispatch emits `flow_node_audit_emit` INFO.
+    Pre-iter-144 the audit-chain anchor was silent in the dispatch path."""
+    from engine.flow_runner import _dispatch_table
+    table = _dispatch_table()
+    audit_emit = table[("@native", "audit")]
+    with caplog.at_level(logging.INFO, logger="engine.flow_runner"):
+        audit_emit({"_node_count": 5})
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.INFO and "flow_node_audit_emit" in r.getMessage()
+    ]
+    assert matched, (
+        "_emit_audit_chain dispatch emitted no `flow_node_audit_emit` "
+        "INFO event."
+    )
+    rec = matched[0]
+    assert getattr(rec, "node_count", -1) == 5
+
+
+def test_phi_scan_log_contains_no_med_content_iter144(caplog):
+    """The `flow_node_phi_scan` event must NEVER include medication
+    names or any slice of the joined PHI-text in any field of the log
+    record. Same paranoia scrub as iter-103/108/113/118/123/128/133/138.
+    """
+    from engine.flow_runner import _dispatch_table
+    table = _dispatch_table()
+    phi_scan = table[("@native", "phi_scan")]
+
+    sentinel_med = "ZZZ_LEAK_SENTINEL_MED_iter144"
+    inputs = {"medications": [sentinel_med, "ibuprofen"], "patient_id": "pt-test"}
+    with caplog.at_level(logging.INFO, logger="engine.flow_runner"):
+        phi_scan(inputs)
+
+    for rec in caplog.records:
+        msg = rec.getMessage()
+        assert sentinel_med not in msg, (
+            f"med sentinel leaked into log message: {msg!r}"
+        )
+        for value in vars(rec).values():
+            if isinstance(value, str):
+                assert sentinel_med not in value, (
+                    "med sentinel leaked into record attribute"
+                )
+            elif isinstance(value, (list, tuple)):
+                for item in value:
+                    if isinstance(item, str):
+                        assert sentinel_med not in item, (
+                            "med sentinel leaked into record list"
+                        )

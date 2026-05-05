@@ -177,6 +177,15 @@ def _resolve_flow_path(flow_name: str, flows_dir: Path | None = None) -> Path:
         raise FileNotFoundError(
             f"flow source not found: {candidate}; available flows: {list_flow_names(base)}"
         )
+    # DEBUG-level success path: every successful resolution leaves a
+    # baseline footprint so operators can compute the resolution rate
+    # (calls per minute) and distinguish "no calls" from "all clean".
+    # PHI-safe: flow_name is structural metadata (file basename), never
+    # patient data.
+    logger.debug(
+        "flow_resolve_ok",
+        extra={"flow_name": flow_name},
+    )
     return candidate
 
 
@@ -186,8 +195,20 @@ def list_flow_names(flows_dir: Path | None = None) -> list[str]:
     """List available flow names (without `.flow.mind` suffix)."""
     base = Path(flows_dir) if flows_dir is not None else _FLOWS_DIR
     if not base.exists():
+        # Catalogue request against a non-existent dir is upstream config
+        # bug; surface at WARNING so operators can spot misconfigured
+        # deployments. PHI-safe: dir path is structural (no patient data).
+        logger.warning(
+            "flow_catalogue_dir_missing",
+            extra={"base_exists": False},
+        )
         return []
-    return sorted(p.stem.replace(".flow", "") for p in base.glob("*.flow.mind"))
+    names = sorted(p.stem.replace(".flow", "") for p in base.glob("*.flow.mind"))
+    logger.debug(
+        "flow_catalogue_listed",
+        extra={"flow_count": len(names)},
+    )
+    return names
 
 
 def list_flows(flows_dir: Path | None = None) -> list[FlowContract]:
@@ -483,6 +504,20 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
         from engine.phi_detector import scan_phi
         text = " ".join(str(v) for v in inputs.get("medications", []))
         report = scan_phi(text)
+        # INFO-level event — PHI gate is the safety-critical first node;
+        # operators must see every dispatch in the audit log even at
+        # default log levels. PHI-safe: only the LENGTH of the joined
+        # text + match count + safe-for-external bool. The phi_detector
+        # itself emits its own events with text_length only.
+        logger.info(
+            "flow_node_phi_scan",
+            extra={
+                "text_length": len(text),
+                "med_count": len(inputs.get("medications", [])),
+                "phi_match_count": len(report.matches),
+                "safe_for_external": len(report.matches) == 0,
+            },
+        )
         return {
             "safe_for_external": len(report.matches) == 0,
             "phi_match_count": len(report.matches),
@@ -542,7 +577,15 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
     # Audit chain emit (records the per-node evidence into the chain)
     def _emit_audit_chain(inputs: dict) -> dict:
         # Lightweight stamp; the real audit chain is recorded by execute()
-        return {"emitted": True, "node_count": inputs.get("_node_count", 0)}
+        node_count = inputs.get("_node_count", 0)
+        # INFO-level event — audit-chain emit is the load-bearing FDA
+        # SaMD reproducibility anchor; every emit must leave a footprint.
+        # PHI-safe: only the structural _node_count is logged.
+        logger.info(
+            "flow_node_audit_emit",
+            extra={"node_count": node_count},
+        )
+        return {"emitted": True, "node_count": node_count}
     table[("@native", "audit")] = _emit_audit_chain
 
     # Final aggregator — the flow's output
