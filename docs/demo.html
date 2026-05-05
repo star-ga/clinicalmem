@@ -2327,9 +2327,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <article class="card overflow-hidden flex flex-col bg-white">
         <header class="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 border-b border-slate-100">
-          <div class="flex items-start justify-between gap-2 sm:gap-3">
+          <div class="flex flex-col-reverse sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
             <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 leading-tight min-w-0 break-words">${escapeHtml(flow.name)}</h3>
-            <span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-500 flex-shrink-0">${escapeHtml(flow.profile)}</span>
+            <span class="self-start sm:self-auto inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-500 flex-shrink-0">${escapeHtml(flow.profile)}</span>
           </div>
           <p class="mt-1.5 text-sm text-slate-500 leading-snug">${escapeHtml(lead)}</p>
         </header>
