@@ -345,12 +345,15 @@
       "note": "ACE inhibitor"
     },
     "eplerenone": {
-      "flags": [],
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
       "evidence_urls": [
-        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021437s006lbl.pdf"
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021437s006s007lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/12649296/"
       ],
       "atc": "C03DA04",
-      "note": "selective MRA"
+      "notes": "Selective aldosterone-receptor antagonist (Inspra, Pfizer). CYP3A4 substrate (>80% of metabolism). FDA Inspra label Section 4 Contraindications explicitly enumerates 'strong CYP3A4 inhibitors (e.g., ketoconazole, itraconazole, nefazodone, troleandomycin, clarithromycin, ritonavir, nelfinavir)' as absolute contraindications."
     },
     "ergotamine": {
       "flags": [

@@ -50,15 +50,16 @@ _PATH_A_V5_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V5_CONTRA_HITS = 31  # iter-172/177/182/187: v5 misses 4 pairs — isavuconazole+
-                       # simvastatin (iter-172), ketoconazole+ergotamine (iter-177),
-                       # minocycline+isotretinoin (iter-182), midazolam+ketoconazole
-                       # (iter-187 — benzodiazepine substrate not in iter-148
-                       # training corpus). All 4 queued for v6 retrain BOOST_KEYS.
-_V5_CONTRA_TOTAL = 35   # iter-187 cohort growth (atazanavir+simvastatin iter-164,
+_V5_CONTRA_HITS = 31  # iter-172/177/182/187/192: v5 misses 5 pairs (HIV-PI,
+                       # triazole, ergot, tetracycline, benzodiazepine,
+                       # K+-sparing-diuretic substrate sub-classes — all
+                       # not in iter-148 training corpus). All 5 queued
+                       # for v6 retrain BOOST_KEYS.
+_V5_CONTRA_TOTAL = 36   # iter-192 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
                         # iter-177, minocycline+isotretinoin iter-182,
-                        # midazolam+ketoconazole iter-187)
+                        # midazolam+ketoconazole iter-187,
+                        # eplerenone+ketoconazole iter-192)
 _V5_FP_COUNT = 0  # zero FPs invariant holds — the architectural breakthrough
 
 _Q16_ONE = 1 << 16
@@ -135,9 +136,13 @@ _V5_EXPECTED_MISSES = (
     # CYP3A4_strong_inh × CYP3A4_substrate slot is well-saturated
     # (9 prior contras) but benzodiazepines specifically were not
     # in the iter-148 training corpus, so v5 doesn't generalise to
-    # midazolam. Queued retrain: add all 4 pairs to BOOST_KEYS
-    # @200x and re-run the 30-seed sweep to recover 35/35 + 0 FP.
+    # midazolam.
     ("ketoconazole", "midazolam"),
+    # iter-192: cohort growth added eplerenone+ketoconazole. Same
+    # CYP3A4-strong-inh × CYP3A4-substrate slot — K+-sparing-diuretic
+    # sub-class wasn't in training corpus. Queued retrain: 5 pairs
+    # in BOOST_KEYS @200x; re-run sweep to recover 36/36 + 0 FP.
+    ("eplerenone", "ketoconazole"),
 )
 
 

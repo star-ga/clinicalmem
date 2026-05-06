@@ -319,6 +319,11 @@ def main():
         # CYP3A4-strong-inh × CYP3A4-substrate slot has 9 contras but no
         # benzodiazepines). Same one-example-slot generalization gap.
         "ketoconazole::midazolam",
+        # Iter-192: eplerenone+ketoconazole (36th contra, iter-192 cohort
+        # growth) needs explicit boost — the CYP3A4-strong-inh × K+-
+        # sparing-diuretic sub-slot was zero-example pre-iter-192. Same
+        # one-example-slot generalization gap as the other 4 fixes.
+        "eplerenone::ketoconazole",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing

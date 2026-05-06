@@ -2122,5 +2122,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-187"
+  },
+  {
+    "drug_a": "eplerenone",
+    "drug_b": "ketoconazole",
+    "drug_pair_canonical": [
+      "eplerenone",
+      "ketoconazole"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Eplerenone (Inspra, Pfizer) is a selective aldosterone-receptor antagonist used in heart failure and hypertension; >80% of its metabolism is via CYP3A4. Ketoconazole (Nizoral) is a strong CYP3A4 inhibitor that produces a 5-fold AUC increase in eplerenone exposure. The FDA Inspra label Section 4 Contraindications explicitly enumerates 'strong CYP3A4 inhibitors (e.g., ketoconazole, itraconazole, nefazodone, troleandomycin, clarithromycin, ritonavir, nelfinavir)' as absolute contraindications because the resulting hyperkalemia + hypotension risk is unmanageable. Mirror-listed on the FDA Nizoral label Section 4. Switch the antifungal to fluconazole (moderate inhibitor; routine eplerenone monitoring) or terbinafine (no CYP3A4 effect). Substitute spironolactone for eplerenone if antifungal must be a strong CYP3A4 inhibitor — spironolactone is not CYP3A4-metabolised.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/021437s006s007lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/019410s029lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/12649296/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-192"
   }
 ]

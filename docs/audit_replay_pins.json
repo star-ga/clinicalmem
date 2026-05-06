@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T03:29:45.081273+00:00",
+  "dateCreated": "2026-05-06T04:44:00.326899+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -537,6 +537,20 @@
         -2254612
       ],
       "repro_hash": "6b058ff84e8e0450667246726a88104f7121757bc1d83e0776ddfea8133b76eb",
+      "severity_name": "none"
+    },
+    {
+      "drug_a": "eplerenone",
+      "drug_b": "ketoconazole",
+      "feature_hash": "b9039056ec55450ea5f36a6b530f4c917f62a9a6c68cf785783f4c3b5cc6a013",
+      "logits_q16": [
+        356180,
+        -861911,
+        234630,
+        -71534,
+        -779489
+      ],
+      "repro_hash": "0fe8a0cbf0b39ebb7f4e953291f3b685502709dddc66325649c8cd9aefbc9d8e",
       "severity_name": "none"
     }
   ],

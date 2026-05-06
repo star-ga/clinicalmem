@@ -140,6 +140,15 @@ _V5_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "074d94b9cbe8f4759ddd4bce7da5a9029c63eff588fbbef4e54519f31cd09734",
         "severity_name": "none",
     },
+    # iter-192: eplerenone+ketoconazole (36th contra). v5 misses
+    # — CYP3A4-strong-inh × K+-sparing-diuretic sub-slot was
+    # 0-example pre-iter-192.
+    ("eplerenone", "ketoconazole"): {
+        "logits_q16": [235129, -594025, -801568, 61440, -969445],
+        "feature_hash": "68e6a07a15f1cf6b51e573ab8c8b7aa12bb21fb8d38b7f2235a1c1e397aa2cb2",
+        "logits_hash": "4c202d8acb977368a68f22eeeaf6a15f3d5c03c2708d3e85d71273e6574a0d38",
+        "severity_name": "none",
+    },
 }
 
 
@@ -248,7 +257,7 @@ def test_v5_q16_inference_is_deterministic_across_repeats() -> None:
     across 100 calls, the deterministic-replay claim is false and the
     FDA SaMD audit trail loses its load-bearing safety property.
 
-    100 iterations × 12 canonical pairs = 1200 forward passes. All must
+    100 iterations × 13 canonical pairs = 1300 forward passes. All must
     return the same logit vector for a given pair."""
     bundle = _load_bundle()
     for da, db in _V5_CANONICAL_PINS.keys():
