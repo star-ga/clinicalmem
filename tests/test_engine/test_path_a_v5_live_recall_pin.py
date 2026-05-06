@@ -50,15 +50,15 @@ _PATH_A_V5_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V5_CONTRA_HITS = 31  # iter-172/177/182: v5 misses isavuconazole+simvastatin
-                       # (iter-172 triazole), ketoconazole+ergotamine (iter-177
-                       # ergot), AND minocycline+isotretinoin (iter-182 tetracycline
-                       # ×retinoid slot 1-example pre-iter-182 — only doxycycline+
-                       # isotretinoin in training corpus).  All 3 queued for v6
-                       # retrain BOOST_KEYS.
-_V5_CONTRA_TOTAL = 34   # iter-182 cohort growth (atazanavir+simvastatin iter-164,
+_V5_CONTRA_HITS = 31  # iter-172/177/182/187: v5 misses 4 pairs — isavuconazole+
+                       # simvastatin (iter-172), ketoconazole+ergotamine (iter-177),
+                       # minocycline+isotretinoin (iter-182), midazolam+ketoconazole
+                       # (iter-187 — benzodiazepine substrate not in iter-148
+                       # training corpus). All 4 queued for v6 retrain BOOST_KEYS.
+_V5_CONTRA_TOTAL = 35   # iter-187 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
-                        # iter-177, minocycline+isotretinoin iter-182)
+                        # iter-177, minocycline+isotretinoin iter-182,
+                        # midazolam+ketoconazole iter-187)
 _V5_FP_COUNT = 0  # zero FPs invariant holds — the architectural breakthrough
 
 _Q16_ONE = 1 << 16
@@ -130,9 +130,14 @@ _V5_EXPECTED_MISSES = (
     # tetracycline×retinoid slot only had 1 training example
     # (doxycycline+isotretinoin) so v5's weights don't generalise
     # to minocycline. Same architectural-generalization gap pattern.
-    # Queued retrain: add all 3 pairs to BOOST_KEYS @200x and re-run
-    # the 30-seed sweep to recover 34/34 + 0 FP.
     ("isotretinoin", "minocycline"),
+    # iter-187: cohort growth added midazolam+ketoconazole. The
+    # CYP3A4_strong_inh × CYP3A4_substrate slot is well-saturated
+    # (9 prior contras) but benzodiazepines specifically were not
+    # in the iter-148 training corpus, so v5 doesn't generalise to
+    # midazolam. Queued retrain: add all 4 pairs to BOOST_KEYS
+    # @200x and re-run the 30-seed sweep to recover 35/35 + 0 FP.
+    ("ketoconazole", "midazolam"),
 )
 
 

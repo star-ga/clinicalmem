@@ -2104,5 +2104,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-182"
+  },
+  {
+    "drug_a": "midazolam",
+    "drug_b": "ketoconazole",
+    "drug_pair_canonical": [
+      "ketoconazole",
+      "midazolam"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Midazolam (Versed, Hospira) is a short-acting benzodiazepine metabolised primarily by CYP3A4 to alpha-hydroxymidazolam (active metabolite). Ketoconazole (Nizoral) is a strong CYP3A4 inhibitor. Co-administration produces a 10-22x increase in midazolam AUC with prolonged and severe central-nervous-system depression: oversedation, respiratory depression, hypotension, prolonged loss of consciousness; in IV/IM procedural-sedation use, the increased duration of action can outlast monitoring windows. The FDA Versed (midazolam) label Section 4 Contraindications explicitly lists 'ketoconazole, itraconazole, posaconazole, voriconazole' as strong CYP3A4 inhibitors that are absolute contraindications. The FDA Nizoral (ketoconazole) label Section 4 mirror-lists 'triazolam, midazolam, alprazolam' as CYP3A4-substrate benzodiazepines to AVOID. Switch the antifungal to fluconazole (moderate inhibitor) or terbinafine (no CYP3A4 effect); switch the benzodiazepine to lorazepam (glucuronidation only, no CYP3A4 metabolism) or oxazepam.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/018654s062lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/019410s029lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/8988055/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-187"
   }
 ]

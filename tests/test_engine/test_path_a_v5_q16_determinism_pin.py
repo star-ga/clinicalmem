@@ -131,6 +131,15 @@ _V5_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "a950504bcb1204d38913a98313b627efd86196588e8e71659d70e634e8f33f37",
         "severity_name": "none",
     },
+    # iter-187: midazolam+ketoconazole (35th contra). v5 misses
+    # (predicts 'none') — CYP3A4-strong-inh × benzodiazepine sub-slot
+    # was 0-example pre-iter-187.
+    ("ketoconazole", "midazolam"): {
+        "logits_q16": [196491, -3113614, -1790158, -196196, -2376667],
+        "feature_hash": "03ca8946845ad20deb5388bfbd5c11068ff5d8ebf7c12f872a32b15550a139d5",
+        "logits_hash": "074d94b9cbe8f4759ddd4bce7da5a9029c63eff588fbbef4e54519f31cd09734",
+        "severity_name": "none",
+    },
 }
 
 

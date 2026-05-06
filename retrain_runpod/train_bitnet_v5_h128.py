@@ -313,6 +313,12 @@ def main():
         # was 1-example pre-iter-182 (only doxycycline+isotretinoin) so v5
         # doesn't generalise to minocycline. Same one-example-slot pattern.
         "isotretinoin::minocycline",
+        # Iter-187: midazolam+ketoconazole (35th contra, iter-187 cohort
+        # growth) needs explicit boost — the CYP3A4-strong-inh × benzo-
+        # diazepine sub-slot was zero-example pre-iter-187 (existing
+        # CYP3A4-strong-inh × CYP3A4-substrate slot has 9 contras but no
+        # benzodiazepines). Same one-example-slot generalization gap.
+        "ketoconazole::midazolam",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing
