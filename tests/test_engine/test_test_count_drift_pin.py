@@ -182,6 +182,13 @@ _HISTORICAL_COUNTS = (
     # source-level positional-pattern guard). Density 26.9 → 35.6/kloc.
     # Live 1249 → 1257.
     "1249",
+    # iter-236 T1 round-49: structural pin family for pin-constants
+    # self-consistency across files (11th cross-pin family).
+    # test_pin_constants_self_consistency_pin.py (4 tests):
+    # _V6_CONTRA_HITS + len(_V6_EXPECTED_MISSES) == _V6_CONTRA_TOTAL,
+    # _V6_CONTRA_TOTAL == live cache contra count, README badge ==
+    # _TEST_COUNT_FLOOR, README L390 prose == badge. Live 1257 → 1261.
+    "1257",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -195,7 +202,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1257
+_TEST_COUNT_FLOOR = 1261
 
 
 def test_no_stale_test_counts_in_docs():
