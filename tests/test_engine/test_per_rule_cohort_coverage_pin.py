@@ -73,11 +73,11 @@ _RULE_NAMES = (
 # Per-rule expected count of contraindicated cache entries that fire
 # the rule. Pinned at iter-202 cohort = 38 contras.
 _EXPECTED_PER_RULE_CONTRA_COUNTS: tuple[int, ...] = (
-    16,  # 0  cyp3a4_inhib_substrate    (well-saturated; iter-215 +1 lurasidone)
+    17,  # 0  cyp3a4_inhib_substrate    (saturated; iter-230 +1 clari+tacrolimus)
     3,   # 1  oatp1b1_inhib_statin       (gemfibrozil+simva, cyclo+simva,
          #                                 cyclosporine+rosuvastatin iter-197)
-    6,   # 2  p_gp_inhib_substrate       (most CYP3A4-inh × statin pairs
-         #                                 also have P-gp inh + P-gp substrate)
+    7,   # 2  p_gp_inhib_substrate       (iter-230 +1: clari+tacrolimus also fires
+         #                                 rule 2 because tacrolimus is P-gp substrate)
     0,   # 3  cyp2c9_inhib_anticoag      (BY DESIGN — see test below)
     8,   # 4  maoi_serotonergic          (well-evidenced class)
     2,   # 5  pde5_nitrate

@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T10:42:57.294449+00:00",
+  "dateCreated": "2026-05-06T17:12:08.892842+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -594,6 +594,20 @@
       ],
       "repro_hash": "20120fe14b968ca77434b6f1aa9c555bbea0f8626854487559ad9438f9508b11",
       "severity_name": "major"
+    },
+    {
+      "drug_a": "clarithromycin",
+      "drug_b": "tacrolimus",
+      "feature_hash": "879ecc77e5dc7ee550042e1824fdae2479d5f5504297c77184f2125f08a4237c",
+      "logits_q16": [
+        317536,
+        -1408877,
+        -238659,
+        -662807,
+        -613598
+      ],
+      "repro_hash": "9a2a7bb6502ae2580cdb8382954f22d4b0fd53a016906c6f483278c40e5238e9",
+      "severity_name": "none"
     }
   ],
   "version": "1.0.0"

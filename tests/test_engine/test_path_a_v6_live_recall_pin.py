@@ -72,8 +72,8 @@ _PATH_A_V6_BUNDLE_ID = (
 # specific drug-pair anchors, not entire CYP3A4-substrate sub-class.
 # This is the same generalization-gap pattern v5 had. v7 retrain
 # queued with lurasidone::ketoconazole added to BOOST_KEYS.
-_V6_CONTRA_HITS = 38   # 7 v5-miss sub-classes caught; 1 new known-miss (iter-215)
-_V6_CONTRA_TOTAL = 39  # iter-215 cohort
+_V6_CONTRA_HITS = 39   # iter-230: cohort 39 → 40, v6 catches the new pair (clari+tacro)
+_V6_CONTRA_TOTAL = 40  # iter-230 cohort: clarithromycin+tacrolimus added
 _V6_FP_COUNT = 0       # zero FPs invariant holds
 _V6_MAJOR_HITS = 4
 _V6_MAJOR_TOTAL = 4
