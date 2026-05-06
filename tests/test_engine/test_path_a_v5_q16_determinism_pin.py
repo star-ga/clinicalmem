@@ -248,7 +248,7 @@ def test_v5_q16_inference_is_deterministic_across_repeats() -> None:
     across 100 calls, the deterministic-replay claim is false and the
     FDA SaMD audit trail loses its load-bearing safety property.
 
-    100 iterations × 11 canonical pairs = 1100 forward passes. All must
+    100 iterations × 12 canonical pairs = 1200 forward passes. All must
     return the same logit vector for a given pair."""
     bundle = _load_bundle()
     for da, db in _V5_CANONICAL_PINS.keys():
