@@ -701,6 +701,17 @@
       ],
       "atc": "N05CD08"
     },
+    "minocycline": {
+      "flags": [
+        "is_tetracycline"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/050444s066lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/9525751/"
+      ],
+      "atc": "J01AA08",
+      "notes": "Tetracycline antibiotic (Minocin, Solodyn). Same class warning as doxycycline for concomitant retinoid co-administration: FDA Accutane (isotretinoin) label Section 4 Contraindications enumerates 'tetracyclines' as a drug class to AVOID, citing pseudotumor cerebri (idiopathic intracranial hypertension) risk."
+    },
     "morphine": {
       "flags": [],
       "evidence_urls": [

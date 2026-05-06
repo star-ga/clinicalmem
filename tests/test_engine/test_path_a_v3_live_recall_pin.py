@@ -44,15 +44,13 @@ _PATH_A_V3_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V3_CONTRA_HITS = 29  # iter-177: still 29 hits; v3 now misses 4 contras: ritonavir+
-                       # simvastatin (iter-140 HIV-PI), isavuconazole+simvastatin
-                       # (iter-172 triazole), ketoconazole+ergotamine (iter-177 ergot)
-                       # plus a 4th from cohort growth that v3's h=64 architecture
-                       # can't generalise across. Path A v5 (h=128) catches more.
-                       # Full 33/33 awaits v6 retrain with extended BOOST_KEYS.
-_V3_CONTRA_TOTAL = 33   # iter-177 cohort growth (atazanavir+simvastatin iter-164,
+_V3_CONTRA_HITS = 29  # iter-182: still 29 hits; v3 now misses 5 contras at h=64
+                       # (HIV-PI / triazole / ergot / tetracycline-retinoid /
+                       # one 4th sub-class). Path A v5 (h=128) catches more.
+                       # Full 34/34 awaits v6 retrain with extended BOOST_KEYS.
+_V3_CONTRA_TOTAL = 34   # iter-182 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
-                        # iter-177)
+                        # iter-177, minocycline+isotretinoin iter-182)
 _V3_FP_COUNT = 1  # amlodipine + simvastatin (safety-conservative)
 _V3_FP_PAIR = ("amlodipine", "simvastatin")
 

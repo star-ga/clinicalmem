@@ -4,13 +4,13 @@
   "by_class": {
     "contraindicated": {
       "correct_count": 8,
-      "count": 33,
+      "count": 34,
       "max_margin_wrong_q16": 2046870,
       "mean_margin_correct_q16": 675762,
-      "mean_margin_wrong_q16": 700289,
+      "mean_margin_wrong_q16": 737183,
       "min_margin_wrong_q16": 81037,
-      "recall": 0.24242424242424243,
-      "wrong_count": 25
+      "recall": 0.23529411764705882,
+      "wrong_count": 26
     },
     "major": {
       "correct_count": 3,
@@ -2282,11 +2282,28 @@
       "predicted": "none",
       "top1_class": "none",
       "top2_class": "moderate"
+    },
+    {
+      "correct": false,
+      "drug_a": "isotretinoin",
+      "drug_b": "minocycline",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1982829,
+        -3869363,
+        -417041,
+        323290,
+        -1293973
+      ],
+      "margin_q16": 1659539,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "major"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 128,
+  "total_pairs": 129,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

@@ -308,6 +308,11 @@ def main():
         # specifically. Same architectural-generalization gap as ritonavir,
         # atazanavir, isavuconazole on the statin slot.
         "ergotamine::ketoconazole",
+        # Iter-182: minocycline+isotretinoin (34th contra, iter-182 cohort
+        # growth) needs explicit boost — the tetracycline × retinoid slot
+        # was 1-example pre-iter-182 (only doxycycline+isotretinoin) so v5
+        # doesn't generalise to minocycline. Same one-example-slot pattern.
+        "isotretinoin::minocycline",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing

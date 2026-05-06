@@ -2086,5 +2086,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-177"
+  },
+  {
+    "drug_a": "minocycline",
+    "drug_b": "isotretinoin",
+    "drug_pair_canonical": [
+      "isotretinoin",
+      "minocycline"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Minocycline (Minocin, Solodyn) is a tetracycline antibiotic; isotretinoin (Accutane, Claravis, Absorica) is a vitamin-A-derived retinoid. Co-administration is contraindicated due to additive risk of pseudotumor cerebri (idiopathic intracranial hypertension) — both drugs raise CSF pressure, the combination produces severe headache, papilledema, and visual loss; permanent vision impairment has been reported. The FDA Accutane label Section 4 Contraindications lists 'tetracyclines' as a drug class to AVOID, naming pseudotumor cerebri as the specific severe outcome. The same class warning applies to doxycycline (already in cache) and any other tetracycline-class antibiotic. Switch the antibiotic to a non-tetracycline (azithromycin, clindamycin) for the duration of isotretinoin therapy + 2 weeks washout post-discontinuation.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2010/018662s060lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/050444s066lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/9525751/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-182"
   }
 ]
