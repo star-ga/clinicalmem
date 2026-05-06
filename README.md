@@ -560,7 +560,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 |-----------|-------------|------------|
 | **Synthetic data only** | All validation uses fictional patient Sarah Mitchell | Roadmap includes MIMIC-IV and clinician adjudication |
 | **Deterministic table coverage** | Rule-based layer covers common pairs, not all ~10,000 known interactions | Layers 2-4 catch pairs not in the deterministic table |
-| **LLM consensus cost** | Five-model US-based inference adds ~$0.02-0.05 per check | Cacheable for repeated drug pairs; reducible to 3 models |
+| **LLM consensus cost** | Six-model US-based inference adds ~$0.02-0.06 per check | Cacheable for repeated drug pairs; cascade scales to whatever keys are present (degrades gracefully to 1-5) |
 | **External API dependency** | RxNorm, OpenEvidence, openFDA may have downtime | Graceful degradation; deterministic layer always available |
 | **English only** | Clinical NLP and LLM prompts are English-only | Multilingual support planned |
 | **No EHR write-back** | Read-only FHIR integration; cannot modify EHR records | By design &mdash; ClinicalMem is advisory, not prescriptive |

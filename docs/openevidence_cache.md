@@ -2,7 +2,7 @@
 
 ## Why this cache exists
 
-ClinicalMem uses OpenEvidence (Layer 2 of the five-tier drug-interaction
+ClinicalMem uses OpenEvidence (Layer 2 of the six-layer drug-interaction
 pipeline) for clinically authoritative, evidence-cited responses.  An
 academic license was requested on 2026-05-02; delivery takes up to five
 business days.

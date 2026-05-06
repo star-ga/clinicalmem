@@ -45,7 +45,7 @@ Two surfaces are kept in sync:
 | Surface | Kept-in-sync invariant | Where |
 |---|---|---|
 | `flows/MedicationSafetyReview.flow.mind` ↔ `engine/consensus_engine.py` etc. | Every `node` in the flow has a corresponding implementation entry-point in `engine/`. | `tests/test_engine/test_flow_runner.py` asserts the architectural surface (PHI scan → normalize → tier1 → tier2 → tier3 → BitNet → consensus → synth → audit). |
-| `flows/MedicationSafetyReview.flow.mind` ↔ DEVPOST.md "five-tier pipeline" copy | The user-facing description matches the contract source. | The architectural-rule layer in `.arch-mind/rules.mind` flags drift. |
+| `flows/MedicationSafetyReview.flow.mind` ↔ DEVPOST.md "six-layer pipeline" copy | The user-facing description matches the contract source. | The architectural-rule layer in `.arch-mind/rules.mind` flags drift. |
 
 The `engine/flow_runner.py` parser is line-oriented and intentionally
 small (~250 LOC); it extracts the *contract surface* (inputs, outputs,
