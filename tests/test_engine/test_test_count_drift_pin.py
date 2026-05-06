@@ -189,6 +189,14 @@ _HISTORICAL_COUNTS = (
     # _V6_CONTRA_TOTAL == live cache contra count, README badge ==
     # _TEST_COUNT_FLOOR, README L390 prose == badge. Live 1257 → 1261.
     "1257",
+    # iter-239 T4 round-49: ratchet engine/llm_synthesizer.py — 8 PHI-
+    # risky positional %s exception logger calls rewritten to structured
+    # extra={} form (mirror of iter-234 rxnorm_client refactor) + 2 new
+    # aggregate cascade-failure events. New pin file
+    # test_llm_synthesizer_logging_pin.py (6 tests, 12th cross-pin
+    # family) with source-level positional-pattern + extras-PHI-scrub
+    # guards. Live 1261 → 1267.
+    "1261",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -202,7 +210,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1261
+_TEST_COUNT_FLOOR = 1267
 
 
 def test_no_stale_test_counts_in_docs():

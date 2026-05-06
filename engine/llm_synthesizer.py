@@ -163,9 +163,27 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                     if text:
                         return text, "OpenAI-GPT-5.5"
                 else:
-                    logger.info("OpenAI returned %d, trying next", resp.status_code)
+                    # WARNING — primary medical LLM failed; cascade falls
+                    # through to Gemini. PHI-safe: status_code only.
+                    logger.warning(
+                        "synth_openai_non_200",
+                        extra={
+                            "status_code": resp.status_code,
+                            "provider": "OpenAI-GPT-5.5",
+                        },
+                    )
             except Exception as e:
-                logger.info("OpenAI failed: %s, trying next", e)
+                # WARNING — error_type only; httpx exceptions can carry
+                # the request URL/body in their message, which would
+                # leak the prompt (which is PHI-derived). Same discipline
+                # as iter-234 rxnorm_client refactor.
+                logger.warning(
+                    "synth_openai_error",
+                    extra={
+                        "error_type": type(e).__name__,
+                        "provider": "OpenAI-GPT-5.5",
+                    },
+                )
 
         if google_key:
             for model_id, model_label in [
@@ -185,7 +203,13 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                         },
                     )
                     if resp.status_code != 200:
-                        logger.info("%s returned %d, trying next", model_label, resp.status_code)
+                        logger.warning(
+                            "synth_gemini_non_200",
+                            extra={
+                                "status_code": resp.status_code,
+                                "provider": model_label,
+                            },
+                        )
                         continue
                     data = resp.json()
                     candidates = data.get("candidates", [])
@@ -194,9 +218,25 @@ async def _call_medical_llm_async(prompt: str, system: str) -> tuple[str | None,
                         if parts and parts[0].get("text"):
                             return parts[0]["text"], model_label
                 except Exception as e:
-                    logger.info("%s failed: %s, trying next", model_label, e)
+                    logger.warning(
+                        "synth_gemini_error",
+                        extra={
+                            "error_type": type(e).__name__,
+                            "provider": model_label,
+                        },
+                    )
                     continue
 
+    # WARNING — both medical LLM providers failed; downstream synthesis
+    # falls back to deterministic templates. PHI-safe: aggregate
+    # outcome flag only.
+    logger.warning(
+        "synth_async_cascade_failed",
+        extra={
+            "openai_attempted": bool(openai_key),
+            "google_attempted": bool(google_key),
+        },
+    )
     return None, "none"
 
 
@@ -244,9 +284,21 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                 if text:
                     return text, "OpenAI-GPT-5.5"
             else:
-                logger.info("OpenAI returned %d, trying next model", resp.status_code)
+                logger.warning(
+                    "synth_openai_non_200_sync",
+                    extra={
+                        "status_code": resp.status_code,
+                        "provider": "OpenAI-GPT-5.5",
+                    },
+                )
         except Exception as e:
-            logger.info("OpenAI failed: %s, trying next model", e)
+            logger.warning(
+                "synth_openai_error_sync",
+                extra={
+                    "error_type": type(e).__name__,
+                    "provider": "OpenAI-GPT-5.5",
+                },
+            )
 
     # Attempt 2: Google model (Gemini 3.1 Pro)
     if google_key:
@@ -269,7 +321,13 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                     timeout=8,
                 )
                 if resp.status_code != 200:
-                    logger.info("%s returned %d, trying next", model_label, resp.status_code)
+                    logger.warning(
+                        "synth_gemini_non_200_sync",
+                        extra={
+                            "status_code": resp.status_code,
+                            "provider": model_label,
+                        },
+                    )
                     continue
                 data = resp.json()
                 candidates = data.get("candidates", [])
@@ -278,9 +336,24 @@ def _call_medical_llm_sync(prompt: str, system: str) -> tuple[str | None, str]:
                     if parts and parts[0].get("text"):
                         return parts[0]["text"], model_label
             except Exception as e:
-                logger.info("%s failed: %s, trying next", model_label, e)
+                logger.warning(
+                    "synth_gemini_error_sync",
+                    extra={
+                        "error_type": type(e).__name__,
+                        "provider": model_label,
+                    },
+                )
                 continue
 
+    # WARNING — sync cascade fully exhausted; deterministic-template
+    # fallback active. PHI-safe aggregate outcome.
+    logger.warning(
+        "synth_sync_cascade_failed",
+        extra={
+            "openai_attempted": bool(openai_key),
+            "google_attempted": bool(google_key),
+        },
+    )
     return None, "none"
 
 
