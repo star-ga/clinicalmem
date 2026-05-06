@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T07:13:16.417986+00:00",
+  "dateCreated": "2026-05-06T10:42:57.294449+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -568,8 +568,8 @@
       "severity_name": "major"
     },
     {
-      "drug_a": "tolvaptan",
-      "drug_b": "ketoconazole",
+      "drug_a": "ketoconazole",
+      "drug_b": "tolvaptan",
       "feature_hash": "a6a8a4deaff3bb916ad4dda65a886bc3699c5d0e984e46c9896e7ce61cf7a332",
       "logits_q16": [
         1201855,
@@ -580,6 +580,20 @@
       ],
       "repro_hash": "91faa66aeb4ab6b7c1ab0973867b2425788d9fd4965099d6d3613984b33e4caf",
       "severity_name": "none"
+    },
+    {
+      "drug_a": "ketoconazole",
+      "drug_b": "lurasidone",
+      "feature_hash": "2ff6b63017d83b92bb86e1d3105e8ffd1878d32833e14f0c249ed0fb1190a09d",
+      "logits_q16": [
+        -173394,
+        -3921786,
+        415248,
+        1192852,
+        -3022559
+      ],
+      "repro_hash": "20120fe14b968ca77434b6f1aa9c555bbea0f8626854487559ad9438f9508b11",
+      "severity_name": "major"
     }
   ],
   "version": "1.0.0"

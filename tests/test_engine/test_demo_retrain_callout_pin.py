@@ -68,10 +68,10 @@ def test_heatmap_footer_recall_is_correct():
     at 8).
     """
     text = _DEMO.read_text()
-    assert "recall = 8 / 38 = 21%" in text, (
-        "Heatmap footer recall must be 8/38 = 21% — iter-202 cohort "
-        "growth (tolvaptan+ketoconazole) bumped denominator 37 → 38. "
-        "BitNet predicted 'none' on the new pair; TP stays at 8."
+    assert "recall = 8 / 39 = 21%" in text, (
+        "Heatmap footer recall must be 8/39 = 21% — iter-215 cohort "
+        "growth (lurasidone+ketoconazole) bumped denominator 38 → 39. "
+        "BitNet predicted 'major' on the new pair; TP stays at 8."
     )
     # Block historical phrasings so prior values can't reappear.
     assert "recall = 6 / 20 = 33%" not in text  # iter-49 stale (different denom)
@@ -88,7 +88,8 @@ def test_heatmap_footer_recall_is_correct():
     assert "recall = 8 / 30 = 27%" not in text  # iter-155 era stale
     assert "recall = 8 / 35 = 23%" not in text  # iter-187 era stale
     assert "recall = 8 / 36 = 22%" not in text  # iter-192 era stale
-    assert "recall = 8 / 37 = 22%" not in text  # iter-197 era stale (now 8/38)
+    assert "recall = 8 / 37 = 22%" not in text  # iter-197 era stale
+    assert "recall = 8 / 38 = 21%" not in text  # iter-202 era stale (now 8/39)
     assert "recall = 6 / 19" not in text  # iter-49 era stale
 
 
@@ -129,7 +130,7 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "38 / 38 contraindicated cache entries (100% explanation coverage)",  # iter-202 cohort 37 -> 38 (tolvaptan+ketoconazole)
+        "39 / 39 contraindicated cache entries (100% explanation coverage)",  # iter-215 cohort 38 -> 39 (lurasidone+ketoconazole)
         "592ee51e",                                  # iter-207 v6 bundle id (now staged; v5 dropped from demo per iter-209 directive)
         "193-dim feature input",                    # iter-146 dim
         "128 hidden",                                # iter-166 architectural extension

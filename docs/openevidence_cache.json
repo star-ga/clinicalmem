@@ -2176,5 +2176,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-202"
+  },
+  {
+    "drug_a": "ketoconazole",
+    "drug_b": "lurasidone",
+    "drug_pair_canonical": [
+      "ketoconazole",
+      "lurasidone"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Lurasidone (Latuda, Sumitomo Pharma) is an atypical antipsychotic (D2/5-HT2A receptor antagonist) approved for schizophrenia and bipolar depression. Lurasidone is >85% metabolized by hepatic CYP3A4 (and modestly by CYP2D6). Ketoconazole (Nizoral) is a strong CYP3A4 inhibitor that produces a 9-fold AUC increase and 6-fold Cmax increase in lurasidone exposure \u2014 well above any therapeutic ceiling. The FDA Latuda label Section 4 Contraindications explicitly enumerates 'concomitant use with strong CYP3A4 inhibitors (e.g., ketoconazole, clarithromycin, ritonavir, voriconazole, mibefradil)' as absolute contraindications because the resulting elevated lurasidone exposure produces severe akathisia, acute dystonic reactions, prolonged sedation, hypotension, and (rarely) neuroleptic malignant syndrome. Substitute fluconazole (moderate CYP3A4 inhibitor with manageable lurasidone AUC increase per FDA-recommended dose adjustment) or terbinafine (no CYP3A4 effect). If lurasidone must continue, switch to a non-azole antifungal entirely.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/200603s022lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018533s040lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/22451592/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-215"
   }
 ]

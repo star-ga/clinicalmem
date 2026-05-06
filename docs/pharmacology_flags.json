@@ -633,6 +633,16 @@
       "atc": "C09CA01",
       "note": "angiotensin II receptor blocker"
     },
+    "lurasidone": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/200603s022lbl.pdf"
+      ],
+      "atc": "N05AE05",
+      "notes": "Atypical antipsychotic (D2/5-HT2A antagonist) for schizophrenia + bipolar depression. >85% hepatic metabolism via CYP3A4. FDA Latuda label Section 4 Contraindications enumerates strong CYP3A4 inhibitors (ketoconazole, clarithromycin, ritonavir, voriconazole, mibefradil) AND strong CYP3A4 inducers (rifampin, avasimibe, St. Johns Wort, phenytoin, carbamazepine) as absolute contraindications because the resulting 9-fold AUC swing produces akathisia, severe dystonic reactions, and prolonged sedation (with strong inhibitors) or therapeutic failure (with strong inducers)."
+    },
     "maoi": {
       "flags": [
         "is_maoi"

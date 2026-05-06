@@ -1,0 +1,37 @@
+{
+  "iter": "iter-65-v2",
+  "bundle_id": "fc69893cad6f1e12c1d51b8dfedcdb4861cd7c0662af84187e42a8c8d7265e94",
+  "report": {
+    "weights_id": "fc69893cad6f1e12c1d51b8dfedcdb4861cd7c0662af84187e42a8c8d7265e94",
+    "contraindicated_total": 20,
+    "contraindicated_hits": 16,
+    "contraindicated_misses": 4,
+    "miss_detail": [
+      [
+        "clarithromycin",
+        "simvastatin",
+        "major"
+      ],
+      [
+        "gemfibrozil",
+        "simvastatin",
+        "major"
+      ],
+      [
+        "itraconazole",
+        "simvastatin",
+        "major"
+      ],
+      [
+        "ketoconazole",
+        "simvastatin",
+        "major"
+      ]
+    ],
+    "false_positives_on_contraindicated": 0,
+    "fp_detail": [],
+    "recall_pass": true,
+    "precision_pass": true,
+    "passed": true
+  }
+}

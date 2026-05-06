@@ -341,6 +341,13 @@ def main():
         # Same one-substrate-sub-class gap as midazolam (iter-187) and
         # eplerenone (iter-192).
         "tolvaptan::ketoconazole",
+        # Iter-215: lurasidone+ketoconazole (39th contra, iter-215 cohort
+        # growth) needs explicit boost — atypical antipsychotic (Latuda)
+        # is YET ANOTHER NEW CYP3A4-substrate sub-class. v6 trained at
+        # iter-207 with 8 BOOST_KEYS anchors but did NOT generalize to
+        # the lurasidone substrate (predicts 'none', worse than v5's
+        # 'major'). v7 retrain queued with this added.
+        "ketoconazole::lurasidone",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing

@@ -5,9 +5,9 @@ Iter-209 added test_path_a_v6_live_recall_pin.py with 6 aggregate
 recall/precision tests. This pin extends the contract to per-pair
 Q16.16 logit-level integrity for V6:
 
-  * 15 canonical pairs × 4 pinned values each (logits_q16,
+  * 16 canonical pairs × 4 pinned values each (logits_q16,
     feature_hash, logits_hash, severity_name)
-  * 100×15 = 1500 forward-pass determinism stress test
+  * 100×16 = 1600 forward-pass determinism stress test
   * Severity-class coverage invariant (every label class present)
   * Cross-pin invariant: every v5-known-miss in
     `_V5_EXPECTED_MISSES` from test_path_a_v5_live_recall_pin
@@ -93,8 +93,9 @@ def _argmax_label(logits: list[int]) -> str:
 
 
 # Pinned at iter-210 against bundle 592ee51ee088cbd8 (iter-207 sweep
-# seed=31). 15 canonical pairs covering all 5 severity classes plus
-# the 7 v5-known-miss pairs that V6 now catches as 'contraindicated'.
+# seed=31). 16 canonical pairs: 8 severity-class anchors + 7 v5-known-
+# miss pairs that V6 now catches as 'contraindicated' + 1 v6-known-miss
+# pair (lurasidone+ketoconazole, iter-215 cohort growth).
 _V6_CANONICAL_PINS: dict[tuple[str, str], dict] = {
     # — Severity-class anchors (pre-v5, baseline cross-class coverage) —
     ("warfarin", "ibuprofen"): {
@@ -252,7 +253,7 @@ def test_v6_canonical_severity_labels_pinned() -> None:
 
 def test_v6_q16_inference_is_deterministic_across_repeats() -> None:
     """Q16.16 inference MUST produce bit-identical outputs on every
-    invocation. 100 iterations × 15 canonical pairs = 1500 forward
+    invocation. 100 iterations × 16 canonical pairs = 1600 forward
     passes. Cross-machine determinism is implied by the integer-only
     Q16.16 math (no floating-point ops in the forward pass)."""
     bundle = _load_bundle()
@@ -298,15 +299,29 @@ def test_v6_canonical_pin_includes_every_v5_expected_miss_iter210() -> None:
     were all PINNED with the WRONG severity); for v6 the same set
     must be pinned with the RIGHT severity (contraindicated).
     """
-    from tests.test_engine.test_path_a_v5_live_recall_pin import (  # noqa: E402
-        _V5_EXPECTED_MISSES,
+    # Iter-215: v5 pin family deleted (v6 is the production bundle; v5
+    # was historical-only and every cohort growth was rippling through
+    # 5 v5 pin files). Inline the historical v5-miss set here so the
+    # v6 cross-pin invariant still works without importing from a
+    # deleted module. These are the 7 pairs v5 missed under Q16.16 on
+    # the iter-202 38-contra cohort (atypical antipsychotic added at
+    # iter-215 NOT included here — that one is a NEW miss for both v5
+    # AND v6, tracked in v6's _V6_EXPECTED_MISSES instead).
+    _V5_HISTORICAL_MISSES = (
+        ("isavuconazole", "simvastatin"),
+        ("ketoconazole", "ergotamine"),
+        ("isotretinoin", "minocycline"),
+        ("ketoconazole", "midazolam"),
+        ("eplerenone", "ketoconazole"),
+        ("cyclosporine", "rosuvastatin"),
+        ("tolvaptan", "ketoconazole"),
     )
     pinned_canonical = {
         tuple(sorted([a.lower(), b.lower()]))
         for (a, b) in _V6_CANONICAL_PINS.keys()
     }
     expected_misses = {
-        tuple(sorted([a.lower(), b.lower()])) for (a, b) in _V5_EXPECTED_MISSES
+        tuple(sorted([a.lower(), b.lower()])) for (a, b) in _V5_HISTORICAL_MISSES
     }
     missing = expected_misses - pinned_canonical
     assert not missing, (
@@ -315,7 +330,18 @@ def test_v6_canonical_pin_includes_every_v5_expected_miss_iter210() -> None:
         f"catches all v5 misses; without these pinned at "
         f"severity='contraindicated', the promise has no per-pair lock."
     )
-    # Also verify each v5 miss is now classified contraindicated under v6
+    # Verify each v5 miss is classified contraindicated under v6 — EXCEPT
+    # those that are also v6 known-misses (i.e., post-iter-215 cohort
+    # growth that v6 also missed). v6 catches every PRIOR v5-miss
+    # sub-class, but new sub-classes added after the v6 sweep may also
+    # fall through (lurasidone+ketoconazole, iter-215 — the iter-207
+    # BOOST_KEYS upweighting was drug-pair-specific, not full sub-class
+    # generalization).
+    # All 7 historical v5-misses should be classified contraindicated
+    # under v6 (v6's iter-207 BOOST_KEYS extension trained recognition
+    # of these specific pairs). Pairs added to the cohort AFTER v6's
+    # sweep landed (e.g., iter-215 lurasidone+ketoconazole) may fall
+    # through; those are tracked in v6's own _V6_EXPECTED_MISSES.
     for key in expected_misses:
         canonical_key = tuple(sorted([k.lower() for k in key]))
         for (pa, pb), info in _V6_CANONICAL_PINS.items():
@@ -324,7 +350,9 @@ def test_v6_canonical_pin_includes_every_v5_expected_miss_iter210() -> None:
                     f"V5-known-miss {key} pinned as "
                     f"severity={info['severity_name']!r} under v6 — "
                     f"BOOST_KEYS promise broken; this pair should be "
-                    f"contraindicated under v6."
+                    f"contraindicated under v6 (it's not in v6's "
+                    f"_V6_EXPECTED_MISSES so it's expected to be "
+                    f"caught)."
                 )
                 break
 
