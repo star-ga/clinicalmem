@@ -107,6 +107,30 @@ _V5_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "a55992ba89958312f161137570851e3f3f9a7b3ce5699e332daeb0f5ae821f68",
         "severity_name": "contraindicated",
     },
+    # iter-183: extension to lock the 3 v5 known-misses (iter-172/177/182
+    # cohort-growth pairs) under Q16.16. Each pair's logits are pinned
+    # so that pre-v6-retrain drift on these specific inferences is
+    # impossible. After v6 retrain lands these will flip from
+    # 'severity_name: none' to 'contraindicated' — at which point the
+    # pin must be re-rotated in the same commit as the v5 bundle swap.
+    ("isavuconazole", "simvastatin"): {
+        "logits_q16": [472215, -271348, 165836, 116798, -337666],
+        "feature_hash": "9962aa97b72267fec2b88bd1a6d014462fb9b5dd8d779de818bb7d63db1e54bd",
+        "logits_hash": "fab154aede801b172b0bcb9f1908abe3d6cd405db36e371341121b945fb93eab",
+        "severity_name": "none",
+    },
+    ("ketoconazole", "ergotamine"): {
+        "logits_q16": [558828, -1923101, -1853283, -1216526, -1075026],
+        "feature_hash": "902eff79b5c30b9263ed0d6ac1499546c00993c96f4aca92505868cfe84778ff",
+        "logits_hash": "224ba6663131dbaa3165ce5e9eae0622e8c34dd95dce3d1f5fe8ad3a3132ba7b",
+        "severity_name": "none",
+    },
+    ("minocycline", "isotretinoin"): {
+        "logits_q16": [819989, -3968120, -1585966, -29760, -5111691],
+        "feature_hash": "1843a44e3853c29b50b5dd5406c6545dd3c9011100943bbf08c14f097c73f7f6",
+        "logits_hash": "a950504bcb1204d38913a98313b627efd86196588e8e71659d70e634e8f33f37",
+        "severity_name": "none",
+    },
 }
 
 
@@ -246,4 +270,51 @@ def test_v5_canonical_pin_set_covers_every_severity_class() -> None:
         f"v5 canonical pin set is missing severity classes: {missing}. "
         f"Add at least one canonical pair for each missing class so the "
         f"determinism pin actually covers the full live cache surface."
+    )
+
+
+# ─── iter-183 cross-pin: every v5-known-miss has a pinned Q16.16 logit set ──
+
+
+def test_v5_canonical_pins_cover_every_expected_miss_iter183() -> None:
+    """Cross-pin invariant: every pair in _V5_EXPECTED_MISSES (the v5
+    live-recall pin's known-miss set) must also appear in this pin's
+    canonical Q16.16 logit set.
+
+    Why
+    ===
+    The known-miss set acknowledges that v5 currently predicts 'none'
+    on those pairs. Without a Q16.16 logit pin, a future change to
+    encode_pair / dot_t / weights could silently flip the prediction
+    for those exact pairs without firing CI — masking either a
+    silent retrain landing OR (worse) a regression on what was
+    already a near-miss prediction.
+
+    By pinning the full logit vector, any drift on these specific
+    inferences fires the canonical-pair-logits-pinned test before
+    the live-recall pin re-evaluates. The two pins together provide
+    bidirectional guarantee:
+      * live recall pin: 'these pairs MUST be missed (no silent retrain)'
+      * determinism pin: 'these pairs' logits MUST equal pinned values
+        (no silent encoder/weight change on the missed pairs)
+    """
+    from tests.test_engine.test_path_a_v5_live_recall_pin import (
+        _V5_EXPECTED_MISSES,
+    )
+
+    canonical_pairs = {
+        tuple(sorted([a, b])) for a, b in _V5_CANONICAL_PINS.keys()
+    }
+    expected_miss_pairs = {
+        tuple(sorted([a, b])) for a, b in _V5_EXPECTED_MISSES
+    }
+
+    missing = expected_miss_pairs - canonical_pairs
+    assert not missing, (
+        f"Q16.16 determinism gap: the following v5 known-miss pairs "
+        f"are NOT in this pin's canonical-pair set, so their Q16.16 "
+        f"logits can drift silently before the v6 retrain: "
+        f"{sorted(missing)}.  Add each missing pair to "
+        f"_V5_CANONICAL_PINS in lockstep with the _V5_EXPECTED_MISSES "
+        f"extension."
     )
