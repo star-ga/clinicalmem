@@ -270,7 +270,30 @@ def check_drug_interactions(
     # layers are still the source of truth for the severity decision).
     interactions = _attach_bitnet_repro_hashes(interactions)
 
-    return sorted(interactions, key=lambda i: i.score, reverse=True)
+    final = sorted(interactions, key=lambda i: i.score, reverse=True)
+
+    # PHI-safe aggregate exit log — counts per severity only, never
+    # drug names. The per-layer loggers above fire on hits/errors but
+    # this aggregate captures the full invocation footprint so
+    # operators can compute alert rates and per-tier hit attribution
+    # across runs without combining multiple log streams.
+    sev_counts: dict[str, int] = {}
+    for i in final:
+        sev_counts[i.severity] = sev_counts.get(i.severity, 0) + 1
+    # DEBUG (not INFO) to avoid polluting scripts/run_clinical_regression_eval.py
+    # stdout-bound logging.basicConfig and break the negative-control JSON
+    # parser. Default-level logs stay quiet; ops can re-enable with -v.
+    logger.debug(
+        "drug_interactions_check_complete",
+        extra={
+            "med_count": len(meds_lower),
+            "interaction_count": len(final),
+            "severity_counts": sev_counts,
+            "use_llm_fallback": use_llm_fallback,
+        },
+    )
+
+    return final
 
 
 _SAFETY_DOWNGRADE_SEVERITY: set[str] = {"contraindicated", "serious", "major"}
@@ -846,6 +869,24 @@ def check_allergy_conflicts(
     except ImportError:
         pass
 
+    # PHI-safe DEBUG — counts only. Allergen + medication names are
+    # PHI by HIPAA Safe Harbor (allergy-to-X is identifying when paired
+    # with other quasi-identifiers). The per-source breakdown lets
+    # operators measure how often the SNOMED CT class hierarchy
+    # contributes detections beyond the deterministic table.
+    table_count = sum(1 for c in conflicts if c.cross_reaction_group != "SNOMED-hierarchy")
+    snomed_count = sum(1 for c in conflicts if c.cross_reaction_group == "SNOMED-hierarchy")
+    logger.debug(
+        "allergy_conflicts_check_complete",
+        extra={
+            "allergy_count": len(allergies_lower),
+            "med_count": len(meds_lower),
+            "conflict_count": len(conflicts),
+            "table_layer_hits": table_count,
+            "snomed_layer_hits": snomed_count,
+        },
+    )
+
     return conflicts
 
 
@@ -973,7 +1014,28 @@ def check_lab_medication_contraindications(
         if not existing or severity_rank.get(c.severity, 0) > severity_rank.get(existing.severity, 0):
             seen[key] = c
 
-    return sorted(seen.values(), key=lambda c: severity_rank.get(c.severity, 0), reverse=True)
+    final = sorted(seen.values(), key=lambda c: severity_rank.get(c.severity, 0), reverse=True)
+
+    # INFO — lab×medication contraindications are SaMD-relevant safety
+    # signals. PHI-safe: counts + severity distribution only, NEVER
+    # lab values, lab names, or medication names (all PHI-adjacent).
+    sev_counts: dict[str, int] = {}
+    for c in final:
+        sev_counts[c.severity] = sev_counts.get(c.severity, 0) + 1
+    # DEBUG (not INFO) — same rationale as drug_interactions_check_complete
+    # above; the regression-eval script pipes INFO to stdout and the
+    # negative-control JSON parser breaks if these log lines fire there.
+    logger.debug(
+        "lab_medication_contraindications_check_complete",
+        extra={
+            "observation_count": len(observations),
+            "med_count": len(meds_lower),
+            "contraindication_count": len(final),
+            "severity_counts": sev_counts,
+        },
+    )
+
+    return final
 
 
 # ── Lab trend analysis ────────────────────────────────────────────────────────
@@ -1065,6 +1127,23 @@ def detect_lab_trends(observations: list[dict]) -> list[LabTrend]:
                     recommendation="Hold warfarin. Investigate cause. Recheck INR in 2-3 days.",
                 ))
 
+    # DEBUG — trend detection is best-effort safety signaling. PHI-safe:
+    # observation count + grouped lab-name count + per-direction trend
+    # counts only, never values/dates/lab-names (lab names + values are
+    # PHI in identified EHR data).
+    direction_counts: dict[str, int] = {}
+    for t in trends:
+        direction_counts[t.direction] = direction_counts.get(t.direction, 0) + 1
+    logger.debug(
+        "lab_trends_detect_complete",
+        extra={
+            "observation_count": len(observations),
+            "distinct_lab_count": len(by_name),
+            "trend_count": len(trends),
+            "direction_counts": direction_counts,
+        },
+    )
+
     return trends
 
 
@@ -1140,5 +1219,23 @@ def detect_provider_disagreements(blocks: list[dict]) -> list[ProviderDisagreeme
                         "to establish unified BP target."
                     ),
                 ))
+
+    # DEBUG — provider-disagreement detection footprint. PHI-safe:
+    # block count + BP-target candidate count + disagreement count
+    # only. NEVER provider names, BP values, or block content (all
+    # downstream PHI). Topic count helps operators see whether new
+    # disagreement-detection rules (beyond BP) start firing.
+    topic_counts: dict[str, int] = {}
+    for d in disagreements:
+        topic_counts[d.topic] = topic_counts.get(d.topic, 0) + 1
+    logger.debug(
+        "provider_disagreements_detect_complete",
+        extra={
+            "block_count": len(blocks),
+            "bp_target_candidates": len(bp_targets),
+            "disagreement_count": len(disagreements),
+            "topic_counts": topic_counts,
+        },
+    )
 
     return disagreements
