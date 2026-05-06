@@ -183,3 +183,88 @@ def test_non_ternary_weight_emits_structured_error_event():
             f"{required_field} in extra dict — SaMD reviewer needs all 4 "
             f"to localize the offending weight."
         )
+
+
+# ────────────────────────────────────────────────────────────────────
+# Iter-219 T4 round-45 ratchet — two previously-silent paths closed
+# in engine/bitnet_classifier.py: load_weights entry + classifier_layer
+# first-load pinning event. Density 20.9 -> 23.6/kloc.
+# ────────────────────────────────────────────────────────────────────
+
+
+def test_bitnet_classifier_logger_floor_iter219():
+    """Pin a logger-call floor (>= 13) so silent-removal regressions
+    of the iter-219 events fail the gate. Iter-219 added 2 events
+    (bitnet_load_weights_start, bitnet_classifier_first_load_pinned)
+    on previously-silent paths in load_weights and classifier_layer."""
+    import re
+    from pathlib import Path
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    src = (repo_root / "engine" / "bitnet_classifier.py").read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= 13, (
+        f"engine/bitnet_classifier.py logger-call count regressed: "
+        f"{len(calls)} < floor 13. A structured event from iter-219 "
+        f"was silently removed."
+    )
+
+
+def test_load_weights_emits_debug_entry_iter219(caplog):
+    """`load_weights` emits bitnet_load_weights_start DEBUG on entry,
+    mirroring the iter-72 fda_adverse_search_start convention. Lets
+    operators see when the bundle gets parsed (rotation, first-load,
+    etc.). PHI-safe: only path basename + raw size."""
+    import logging
+    from engine.bitnet_classifier import load_weights
+    with caplog.at_level(logging.DEBUG, logger="engine.bitnet_classifier"):
+        weights = load_weights()
+    matched = [
+        r for r in caplog.records
+        if r.name == "engine.bitnet_classifier"
+        and r.message == "bitnet_load_weights_start"
+    ]
+    assert matched, (
+        "load_weights must emit 'bitnet_load_weights_start' DEBUG"
+    )
+    rec = matched[0]
+    assert rec.levelno == logging.DEBUG
+    assert rec.path_basename == "bitnet_weights.json"
+    assert rec.raw_size_bytes > 0
+    # Sanity that load did succeed
+    assert weights is not None
+    assert weights.bundle_id
+
+
+def test_classifier_layer_first_load_emits_pinning_event_iter219(
+    monkeypatch, caplog
+):
+    """`classifier_layer` first-load emits
+    bitnet_classifier_first_load_pinned INFO once per process. Captures
+    the pinned bundle_id_prefix + architecture invariants so auditors
+    can correlate every downstream BitNetResult to the bundle that was
+    pinned at process startup."""
+    import logging
+    import engine.bitnet_classifier as bc
+    # Reset the module-level cache so we exercise the first-load path
+    monkeypatch.setattr(bc, "_CACHED_WEIGHTS", None)
+    monkeypatch.setattr(bc, "_PINNED_BUNDLE_ID", None)
+    with caplog.at_level(logging.INFO, logger="engine.bitnet_classifier"):
+        bc.classifier_layer("warfarin", "ibuprofen")
+    matched = [
+        r for r in caplog.records
+        if r.name == "engine.bitnet_classifier"
+        and r.message == "bitnet_classifier_first_load_pinned"
+    ]
+    assert matched, (
+        "classifier_layer first-load must emit "
+        "'bitnet_classifier_first_load_pinned' INFO once per process"
+    )
+    rec = matched[0]
+    assert rec.levelno == logging.INFO
+    assert len(rec.bundle_id_prefix) == 16  # 16-char SHA-256 prefix
+    assert rec.in_features == 128  # iter-72 baseline cfadb4f6
+    assert rec.hidden_features == 64
+    assert rec.out_features == 5

@@ -228,7 +228,17 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
     """
     if path is None:
         path = Path(__file__).parent / "bitnet_weights.json"
+    # DEBUG entry — visibility into when the bundle gets parsed
+    # (rotation, first-load, etc.). Mirrors the fda_label_search_start
+    # convention (PHI-safe: only path basename + size).
     raw = Path(path).read_text(encoding="utf-8")
+    logger.debug(
+        "bitnet_load_weights_start",
+        extra={
+            "path_basename": Path(path).name,
+            "raw_size_bytes": len(raw),
+        },
+    )
     payload = json.loads(raw)
 
     hidden_w = [list(row) for row in payload["hidden_w"]]
@@ -478,6 +488,23 @@ def classifier_layer(drug_a: str, drug_b: str) -> BitNetResult:
         if _CACHED_WEIGHTS is None:
             _CACHED_WEIGHTS = load_weights()
             _PINNED_BUNDLE_ID = _CACHED_WEIGHTS.bundle_id
+            # First-load pinning event — fires ONCE per process. Lets
+            # auditors correlate every BitNetResult emitted in the
+            # process to the bundle_id that was pinned at startup.
+            # bundle_id is SHA-256-of-canonical-JSON, NOT secret material;
+            # safe to log in full (it IS the integrity primitive).
+            logger.info(
+                "bitnet_classifier_first_load_pinned",
+                extra={
+                    "bundle_id_prefix": _PINNED_BUNDLE_ID[:16],
+                    "hidden_features": len(_CACHED_WEIGHTS.hidden_w),
+                    "in_features": (
+                        len(_CACHED_WEIGHTS.hidden_w[0])
+                        if _CACHED_WEIGHTS.hidden_w else 0
+                    ),
+                    "out_features": len(_CACHED_WEIGHTS.output_w),
+                },
+            )
         else:
             # Re-load + verify the pinned bundle_id on every call. The full
             # JSON parse is ~1 ms; the alternative is a class of FDA-blocking

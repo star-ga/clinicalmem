@@ -135,11 +135,10 @@ _HISTORICAL_COUNTS = (
     "1213",
     "1216",
     "1220",
-    # NOTE: "1224" intentionally absent — it was the test count both
-    # at iter-208 (after V6 q16 pin) AND at iter-216 (after iter-215
-    # pin cleanup -25 + iter-216 +3 = 1224 again). It's the LIVE count,
-    # not a historical one.
-    "1228",
+    # NOTE: "1224" + "1228" intentionally absent — they are recurring
+    # live counts (1224 at iter-208/216, 1228 at iter-209/219 after the
+    # iter-215 pin cleanup wave brought the count back). Stale-count
+    # pin would false-positive on the live README badge otherwise.
     "1234",
     "1242",
 )
@@ -155,7 +154,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1225
+_TEST_COUNT_FLOOR = 1226
 
 
 def test_no_stale_test_counts_in_docs():
