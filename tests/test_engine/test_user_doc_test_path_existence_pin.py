@@ -133,20 +133,21 @@ def test_user_doc_pin_path_floor():
     )
 
 
-def test_judges_audit_guide_cites_recent_v6_pins():
+def test_judges_audit_guide_cites_recent_v8_pins():
     """JUDGES.md is the 60-second audit guide and must specifically cite
-    the active v6 pin pair (iter-209 live-recall + iter-210 q16
-    determinism). iter-215 retired the v5 pin family; v6 is the
+    the active v8 pin pair (iter-244 live-recall + iter-244 q16
+    determinism). iter-245 retired the v6 pin family (architectural
+    double 128 → 256 broke the BOOST_KEYS @200x ceiling); v8 is the
     current source of truth and must surface to judges. This is a
     softer guarantee than the existence pin above — it asserts the
     SHAPE of the audit-trail rhetoric is current."""
     judges = (_REPO_ROOT / "JUDGES.md").read_text()
-    assert "test_path_a_v6_live_recall_pin.py" in judges, (
-        "JUDGES.md must cite the iter-209 v6 live-recall pin so judges "
-        "can find the source-of-truth recall claim under the v6 staged bundle."
+    assert "test_path_a_v8_live_recall_pin.py" in judges, (
+        "JUDGES.md must cite the iter-244 v8 live-recall pin so judges "
+        "can find the source-of-truth recall claim under the v8 staged bundle."
     )
-    assert "test_path_a_v6_q16_determinism_pin.py" in judges, (
-        "JUDGES.md must cite the iter-210 v6 q16 canonical-pin "
+    assert "test_path_a_v8_q16_determinism_pin.py" in judges, (
+        "JUDGES.md must cite the iter-244 v8 q16 canonical-pin "
         "determinism pin (16 canonical pairs × 4 pinned values × 100 "
         "iterations = 1600 forward-pass stress)."
     )

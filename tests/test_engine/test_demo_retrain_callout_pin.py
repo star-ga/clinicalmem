@@ -131,9 +131,9 @@ def test_path_a_callout_iter140_numbers_not_stale():
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
         "41 / 41 contraindicated cache entries (100% explanation coverage)",  # iter-235 cohort 40 -> 41 (ritonavir+ergotamine)
-        "592ee51e",                                  # iter-207 v6 bundle id (now staged; v5 dropped from demo per iter-209 directive)
+        "1f0f8859",                                  # iter-244 v8 bundle id (full-recall breakthrough; v6 retired iter-245 per pin-discipline)
         "193-dim feature input",                    # iter-146 dim
-        "128 hidden",                                # iter-166 architectural extension
+        "256 hidden",                                # iter-244 v8 architectural double from v6's 128
     )
     for phrase in required_post_iter140:
         assert phrase in text, (

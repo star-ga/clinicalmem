@@ -3,18 +3,18 @@
 Iter 236 (round 49 T1) — closes a drift class where a cohort-growth
 ripple bumps one constant but forgets a sibling. The recurring shape:
 
-  • iter-225 attempt: bumped _V6_CONTRA_TOTAL but forgot to compute
-    _V6_CONTRA_HITS correctly → had to roll back
+  • iter-225 attempt: bumped _V8_CONTRA_TOTAL but forgot to compute
+    _V8_CONTRA_HITS correctly → had to roll back
   • iter-235: bumped _TEST_COUNT_FLOOR but had to manually update
     README badge in lockstep (no pin caught this)
 
 This pin asserts:
 
-  1. **v6 constants self-consistency**: `_V6_CONTRA_HITS +
-     len(_V6_EXPECTED_MISSES) == _V6_CONTRA_TOTAL` — if any one of the
+  1. **v8 constants self-consistency**: `_V8_CONTRA_HITS +
+     len(_V8_EXPECTED_MISSES) == _V8_CONTRA_TOTAL` — if any one of the
      three drifts without the other two updating in lockstep, this fires.
 
-  2. **v6 ↔ cache cohort coherence**: `_V6_CONTRA_TOTAL` must equal
+  2. **v6 ↔ cache cohort coherence**: `_V8_CONTRA_TOTAL` must equal
      `len([entries where severity == 'contraindicated'])` in the live
      cache. Catches the case where pin constants drift from the
      openevidence_cache.json that's regenerated independently.
@@ -37,7 +37,7 @@ import re
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-_V6_PIN = _REPO_ROOT / "tests" / "test_engine" / "test_path_a_v6_live_recall_pin.py"
+_V8_PIN = _REPO_ROOT / "tests" / "test_engine" / "test_path_a_v8_live_recall_pin.py"
 _DRIFT_PIN = _REPO_ROOT / "tests" / "test_engine" / "test_test_count_drift_pin.py"
 _README = _REPO_ROOT / "README.md"
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
@@ -53,18 +53,18 @@ def _read_int_constant(pin_path: Path, var_name: str) -> int:
     return int(m.group(1))
 
 
-def _v6_expected_misses_count() -> int:
-    """Parse the _V6_EXPECTED_MISSES tuple length without importing
+def _v8_expected_misses_count() -> int:
+    """Parse the _V8_EXPECTED_MISSES tuple length without importing
     (since import would re-run the whole pin file)."""
-    text = _V6_PIN.read_text()
-    # Find the _V6_EXPECTED_MISSES assignment + count tuples inside.
+    text = _V8_PIN.read_text()
+    # Find the _V8_EXPECTED_MISSES assignment + count tuples inside.
     m = re.search(
-        r"_V6_EXPECTED_MISSES.*?=\s*\((.*?)^\)",
+        r"_V8_EXPECTED_MISSES.*?=\s*\((.*?)^\)",
         text,
         re.DOTALL | re.MULTILINE,
     )
     assert m is not None, (
-        "Could not find _V6_EXPECTED_MISSES tuple in v6 live-recall pin. "
+        "Could not find _V8_EXPECTED_MISSES tuple in v8 live-recall pin. "
         "This pin assumes the tuple is a multi-line top-level constant."
     )
     body = m.group(1)
@@ -74,21 +74,21 @@ def _v6_expected_misses_count() -> int:
     return len(misses)
 
 
-def test_v6_constants_self_consistency():
-    """`_V6_CONTRA_HITS + len(_V6_EXPECTED_MISSES) == _V6_CONTRA_TOTAL`.
+def test_v8_constants_self_consistency():
+    """`_V8_CONTRA_HITS + len(_V8_EXPECTED_MISSES) == _V8_CONTRA_TOTAL`.
 
     If a cohort-growth iter bumps any one of the three without the
     other two updating in lockstep, this fires at commit time.
     """
-    hits = _read_int_constant(_V6_PIN, "_V6_CONTRA_HITS")
-    total = _read_int_constant(_V6_PIN, "_V6_CONTRA_TOTAL")
-    misses = _v6_expected_misses_count()
+    hits = _read_int_constant(_V8_PIN, "_V8_CONTRA_HITS")
+    total = _read_int_constant(_V8_PIN, "_V8_CONTRA_TOTAL")
+    misses = _v8_expected_misses_count()
 
     assert hits + misses == total, (
-        f"v6 constants drift detected:\n"
-        f"  _V6_CONTRA_HITS = {hits}\n"
-        f"  len(_V6_EXPECTED_MISSES) = {misses}\n"
-        f"  _V6_CONTRA_TOTAL = {total}\n"
+        f"v8 constants drift detected:\n"
+        f"  _V8_CONTRA_HITS = {hits}\n"
+        f"  len(_V8_EXPECTED_MISSES) = {misses}\n"
+        f"  _V8_CONTRA_TOTAL = {total}\n"
         f"  hits + misses = {hits + misses} != total {total}\n"
         f"Cohort growth must update HITS / MISSES / TOTAL in lockstep:\n"
         f"  • If v6 catches the new pair: HITS += 1, TOTAL += 1\n"
@@ -97,15 +97,15 @@ def test_v6_constants_self_consistency():
     )
 
 
-def test_v6_total_matches_live_cache_cohort():
-    """`_V6_CONTRA_TOTAL` must equal the live count of contraindicated
+def test_v8_total_matches_live_cache_cohort():
+    """`_V8_CONTRA_TOTAL` must equal the live count of contraindicated
     entries in `docs/openevidence_cache.json`. Catches the case where
     pin constants drift from the regenerated cache."""
-    total = _read_int_constant(_V6_PIN, "_V6_CONTRA_TOTAL")
+    total = _read_int_constant(_V8_PIN, "_V8_CONTRA_TOTAL")
     cache = json.loads(_CACHE.read_text())
     live_total = sum(1 for e in cache if e.get("severity") == "contraindicated")
     assert total == live_total, (
-        f"v6 cohort drift: _V6_CONTRA_TOTAL={total}, but the live cache "
+        f"v6 cohort drift: _V8_CONTRA_TOTAL={total}, but the live cache "
         f"has {live_total} contraindicated entries. The pin constant must "
         f"update in lockstep with cache regen on every cohort-growth event."
     )

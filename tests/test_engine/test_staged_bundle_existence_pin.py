@@ -114,19 +114,34 @@ def test_every_referenced_bundle_path_exists():
         )
 
 
-def test_v6_staged_bundle_present():
-    """The v6 staged bundle (the source of truth for the iter-209
+def test_v8_staged_bundle_present():
+    """The v8 staged bundle (the source of truth for the iter-244
     live-recall pin) MUST exist. This is a focused assertion on the
-    LOAD-BEARING bundle that's pinned by 2 active v6 pin families;
-    deleting it would cascade-break test_path_a_v6_live_recall_pin
-    + test_path_a_v6_q16_determinism_pin."""
+    LOAD-BEARING bundle that's pinned by 2 active v8 pin families;
+    deleting it would cascade-break test_path_a_v8_live_recall_pin
+    + test_path_a_v8_q16_determinism_pin."""
+    v8_bundle = _REPO_ROOT / "retrain_runpod" / "bitnet_weights_v8_h256.json"
+    assert v8_bundle.exists(), (
+        f"v8 staged bundle missing: {v8_bundle}. The iter-244 v8 pin "
+        f"families read this file as the source of truth for v8's 41/41 "
+        f"+ 4/4 + 0 FP recall claim. Deleting it cascades into 14 broken "
+        f"pin tests + the JUDGES row 102 narrative + the demo dashboard "
+        f"V8 staged-ready callout."
+    )
+
+
+def test_v6_historical_bundle_preserved():
+    """The v6 staged bundle (h=128) is now HISTORICAL (replaced by v8 at
+    iter-245) but must stay on disk for FDA SaMD audit-trail integrity —
+    same iter-215 pin-discipline that kept v3+v5 bundles after their
+    pin retirement."""
     v6_bundle = _REPO_ROOT / "retrain_runpod" / "bitnet_weights_v6_h128.json"
     assert v6_bundle.exists(), (
-        f"v6 staged bundle missing: {v6_bundle}. The iter-209 + iter-210 "
-        f"pins read this file as the source of truth for v6's 40/41 + "
-        f"4/4 + 0 FP recall claim. Deleting it cascades into 14 broken "
-        f"pin tests + the JUDGES row 102 narrative + the demo dashboard "
-        f"V6 staged-ready callout."
+        f"v6 historical bundle missing: {v6_bundle}. The iter-245 v6 → v8 "
+        f"swap retired the v6 PIN FILES but explicitly KEPT the v6 BUNDLE "
+        f"file on disk for audit-trail rigor. The JUDGES row 102 narrative "
+        f"cites v6's 40/41 recall as the predecessor staged bundle; "
+        f"deleting it breaks the v3 → v5 → v6 → v8 progression."
     )
 
 

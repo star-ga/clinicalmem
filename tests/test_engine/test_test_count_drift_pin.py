@@ -212,6 +212,16 @@ _HISTORICAL_COUNTS = (
     # bundle present + shipped engine bundle present + v3+v5 historical
     # bundles preserved. Live 1270 → 1274.
     "1270",
+    # iter-245 v6 → v8 swap (h=128 → h=256 architectural double broke
+    # v7 BOOST_KEYS @200x ceiling; sweep seed=71 hit 41/41 contra +
+    # 4/4 major + 0 FP at bundle 1f0f8859…). Surface rotated:
+    # test_path_a_v6_* (-2 files, 12 tests) replaced by
+    # test_path_a_v8_* (+2 files, 14 tests = 6 live-recall + 8 q16
+    # determinism); test_staged_bundle_existence_pin grew 4 → 5
+    # (added v6-historical-bundle assertion since v6 is no longer
+    # the active staged surface but stays on disk for FDA SaMD
+    # audit-trail rigor). Net +1 test. Live 1274 → 1275.
+    "1274",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -225,7 +235,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1274
+_TEST_COUNT_FLOOR = 1275
 
 
 def test_no_stale_test_counts_in_docs():
