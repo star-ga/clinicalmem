@@ -301,6 +301,13 @@ def main():
         # generalization-gap pattern as ritonavir+simvastatin under
         # cfadb4f6 (HIV PI sub-class).
         "isavuconazole::simvastatin",
+        # Iter-177: ketoconazole+ergotamine (33rd contra, iter-177 cohort
+        # growth) needs explicit boost — the cyp3a4_strong_inh × ergot-
+        # derivative slot was 1-example pre-iter-177 (only clarithromycin
+        # +ergotamine) so v5's weights don't generalise to ketoconazole
+        # specifically. Same architectural-generalization gap as ritonavir,
+        # atazanavir, isavuconazole on the statin slot.
+        "ergotamine::ketoconazole",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing

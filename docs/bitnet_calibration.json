@@ -4,13 +4,13 @@
   "by_class": {
     "contraindicated": {
       "correct_count": 8,
-      "count": 32,
+      "count": 33,
       "max_margin_wrong_q16": 2046870,
       "mean_margin_correct_q16": 675762,
-      "mean_margin_wrong_q16": 689561,
+      "mean_margin_wrong_q16": 700289,
       "min_margin_wrong_q16": 81037,
-      "recall": 0.25,
-      "wrong_count": 24
+      "recall": 0.24242424242424243,
+      "wrong_count": 25
     },
     "major": {
       "correct_count": 3,
@@ -2265,11 +2265,28 @@
       "predicted": "major",
       "top1_class": "major",
       "top2_class": "none"
+    },
+    {
+      "correct": false,
+      "drug_a": "ergotamine",
+      "drug_b": "ketoconazole",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1162776,
+        -6172619,
+        205021,
+        -2272381,
+        -3559815
+      ],
+      "margin_q16": 957755,
+      "predicted": "none",
+      "top1_class": "none",
+      "top2_class": "moderate"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 127,
+  "total_pairs": 128,
   "version": "1.0.0",
   "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
   "worst_close_calls": [

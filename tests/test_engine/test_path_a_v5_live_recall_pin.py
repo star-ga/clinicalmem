@@ -50,11 +50,14 @@ _PATH_A_V5_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V5_CONTRA_HITS = 31  # iter-172: v5 misses isavuconazole+simvastatin (cohort growth);
-                       # the iter-148 training corpus didn't include isavuconazole.
-                       # Queue a v6 retrain with isavuconazole+simvastatin in BOOST_KEYS.
-_V5_CONTRA_TOTAL = 32   # iter-172 cohort growth (atazanavir+simvastatin iter-164,
-                        # isavuconazole+simvastatin iter-172)
+_V5_CONTRA_HITS = 31  # iter-172/177: v5 misses isavuconazole+simvastatin (iter-172
+                       # triazole sub-class) AND ketoconazole+ergotamine (iter-177
+                       # ergot vasospasm; the CYP3A4-strong-inh × ergot-derivative
+                       # slot was 1-example pre-iter-177 — only clarithromycin+
+                       # ergotamine).  Both queued for v6 retrain BOOST_KEYS.
+_V5_CONTRA_TOTAL = 33   # iter-177 cohort growth (atazanavir+simvastatin iter-164,
+                        # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
+                        # iter-177)
 _V5_FP_COUNT = 0  # zero FPs invariant holds — the architectural breakthrough
 
 _Q16_ONE = 1 << 16
@@ -116,12 +119,16 @@ _V5_EXPECTED_MISSES = (
     # iter-172: cohort growth added isavuconazole+simvastatin. The
     # v5 weights were trained on the iter-148 corpus + iter-156
     # BOOST_KEYS — isavuconazole was not in the training distribution.
-    # This is the same architectural-generalization gap that misses
-    # ritonavir+simvastatin under cfadb4f6 (HIV PI sub-class).
-    # Queued retrain (next T1): add isavuconazole+simvastatin to
-    # BOOST_KEYS @200x and re-run the 30-seed sweep to recover
-    # 32/32 + 0 FP.
     ("isavuconazole", "simvastatin"),
+    # iter-177: cohort growth added ketoconazole+ergotamine. The
+    # CYP3A4-strong-inh × ergot-derivative slot only had 1 training
+    # example (clarithromycin+ergotamine) so v5's weights don't
+    # generalise to ketoconazole specifically. Same architectural-
+    # generalization gap pattern as isavuconazole, atazanavir,
+    # ritonavir+simvastatin (HIV-PI / triazole / ergot sub-classes).
+    # Queued retrain (next T1): add both pairs to BOOST_KEYS @200x
+    # and re-run the 30-seed sweep to recover 33/33 + 0 FP.
+    ("ketoconazole", "ergotamine"),
 )
 
 

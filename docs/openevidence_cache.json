@@ -2068,5 +2068,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-172"
+  },
+  {
+    "drug_a": "ketoconazole",
+    "drug_b": "ergotamine",
+    "drug_pair_canonical": [
+      "ergotamine",
+      "ketoconazole"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Ketoconazole (Nizoral) is a strong CYP3A4 inhibitor; ergotamine (Cafergot, Ergomar) is a CYP3A4-sensitive substrate metabolised primarily by CYP3A4 to inactive metabolites. Co-administration of strong CYP3A4 inhibitors with ergotamine produces life-threatening acute ergotism: peripheral and cerebral vasospasm, ischemic limb necrosis, myocardial infarction, mesenteric ischemia. The FDA Nizoral label Section 4 Contraindications explicitly lists 'ergot derivatives (e.g., dihydroergotamine, ergometrine, ergotamine, methylergometrine)'. The FDA Cafergot (ergotamine + caffeine) label Section 4 Contraindications enumerates 'CYP 3A4 inhibitors (including macrolide antibiotics and protease inhibitors), some azoles (ketoconazole, itraconazole)'. Same severity as the pre-existing clarithromycin+ergotamine cache entry — both drugs sit at the strong-CYP3A4-inhibitor × CYP3A4-substrate-with-narrow-therapeutic-window slot. Switch the antifungal to fluconazole (moderate inhibitor) or terbinafine (no CYP3A4 effect); switch the headache treatment to a triptan (no ergot mechanism).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2013/019410s029lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2008/005489s032lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/9824030/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-177"
   }
 ]

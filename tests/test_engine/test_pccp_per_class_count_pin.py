@@ -26,7 +26,7 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 
-_EXPECTED_CONTRAINDICATED = 32
+_EXPECTED_CONTRAINDICATED = 33
 _EXPECTED_SERIOUS = 69
 _EXPECTED_MODERATE = 22
 _EXPECTED_MAJOR = 4  # iter 109: 4th major (dronedarone + dabigatran) joined iter-93 voriconazole+tacrolimus, iter-83 clarithromycin+digoxin, iter-39 tamoxifen+paroxetine

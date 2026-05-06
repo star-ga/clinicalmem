@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-05T23:44:45.667385+00:00",
+  "dateCreated": "2026-05-06T00:59:04.131116+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -496,6 +496,20 @@
       ],
       "repro_hash": "7d367d5c7796ee746362e727ec59e801ccd81e1515e3214ae9612e7642d5203f",
       "severity_name": "major"
+    },
+    {
+      "drug_a": "ergotamine",
+      "drug_b": "ketoconazole",
+      "feature_hash": "9fac4c37082bc014f3f9cd50762f60a9fb54045f3b52ba03ab1a8e40e572c1ba",
+      "logits_q16": [
+        1162776,
+        -6172619,
+        205021,
+        -2272381,
+        -3559815
+      ],
+      "repro_hash": "f7274978e8233ba9bd967c808b5511bef95277dc49b4e5ad5e97b92c39681e29",
+      "severity_name": "none"
     }
   ],
   "version": "1.0.0"
