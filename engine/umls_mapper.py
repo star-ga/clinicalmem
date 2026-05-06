@@ -59,6 +59,19 @@ def crosswalk(source: str, code: str, target: str) -> list[UMLSConcept]:
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
+            # INFO — HTTP errors are expected (UMLS rate limits, code
+            # not in vocabulary, etc.) but operators auditing
+            # cross-vocabulary coverage need visibility into hit
+            # rate per source/target. PHI-safe: structured fields
+            # (no exception body, no API URL).
+            logger.info(
+                "umls_crosswalk_http_error",
+                extra={
+                    "source": source,
+                    "target": target,
+                    "status_code": resp.status_code,
+                },
+            )
             return []
 
         data = resp.json()
@@ -66,7 +79,7 @@ def crosswalk(source: str, code: str, target: str) -> list[UMLSConcept]:
         if isinstance(results_list, dict):
             results_list = results_list.get("results", [])
 
-        return [
+        concepts = [
             UMLSConcept(
                 cui=r.get("ui", ""),
                 name=r.get("name", ""),
@@ -76,8 +89,32 @@ def crosswalk(source: str, code: str, target: str) -> list[UMLSConcept]:
             for r in results_list
             if r.get("ui") != "NONE"
         ]
+        # DEBUG — successful crosswalk completion. Operators correlate
+        # source/target/match-count to spot vocabulary-coverage gaps.
+        # PHI-safe: structural fields only, never concept names (UMLS
+        # terms are public but the source/code combination identifies
+        # the original clinical context).
+        logger.debug(
+            "umls_crosswalk_complete",
+            extra={
+                "source": source,
+                "target": target,
+                "match_count": len(concepts),
+            },
+        )
+        return concepts
     except Exception as e:
-        logger.debug("UMLS crosswalk failed %s/%s → %s: %s", source, code, target, e)
+        # PHI / secret discipline: error_type only — exception bodies
+        # for httpx errors can include the FULL request URL which
+        # contains apiKey=... query parameter. NEVER log e or str(e).
+        logger.debug(
+            "umls_crosswalk_exception",
+            extra={
+                "source": source,
+                "target": target,
+                "error_type": type(e).__name__,
+            },
+        )
         return []
 
 
@@ -106,11 +143,23 @@ def find_concept(term: str, source: str | None = None) -> list[UMLSConcept]:
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
+            # INFO — same rationale as the crosswalk HTTP-error log:
+            # operators need search-API hit-rate per source. PHI-safe:
+            # status_code + source filter only. Term is NOT logged
+            # (search terms can carry clinical narrative — same
+            # discipline as recall queries).
+            logger.info(
+                "umls_search_http_error",
+                extra={
+                    "source": source or "ANY",
+                    "status_code": resp.status_code,
+                },
+            )
             return []
 
         data = resp.json()
         results_list = data.get("result", {}).get("results", [])
-        return [
+        concepts = [
             UMLSConcept(
                 cui=r.get("ui", ""),
                 name=r.get("name", ""),
@@ -120,8 +169,19 @@ def find_concept(term: str, source: str | None = None) -> list[UMLSConcept]:
             for r in results_list
             if r.get("ui") != "NONE"
         ]
+        return concepts
     except Exception as e:
-        logger.debug("UMLS search failed for %s: %s", term, e)
+        # PHI / secret discipline: error_type only. The exception body
+        # for httpx errors carries the full request URL with apiKey=
+        # query param, AND the search term itself (clinical narrative
+        # in some callers). Strip both via structured form.
+        logger.debug(
+            "umls_search_exception",
+            extra={
+                "source": source or "ANY",
+                "error_type": type(e).__name__,
+            },
+        )
         return []
 
 
@@ -171,7 +231,19 @@ def _get_cui(source: str, code: str) -> str | None:
         if concept_uri and "/" in concept_uri:
             return concept_uri.rsplit("/", 1)[-1]
         return None
-    except Exception:
+    except Exception as e:
+        # DEBUG — was completely silent pre-iter-186. Operators
+        # debugging are_same_concept failures need visibility into
+        # the underlying CUI-lookup error type. PHI / secret
+        # discipline: error_type + source only, NEVER the exception
+        # body (would leak apiKey URL parameter).
+        logger.debug(
+            "umls_get_cui_exception",
+            extra={
+                "source": source,
+                "error_type": type(e).__name__,
+            },
+        )
         return None
 
 
