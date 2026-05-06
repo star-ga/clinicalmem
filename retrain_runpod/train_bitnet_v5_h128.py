@@ -324,6 +324,15 @@ def main():
         # sparing-diuretic sub-slot was zero-example pre-iter-192. Same
         # one-example-slot generalization gap as the other 4 fixes.
         "eplerenone::ketoconazole",
+        # Iter-197: cyclosporine+rosuvastatin (37th contra, iter-197 cohort
+        # growth) needs explicit boost — the OATP1B1 × statin slot only
+        # had 1 training example (gemfibrozil+simvastatin) which fires
+        # multiple rules in parallel. cyclosporine+rosuvastatin tests
+        # rule 1 (is_oatp1b1_inhibitor × is_statin) in pure isolation
+        # (rosuvastatin is NOT a CYP3A4 substrate so rule 0 doesn't
+        # fire). All three classifiers default to 'major' on this
+        # rule-1-only signal — most-undertrained sub-class in cohort.
+        "cyclosporine::rosuvastatin",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing

@@ -149,6 +149,22 @@ _V5_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "4c202d8acb977368a68f22eeeaf6a15f3d5c03c2708d3e85d71273e6574a0d38",
         "severity_name": "none",
     },
+    # iter-197: cyclosporine+rosuvastatin (37th contra). v5 misses —
+    # OATP1B1 × statin slot only had 1 training example
+    # (gemfibrozil+simvastatin) which fired multiple rules in
+    # parallel; cyclosporine+rosuvastatin tests rule 1 in pure
+    # isolation (rosuvastatin is NOT a CYP3A4 substrate, so rule 0
+    # does not fire). All three classifiers (cfadb4f6 + v3 + v5)
+    # default to 'major' on the rule-1-only signal — this is the
+    # most-undertrained sub-class in the cohort. Severity = 'major'
+    # (not 'none' like the other 5 misses) because cyclosporine has
+    # multiple non-rule-1 flags that nudge logits toward severity.
+    ("cyclosporine", "rosuvastatin"): {
+        "logits_q16": [-1557784, -1876338, 381778, 762281, -816301],
+        "feature_hash": "9c1b3f24a83c547ca18aa4711b5c1390aaa98a5b4315f697d8a31cfd5f3dac2b",
+        "logits_hash": "3ed734eae0d5d64678f6fe171f5be32f792cfa26c9546af53137931ab3a737ad",
+        "severity_name": "major",
+    },
 }
 
 
@@ -257,7 +273,7 @@ def test_v5_q16_inference_is_deterministic_across_repeats() -> None:
     across 100 calls, the deterministic-replay claim is false and the
     FDA SaMD audit trail loses its load-bearing safety property.
 
-    100 iterations × 13 canonical pairs = 1300 forward passes. All must
+    100 iterations × 14 canonical pairs = 1400 forward passes. All must
     return the same logit vector for a given pair."""
     bundle = _load_bundle()
     for da, db in _V5_CANONICAL_PINS.keys():

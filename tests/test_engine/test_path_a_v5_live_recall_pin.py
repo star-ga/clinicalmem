@@ -50,16 +50,18 @@ _PATH_A_V5_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V5_CONTRA_HITS = 31  # iter-172/177/182/187/192: v5 misses 5 pairs (HIV-PI,
-                       # triazole, ergot, tetracycline, benzodiazepine,
-                       # K+-sparing-diuretic substrate sub-classes — all
-                       # not in iter-148 training corpus). All 5 queued
-                       # for v6 retrain BOOST_KEYS.
-_V5_CONTRA_TOTAL = 36   # iter-192 cohort growth (atazanavir+simvastatin iter-164,
+_V5_CONTRA_HITS = 31  # iter-172/177/182/187/192/197: v5 misses 6 pairs
+                       # (triazole, ergot, tetracycline, benzodiazepine,
+                       # K+-sparing-diuretic, OATP1B1×rosuvastatin
+                       # substrate sub-classes — all not in iter-148
+                       # training corpus). All 6 queued for v6 retrain
+                       # BOOST_KEYS.
+_V5_CONTRA_TOTAL = 37   # iter-197 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
                         # iter-177, minocycline+isotretinoin iter-182,
                         # midazolam+ketoconazole iter-187,
-                        # eplerenone+ketoconazole iter-192)
+                        # eplerenone+ketoconazole iter-192,
+                        # cyclosporine+rosuvastatin iter-197)
 _V5_FP_COUNT = 0  # zero FPs invariant holds — the architectural breakthrough
 
 _Q16_ONE = 1 << 16
@@ -140,9 +142,19 @@ _V5_EXPECTED_MISSES = (
     ("ketoconazole", "midazolam"),
     # iter-192: cohort growth added eplerenone+ketoconazole. Same
     # CYP3A4-strong-inh × CYP3A4-substrate slot — K+-sparing-diuretic
-    # sub-class wasn't in training corpus. Queued retrain: 5 pairs
-    # in BOOST_KEYS @200x; re-run sweep to recover 36/36 + 0 FP.
+    # sub-class wasn't in training corpus.
     ("eplerenone", "ketoconazole"),
+    # iter-197: cohort growth added cyclosporine+rosuvastatin. The
+    # OATP1B1 × statin slot only had 1 training example
+    # (gemfibrozil+simvastatin) which fires multiple rules in
+    # parallel — cyclosporine+rosuvastatin tests rule 1 in pure
+    # isolation (rosuvastatin is NOT a CYP3A4 substrate, so rule 0
+    # does not fire). All three classifiers (cfadb4f6 baseline + v3 +
+    # v5) default to 'major' on this isolated rule-1-only signal —
+    # the OATP1B1 × statin slot is the most-undertrained sub-class.
+    # Queued retrain: 6 pairs in BOOST_KEYS @200x; re-run sweep to
+    # recover 37/37 + 0 FP.
+    ("cyclosporine", "rosuvastatin"),
 )
 
 

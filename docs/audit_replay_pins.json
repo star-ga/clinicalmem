@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T04:44:00.326899+00:00",
+  "dateCreated": "2026-05-06T06:00:13.798489+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -552,6 +552,20 @@
       ],
       "repro_hash": "0fe8a0cbf0b39ebb7f4e953291f3b685502709dddc66325649c8cd9aefbc9d8e",
       "severity_name": "none"
+    },
+    {
+      "drug_a": "cyclosporine",
+      "drug_b": "rosuvastatin",
+      "feature_hash": "7f82d3b7fe106d60e7f66a2b52436f4e1420b4d026e1ca415b71ea2211b9d184",
+      "logits_q16": [
+        155026,
+        -3631133,
+        -591246,
+        1035300,
+        -1300130
+      ],
+      "repro_hash": "137b7afb80239442fd6ba96a82bed7d7a20f2ee8169ce1a93d2dcdda8c5e50a3",
+      "severity_name": "major"
     }
   ],
   "version": "1.0.0"
