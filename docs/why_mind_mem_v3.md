@@ -31,7 +31,7 @@ ClinicalMem v4.1.0 depends on `mind-mem >= 3.0.0`. The earlier `>= 1.9.0` floor 
 ## Cross-reference
 
 - `engine/clinical_memory.py` — the only ClinicalMem module that imports from `mind_mem`.
-- `tests/test_engine/test_clinical_memory.py` — the regression tests for the integration.
+- `tests/test_engine/test_clinical_memory_extended.py` + `tests/test_engine/test_clinical_memory_logging_pin.py` — the regression tests for the integration.
 - `docs/regulatory_readiness.md` — how at-rest encryption, audit chain, and tier decay map to HIPAA + FDA SaMD audit requirements.
 - mind-mem's own `docs/governance.md` — the canonical L4 retrieval-time governance description.
 

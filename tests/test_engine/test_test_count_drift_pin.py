@@ -161,6 +161,12 @@ _HISTORICAL_COUNTS = (
     # resolved + no_change recommendation_path tracking). Live
     # 1237 → 1241.
     "1237",
+    # iter-228 T1 round-47: structural pin self-locking the iter-227
+    # drift class — test_user_doc_test_path_existence_pin.py (8th
+    # cross-pin family): every pin-file path in user-facing docs
+    # MUST exist on disk + sanity floor + JUDGES v6 pin citation +
+    # self-pin. Live 1241 → 1245.
+    "1241",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -174,7 +180,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1241
+_TEST_COUNT_FLOOR = 1245
 
 
 def test_no_stale_test_counts_in_docs():
