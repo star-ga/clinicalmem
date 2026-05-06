@@ -218,3 +218,133 @@ def test_fhir_adapter_has_at_least_ten_structured_logs():
         f"engine/fhir_adapter.py has {count} logger calls; "
         f"floor is 10 (iter-108 baseline)."
     )
+
+
+# ─── iter-191 (T4 round 37) ratchet — 3 new structured events ───────────────
+
+
+def test_fhir_adapter_logger_floor_iter191():
+    """Floor bump 10 -> 13 after iter-191 closed 3 silent paths:
+    (1) Practitioner NPI Luhn-failure WARNING; (2) Observation
+    no-value DEBUG; (3) bundle rejection-summary DEBUG. Density
+    16.8 -> 20.2/kloc."""
+    import re
+    from pathlib import Path
+    src = (Path(__file__).resolve().parent.parent.parent / "engine" / "fhir_adapter.py").read_text()
+    calls = re.findall(
+        r"\blogger\.(?:debug|info|warning|error|exception|critical)\(",
+        src,
+    )
+    assert len(calls) >= 13, (
+        f"engine/fhir_adapter.py logger-call count regressed: "
+        f"{len(calls)} < floor 13 (iter-191 baseline)."
+    )
+
+
+def test_practitioner_npi_luhn_failure_emits_warning_iter191(caplog):
+    """`_extract_practitioner_npis` emits `fhir_practitioner_npi_luhn_failed`
+    WARNING when an NPI fails Luhn check.  PHI-safe: only first 4 digits
+    of NPI logged, never the full malformed value."""
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Practitioner",
+                    "id": "prac-test-iter191",
+                    "identifier": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/us-npi",
+                            "value": "1234567890",  # Wrong Luhn check digit
+                        }
+                    ],
+                }
+            }
+        ],
+    }
+    caplog.set_level(logging.WARNING, logger="engine.fhir_adapter")
+    ingest_bundle(bundle)
+
+    rec = _record(caplog, "fhir_practitioner_npi_luhn_failed")
+    assert rec is not None, "fhir_practitioner_npi_luhn_failed event missing"
+    assert rec.levelno == logging.WARNING
+    assert rec.npi_prefix4 == "1234"
+    assert rec.npi_len == 10
+    assert rec.resource_id == "prac-test-iter191"
+
+    # Full malformed NPI must NOT appear in any log record (paranoia
+    # scan — defends against a future change that adds str(value) to
+    # the extra fields).
+    for r in caplog.records:
+        for value in vars(r).values():
+            if isinstance(value, str):
+                assert "1234567890" not in value, (
+                    f"Full NPI leaked into log record: {value!r}"
+                )
+
+
+def test_observation_no_value_emits_debug_iter191(caplog):
+    """`_parse_observation` emits `fhir_observation_no_value` DEBUG
+    when the resource has no value[x] field."""
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Observation",
+                    "id": "obs-test-iter191-novalue",
+                    "code": {
+                        "coding": [{
+                            "system": "http://loinc.org",
+                            "code": "8302-2",
+                            "display": "Body height",
+                        }],
+                        "text": "Body height",
+                    },
+                    # NO valueQuantity / valueString / valueCodeableConcept
+                }
+            }
+        ],
+    }
+    caplog.set_level(logging.DEBUG, logger="engine.fhir_adapter")
+    ingest_bundle(bundle)
+
+    rec = _record(caplog, "fhir_observation_no_value")
+    assert rec is not None, "fhir_observation_no_value event missing"
+    assert rec.levelno == logging.DEBUG
+    assert rec.resource_id == "obs-test-iter191-novalue"
+    assert rec.loinc_code_present is True
+
+
+def test_bundle_rejection_summary_emits_debug_iter191(caplog):
+    """`ingest_bundle` emits `fhir_bundle_rejection_summary` DEBUG when
+    any resource was rejected, with by_resource_type dict for ops
+    aggregation."""
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+            # 2 invalid Practitioner NPIs -> 2 rejections
+            {"resource": {
+                "resourceType": "Practitioner",
+                "id": "prac-rej-1",
+                "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "1111111111"}],
+            }},
+            {"resource": {
+                "resourceType": "Practitioner",
+                "id": "prac-rej-2",
+                "identifier": [{"system": "http://hl7.org/fhir/sid/us-npi", "value": "2222222222"}],
+            }},
+        ],
+    }
+    caplog.set_level(logging.DEBUG, logger="engine.fhir_adapter")
+    ingest_bundle(bundle)
+
+    rec = _record(caplog, "fhir_bundle_rejection_summary")
+    assert rec is not None, "fhir_bundle_rejection_summary event missing"
+    assert rec.levelno == logging.DEBUG
+    assert rec.total_rejected == 2
+    assert isinstance(rec.by_resource_type, dict)
+    assert rec.by_resource_type.get("Practitioner") == 2

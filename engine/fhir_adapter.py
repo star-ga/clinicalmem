@@ -306,6 +306,20 @@ def _parse_observation(resource: dict) -> NormalizedObservation | None:
     else:
         value = None
         unit = None
+        # DEBUG — Observation resource without any of the standard
+        # value[x] fields. FHIR R4 R-spec allows this (an observation
+        # MAY be value-less when used as a header for sub-component
+        # observations), but operators auditing data-completeness
+        # need visibility into how often this happens. PHI-safe:
+        # resource id (FHIR identifier, synthetic in our cohort)
+        # only — NEVER LOINC code or display text (clinical narrative).
+        logger.debug(
+            "fhir_observation_no_value",
+            extra={
+                "resource_id": resource.get("id", "?"),
+                "loinc_code_present": bool(_first_code_by_system(codings, _LOINC_SYSTEM)),
+            },
+        )
 
     return NormalizedObservation(
         resource_id=resource.get("id") or "",
@@ -333,6 +347,23 @@ def _extract_practitioner_npis(
         if validate_npi(npi_value):
             npis.append(npi_value)
         else:
+            # WARNING — NPI Luhn-validation failure is a Practitioner
+            # data-quality signal that operators must see at default
+            # log levels. PHI-safe: NPIs are public CMS-registry data,
+            # but we log only the first 4 digits (ATC-style organisation
+            # prefix is enough for operators to spot a typo / synthetic-
+            # collision pattern) plus the resource id (FHIR identifier,
+            # synthetic in our cohort). NEVER log the full malformed
+            # NPI — partial digits don't help and could leak attempted-
+            # forgery patterns in a future real-EHR ingest.
+            logger.warning(
+                "fhir_practitioner_npi_luhn_failed",
+                extra={
+                    "npi_prefix4": (npi_value[:4] if isinstance(npi_value, str) else "?"),
+                    "npi_len": (len(npi_value) if isinstance(npi_value, str) else 0),
+                    "resource_id": resource.get("id", "?"),
+                },
+            )
             rejected.append(
                 (
                     "Practitioner",
@@ -555,6 +586,25 @@ def ingest_bundle(
     # internal identifier). WARNING when any resource was rejected; INFO
     # on the all-clean path. Drug names + condition codes + observation
     # values stay sealed — only counts surface.
+
+    # iter-191 extension: per-rejected-resource-type DEBUG summary so
+    # operators auditing data-quality drift can see WHICH resource
+    # type families are dropping resources without parsing the full
+    # rejected list. PHI-safe: structural type names only (e.g.
+    # 'Practitioner', 'Condition' — FHIR R4 standard strings).
+    if rejected:
+        rejection_type_counts: dict[str, int] = {}
+        for rt_rej, _reason in rejected:
+            rejection_type_counts[rt_rej] = rejection_type_counts.get(rt_rej, 0) + 1
+        logger.debug(
+            "fhir_bundle_rejection_summary",
+            extra={
+                "patient_id": patient_id,
+                "total_rejected": len(rejected),
+                "by_resource_type": rejection_type_counts,
+            },
+        )
+
     log_fn = logger.warning if rejected else logger.info
     log_fn(
         "fhir_bundle_ingest_complete",
