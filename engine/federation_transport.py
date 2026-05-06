@@ -108,7 +108,19 @@ def make_default_fanout(
     fan-out; the hackathon demo and integration tests use the logging
     publisher because it has no external dependencies.
     """
-    return EventFanout([LoggingPublisher(), *extra_publishers])
+    fanout = EventFanout([LoggingPublisher(), *extra_publishers])
+    # Observability for fanout topology — a deployment running with
+    # only the LoggingPublisher will not propagate events to Redis /
+    # Kafka, which is a config-error class on-call should be able to
+    # detect from the boot log without instrumenting the wire.
+    logger.debug(
+        "federation_fanout_built",
+        extra={
+            "extra_publisher_count": len(extra_publishers),
+            "total_publisher_count": 1 + len(extra_publishers),
+        },
+    )
+    return fanout
 
 
 def register_clinical_peer(
@@ -126,6 +138,19 @@ def register_clinical_peer(
     which is what the severity-quorum gate (invariant 16 in the flow
     contract) enforces at runtime.
     """
+    if not scopes:
+        # An empty scope tuple registers a peer that participates in
+        # zero sync lanes — almost always an upstream config bug
+        # (forgot to plumb CLINICAL_PEER_SCOPES through). Surface as
+        # WARNING so misconfigured deployments are visible without
+        # blocking the registration path.
+        logger.warning(
+            "federation_peer_zero_scopes",
+            extra={
+                "peer_id": peer_id,
+                "endpoint_length": len(endpoint),
+            },
+        )
     peer = mesh.add_peer(peer_id=peer_id, endpoint=endpoint, scopes=scopes)
     # PHI discipline: peer_id is an operator-chosen site identifier
     # (e.g., "huron-rural-fqhc"); not PHI per HIPAA Safe Harbor.
@@ -341,4 +366,12 @@ def make_site_mesh() -> memory_mesh.MemoryMesh:
     semantic / procedural / relations / graph / governance) which is
     exactly the policy the severity-quorum gate requires.
     """
-    return memory_mesh.MemoryMesh()
+    mesh = memory_mesh.MemoryMesh()
+    # Boot-time observability — confirms the federation control plane
+    # is using the canonical mind-mem mesh (vs a vendored / forked
+    # implementation). DEBUG level since it fires once per process.
+    logger.debug(
+        "federation_mesh_constructed",
+        extra={"backend": memory_mesh.MemoryMesh.__module__},
+    )
+    return mesh

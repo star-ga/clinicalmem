@@ -228,3 +228,102 @@ def test_quarantine_warns_with_categorical_reason_only(caplog_at_debug):
     assert not any(_SECRET_PHI_TOKEN in str(r.__dict__) for r in records), (
         "quarantine event must not leak payload_summary values"
     )
+
+
+# -----------------------------------------------------------------------
+# Iter-196 T4 round-38 ratchet — three previously-silent paths closed
+# in engine/federation_transport.py: make_default_fanout (boot-time
+# fanout topology), make_site_mesh (boot-time mesh-backend signal),
+# and register_clinical_peer with empty scopes (config-error WARNING).
+# Density 17.4 -> 23.9/kloc.
+# -----------------------------------------------------------------------
+
+
+class TestFederationTransportLoggerRatchetIter196:
+    """Iter-196 T4 round-38: ratchet engine/federation_transport.py
+    logger density from the post-iter-191 audit's lowest-density slot
+    (17.4/kloc) by closing three silent paths."""
+
+    def test_logger_floor_iter196(self) -> None:
+        """Module-level floor: at least 9 logger calls (was 6 pre-
+        iter-196). Catches a future refactor that drops a structured
+        trace without explicit re-baselining."""
+        import re
+        from pathlib import Path
+        path = (
+            Path(__file__).resolve().parent.parent.parent
+            / "engine" / "federation_transport.py"
+        )
+        src = path.read_text()
+        count = len(re.findall(r"\blogger\.(debug|info|warning|error|critical)\(", src))
+        assert count >= 9, (
+            f"federation_transport.py logger-call floor violated: "
+            f"{count} calls, expected >= 9 post-iter-196 ratchet."
+        )
+
+    def test_make_default_fanout_emits_topology_log(self, caplog_at_debug) -> None:
+        """Boot-time fanout build emits federation_fanout_built (DEBUG)
+        with publisher counts so on-call can spot a deployment running
+        with the LoggingPublisher only (no Redis / Kafka fan-out)."""
+        from engine.federation_transport import make_default_fanout
+        make_default_fanout()
+        records = _records(caplog_at_debug)
+        built = [r for r in records if r.message == "federation_fanout_built"]
+        assert built, (
+            "make_default_fanout must emit 'federation_fanout_built' "
+            "DEBUG with extra_publisher_count + total_publisher_count."
+        )
+        assert built[0].levelname == "DEBUG"
+        assert built[0].__dict__.get("total_publisher_count") == 1, (
+            "default fanout has exactly 1 publisher (LoggingPublisher); "
+            "extra_publishers=() should yield total=1."
+        )
+
+    def test_make_site_mesh_emits_backend_log(self, caplog_at_debug) -> None:
+        """Boot-time mesh construction emits federation_mesh_constructed
+        (DEBUG) with the backend module so on-call can confirm the
+        canonical mind-mem MemoryMesh is wired (vs a vendored fork)."""
+        from engine.federation_transport import make_site_mesh
+        make_site_mesh()
+        records = _records(caplog_at_debug)
+        constructed = [
+            r for r in records if r.message == "federation_mesh_constructed"
+        ]
+        assert constructed, (
+            "make_site_mesh must emit 'federation_mesh_constructed' DEBUG "
+            "with backend module name."
+        )
+        assert constructed[0].levelname == "DEBUG"
+        backend = constructed[0].__dict__.get("backend", "")
+        assert "memory_mesh" in backend, (
+            f"mesh backend must reference mind_mem.memory_mesh; got {backend!r}"
+        )
+
+    def test_register_clinical_peer_zero_scopes_warns(self, caplog_at_debug) -> None:
+        """Registering a peer with an empty scope tuple is a config-error
+        signal — the peer joins zero sync lanes. Surfaces as WARNING so
+        misconfigured deployments are visible without blocking the
+        registration path."""
+        from engine.federation_transport import (
+            make_site_mesh,
+            register_clinical_peer,
+        )
+        mesh = make_site_mesh()
+        register_clinical_peer(
+            mesh,
+            peer_id="zero-scope-peer",
+            endpoint="https://example.test/peer/zero",
+            scopes=(),
+        )
+        records = _records(caplog_at_debug)
+        zero = [
+            r for r in records if r.message == "federation_peer_zero_scopes"
+        ]
+        assert zero, (
+            "register_clinical_peer(scopes=()) must emit "
+            "'federation_peer_zero_scopes' WARNING — config-error signal."
+        )
+        assert zero[0].levelname == "WARNING", (
+            "zero-scopes log must be WARNING level so it surfaces past "
+            "default DEBUG suppression in production."
+        )
