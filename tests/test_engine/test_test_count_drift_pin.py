@@ -252,6 +252,24 @@ _HISTORICAL_COUNTS = (
     # shape as iter-232/246 (single source → derived surface).
     # Live 1279 → 1282.
     "1279",
+    # iter-255 T1 round-54: v8 staged bundle integrity gap. Shipped
+    # cfadb4f6 has 9-test integrity pin (size band, sparsity floor,
+    # key set, _meta provenance, self-referenced bundle_id) but the
+    # iter-244 staged 1f0f8859 v8 bundle had no equivalent. Future
+    # corruption that doesn't change bundle_id (stray top-level key,
+    # _meta provenance field drop, JSON pretty-print drift, sparsity
+    # collapse) would silently break the 0%-known-misses promise.
+    # New pin family test_v8_bundle_integrity_pin.py (9 tests, **17th
+    # cross-pin family**): bundle_id == pinned 1f0f88591…; file size
+    # 110-130 KB band + 200 KB hard ceiling; ternary sparsity 40-60%;
+    # top-level keys exactly 5-element canonical set; _meta carries
+    # all 17 FDA SaMD provenance fields; _meta.bundle_id self-
+    # consistent (SHA-256 of canonical-form weight payload); contra_fp
+    # = 0; contra_recall = 1.0; architecture dims (in=193, hidden=256,
+    # out=5) match weight matrix shapes. Mirror of iter-72 cfadb4f6
+    # pin applied to v8 staged surface. Defends user's "100% is the
+    # only goal" demand at the bundle-content layer. Live 1282 → 1291.
+    "1282",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -265,7 +283,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1282
+_TEST_COUNT_FLOOR = 1291
 
 
 def test_no_stale_test_counts_in_docs():
