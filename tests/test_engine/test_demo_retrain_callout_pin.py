@@ -130,7 +130,7 @@ def test_path_a_callout_iter140_numbers_not_stale():
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
         "38 / 38 contraindicated cache entries (100% explanation coverage)",  # iter-202 cohort 37 -> 38 (tolvaptan+ketoconazole)
-        "1ff61a6a",                                  # iter-166 v5 bundle id (still staged)
+        "592ee51e",                                  # iter-207 v6 bundle id (now staged; v5 dropped from demo per iter-209 directive)
         "193-dim feature input",                    # iter-146 dim
         "128 hidden",                                # iter-166 architectural extension
     )
