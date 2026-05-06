@@ -235,6 +235,23 @@ _HISTORICAL_COUNTS = (
     # forbidden pre-iter-235 cohort sizes (35-40) blocked from
     # chip subtitle. Live 1275 → 1279.
     "1275",
+    # iter-247 T3 round-52: velocity-badge drift (45+ iters stale)
+    # — visible badge said "200+ iter" while live work-log was at
+    # iter-246; tooltip even more stale at "160+ autonomous
+    # improvement cycles". Plus a half-completed v6→v8 rotation in
+    # demo.html L1270 — the v8 pin description still said
+    # "aggregate: bundle_id + 40/41 + 4/4 + 0 FP" when v8 actually
+    # hit 41/41 (this is the FULL-recall breakthrough — calling it
+    # 40/41 in the description undersells the architectural double).
+    # Both fixed in lockstep: badge → "245+ iter", description →
+    # "41/41". New pin family test_velocity_badge_iter_count_pin.py
+    # (3 tests, **16th cross-pin family**): badge claims must not
+    # lag live work-log highest iter by >50; claims must round to
+    # multiples of 5; claims must not exceed live max. Single source
+    # of truth = AUTONOMOUS_WORK_LOG.md highest "| <N> |" row. Same
+    # shape as iter-232/246 (single source → derived surface).
+    # Live 1279 → 1282.
+    "1279",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -248,7 +265,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1279
+_TEST_COUNT_FLOOR = 1282
 
 
 def test_no_stale_test_counts_in_docs():
