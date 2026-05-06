@@ -338,14 +338,28 @@ def _attach_bitnet_repro_hashes(
         except WeightsTamperError as exc:
             # Tamper is release-blocking. Re-raise so the caller's
             # MedicationSafetyReview flow's invariants surface it.
-            logger.error("BITNET_WEIGHTS_TAMPER %s", exc)
+            # PHI-safe: error_type only — exception messages can carry
+            # weights-bundle path or other internal state.
+            logger.error(
+                "bitnet_weights_tamper",
+                extra={
+                    "error_type": type(exc).__name__,
+                },
+            )
             raise
         except Exception as exc:
             # Other classifier failures (missing weights file, malformed
             # JSON) are recorded as gaps; the upstream interaction stays.
+            # PHI-safe: error_type only + drug-name lengths (drug names
+            # are PHI-adjacent — clinical input may carry adjacent
+            # narrative; same iter-234 / iter-239 discipline).
             logger.warning(
-                "bitnet classifier failed for %s+%s: %s",
-                it.drug_a, it.drug_b, exc,
+                "bitnet_classifier_failed",
+                extra={
+                    "error_type": type(exc).__name__,
+                    "drug_a_length": len(it.drug_a),
+                    "drug_b_length": len(it.drug_b),
+                },
             )
             stamped.append(it)
             failed_stamps += 1

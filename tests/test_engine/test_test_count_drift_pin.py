@@ -197,6 +197,13 @@ _HISTORICAL_COUNTS = (
     # family) with source-level positional-pattern + extras-PHI-scrub
     # guards. Live 1261 → 1267.
     "1261",
+    # iter-240 T1 round-50: generalized PHI-discipline pin scanning
+    # ALL engine/*.py for the iter-234/iter-239 positional-%s pattern.
+    # New pin family test_engine_phi_discipline_pin.py (3 tests, 13th
+    # cross-pin family) caught 2 more sites on first run: clinical_scoring.py
+    # (BITNET_WEIGHTS_TAMPER %s, exc) and openevidence_cache.py (cache
+    # malformed: %s, exc). Both rewritten. Live 1267 → 1270.
+    "1267",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -210,7 +217,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1267
+_TEST_COUNT_FLOOR = 1270
 
 
 def test_no_stale_test_counts_in_docs():

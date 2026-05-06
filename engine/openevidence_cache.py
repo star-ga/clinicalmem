@@ -71,10 +71,27 @@ def _load_cache() -> list[CachedOpenEvidenceResponse]:
         with open(path, encoding="utf-8") as fh:
             raw: list[dict] = json.load(fh)
     except FileNotFoundError:
-        logger.warning("openevidence_cache.json not found at %s", path)
+        # PHI-safe: log filesystem path category not the literal path
+        # (path may include user identifiers in some deployments).
+        logger.warning(
+            "openevidence_cache_not_found",
+            extra={
+                "path_basename": str(path).split("/")[-1] if path else "?",
+            },
+        )
         return []
     except json.JSONDecodeError as exc:
-        logger.warning("openevidence_cache.json is malformed: %s", exc)
+        # PHI-safe: error_type + decode position only — exc message can
+        # quote the offending raw cache content. Same iter-234 / iter-239
+        # discipline.
+        logger.warning(
+            "openevidence_cache_malformed",
+            extra={
+                "error_type": "JSONDecodeError",
+                "decode_pos": getattr(exc, "pos", -1),
+                "decode_msg_class": getattr(exc, "msg", "")[:40],
+            },
+        )
         return []
 
     entries: list[CachedOpenEvidenceResponse] = []
