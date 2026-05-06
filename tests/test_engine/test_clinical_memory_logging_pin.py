@@ -449,3 +449,121 @@ def test_explain_conflict_abstained_emits_info_event_iter171(caplog):
     assert rec.patient_id == "no-such-patient"
     assert rec.reason in ("no_conflicts", "conflict_index_out_of_range")
     assert rec.contradiction_count == 0
+
+
+# ────────────────────────────────────────────────────────────────────
+# Iter-201 T4 round-39 ratchet — four previously-silent paths closed
+# in engine/clinical_memory.py: hybrid-empty fallback, mindmem complete,
+# fallback complete, negation-query scoring.
+# Density 18.2 -> 20.4/kloc.
+# ────────────────────────────────────────────────────────────────────
+
+
+_EXPECTED_LOGGER_FLOOR_ITER201 = 27  # was 23 pre-iter-201 (iter-138 added
+                                       # 5; iter-176 added 5 more; iter-201
+                                       # adds 4 = 27)
+
+
+def test_clinical_memory_logger_floor_iter201():
+    """Pin a logger-call floor (>= 27) so silent-removal regressions of
+    the iter-201 events fail the gate. Iter-201 added 4 DEBUG events on
+    silent recall paths (mindmem_empty_falling_back, recall_mindmem_complete,
+    recall_fallback_complete, negation_query_scored)."""
+    src = _MODULE_PATH.read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= _EXPECTED_LOGGER_FLOOR_ITER201, (
+        f"engine/clinical_memory.py logger-call count regressed: "
+        f"{len(calls)} < floor {_EXPECTED_LOGGER_FLOOR_ITER201}. "
+        f"A structured event from iter-201 was silently removed."
+    )
+
+
+def test_recall_fallback_complete_emits_debug_event_iter201(caplog, tmp_path):
+    """`_recall_fallback` emits `clinical_memory_recall_fallback_complete`
+    DEBUG when recall completes via the approximate BM25 path. Pre-iter-201
+    the success path was silent — operators couldn't distinguish hybrid-
+    backend recalls from approximate BM25 recalls in audit-aggregate
+    statistics. PHI-safe: scalars only, no query/result content."""
+    from engine.clinical_memory import ClinicalMemEngine, ClinicalBlock
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter201_fallback"))
+    # Pre-populate with a synthetic block so recall has something to score
+    block = ClinicalBlock(
+        block_id="iter201-blk-1",
+        patient_id="pt-iter201",
+        resource_type="MedicationRequest",
+        title="Synthetic test block for iter-201 ratchet",
+        content="patient on lisinopril 10mg daily; no allergies",
+        metadata={"medication_name": "lisinopril"},
+        timestamp="2026-05-06T09:30:00Z",
+        source="iter201-test",
+    )
+    engine._patient_blocks["pt-iter201"] = [block]
+    # Force fallback path (no hybrid backend in test env)
+    engine._hybrid_backend = None
+
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+        engine.recall("pt-iter201", "hypertension medication")
+
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "clinical_memory_recall_fallback_complete" in r.getMessage()
+    ]
+    assert matched, (
+        "_recall_fallback emitted no "
+        "`clinical_memory_recall_fallback_complete` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.patient_id == "pt-iter201"
+    assert rec.block_count == 1
+    # PHI sentinel scan — recall log records must not carry the block content.
+    for r in caplog.records:
+        rd = r.__dict__
+        assert "lisinopril 10mg" not in str(rd), (
+            f"block content leaked into log record: {rd}"
+        )
+
+
+def test_negation_query_scored_emits_debug_event_iter201(caplog, tmp_path):
+    """`_recall_fallback` emits `clinical_memory_negation_query_scored`
+    DEBUG when the query is detected as a negation query (gets 0.5x score
+    multiplier on blocks without negation markers). The query string itself
+    is NOT logged — only counts + length — to keep PHI safe."""
+    from engine.clinical_memory import ClinicalMemEngine, ClinicalBlock
+
+    engine = ClinicalMemEngine(data_dir=str(tmp_path / "iter201_neg"))
+    block = ClinicalBlock(
+        block_id="iter201-neg-blk-1",
+        patient_id="pt-iter201-neg",
+        resource_type="AllergyIntolerance",
+        title="Allergy record",
+        content="no known drug allergies",
+        metadata={"allergen": "none"},
+        timestamp="2026-05-06T09:30:00Z",
+        source="iter201-test",
+    )
+    engine._patient_blocks["pt-iter201-neg"] = [block]
+    engine._hybrid_backend = None
+
+    sentinel_query = "ZZZ_SECRET_QUERY_TOKEN does the patient have no allergies"
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_memory"):
+        engine.recall("pt-iter201-neg", sentinel_query)
+
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "clinical_memory_negation_query_scored" in r.getMessage()
+    ]
+    assert matched, (
+        "_recall_fallback negation branch emitted no "
+        "`clinical_memory_negation_query_scored` DEBUG event."
+    )
+    # Sentinel scan — query string must NEVER appear in any log record.
+    for r in caplog.records:
+        assert "ZZZ_SECRET_QUERY_TOKEN" not in str(r.__dict__), (
+            f"negation-query log record leaked the query string: {r.__dict__}"
+        )

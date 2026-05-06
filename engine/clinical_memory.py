@@ -549,6 +549,17 @@ class ClinicalMemEngine:
 
         if not mm_results:
             # mind-mem found nothing (maybe corpus not indexed yet), fall back
+            # DEBUG — operators tracking recall-quality drift need to see
+            # how often the hybrid backend abstains and we degrade to the
+            # approximate BM25 path. PHI-safe: counts only, query NOT logged.
+            logger.debug(
+                "clinical_memory_mindmem_empty_falling_back",
+                extra={
+                    "patient_id": patient_id,
+                    "block_count": len(blocks),
+                    "query_length": len(query),
+                },
+            )
             return self._recall_fallback(patient_id, query, blocks, top_k)
 
         # Map mind-mem results back to clinical blocks
@@ -610,6 +621,22 @@ class ClinicalMemEngine:
             },
         )
 
+        # DEBUG — recall-success signal so operators can correlate
+        # confidence-gate abstention rate with backend choice. PHI-safe:
+        # patient_id (synthetic) + scalars only; result_blocks NOT logged
+        # (titles/content are downstream PHI).
+        logger.debug(
+            "clinical_memory_recall_mindmem_complete",
+            extra={
+                "patient_id": patient_id,
+                "block_count": len(blocks),
+                "result_count": len(result_blocks),
+                "confidence": round(conf.score, 4),
+                "abstained": conf.should_abstain,
+                "audit_hash_prefix": audit_hash[:16] if audit_hash else None,
+            },
+        )
+
         return ClinicalRecallResult(
             blocks=result_blocks,
             confidence=conf,
@@ -627,6 +654,20 @@ class ClinicalMemEngine:
     ) -> ClinicalRecallResult:
         """Fallback recall using approximate BM25 term matching."""
         is_negation = is_negation_query(query)
+        if is_negation:
+            # DEBUG — negation queries get 0.5x score multiplier when the
+            # block doesn't contain a negation marker. Operators tracking
+            # recall-quality drift can correlate negation-query rate with
+            # abstention rate. PHI-safe: bool flag + counts only,
+            # query string itself is NOT logged.
+            logger.debug(
+                "clinical_memory_negation_query_scored",
+                extra={
+                    "patient_id": patient_id,
+                    "block_count": len(blocks),
+                    "query_length": len(query),
+                },
+            )
         query_terms = set(query.lower().split())
 
         scored = []
@@ -691,6 +732,22 @@ class ClinicalMemEngine:
                 "confidence": conf.score,
                 "abstained": conf.should_abstain,
                 "backend": "fallback/bm25-approx",
+            },
+        )
+
+        # DEBUG — fallback-recall completion signal so operators can
+        # distinguish hybrid-backend recall from approximate BM25
+        # recall in confidence-gate analytics. PHI-safe: scalars only.
+        logger.debug(
+            "clinical_memory_recall_fallback_complete",
+            extra={
+                "patient_id": patient_id,
+                "block_count": len(blocks),
+                "result_count": len(result_blocks),
+                "confidence": round(conf.score, 4),
+                "abstained": conf.should_abstain,
+                "is_negation": is_negation,
+                "audit_hash_prefix": audit_hash[:16] if audit_hash else None,
             },
         )
 
