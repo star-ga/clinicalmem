@@ -293,6 +293,14 @@ def main():
         # 30-seed sweep on the iter-155 cohort couldn't find a 30/30 + 4/4
         # + ≤1 FP seed without the boost.
         "azathioprine::febuxostat",
+        # Iter-173: isavuconazole+simvastatin (32nd contra, iter-172 cohort
+        # growth) needs explicit boost — triazole sub-class wasn't in the
+        # iter-148 training corpus + iter-156 BOOST_KEYS, so the iter-166
+        # v5 (h=128) bundle missed it (predicted "none") despite the
+        # cyp3a4_strong_inh × statin pair-derived rule firing. Same
+        # generalization-gap pattern as ritonavir+simvastatin under
+        # cfadb4f6 (HIV PI sub-class).
+        "isavuconazole::simvastatin",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing
