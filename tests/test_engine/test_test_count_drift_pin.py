@@ -155,6 +155,12 @@ _HISTORICAL_COUNTS = (
     # locking labels + env keys + model IDs + NIM endpoint +
     # available_providers tuple shape). Live 1231 → 1237.
     "1231",
+    # iter-226 T4 round-47: ratchet engine/what_if.py logger density
+    # 24.9 → 35.9/kloc (+4 silent paths closed: simulate_add critical
+    # + monitored recommendation_path tracking, simulate_remove
+    # resolved + no_change recommendation_path tracking). Live
+    # 1237 → 1241.
+    "1237",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -168,7 +174,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1237
+_TEST_COUNT_FLOOR = 1241
 
 
 def test_no_stale_test_counts_in_docs():

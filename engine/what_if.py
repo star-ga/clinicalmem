@@ -173,6 +173,20 @@ def simulate_add_medication(
             f"Safe to proceed with standard monitoring."
         )
     elif has_critical:
+        # DEBUG — recommendation-path tracking parity: the no_new_risks
+        # branch already emits what_if_recommendation_path; the critical
+        # branch had its own WARNING but no path log, leaving the
+        # 3-class branch distribution incomplete for ops dashboards.
+        # PHI-safe: structural label + scenario + patient_id only.
+        logger.debug(
+            "what_if_recommendation_path",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "add",
+                "branch": "critical",
+                "new_risk_count": new_risk_count,
+            },
+        )
         parts = []
         for i in new_interactions:
             if i.severity == "contraindicated":
@@ -188,6 +202,20 @@ def simulate_add_medication(
             + ". Consider alternative medications."
         )
     else:
+        # DEBUG — completes the 3-class recommendation-path distribution
+        # (no_new_risks / critical / monitored). The middle branch was
+        # silent before iter-226 — ops couldn't measure how often
+        # what-if simulations land on "monitored" vs the extremes.
+        # PHI-safe: structural label + scenario + patient_id only.
+        logger.debug(
+            "what_if_recommendation_path",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "add",
+                "branch": "monitored",
+                "new_risk_count": new_risk_count,
+            },
+        )
         recommendation = (
             f"Adding {new_medication} introduces {new_risk_count} new risk(s) "
             f"but none are critical. Proceed with enhanced monitoring: "
@@ -300,12 +328,37 @@ def simulate_remove_medication(
     )
 
     if removed_risks:
+        # DEBUG — recommendation-path observability for the resolved-risk
+        # branch. Mirror-shape of iter-181 simulate_add path tracking.
+        logger.debug(
+            "what_if_remove_recommendation_path",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "remove",
+                "branch": "resolved",
+                "resolved_risk_count": len(removed_risks),
+            },
+        )
         recommendation = (
             f"Removing {remove_medication} eliminates {len(removed_risks)} risk(s): "
             + "; ".join(removed_risks)
             + ". Ensure the underlying condition is managed with an alternative."
         )
     else:
+        # DEBUG — completes the 2-class remove distribution
+        # (resolved / no_change). The no_change branch was silent before
+        # iter-226 — important to differentiate from the
+        # what_if_remove_drug_not_in_list WARNING (different semantic:
+        # drug WAS in list but removing it doesn't change risk).
+        logger.debug(
+            "what_if_remove_recommendation_path",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "remove",
+                "branch": "no_change",
+                "resolved_risk_count": 0,
+            },
+        )
         recommendation = (
             f"Removing {remove_medication} does not change the risk profile. "
             f"Ensure clinical indication for discontinuation exists."
