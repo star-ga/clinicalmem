@@ -870,6 +870,17 @@
       ],
       "atc": "C07AA05"
     },
+    "quinidine": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/205316Orig1s000lbl.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/17708106/"
+      ],
+      "atc": "C01BA01",
+      "notes": "Class IA antiarrhythmic (Vaughan-Williams); CYP3A4 substrate. FDA Quinidex Extentabs label Section 4 lists strong CYP3A4 inhibitors (notably ritonavir) as contraindicated co-prescriptions due to elevated quinidine AUC + additive QT prolongation \u2192 torsades de pointes. Quinidine is also a P-gp inhibitor \u2014 that mechanism underlies the quinidine+digoxin interaction but is not the primary mechanism for the ritonavir contraindication."
+    },
     "renal impairment": {
       "flags": [
         "is_renal_state"

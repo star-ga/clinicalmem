@@ -148,7 +148,7 @@ def test_bitnet_live_precision_recall_pinned():
         f"live={recall:.4f}, allowed=[0.19, 0.45]"
     )
     assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
-    assert total == 41, f"contraindicated cohort size drifted: live={total}, pinned=41"
+    assert total == 42, f"contraindicated cohort size drifted: live={total}, pinned=42"
 
 
 def test_dashboard_displays_live_precision_number():

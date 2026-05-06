@@ -130,7 +130,7 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "41 / 41 contraindicated cache entries (100% explanation coverage)",  # iter-235 cohort 40 -> 41 (ritonavir+ergotamine)
+        "42 / 42 contraindicated cache entries (100% explanation coverage)",  # iter-249 cohort 41 -> 42 (quinidine+ritonavir HIV-PI×Class-IA-antiarrhythmic slot)
         "1f0f8859",                                  # iter-244 v8 bundle id (full-recall breakthrough; v6 retired iter-245 per pin-discipline)
         "193-dim feature input",                    # iter-146 dim
         "256 hidden",                                # iter-244 v8 architectural double from v6's 128

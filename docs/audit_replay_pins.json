@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T18:27:59.782428+00:00",
+  "dateCreated": "2026-05-06T22:16:40.702321+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -621,6 +621,20 @@
         -3231842
       ],
       "repro_hash": "8d77bad11af21bf5a3d9fda60fd51c2fe3f5684e3066ac8d173fdbd890f3f8ba",
+      "severity_name": "none"
+    },
+    {
+      "drug_a": "quinidine",
+      "drug_b": "ritonavir",
+      "feature_hash": "bc58bf6154e12f4114a4131d24a7c35a8fe036aff92dbc7a3f6979d8c7680f91",
+      "logits_q16": [
+        727001,
+        -6521541,
+        -2342863,
+        472133,
+        -2875723
+      ],
+      "repro_hash": "81a8c61dd85b80df7d6d92e47a8c01ad9dd8bac893bc3f3fff5227c8de77e697",
       "severity_name": "none"
     }
   ],

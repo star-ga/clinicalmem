@@ -59,8 +59,13 @@ _PATH_A_V8_BUNDLE_ID = (
 # network enough capacity to satisfy all three constraints
 # simultaneously — v7 at h=128 couldn't (best v7 was 40/41+4/4+0FP,
 # matching v6).
-_V8_CONTRA_HITS = 41
-_V8_CONTRA_TOTAL = 41
+# Iter-249 cohort growth: added (quinidine, ritonavir) — HIV-PI ×
+# Class IA antiarrhythmic / dual QT-prolonger slot, NEW sub-class.
+# Pre-flight v8 confirmed contraindicated classification at +14.59
+# Q16.16 logit (clear margin), so cohort 41 → 42 with hits 41 → 42
+# in lockstep (zero misses preserved).
+_V8_CONTRA_HITS = 42
+_V8_CONTRA_TOTAL = 42
 _V8_FP_COUNT = 0       # zero FPs invariant holds
 _V8_MAJOR_HITS = 4
 _V8_MAJOR_TOTAL = 4
