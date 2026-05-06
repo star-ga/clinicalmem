@@ -204,6 +204,14 @@ _HISTORICAL_COUNTS = (
     # (BITNET_WEIGHTS_TAMPER %s, exc) and openevidence_cache.py (cache
     # malformed: %s, exc). Both rewritten. Live 1267 → 1270.
     "1267",
+    # iter-244 T1 round-51: structural pin asserting staged bundle
+    # files exist on disk (14th cross-pin family, mirror of iter-228
+    # for binary artifacts). test_staged_bundle_existence_pin.py
+    # (4 tests): every retrain_runpod/bitnet_weights_*.json path
+    # mentioned in user-facing docs / pin files must exist + v6 staged
+    # bundle present + shipped engine bundle present + v3+v5 historical
+    # bundles preserved. Live 1270 → 1274.
+    "1270",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -217,7 +225,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1270
+_TEST_COUNT_FLOOR = 1274
 
 
 def test_no_stale_test_counts_in_docs():
