@@ -8,6 +8,7 @@ Maps FHIR R4 resources to mind-mem memory blocks, providing:
 - Confidence gating (abstention when evidence is insufficient)
 - Hash-chain audit trail for all clinical decisions (via mind-mem AuditChain)
 """
+import hashlib
 import json
 import logging
 import os
@@ -15,6 +16,16 @@ import tempfile
 import time
 from dataclasses import dataclass
 from typing import Any
+
+
+def _hash_id(value: str | None) -> str | None:
+    """Return an 8-char SHA-256 fingerprint of an identifier (e.g.
+    patient ID) so it can appear in logs without exposing PHI per
+    HIPAA § 164.514(b)(2)(i)(R). None passes through.
+    """
+    if not value:
+        return None
+    return hashlib.sha256(str(value).encode("utf-8")).hexdigest()[:8]
 
 from engine.clinical_scoring import (
     AllergyConflict,
@@ -431,7 +442,14 @@ class ClinicalMemEngine:
             "ingest_fhir",
             {"patient_id": pid, "counts": counts},
         )
-        logger.info("Ingested FHIR data for patient %s: %s (audit: %s)", pid, counts, audit_hash)
+        logger.info(
+            "clinical_memory_fhir_ingest_complete",
+            extra={
+                "patient_id_hash": _hash_id(pid),
+                "resource_count": sum(counts.values()) if isinstance(counts, dict) else 0,
+                "audit_hash_short": (audit_hash[:8] if audit_hash else None),
+            },
+        )
         return counts
 
     def _store_block(self, block: ClinicalBlock) -> None:

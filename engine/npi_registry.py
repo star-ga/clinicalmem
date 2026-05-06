@@ -177,7 +177,10 @@ def lookup_npi(npi: str, *, timeout: float = 5.0) -> NPIRecord | None:
     Practitioner resource in the FHIR bundle.
     """
     if not validate_npi(npi):
-        logger.warning("invalid NPI passed to lookup_npi: %s", npi)
+        logger.warning(
+            "npi_lookup_invalid_format",
+            extra={"npi_length": len(str(npi)) if npi else 0},
+        )
         return None
 
     params = {"version": _NPPES_VERSION, "number": npi}
@@ -193,13 +196,19 @@ def lookup_npi(npi: str, *, timeout: float = 5.0) -> NPIRecord | None:
             raw = resp.read(_MAX_RESPONSE_BYTES + 1)
             if len(raw) > _MAX_RESPONSE_BYTES:
                 logger.warning(
-                    "NPPES response for %s exceeded %d bytes; refusing to parse",
-                    npi, _MAX_RESPONSE_BYTES,
+                    "nppes_response_oversize",
+                    extra={
+                        "max_bytes": _MAX_RESPONSE_BYTES,
+                        "raw_bytes_seen": len(raw),
+                    },
                 )
                 return None
             payload = json.loads(raw.decode("utf-8"))
     except (OSError, ValueError) as exc:
-        logger.info("NPPES lookup failed for %s: %s", npi, exc)
+        logger.info(
+            "nppes_lookup_failed",
+            extra={"error_type": type(exc).__name__},
+        )
         return None
 
     if not payload.get("results"):

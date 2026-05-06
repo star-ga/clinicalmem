@@ -91,6 +91,16 @@ _PHI_RISKY_VAR_NAMES = (
     "payload",    # request/response payload
     "obj",        # generic object
     "resource",   # FHIR / API resource
+    # iter-248 extension: HIPAA "designed identifier" risks
+    # (§ 164.514(b)(2)(i)(R) — "any unique identifying number,
+    # characteristic, or code" — patient_id qualifies as PHI;
+    # provider NPI is PHI-adjacent but conservative discipline
+    # treats it the same.)
+    "pid",            # patient ID (the iter-248 leak in clinical_memory.py:434)
+    "patient_id",     # patient ID (explicit form)
+    "mrn",            # medical record number
+    "npi",            # provider NPI (the iter-248 leak in npi_registry.py)
+    "provider_npi",   # explicit provider NPI form
 )
 
 
@@ -124,20 +134,62 @@ def test_no_positional_phi_risky_logger_calls():
         # (which is the SAFE form). We achieve that by only matching
         # when the var name follows the format-string comma directly,
         # not deep inside an `extra={}` dict.
-        for var in _PHI_RISKY_VAR_NAMES:
-            # Match: logger.<level>(<format-string-with-%s/d/r>, <var>...)
-            # iter-243: extended to catch %r (repr — even worse than %s
-            # for PHI leaks since it dumps full object representation).
-            pattern = (
-                r'logger\.\w+\([^)]*"[^"]*%[sdr][^"]*"\s*,\s*'
-                + re.escape(var)
-                + r'\b'
-            )
-            for m in re.finditer(pattern, text):
-                # Compute line number
-                line_no = text[:m.start()].count("\n") + 1
-                snippet = m.group()[:120]
-                violations.append((module_path, line_no, var, snippet))
+        # iter-248 approach: find every logger.X(...) call; for each,
+        # extract the call body (between '(' and the matching ')').
+        # If the body contains a fmt string with %s|%d|%r AND a positional
+        # arg matching a PHI-risky var name (after the fmt string but
+        # before any `extra=` kwarg), it's a violation.
+        #
+        # The iter-240 single-positional-arg regex let multi-arg cases
+        # through (e.g. `logger.info("X %s: %s", npi, exc)` — `exc` was
+        # the 2nd arg, regex only checked the 1st).
+        for call_match in re.finditer(r'logger\.\w+\(', text):
+            start = call_match.end()
+            depth = 1
+            i = start
+            in_str: str | None = None  # track ' " or """
+            while i < len(text) and depth > 0:
+                c = text[i]
+                if in_str:
+                    if c == "\\" and i + 1 < len(text):
+                        i += 2
+                        continue
+                    if text[i:i + len(in_str)] == in_str:
+                        i += len(in_str)
+                        in_str = None
+                        continue
+                else:
+                    if text[i:i + 3] in ('"""', "'''"):
+                        in_str = text[i:i + 3]
+                        i += 3
+                        continue
+                    if c in ('"', "'"):
+                        in_str = c
+                        i += 1
+                        continue
+                    if c == '(':
+                        depth += 1
+                    elif c == ')':
+                        depth -= 1
+                        if depth == 0:
+                            break
+                i += 1
+            body = text[start:i]
+            # Need a fmt string with %s|%d|%r and at least one comma after
+            fmt_match = re.search(r'(?:[urb]?["\'][^"\']*%[sdr][^"\']*["\'])\s*,', body)
+            if not fmt_match:
+                continue
+            after_fmt = body[fmt_match.end():]
+            # Strip out `extra=...` regions from the positional-arg
+            # search space — `extra=` is the SAFE-form keyword.
+            extra_idx = after_fmt.find("extra=")
+            positional = after_fmt[:extra_idx] if extra_idx >= 0 else after_fmt
+            for var in _PHI_RISKY_VAR_NAMES:
+                if re.search(r'\b' + re.escape(var) + r'\b', positional):
+                    line_no = text[:call_match.start()].count("\n") + 1
+                    snippet = (text[call_match.start():call_match.start() + 200]
+                               .replace("\n", " "))
+                    violations.append((module_path, line_no, var, snippet))
 
     if violations:
         lines = []
