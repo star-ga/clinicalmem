@@ -174,6 +174,14 @@ _HISTORICAL_COUNTS = (
     # _V6_CONTRA_HITS/_V6_CONTRA_TOTAL + 4/4 major + 0 FP + Q16.16
     # framing. Live 1245 → 1249.
     "1245",
+    # iter-234 T4 round-48: ratchet engine/rxnorm_client.py — rewrite 5
+    # old-style %s positional logger calls (which passed drug names
+    # directly as record.args, a PHI-leak risk) to structured extra={}
+    # form + 4 silent-path closures. New pin file
+    # test_rxnorm_logging_pin.py (8 tests with PHI sentinel scrubs +
+    # source-level positional-pattern guard). Density 26.9 → 35.6/kloc.
+    # Live 1249 → 1257.
+    "1249",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -187,7 +195,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1249
+_TEST_COUNT_FLOOR = 1257
 
 
 def test_no_stale_test_counts_in_docs():

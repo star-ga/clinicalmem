@@ -61,7 +61,21 @@ def resolve_rxcui(drug_name: str) -> RxConcept | None:
             params={"name": clean, "search": 2},
             timeout=_TIMEOUT,
         )
-        if resp.status_code == 200:
+        if resp.status_code != 200:
+            # WARNING — exact lookup is the primary resolution path; non-200
+            # silently demotes us to approximate matching. Operators triaging
+            # "drug normalization broken" need the status code. PHI-safe:
+            # name_length only, never the drug name itself (clinical input
+            # may carry adjacent narrative).
+            logger.warning(
+                "rxnorm_exact_non_200",
+                extra={
+                    "status_code": resp.status_code,
+                    "endpoint": "rxnav/rxcui",
+                    "name_length": len(clean),
+                },
+            )
+        elif resp.status_code == 200:
             data = resp.json()
             ids = data.get("idGroup", {}).get("rxnormId", [])
             if ids:
@@ -71,7 +85,16 @@ def resolve_rxcui(drug_name: str) -> RxConcept | None:
                     return concept
                 return RxConcept(rxcui=rxcui, name=clean, tty="IN")
     except Exception as e:
-        logger.debug("RxNorm exact lookup failed for %s: %s", clean, e)
+        # DEBUG — exception path is rarer than non-200; error_type only,
+        # never the exception message body (httpx exceptions can quote
+        # the request URL which carries the drug name in `name=` param).
+        logger.debug(
+            "rxnorm_exact_lookup_error",
+            extra={
+                "error_type": type(e).__name__,
+                "name_length": len(clean),
+            },
+        )
 
     # 2. Approximate match
     try:
@@ -80,7 +103,19 @@ def resolve_rxcui(drug_name: str) -> RxConcept | None:
             params={"term": clean, "maxEntries": 3},
             timeout=_TIMEOUT,
         )
-        if resp.status_code == 200:
+        if resp.status_code != 200:
+            # WARNING — when both exact AND approx return non-200, drug
+            # resolution is silently broken; the upstream caller will get
+            # `None` and the safety pipeline degrades to deterministic-only.
+            logger.warning(
+                "rxnorm_approx_non_200",
+                extra={
+                    "status_code": resp.status_code,
+                    "endpoint": "rxnav/approximateTerm",
+                    "name_length": len(clean),
+                },
+            )
+        elif resp.status_code == 200:
             data = resp.json()
             candidates = data.get("approximateGroup", {}).get("candidate", [])
             if candidates:
@@ -92,7 +127,13 @@ def resolve_rxcui(drug_name: str) -> RxConcept | None:
                         return concept
                     return RxConcept(rxcui=rxcui, name=clean, tty="IN")
     except Exception as e:
-        logger.debug("RxNorm approximate lookup failed for %s: %s", clean, e)
+        logger.debug(
+            "rxnorm_approx_lookup_error",
+            extra={
+                "error_type": type(e).__name__,
+                "name_length": len(clean),
+            },
+        )
 
     return None
 
@@ -154,10 +195,32 @@ def get_interactions_for_list(rxcuis: list[str]) -> list[RxInteraction]:
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
+            # WARNING — Layer 3 interaction detection is load-bearing for
+            # the safety pipeline (NIH RxNav backbone). Non-200 silently
+            # returns an empty list which then collapses Layer 3 → Layer 4
+            # consensus dependency. Operators MUST see this in audit logs.
+            # PHI-safe: rxcui count, not the rxcuis themselves (rxcuis are
+            # public IDs but the count is the operationally useful signal).
+            logger.warning(
+                "rxnorm_interaction_non_200",
+                extra={
+                    "status_code": resp.status_code,
+                    "endpoint": "rxnav/interaction/list",
+                    "rxcui_count": len(rxcuis),
+                },
+            )
             return []
         data = resp.json()
     except Exception as e:
-        logger.warning("NIH interaction API failed: %s", e)
+        # WARNING — error_type only; exception body can carry URL with
+        # rxcuis (public IDs but discipline applies uniformly).
+        logger.warning(
+            "rxnorm_interaction_error",
+            extra={
+                "error_type": type(e).__name__,
+                "rxcui_count": len(rxcuis),
+            },
+        )
         return []
 
     results = []
@@ -216,11 +279,44 @@ def normalize_medication_list(
     Returns {original_name: RxConcept or None}.
     """
     resolved: dict[str, RxConcept | None] = {}
+    unresolved_count = 0
     for med in medications:
         concept = resolve_rxcui(med)
         resolved[med] = concept
         if concept:
-            logger.debug("Resolved %s → RxCUI %s (%s)", med, concept.rxcui, concept.name)
+            # DEBUG — resolution success carries categorical metadata only.
+            # PHI-safe: name_length + rxcui (RxCUI is a public NIH ID) +
+            # tty (term type, public taxonomy). Never the drug name itself.
+            logger.debug(
+                "rxnorm_resolved",
+                extra={
+                    "name_length": len(med),
+                    "rxcui": concept.rxcui,
+                    "tty": concept.tty,
+                },
+            )
         else:
-            logger.warning("Could not resolve medication: %s", med)
+            unresolved_count += 1
+            # WARNING — unresolved medication is a clinical-input-validation
+            # signal that the upstream caller passed something the NIH
+            # database doesn't recognize (typo, regional brand, formulation
+            # detail). Operators triaging "why didn't Layer 3 catch this"
+            # need the unresolved-rate. PHI-safe: name_length only.
+            logger.warning(
+                "rxnorm_unresolved",
+                extra={
+                    "name_length": len(med),
+                },
+            )
+    # INFO — aggregate batch outcome lets ops dashboards measure
+    # resolution rate over time. Useful for cohort-quality drift detection.
+    if medications:
+        logger.info(
+            "rxnorm_normalize_batch_complete",
+            extra={
+                "total_count": len(medications),
+                "resolved_count": len(medications) - unresolved_count,
+                "unresolved_count": unresolved_count,
+            },
+        )
     return resolved
