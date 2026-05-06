@@ -105,6 +105,7 @@ def _clear_all_api_keys(monkeypatch):
     for key in (
         "OPENAI_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY",
         "XAI_API_KEY", "ANTHROPIC_API_KEY", "PERPLEXITY_API_KEY",
+        "NVIDIA_API_KEY",
     ):
         monkeypatch.delenv(key, raising=False)
 
@@ -302,14 +303,40 @@ class TestVerifyFindingConsensus:
         assert result.verdicts[0].agrees is False
 
     @respx.mock
-    def test_five_model_consensus(self, monkeypatch):
-        """All 5 US-based models fire in parallel when all keys are available
-        (Gemini-3.1-Flash-Lite was removed from the cascade in v4.2)."""
+    def test_nvidia_nemotron_included(self, monkeypatch):
+        """NVIDIA Nemotron Ultra 253B joins consensus when NVIDIA_API_KEY is set.
+
+        Added iter-220: brings the cascade to six US-based providers
+        (NVIDIA NIM Llama-3.1-Nemotron-Ultra-253B-v1, OpenAI-compatible
+        endpoint at integrate.api.nvidia.com)."""
+        monkeypatch.setenv("NVIDIA_API_KEY", "nv-test")
+
+        agree_json = json.dumps({"agrees": True, "confidence": 0.88, "reasoning": "Confirmed"})
+        respx.post("https://integrate.api.nvidia.com/v1/chat/completions").mock(
+            return_value=httpx.Response(200, json={
+                "choices": [{"message": {"content": agree_json}}]
+            })
+        )
+
+        result = verify_finding_consensus_sync("Test finding", [], {})
+        assert result.total_models == 1
+        assert result.verdicts[0].model == "NVIDIA-Nemotron-Ultra-253B"
+        assert result.verdicts[0].agrees is True
+
+    @respx.mock
+    def test_six_model_consensus(self, monkeypatch):
+        """All 6 US-based models fire in parallel when all keys are available.
+
+        Iter-220: NVIDIA-Nemotron-Ultra-253B added as the 6th provider
+        (NIM hosting, native US data residency). Gemini-3.1-Flash-Lite was
+        removed from the cascade in v4.2 — diverse-architecture criteria are
+        satisfied by the now-six providers across five vendors."""
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         monkeypatch.setenv("GOOGLE_API_KEY", "gk-test")
         monkeypatch.setenv("XAI_API_KEY", "xai-test")
         monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test")
         monkeypatch.setenv("PERPLEXITY_API_KEY", "pplx-test")
+        monkeypatch.setenv("NVIDIA_API_KEY", "nv-test")
 
         agree_json = json.dumps({"agrees": True, "confidence": 0.9, "reasoning": "Valid"})
 
@@ -341,10 +368,15 @@ class TestVerifyFindingConsensus:
                 "choices": [{"message": {"content": agree_json}}]
             })
         )
+        respx.post("https://integrate.api.nvidia.com/v1/chat/completions").mock(
+            return_value=httpx.Response(200, json={
+                "choices": [{"message": {"content": agree_json}}]
+            })
+        )
 
         result = verify_finding_consensus_sync("Critical interaction", [], {})
-        assert result.total_models == 5
-        assert result.agreement_count == 5
+        assert result.total_models == 6
+        assert result.agreement_count == 6
         assert result.consensus_level == "HIGH"
         assert result.should_report is True
         models = {v.model for v in result.verdicts}
@@ -353,8 +385,9 @@ class TestVerifyFindingConsensus:
         assert "xAI-Grok-4.3" in models
         assert "Anthropic-Claude-Opus-4.7" in models
         assert "Perplexity-Sonar-Pro" in models
+        assert "NVIDIA-Nemotron-Ultra-253B" in models
         # Gemini-3.1-Flash-Lite was dropped in v4.2 (US-based + diverse-architecture
-        # criteria are already satisfied by the other 5 providers; Flash-Lite added
+        # criteria are already satisfied by the other providers; Flash-Lite added
         # correlated errors with Gemini-3.1-Pro without diversifying the consensus)
         assert "Gemini-3.1-Flash-Lite" not in models
 

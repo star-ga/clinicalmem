@@ -29,7 +29,7 @@ flowchart TB
       L1["L1 · Deterministic table<br/>&lt; 1 ms · OFFLINE"]
       L2["L2 · OpenEvidence API<br/>~2 s · ONLINE"]
       L3["L3 · NIH RxNorm DDI<br/>~1 s · ONLINE"]
-      L4["L4 · 5-LLM consensus<br/>~3 s · ONLINE"]
+      L4["L4 · 6-LLM consensus<br/>~3 s · ONLINE"]
       L45["**L4.5 · BitNet b1.58 (Q16.16)**<br/>&lt; 1 ms · OFFLINE<br/>FDA SaMD reproducibility primitive<br/>**100% recall contraindicated (NTI)**"]
       L5["L5 · LLM synthesis (cited)<br/>~3 s · ONLINE"]
       L6["L6 · Abstention gate<br/>0 ms · OFFLINE"]

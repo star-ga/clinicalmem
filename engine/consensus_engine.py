@@ -355,6 +355,7 @@ async def verify_finding_consensus(
     xai_key = os.environ.get("XAI_API_KEY")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     perplexity_key = os.environ.get("PERPLEXITY_API_KEY")
+    nvidia_key = os.environ.get("NVIDIA_API_KEY")
 
     # PHI-safe entry log: counts only — no finding text, no evidence body,
     # no patient context. Provider availability is public configuration.
@@ -365,6 +366,7 @@ async def verify_finding_consensus(
             (xai_key, "xAI-Grok-4.3"),
             (anthropic_key, "Anthropic-Claude-Opus-4.7"),
             (perplexity_key, "Perplexity-Sonar-Pro"),
+            (nvidia_key, "NVIDIA-Nemotron-Ultra-253B"),
         )
         if key
     ]
@@ -398,6 +400,14 @@ async def verify_finding_consensus(
     if perplexity_key:
         tasks.append(("Perplexity-Sonar-Pro", _call_perplexity(
             prompt, perplexity_key,
+        )))
+    if nvidia_key:
+        tasks.append(("NVIDIA-Nemotron-Ultra-253B", _call_openai_compatible(
+            prompt,
+            nvidia_key,
+            "https://integrate.api.nvidia.com",
+            "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+            "NVIDIA-Nemotron-Ultra-253B",
         )))
 
     if not tasks:

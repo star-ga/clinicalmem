@@ -1,7 +1,8 @@
 """Pin: structured logging in `engine.consensus_engine` is PHI-safe.
 
 Locks the iter-48 evidence-chain ratchet on the multi-LLM consensus
-verifier. The function fires up to 5 LLMs in parallel; each call sees
+verifier. The function fires up to 6 LLMs in parallel (iter-220 added
+NVIDIA Nemotron Ultra 253B as the 6th provider via NIM); each call sees
 clinical findings (potentially PHI-derived) over the wire. Logging
 discipline:
 
@@ -45,6 +46,7 @@ def _clear_llm_keys(monkeypatch):
         "XAI_API_KEY",
         "ANTHROPIC_API_KEY",
         "PERPLEXITY_API_KEY",
+        "NVIDIA_API_KEY",
     ):
         monkeypatch.delenv(var, raising=False)
 

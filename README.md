@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#tests"><img src="https://img.shields.io/badge/tests-1226%20passed-brightgreen?style=flat-square" alt="Tests"></a>
+  <a href="#tests"><img src="https://img.shields.io/badge/tests-1227%20passed-brightgreen?style=flat-square" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <a href="#mcp-server"><img src="https://img.shields.io/badge/protocol-MCP-7C3AED?style=flat-square" alt="MCP"></a>
@@ -49,7 +49,7 @@ ClinicalMem is a **deterministic safety layer** that anchors GenAI reasoning to 
 | Capability | Description |
 |-----------|-------------|
 | **Drug Interaction Detection** | Four-tier pipeline: deterministic table &rarr; OpenEvidence API &rarr; RxNorm API (drug normalization) &rarr; Six-model LLM consensus (US-based) |
-| **Six-Model US-Based LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar, NVIDIA Nemotron &mdash; **all US-headquartered** for HIPAA-compatible data residency |
+| **Six-Model US-Based LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B &mdash; **all US-headquartered** for HIPAA-compatible data residency |
 | **Allergy Cross-Reaction Alerts** | SNOMED CT drug class hierarchy with 8 classes + alias expansion + cross-class detection |
 | **UMLS Cross-Vocabulary Mapping** | ICD-10 &harr; SNOMED CT &harr; LOINC &harr; RxNorm via UMLS Metathesaurus |
 | **What-If Medication Simulation** | Preview safety outcomes of medication changes before making them |
@@ -126,7 +126,7 @@ ClinicalMem uses a six-layer architecture that makes AI safe for healthcare:
 | 1 | **Deterministic Table** | Rule-based | < 1ms |
 | 2 | **OpenEvidence API** | Mayo Clinic / Elsevier ClinicalKey AI | ~2s |
 | 3 | **RxNorm API** | Drug normalization + NIH interaction DB (Epic/Cerner standard) | ~1s |
-| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar | ~3s |
+| 4 | **Multi-LLM Consensus** | 6 US-based models: GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B | ~3s |
 | 4.5 | **BitNet b1.58 reproducibility primitive** | **High-precision deterministic veto + audit-replay anchor** (NOT a primary classifier — primary recall comes from layers 1-4). 8,512 ternary weights + 69 Q16.16 biases (8,581 total parameters); **bit-identical Q16.16 forward pass across CPU/GPU/NPU**. **85.7% per-class accuracy on held-out test subset (n=42)** + **100% live deployment precision on `contraindicated`** (8 / 8 of its contraindicated predictions are correct on the 39-pair cache; recall 20.5% by design — high-precision veto). Every output carries a SHA-256 `repro_hash` any auditor can re-verify in `<1 ms`. Trained on 3,247-pair clinical-pharmacology corpus. | < 1ms |
 | 5 | **LLM Synthesis** | Evidence-cited clinical explanations | ~3s |
 | 6 | **Abstention Gate** | "I don't know" when evidence insufficient | 0ms |
@@ -190,7 +190,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | Capability | ClinicalMem | Typical Healthcare AI |
 |-----------|-------------|----------------------|
 | **Drug interactions** | 5-tier: deterministic + OpenEvidence + RxNorm (drug normalization + NIH DB) + Six-model US-based LLM consensus + **BitNet b1.58 ternary classifier (bit-identical Q16.16 forward, FDA-grade reproducibility)** | Hardcoded lookup table |
-| **LLM verification** | 6 US-based models (GPT-5.5, Gemini 3.1 Pro, Grok 4.1, Claude Opus 4.6, Perplexity Sonar, Gemini Flash) | Single model, no fallback |
+| **LLM verification** | 6 US-based models (GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B) | Single model, no fallback |
 | **Terminology** | SNOMED CT + RxNorm + UMLS Metathesaurus (ICD-10 &harr; SNOMED &harr; LOINC &harr; RxNorm) | Single vocabulary |
 | **Evidence sources** | Mayo Clinic, Elsevier, NIH/NLM (Epic/Cerner standard), openFDA, ClinicalTrials.gov | None |
 | **What-if simulation** | Digital twin for medication change preview | None |
@@ -245,7 +245,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
       "evidence": "NSAID + anticoagulant: increased bleeding risk (GI hemorrhage, intracranial bleeding)",
       "consensus": {"models_agreed": 6, "models_total": 6, "confidence": 1.0},
       "rxnorm_cuis": ["RxCUI:11289", "RxCUI:5640"],
-      "sources": ["Deterministic table", "OpenEvidence (Mayo Clinic)", "NIH Drug Interaction API", "5/5 LLM consensus (US-based)"]
+      "sources": ["Deterministic table", "OpenEvidence (Mayo Clinic)", "NIH Drug Interaction API", "6/6 LLM consensus (US-based)"]
     }
   ],
   "total_findings": 1,
@@ -323,7 +323,7 @@ clinicalmem/
 │   ├── __init__.py
 │   ├── clinical_memory.py      # mind-mem adapted for clinical data
 │   ├── clinical_scoring.py     # MIND Lang scoring kernels
-│   ├── consensus_engine.py     # 5-model US-based LLM consensus (GPT-5.5 + Claude-Opus-4.7 + Gemini-3.1-Pro + Grok-4.3 + Sonar-Pro)
+│   ├── consensus_engine.py     # 6-model US-based LLM consensus (GPT-5.5 + Claude-Opus-4.7 + Gemini-3.1-Pro + Grok-4.3 + Sonar-Pro + Nemotron-Ultra-253B)
 │   ├── fda_client.py           # openFDA drug safety alerts
 │   ├── fhir_client.py          # FHIR R4 client with SSRF protection
 │   ├── hallucination_detector.py # Evidence grounding validation
@@ -387,7 +387,7 @@ clinicalmem/
 
 ## Tests
 
-**1226 tests** across `tests/test_engine/`, `tests/test_scripts/`,
+**1227 tests** across `tests/test_engine/`, `tests/test_scripts/`,
 `tests/test_mcp/`, `tests/test_a2a/`, and `tests/test_agent/`.
 The canonical list is `python3 -m pytest --co -q`.
 
@@ -446,7 +446,7 @@ Coverage includes:
 | **Scoring** | [MIND Lang](https://github.com/star-ga/mind) kernel patterns (confidence, importance, negation) |
 | **Drug Interactions** | Deterministic table + [OpenEvidence](https://openevidence.com/) + [RxNorm](https://rxnav.nlm.nih.gov/) (drug normalization) + Six-model LLM consensus (US-based) |
 | **Terminology** | [SNOMED CT](https://www.snomed.org/) + [UMLS Metathesaurus](https://www.nlm.nih.gov/research/umls/) (ICD-10, LOINC, RxNorm crosswalk) |
-| **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar (all US-headquartered) |
+| **LLM Consensus** | GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B (all US-headquartered) |
 | **FDA** | [openFDA](https://open.fda.gov/) drug safety alerts, recalls, adverse events |
 | **Clinical Trials** | [ClinicalTrials.gov](https://clinicaltrials.gov/) API v2 |
 | **MCP** | [FastMCP 2.x](https://github.com/jlowin/fastmcp) with SHARP-on-MCP headers |
@@ -485,7 +485,7 @@ Coverage includes:
 
 The five-model US-based consensus engine uses **structured majority voting**:
 
-1. Up to 6 US-based LLMs receive the same structured prompt with drug pair, patient context, and evidence from layers 1-3 (GPT-5.5, Claude-Opus-4.7, Gemini-3.1-Pro, Grok-4.3, Sonar-Pro). Models with no API key configured are skipped — the consensus rule scales to whatever is available.
+1. Up to 6 US-based LLMs receive the same structured prompt with drug pair, patient context, and evidence from layers 1-3 (GPT-5.5, Claude-Opus-4.7, Gemini-3.1-Pro, Grok-4.3, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B). Models with no API key configured are skipped — the consensus rule scales to whatever is available.
 2. Each model returns a severity classification (CRITICAL / HIGH / MODERATE / LOW / NONE) and a confidence score
 3. **Consensus levels** (per `engine.consensus_engine.verify_finding_consensus`): all-agree → HIGH; &ge; 2/3 agree → MEDIUM; &ge; 1 agree → LOW; none agree → NONE; &lt; 2 models available → LIMITED
 4. **Reportable findings**: only HIGH or MEDIUM consensus reports up the chain; LOW / NONE / LIMITED trigger the Layer 6 abstention gate, which surfaces "insufficient consensus" rather than guessing
@@ -513,7 +513,7 @@ ClinicalMem is designed to **degrade gracefully** when external services are una
 | All LLMs down | Layers 4-5 unavailable | **Layers 1-3 still fully operational** (deterministic + APIs) |
 | FHIR server down | No patient ingestion | Cached patient data in memory still queryable |
 
-> **Key design principle**: The deterministic layer (Layer 1) and NIH APIs (Layer 3) have **zero LLM dependency**. Even if all 5 LLMs are completely unavailable, ClinicalMem still catches known drug interactions and normalizes medications via RxNorm.
+> **Key design principle**: The deterministic layer (Layer 1) and NIH APIs (Layer 3) have **zero LLM dependency**. Even if all 6 LLMs are completely unavailable, ClinicalMem still catches known drug interactions and normalizes medications via RxNorm.
 
 ### Retry & Timeout Policy
 

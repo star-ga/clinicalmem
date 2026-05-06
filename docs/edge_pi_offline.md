@@ -142,7 +142,7 @@ ClinicalMem has six layers. Five of the six run **fully offline**.
 | **3. NIH RxNav cache** | Cached interactions | ✅ | Pre-fetched cache (refreshed when online) |
 | **4. OpenEvidence cache** | Cached evidence URLs + summaries | ✅ | Same — cache-or-defer pattern |
 | **4.5. BitNet b1.58** | Ternary verification anchor | ✅ | The bit-identical layer. Pure integer. |
-| **5. 5-LLM US-based consensus** | Novel-pair fallback | ❌ | Online only; queues for sync-when-connected |
+| **5. 6-LLM US-based consensus** | Novel-pair fallback | ❌ | Online only; queues for sync-when-connected |
 | **6. Audit chain** | SHA-256 ratchet, signed receipts | ✅ | Local SQLite; uploads on next sync |
 
 **The 95% case at point of care is "known pair, decide locally."**

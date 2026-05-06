@@ -166,9 +166,10 @@ the Layer 4.5 component in isolation does not produce a final clinical output?*
    authoritative; no downstream layer can override.
 2. **Layer 2 — RxNorm multi-source lookup:** Federal drug interaction databases
    (NLM RxNav, Drugs.com API). Structured metadata only.
-3. **Layer 3 — Multi-LLM consensus:** Five large language models (US-based API
-   providers) vote on DDI severity. Consensus threshold required; bare majority
-   insufficient.
+3. **Layer 3 — Multi-LLM consensus:** Six large language models (US-based API
+   providers — GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity
+   Sonar Pro, NVIDIA Nemotron Ultra 253B) vote on DDI severity. Consensus
+   threshold required; bare majority insufficient.
 4. **Layer 4 — Consensus adjudicator:** Aggregates Layer 3 votes; escalates to
    abstention if consensus < threshold.
 5. **Layer 4.5 — BitNet veto + audit-chain anchor:** The ternary classifier
@@ -380,10 +381,10 @@ ISO 14971 risk management file will be prepared before any formal 510(k) submiss
 | **Harm** | Patient administered contraindicated co-medication; potential serious adverse event or death |
 | **Probability without mitigations** | Non-trivial: Layer 4.5 macro accuracy is 68.6% in isolation |
 | **Mitigation 1** | Layer 1 deterministic table: 12 highest-risk known pairs are hard-coded and cannot be downgraded by any probabilistic layer |
-| **Mitigation 2** | Layer 3 five-LLM consensus: all five US-based LLM providers must independently miss the interaction for it to clear this layer |
+| **Mitigation 2** | Layer 3 six-LLM consensus: all six US-based LLM providers must independently miss the interaction for it to clear this layer |
 | **Mitigation 3** | Layer 4.5 BitNet disagreement alert: if the ternary classifier disagrees with the upstream consensus verdict, a `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` flag is raised and the result is escalated, not silently passed |
 | **Mitigation 4** | Layer 6 abstention gate: the pipeline abstains rather than returning a lower-severity classification when any disagreement flag is active; the clinician receives "insufficient confidence — manual pharmacist review required" |
-| **Residual risk** | All four mitigations must independently fail for the hazard to reach the clinician. The submitter estimates this requires simultaneous failure of the deterministic table, five independent LLM calls, the ternary classifier, and the abstention gate. Zero instances observed in NTI cohort (n=35 contraindicated pairs). |
+| **Residual risk** | All four mitigations must independently fail for the hazard to reach the clinician. The submitter estimates this requires simultaneous failure of the deterministic table, six independent LLM calls, the ternary classifier, and the abstention gate. Zero instances observed in NTI cohort (n=35 contraindicated pairs). |
 
 ### Hazard 2 — Weights Bundle Tampering
 

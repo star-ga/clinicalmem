@@ -2,9 +2,11 @@
 
 Iter 128 (round 25 T4 evidence-chain ratchet).
 
-`engine/consensus_engine.py` orchestrates the 5-LLM consensus surface
+`engine/consensus_engine.py` orchestrates the 6-LLM consensus surface
 (OpenAI GPT-5.5, Gemini 3.1 Pro, xAI Grok 4.3, Anthropic Claude Opus
-4.7, Perplexity Sonar Pro). Pre-iter-128 it had 6 logger calls / 496
+4.7, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B — iter-220 added
+the 6th provider via NIM at integrate.api.nvidia.com, sharing the
+`_call_openai_compatible` codepath with xAI). Pre-iter-128 it had 6 logger calls / 496
 LOC (12.1/kloc — lowest density of all engine modules with > 200 LOC).
 While the per-call provider raises were caught by an asyncio.gather
 return_exceptions handler that emitted a `consensus_provider_error`

@@ -141,6 +141,11 @@ _HISTORICAL_COUNTS = (
     # pin would false-positive on the live README badge otherwise.
     "1234",
     "1242",
+    # iter-220 NVIDIA Nemotron Ultra 253B addition: live count went
+    # 1226 → 1227 (net +1: replaced test_five_model_consensus with
+    # test_six_model_consensus + added test_nvidia_nemotron_included).
+    # 1226 is now the previous floor, so it goes here.
+    "1226",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -154,7 +159,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1226
+_TEST_COUNT_FLOOR = 1227
 
 
 def test_no_stale_test_counts_in_docs():
