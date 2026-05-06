@@ -82,6 +82,15 @@ _PHI_RISKY_VAR_NAMES = (
     "text",       # response text
     "resp_text",
     "content",    # response content
+    # iter-243 extension: structured-data risks
+    "item",       # iteration variable (dict / cache entry)
+    "entry",      # cache/db entry
+    "record",     # record dict
+    "row",        # database row
+    "data",       # parsed JSON / response data
+    "payload",    # request/response payload
+    "obj",        # generic object
+    "resource",   # FHIR / API resource
 )
 
 
@@ -116,9 +125,11 @@ def test_no_positional_phi_risky_logger_calls():
         # when the var name follows the format-string comma directly,
         # not deep inside an `extra={}` dict.
         for var in _PHI_RISKY_VAR_NAMES:
-            # Match: logger.<level>(<format-string-with-%s>, <var>[<closing-or-,>]
+            # Match: logger.<level>(<format-string-with-%s/d/r>, <var>...)
+            # iter-243: extended to catch %r (repr — even worse than %s
+            # for PHI leaks since it dumps full object representation).
             pattern = (
-                r'logger\.\w+\([^)]*"[^"]*%[sd][^"]*"\s*,\s*'
+                r'logger\.\w+\([^)]*"[^"]*%[sdr][^"]*"\s*,\s*'
                 + re.escape(var)
                 + r'\b'
             )

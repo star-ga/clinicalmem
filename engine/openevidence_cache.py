@@ -110,7 +110,18 @@ def _load_cache() -> list[CachedOpenEvidenceResponse]:
                 )
             )
         except (KeyError, IndexError, TypeError) as exc:
-            logger.warning("Skipping malformed cache entry %r: %s", item, exc)
+            # PHI-safe: log only structural metadata about the malformed
+            # entry, NEVER the entry itself (`item` is a dict containing
+            # drug names + clinical summary + evidence URLs — all PHI-
+            # adjacent). Same iter-234 / iter-239 / iter-240 discipline.
+            logger.warning(
+                "openevidence_cache_skipped_malformed_entry",
+                extra={
+                    "error_type": type(exc).__name__,
+                    "entry_keys": sorted(item.keys()) if isinstance(item, dict) else [],
+                    "entry_type": type(item).__name__,
+                },
+            )
 
     return entries
 
