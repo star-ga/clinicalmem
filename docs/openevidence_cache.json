@@ -2211,5 +2211,22 @@
     ],
     "retrieved_at": "2026-05-06",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "ritonavir",
+    "drug_b": "ergotamine",
+    "drug_pair_canonical": [
+      "ergotamine",
+      "ritonavir"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Ritonavir is the strongest CYP3A4 inhibitor in clinical use (the basis of HIV protease-inhibitor pharmacokinetic boosting); ergotamine is a partial agonist at 5-HT1B/1D receptors and at vascular alpha-adrenergic + dopamine receptors, predominantly cleared by CYP3A4. Concomitant administration produces a ~10× elevation in ergotamine plasma levels and the corresponding rise in vasoconstrictive effect, with documented severe peripheral ischemia (cyanosis + gangrene of fingers/toes), cerebral ischemia, and seizure (collectively termed ergotism). The FDA Norvir (ritonavir) Section 4 Contraindications explicitly lists ergot derivatives — ergotamine, dihydroergotamine, ergonovine, methylergonovine — among the drugs whose concomitant use \"may result in serious and/or life-threatening events.\" The Cafergot (ergotamine + caffeine) Boxed Warning mirrors the prohibition for any concomitant strong CYP3A4 inhibitor. The interaction is mechanistically identical to clarithromycin + ergotamine and ketoconazole + ergotamine (already in the contra cohort) but with a far stronger inhibitor. Most commonly cited prescriber-error class for HIV+ patients with migraine — should switch to triptans cleared via non-CYP3A4 pathways (e.g. naratriptan, almotriptan with appropriate dosing).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2024/209512s016lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2003/06370slr054_cafergot_lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/14647753/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED"
   }
 ]

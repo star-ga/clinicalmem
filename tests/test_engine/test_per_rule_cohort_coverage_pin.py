@@ -73,7 +73,7 @@ _RULE_NAMES = (
 # Per-rule expected count of contraindicated cache entries that fire
 # the rule. Pinned at iter-202 cohort = 38 contras.
 _EXPECTED_PER_RULE_CONTRA_COUNTS: tuple[int, ...] = (
-    17,  # 0  cyp3a4_inhib_substrate    (saturated; iter-230 +1 clari+tacrolimus)
+    18,  # 0  cyp3a4_inhib_substrate    (saturated; iter-235 +1 ritonavir+ergotamine)
     3,   # 1  oatp1b1_inhib_statin       (gemfibrozil+simva, cyclo+simva,
          #                                 cyclosporine+rosuvastatin iter-197)
     7,   # 2  p_gp_inhib_substrate       (iter-230 +1: clari+tacrolimus also fires
