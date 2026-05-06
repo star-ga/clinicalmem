@@ -153,6 +153,20 @@ def simulate_add_medication(
 
     # Build recommendation
     if not new_risk_count:
+        # DEBUG — recommendation-path tracking lets ops measure how
+        # often each branch fires (no_risks / critical / monitored).
+        # The 3-class distribution is a useful indicator of cohort
+        # complexity drift across releases. PHI-safe: structural label
+        # + scenario + patient_id (synthetic) only.
+        logger.debug(
+            "what_if_recommendation_path",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "add",
+                "branch": "no_new_risks",
+                "new_risk_count": 0,
+            },
+        )
         recommendation = (
             f"Adding {new_medication} introduces NO new interactions, "
             f"allergy conflicts, or lab contraindications. "
@@ -230,6 +244,21 @@ def simulate_remove_medication(
         m for m in current_medications
         if remove_medication.lower() not in m.lower()
     ]
+    if len(scenario_meds) == len(current_medications):
+        # WARNING — clinical-input-validation signal. The caller asked
+        # to remove a medication that isn't in the current list, so the
+        # simulation is a no-op. Could indicate a drug-name typo, an
+        # outdated EHR pull, or a bug in the upstream caller.
+        # PHI-safe: counts only, NOT the missing drug name (clinician
+        # queries can carry narrative — same discipline as recall).
+        logger.warning(
+            "what_if_remove_drug_not_in_list",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "remove",
+                "current_med_count": len(current_medications),
+            },
+        )
     scenario_interactions = check_drug_interactions(
         scenario_meds, use_llm_fallback=False
     )
@@ -323,6 +352,18 @@ def simulate_swap_medication(
         m for m in current_medications
         if remove_medication.lower() not in m.lower()
     ]
+    if len(meds_after_remove) == len(current_medications):
+        # WARNING — caller asked to swap FROM a medication not in the
+        # current list. Swap degrades to add-only; the upstream caller
+        # almost certainly has a drug-name bug. PHI-safe: counts only.
+        logger.warning(
+            "what_if_swap_remove_target_not_found",
+            extra={
+                "patient_id": patient_id,
+                "scenario": "swap",
+                "current_med_count": len(current_medications),
+            },
+        )
 
     # Step 2: Add
     result = simulate_add_medication(
