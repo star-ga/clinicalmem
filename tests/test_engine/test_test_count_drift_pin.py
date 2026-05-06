@@ -167,6 +167,13 @@ _HISTORICAL_COUNTS = (
     # MUST exist on disk + sanity floor + JUDGES v6 pin citation +
     # self-pin. Live 1241 → 1245.
     "1241",
+    # iter-232 T1 round-48: structural pin self-locking the recurring
+    # header-vs-body drift class (caught 5x: iter-195/213/218/227/231).
+    # test_judges_v6_header_recall_consistency_pin.py (9th cross-pin
+    # family) — JUDGES row 102 header recall fraction MUST equal live
+    # _V6_CONTRA_HITS/_V6_CONTRA_TOTAL + 4/4 major + 0 FP + Q16.16
+    # framing. Live 1245 → 1249.
+    "1245",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -180,7 +187,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1245
+_TEST_COUNT_FLOOR = 1249
 
 
 def test_no_stale_test_counts_in_docs():
