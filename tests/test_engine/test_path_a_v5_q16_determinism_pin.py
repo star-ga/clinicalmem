@@ -165,6 +165,20 @@ _V5_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "3ed734eae0d5d64678f6fe171f5be32f792cfa26c9546af53137931ab3a737ad",
         "severity_name": "major",
     },
+    # iter-202: tolvaptan+ketoconazole (38th contra). v5 misses —
+    # vasopressin V2-receptor antagonist is a NEW CYP3A4-substrate
+    # sub-class not in iter-148 corpus. FDA Samsca + Jynarque § 4
+    # dual-label (5x AUC -> osmotic demyelination syndrome).
+    # severity_name = 'major' (not 'none') because the rule 0 firing
+    # nudges logits enough to clear major threshold but not contra.
+    # Same generalization gap pattern as midazolam (benzodiazepine
+    # iter-187) and eplerenone (K+-sparing diuretic iter-192).
+    ("tolvaptan", "ketoconazole"): {
+        "logits_q16": [-969722, -4462094, -1972508, -438728, -1833868],
+        "feature_hash": "31b9948c3fa4a52c2d76cafeeb21f29fcffc8224d1f24c6fca6759b78dcd19a5",
+        "logits_hash": "686b037f6afbfc81beacef1f9b6247e6e7fbbbdd42cf20774cfec673475b4f2d",
+        "severity_name": "major",
+    },
 }
 
 
@@ -273,7 +287,7 @@ def test_v5_q16_inference_is_deterministic_across_repeats() -> None:
     across 100 calls, the deterministic-replay claim is false and the
     FDA SaMD audit trail loses its load-bearing safety property.
 
-    100 iterations × 14 canonical pairs = 1400 forward passes. All must
+    100 iterations × 15 canonical pairs = 1500 forward passes. All must
     return the same logit vector for a given pair."""
     bundle = _load_bundle()
     for da, db in _V5_CANONICAL_PINS.keys():

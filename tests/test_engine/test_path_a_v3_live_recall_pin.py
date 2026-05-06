@@ -48,12 +48,13 @@ _V3_CONTRA_HITS = 29  # iter-182: still 29 hits; v3 now misses 5 contras at h=64
                        # (HIV-PI / triazole / ergot / tetracycline-retinoid /
                        # one 4th sub-class). Path A v5 (h=128) catches more.
                        # Full 34/34 awaits v6 retrain with extended BOOST_KEYS.
-_V3_CONTRA_TOTAL = 37   # iter-197 cohort growth (atazanavir+simvastatin iter-164,
+_V3_CONTRA_TOTAL = 38   # iter-202 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
                         # iter-177, minocycline+isotretinoin iter-182,
                         # midazolam+ketoconazole iter-187,
                         # eplerenone+ketoconazole iter-192,
-                        # cyclosporine+rosuvastatin iter-197)
+                        # cyclosporine+rosuvastatin iter-197,
+                        # tolvaptan+ketoconazole iter-202)
 _V3_FP_COUNT = 1  # amlodipine + simvastatin (safety-conservative)
 _V3_FP_PAIR = ("amlodipine", "simvastatin")
 

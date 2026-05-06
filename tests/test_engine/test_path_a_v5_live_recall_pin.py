@@ -50,18 +50,19 @@ _PATH_A_V5_BUNDLE_ID = (
 )
 
 # Q16.16 baseline measurements on iter-164 31-contra cohort.
-_V5_CONTRA_HITS = 31  # iter-172/177/182/187/192/197: v5 misses 6 pairs
+_V5_CONTRA_HITS = 31  # iter-172/177/182/187/192/197/202: v5 misses 7 pairs
                        # (triazole, ergot, tetracycline, benzodiazepine,
-                       # K+-sparing-diuretic, OATP1B1×rosuvastatin
-                       # substrate sub-classes — all not in iter-148
-                       # training corpus). All 6 queued for v6 retrain
-                       # BOOST_KEYS.
-_V5_CONTRA_TOTAL = 37   # iter-197 cohort growth (atazanavir+simvastatin iter-164,
+                       # K+-sparing-diuretic, OATP1B1×rosuvastatin,
+                       # V2-receptor-antagonist substrate sub-classes —
+                       # all not in iter-148 training corpus). All 7
+                       # queued for v6 retrain BOOST_KEYS.
+_V5_CONTRA_TOTAL = 38   # iter-202 cohort growth (atazanavir+simvastatin iter-164,
                         # isavuconazole+simvastatin iter-172, ketoconazole+ergotamine
                         # iter-177, minocycline+isotretinoin iter-182,
                         # midazolam+ketoconazole iter-187,
                         # eplerenone+ketoconazole iter-192,
-                        # cyclosporine+rosuvastatin iter-197)
+                        # cyclosporine+rosuvastatin iter-197,
+                        # tolvaptan+ketoconazole iter-202)
 _V5_FP_COUNT = 0  # zero FPs invariant holds — the architectural breakthrough
 
 _Q16_ONE = 1 << 16
@@ -152,9 +153,17 @@ _V5_EXPECTED_MISSES = (
     # does not fire). All three classifiers (cfadb4f6 baseline + v3 +
     # v5) default to 'major' on this isolated rule-1-only signal —
     # the OATP1B1 × statin slot is the most-undertrained sub-class.
-    # Queued retrain: 6 pairs in BOOST_KEYS @200x; re-run sweep to
-    # recover 37/37 + 0 FP.
     ("cyclosporine", "rosuvastatin"),
+    # iter-202: cohort growth added tolvaptan+ketoconazole. Tolvaptan
+    # is a vasopressin V2-receptor antagonist (Samsca/Jynarque) —
+    # a NEW CYP3A4-substrate sub-class not previously in the cohort.
+    # FDA Samsca + Jynarque § 4 dual-label: strong CYP3A4 inhibitors
+    # contraindicated due to 5x AUC -> osmotic demyelination
+    # syndrome. v5 predicts 'major' (close but not contra) — same
+    # 'one new substrate sub-class' generalization gap pattern as
+    # midazolam (benzodiazepine) and eplerenone (K+-sparing diuretic).
+    # Queued retrain: 7 pairs in BOOST_KEYS @200x.
+    ("tolvaptan", "ketoconazole"),
 )
 
 

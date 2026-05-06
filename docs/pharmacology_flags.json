@@ -391,7 +391,7 @@
         "https://pubmed.ncbi.nlm.nih.gov/19553215"
       ],
       "atc_class": "M04AA03",
-      "_notes": "Non-purine selective xanthine oxidase inhibitor. FDA approved 2009 (Uloric). Stronger XO selectivity than allopurinol but same DDI mechanism: contraindicated with azathioprine + 6-mercaptopurine via XO inhibition → 6-MP accumulation → myelosuppression."
+      "_notes": "Non-purine selective xanthine oxidase inhibitor. FDA approved 2009 (Uloric). Stronger XO selectivity than allopurinol but same DDI mechanism: contraindicated with azathioprine + 6-mercaptopurine via XO inhibition \u2192 6-MP accumulation \u2192 myelosuppression."
     },
     "felodipine": {
       "flags": [
@@ -442,7 +442,7 @@
         "https://pubmed.ncbi.nlm.nih.gov/16553505/"
       ],
       "atc": "N06AB08",
-      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 µM, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label § 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
+      "notes": "SSRI; potent CYP1A2 inhibitor (Ki ~ 0.03-0.6 \u00b5M, an order of magnitude stronger than ciprofloxacin). FDA Luvox label flags significant CYP1A2 substrate interactions; FDA Zanaflex (tizanidine) label \u00a7 4 lists fluvoxamine alongside ciprofloxacin as an absolute contraindication."
     },
     "furosemide": {
       "flags": [],
@@ -467,7 +467,7 @@
         "https://www.ncbi.nlm.nih.gov/pubmed/15229465"
       ],
       "atc": "C10AB04",
-      "note": "fibrate; OATP1B1 inhibitor — contraindicated with simvastatin per FDA Lopid label"
+      "note": "fibrate; OATP1B1 inhibitor \u2014 contraindicated with simvastatin per FDA Lopid label"
     },
     "glipizide": {
       "flags": [],
@@ -1047,6 +1047,17 @@
       ],
       "atc": "M03BX02",
       "note": "CYP1A2 substrate; severe hypotension with cipro"
+    },
+    "tolvaptan": {
+      "flags": [
+        "is_cyp3a4_substrate"
+      ],
+      "evidence_urls": [
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/022275s011lbl.pdf",
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/204441s002lbl.pdf"
+      ],
+      "atc": "C03XA01",
+      "notes": "Selective vasopressin V2-receptor antagonist; >80% metabolised by CYP3A4. Samsca (hyponatremia) + Jynarque (ADPKD) FDA labels Section 4 enumerate strong CYP3A4 inhibitors as absolute contraindications because the 5x AUC increase produces overcorrection of hyponatremia and osmotic demyelination syndrome."
     },
     "tramadol": {
       "flags": [

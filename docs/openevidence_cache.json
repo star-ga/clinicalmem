@@ -2158,5 +2158,23 @@
     "retrieved_at": "2026-05-06",
     "source": "CACHED",
     "_added_iteration": "autonomous-watcher-iter-197"
+  },
+  {
+    "drug_a": "tolvaptan",
+    "drug_b": "ketoconazole",
+    "drug_pair_canonical": [
+      "ketoconazole",
+      "tolvaptan"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Tolvaptan (Samsca/Jynarque, Otsuka) is a selective vasopressin V2-receptor antagonist used for hyponatremia (Samsca) and to slow kidney function decline in autosomal dominant polycystic kidney disease (Jynarque); >80% of its hepatic metabolism is via CYP3A4. Ketoconazole (Nizoral) is a strong CYP3A4 inhibitor that produces a 5-fold AUC increase in tolvaptan exposure. The FDA Samsca label Section 4 Contraindications and the FDA Jynarque label Section 4 Contraindications both explicitly enumerate 'strong CYP3A4 inhibitors (ketoconazole, clarithromycin, itraconazole, ritonavir, indinavir, nelfinavir, saquinavir, nefazodone, telithromycin)' as absolute contraindications because the resulting elevated tolvaptan exposure produces severe overcorrection of hyponatremia and osmotic demyelination syndrome (central pontine myelinolysis) \u2014 a catastrophic, often-irreversible neurological injury. Substitute fluconazole (moderate inhibitor with dose adjustment per label) or terbinafine (no CYP3A4 effect) for the antifungal. If tolvaptan must be discontinued, fluid restriction + hypertonic saline are the standard alternative for severe hyponatremia.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/022275s011lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/204441s002lbl.pdf",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018533s040lbl.pdf"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED",
+    "_added_iteration": "autonomous-watcher-iter-202"
   }
 ]

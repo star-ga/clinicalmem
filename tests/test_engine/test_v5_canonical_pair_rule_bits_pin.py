@@ -108,6 +108,12 @@ _EXPECTED_RULE_FIRINGS: dict[tuple[str, str], frozenset[int]] = {
     # mechanical lock on the "most-undertrained sub-class" framing
     # in JUDGES.md row 102 + demo.html L1357 callout.
     ("cyclosporine", "rosuvastatin"): frozenset({1}),
+    # iter-202 v5 known-miss — V2-receptor-antagonist sub-class
+    # (tolvaptan, FDA Samsca/Jynarque § 4 dual-label vs strong
+    # CYP3A4 inh). Tolvaptan is is_cyp3a4_substrate so rule 0 fires
+    # alone. Same shape as iter-187 midazolam + iter-192 eplerenone
+    # — well-trained slot (rule 0) but new substrate sub-class.
+    ("tolvaptan", "ketoconazole"): frozenset({0}),
 }
 
 

@@ -333,6 +333,14 @@ def main():
         # fire). All three classifiers default to 'major' on this
         # rule-1-only signal — most-undertrained sub-class in cohort.
         "cyclosporine::rosuvastatin",
+        # Iter-202: tolvaptan+ketoconazole (38th contra, iter-202 cohort
+        # growth) needs explicit boost — V2-receptor antagonist
+        # (Samsca/Jynarque) is a NEW CYP3A4-substrate sub-class not in
+        # iter-148 corpus. FDA Samsca + Jynarque § 4 dual-label vs
+        # strong CYP3A4 inh (5x AUC -> osmotic demyelination syndrome).
+        # Same one-substrate-sub-class gap as midazolam (iter-187) and
+        # eplerenone (iter-192).
+        "tolvaptan::ketoconazole",
     }
     # Iter-146: anti-anchors — pairs that fire pair-derived flags BUT are
     # NOT contraindicated (moderate-class). Discourage FP without forcing
