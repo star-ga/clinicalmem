@@ -150,6 +150,11 @@ _HISTORICAL_COUNTS = (
     # count 1227 → 1231 (+4 — 3 event-presence tests + 1 floor pin).
     # 1227 is the previous floor.
     "1227",
+    # iter-223 T1 round-46: structural pin on the 6-LLM consensus
+    # provider set (test_consensus_provider_set_pin.py, 6 tests
+    # locking labels + env keys + model IDs + NIM endpoint +
+    # available_providers tuple shape). Live 1231 → 1237.
+    "1231",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -163,7 +168,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1231
+_TEST_COUNT_FLOOR = 1237
 
 
 def test_no_stale_test_counts_in_docs():
