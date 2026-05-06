@@ -330,6 +330,8 @@ def _attach_bitnet_repro_hashes(
         return interactions
 
     stamped: list[DrugInteraction] = []
+    failed_stamps = 0
+    disagreement_count = 0
     for it in interactions:
         try:
             result = classifier_layer(it.drug_a, it.drug_b)
@@ -346,6 +348,7 @@ def _attach_bitnet_repro_hashes(
                 it.drug_a, it.drug_b, exc,
             )
             stamped.append(it)
+            failed_stamps += 1
             continue
 
         # Safety-downgrade alert: upstream said this pair is dangerous,
@@ -355,6 +358,7 @@ def _attach_bitnet_repro_hashes(
         upstream_dangerous = it.severity.lower() in _SAFETY_DOWNGRADE_SEVERITY
         bitnet_safe = result.severity_name in ("none", "minor")
         if upstream_dangerous and bitnet_safe:
+            disagreement_count += 1
             logger.warning(
                 "BITNET_SAFETY_DOWNGRADE_DISAGREEMENT pair=%s+%s "
                 "upstream=%s bitnet=%s feature_hash=%s repro_hash=%s "
@@ -376,6 +380,20 @@ def _attach_bitnet_repro_hashes(
                 bitnet_weights_id=result.weights_id,
             )
         )
+    # DEBUG — Layer 4.5 stamping completion signal so operators can track
+    # the success rate of repro-hash stamping and the live disagreement
+    # count without needing to grep WARNING records. Demoted to DEBUG to
+    # avoid polluting scripts/run_clinical_regression_eval.py stdout-bound
+    # logging.basicConfig (negative-control parser would break on INFO).
+    logger.debug(
+        "bitnet_stamping_complete",
+        extra={
+            "interaction_count": len(interactions),
+            "stamped_count": len(stamped) - failed_stamps,
+            "failed_stamps": failed_stamps,
+            "disagreement_count": disagreement_count,
+        },
+    )
     return stamped
 
 
@@ -507,6 +525,20 @@ def _openevidence_cache_fallback(
                 cached.source,
             )
 
+    # DEBUG — cache-fallback completion signal. Tracks how many of the
+    # caller's pairs hit the cache when the live OpenEvidence API was
+    # unavailable. Lets operators correlate cache-hit rate with API
+    # outage windows. PHI-safe: counts only.
+    n_pairs_checked = len(meds_lower) * (len(meds_lower) - 1) // 2
+    logger.debug(
+        "openevidence_cache_fallback_complete",
+        extra={
+            "med_count": len(meds_lower),
+            "pairs_checked": n_pairs_checked,
+            "cache_hits": len(results),
+            "skipped_already_found": len(already_found),
+        },
+    )
     return results
 
 
@@ -566,6 +598,25 @@ def _parse_interaction_narrative(
                             score=medication_severity_score(severity),
                         )
                     )
+    # DEBUG — narrative-parsing completion signal. Lets operators track
+    # how often narrative parsing surfaces a serious / contraindicated
+    # interaction the structured API didn't return. PHI-safe: scalars
+    # only; med_names + the parsed narrative text are NOT logged
+    # (med_names live in synthetic Synthea cohort but the narrative is
+    # caller-supplied and could carry downstream PHI).
+    logger.debug(
+        "narrative_parse_complete",
+        extra={
+            "source": source,
+            "text_length": len(text),
+            "med_count": len(med_names),
+            "result_count": len(results),
+            "serious_count": sum(1 for r in results if r.severity == "serious"),
+            "contra_count": sum(
+                1 for r in results if r.severity == "contraindicated"
+            ),
+        },
+    )
     return results
 
 

@@ -341,3 +341,133 @@ def test_provider_disagreements_emits_debug_event_iter176(caplog):
     assert rec.bp_target_candidates == 0
     assert rec.disagreement_count == 0
     assert isinstance(rec.topic_counts, dict)
+
+
+# ────────────────────────────────────────────────────────────────────
+# Iter-206 T4 round-40 ratchet — three previously-silent paths closed
+# in engine/clinical_scoring.py: Layer 4.5 stamping completion,
+# narrative-parsing completion, OpenEvidence cache-fallback completion.
+# Density 18.5 -> 20.1/kloc.
+# ────────────────────────────────────────────────────────────────────
+
+
+_EXPECTED_LOGGER_FLOOR_ITER206 = 26  # was 23 pre-iter-206
+
+
+def test_clinical_scoring_logger_floor_iter206():
+    """Pin a logger-call floor (>= 26) so silent-removal regressions of
+    the iter-206 events fail the gate. Iter-206 added 3 DEBUG events
+    (bitnet_stamping_complete, narrative_parse_complete,
+    openevidence_cache_fallback_complete) on previously-silent paths."""
+    import re
+    src = (_REPO_ROOT / "engine" / "clinical_scoring.py").read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= _EXPECTED_LOGGER_FLOOR_ITER206, (
+        f"engine/clinical_scoring.py logger-call count regressed: "
+        f"{len(calls)} < floor {_EXPECTED_LOGGER_FLOOR_ITER206}. "
+        f"A structured event from iter-206 was silently removed."
+    )
+
+
+def test_bitnet_stamping_complete_emits_debug_event_iter206(caplog):
+    """`_attach_bitnet_repro_hashes` emits bitnet_stamping_complete DEBUG
+    on completion. Pre-iter-206 the success path was silent — operators
+    couldn't see the live disagreement count without grepping every
+    BITNET_SAFETY_DOWNGRADE_DISAGREEMENT WARNING."""
+    from engine.clinical_scoring import (
+        _attach_bitnet_repro_hashes,
+        DrugInteraction,
+    )
+    interactions = [
+        DrugInteraction(
+            drug_a="warfarin",
+            drug_b="ibuprofen",
+            severity="major",
+            description="iter-206 test",
+            score=0.7,
+        ),
+    ]
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_scoring"):
+        _attach_bitnet_repro_hashes(interactions)
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "bitnet_stamping_complete" in r.getMessage()
+    ]
+    assert matched, (
+        "_attach_bitnet_repro_hashes emitted no "
+        "`bitnet_stamping_complete` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.interaction_count == 1
+    assert hasattr(rec, "stamped_count")
+    assert hasattr(rec, "failed_stamps")
+    assert hasattr(rec, "disagreement_count")
+
+
+def test_narrative_parse_complete_emits_debug_event_iter206(caplog):
+    """`_parse_interaction_narrative` emits narrative_parse_complete DEBUG
+    on completion. PHI-safe: scalars only — narrative text + med_names
+    NEVER logged. Sentinel scan asserts the narrative content does not
+    leak into any log record."""
+    from engine.clinical_scoring import _parse_interaction_narrative
+
+    SENTINEL_NARRATIVE = "ZZZ_SECRET_NARRATIVE_TOKEN_iter206"
+    text = (
+        f"{SENTINEL_NARRATIVE}: warfarin and ibuprofen interaction is "
+        "contraindicated due to bleeding risk."
+    )
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_scoring"):
+        _parse_interaction_narrative(
+            text,
+            ["warfarin", "ibuprofen"],
+            already_found=set(),
+            source="iter206-test",
+        )
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "narrative_parse_complete" in r.getMessage()
+    ]
+    assert matched, (
+        "_parse_interaction_narrative emitted no "
+        "`narrative_parse_complete` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.source == "iter206-test"
+    assert rec.med_count == 2
+    # Narrative text must NEVER appear in any log record.
+    for r in caplog.records:
+        assert SENTINEL_NARRATIVE not in str(r.__dict__), (
+            f"narrative text leaked into log record: {r.__dict__}"
+        )
+
+
+def test_openevidence_cache_fallback_complete_emits_debug_event_iter206(caplog):
+    """`_openevidence_cache_fallback` emits openevidence_cache_fallback_complete
+    DEBUG on completion. Lets operators correlate cache-hit rate with
+    API outage windows. PHI-safe: counts only."""
+    from engine.clinical_scoring import _openevidence_cache_fallback
+
+    with caplog.at_level(logging.DEBUG, logger="engine.clinical_scoring"):
+        _openevidence_cache_fallback(
+            ["warfarin", "ibuprofen", "aspirin"],
+            already_found=set(),
+        )
+    matched = [
+        r for r in caplog.records
+        if r.levelno == logging.DEBUG
+        and "openevidence_cache_fallback_complete" in r.getMessage()
+    ]
+    assert matched, (
+        "_openevidence_cache_fallback emitted no "
+        "`openevidence_cache_fallback_complete` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.med_count == 3
+    assert rec.pairs_checked == 3  # 3 choose 2
+    assert hasattr(rec, "cache_hits")
+    assert rec.skipped_already_found == 0
