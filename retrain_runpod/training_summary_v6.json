@@ -1,0 +1,121 @@
+{
+  "seeds": [
+    {
+      "seed": 1,
+      "contra_tp": 32,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 0,
+      "saved": false
+    },
+    {
+      "seed": 2,
+      "contra_tp": 37,
+      "contra_n": 38,
+      "major_tp": 3,
+      "major_n": 4,
+      "fp": 3,
+      "saved": false
+    },
+    {
+      "seed": 3,
+      "contra_tp": 35,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 1,
+      "saved": false
+    },
+    {
+      "seed": 5,
+      "contra_tp": 32,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 1,
+      "saved": false
+    },
+    {
+      "seed": 7,
+      "contra_tp": 36,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 1,
+      "saved": false
+    },
+    {
+      "seed": 11,
+      "contra_tp": 36,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 0,
+      "saved": false
+    },
+    {
+      "seed": 13,
+      "contra_tp": 35,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 0,
+      "saved": false
+    },
+    {
+      "seed": 17,
+      "contra_tp": 33,
+      "contra_n": 38,
+      "major_tp": 3,
+      "major_n": 4,
+      "fp": 0,
+      "saved": false
+    },
+    {
+      "seed": 19,
+      "contra_tp": 35,
+      "contra_n": 38,
+      "major_tp": 3,
+      "major_n": 4,
+      "fp": 2,
+      "saved": false
+    },
+    {
+      "seed": 23,
+      "contra_tp": 36,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 2,
+      "saved": false
+    },
+    {
+      "seed": 29,
+      "contra_tp": 35,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 1,
+      "saved": false
+    },
+    {
+      "seed": 31,
+      "contra_tp": 38,
+      "contra_n": 38,
+      "major_tp": 4,
+      "major_n": 4,
+      "fp": 0,
+      "saved": true
+    }
+  ],
+  "best": {
+    "seed": 2,
+    "contra_tp": 37,
+    "contra_n": 38,
+    "major_tp": 3,
+    "major_n": 4,
+    "fp": 3,
+    "saved": false
+  }
+}

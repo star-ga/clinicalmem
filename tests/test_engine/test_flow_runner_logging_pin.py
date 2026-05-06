@@ -409,3 +409,101 @@ def test_phi_scan_log_contains_no_med_content_iter144(caplog):
                         assert sentinel_med not in item, (
                             "med sentinel leaked into record list"
                         )
+
+
+# ────────────────────────────────────────────────────────────────────
+# Iter-208 T4 round-41 ratchet — three previously-silent paths closed
+# in engine/flow_runner.py: list_flows bulk-parse summary, executor
+# invariant-evaluation summary, dispatch-table boot signal.
+# Density 19.3 -> 22.0/kloc.
+# ────────────────────────────────────────────────────────────────────
+
+import re as _re208
+import logging as _logging208
+from pathlib import Path as _Path208
+
+
+def test_flow_runner_logger_floor_iter208():
+    """Pin a logger-call floor (>= 18) so silent-removal regressions of
+    the iter-208 events fail the gate. Iter-208 added 3 DEBUG events
+    (flow_list_complete, flow_invariants_summary,
+    flow_dispatch_table_built) on previously-silent paths."""
+    repo_root = _Path208(__file__).resolve().parent.parent.parent
+    src = (repo_root / "engine" / "flow_runner.py").read_text()
+    calls = _re208.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= 17, (
+        f"engine/flow_runner.py logger-call count regressed: "
+        f"{len(calls)} < floor 17. A structured event from iter-208 "
+        f"was silently removed. (Floor of 17 = 14 pre-iter-208 + 3 "
+        f"iter-208 additions. The line `log_fn = logger.warning if "
+        f"... else logger.info` is a conditional reference, not a "
+        f"call, so the regex omits it.)"
+    )
+
+
+def test_list_flows_emits_flow_list_complete_iter208(caplog):
+    """`list_flows` emits flow_list_complete DEBUG with contract_count
+    + flows_dir. Pre-iter-208 the bulk-parse path was silent — operators
+    couldn't see the contract count snapshot at executor boot."""
+    from engine.flow_runner import list_flows
+    with caplog.at_level(_logging208.DEBUG, logger="engine.flow_runner"):
+        contracts = list_flows()
+    matched = [
+        r for r in caplog.records
+        if r.levelno == _logging208.DEBUG
+        and "flow_list_complete" in r.getMessage()
+    ]
+    assert matched, "list_flows emitted no `flow_list_complete` DEBUG event."
+    rec = matched[0]
+    assert rec.contract_count == len(contracts)
+    assert hasattr(rec, "flows_dir")
+
+
+def test_dispatch_table_emits_boot_signal_iter208(caplog):
+    """`_dispatch_table` emits flow_dispatch_table_built DEBUG with
+    dispatch_entry_count. Lets operators see how many `(directive,
+    node_name)` entries are wired vs left to the 'skipped' default."""
+    from engine.flow_runner import _dispatch_table
+    with caplog.at_level(_logging208.DEBUG, logger="engine.flow_runner"):
+        table = _dispatch_table()
+    matched = [
+        r for r in caplog.records
+        if r.levelno == _logging208.DEBUG
+        and "flow_dispatch_table_built" in r.getMessage()
+    ]
+    assert matched, (
+        "_dispatch_table emitted no `flow_dispatch_table_built` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.dispatch_entry_count > 0
+    # Should be at least table size; counts the build_safety_report alias too
+    assert rec.dispatch_entry_count >= len(table)
+
+
+def test_invariants_summary_emits_after_execute_iter208(
+    caplog, first_flow_name
+):
+    """`execute` emits flow_invariants_summary DEBUG documenting the
+    honest 0-evaluable state today (in-process predicate evaluator
+    not yet implemented; mindc analyzer enforces compile-time)."""
+    from engine.flow_runner import execute
+    with caplog.at_level(_logging208.DEBUG, logger="engine.flow_runner"):
+        execute(first_flow_name, inputs={"medications": ["aspirin"]})
+    matched = [
+        r for r in caplog.records
+        if r.levelno == _logging208.DEBUG
+        and "flow_invariants_summary" in r.getMessage()
+    ]
+    assert matched, (
+        "execute emitted no `flow_invariants_summary` DEBUG event."
+    )
+    rec = matched[0]
+    assert rec.flow_name == first_flow_name
+    assert hasattr(rec, "invariant_count")
+    assert hasattr(rec, "invariants_evaluable")
+    # Today's design state: 0 invariants evaluable in-process.
+    assert rec.invariants_evaluable == 0
+    assert rec.violations == 0

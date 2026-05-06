@@ -213,10 +213,22 @@ def list_flow_names(flows_dir: Path | None = None) -> list[str]:
 
 def list_flows(flows_dir: Path | None = None) -> list[FlowContract]:
     """Parse and return every `.flow.mind` contract under `flows/`."""
-    return [
+    contracts = [
         parse_flow_contract(name, flows_dir=flows_dir)
         for name in list_flow_names(flows_dir)
     ]
+    # DEBUG — bulk-parse summary so operators can see the
+    # contract-count snapshot when the executor (re)loads the
+    # flow set on startup. Pairs with the per-contract DEBUG in
+    # parse_flow_contract.
+    logger.debug(
+        "flow_list_complete",
+        extra={
+            "contract_count": len(contracts),
+            "flows_dir": str(flows_dir) if flows_dir else "default",
+        },
+    )
+    return contracts
 
 
 # ─── Static contract extraction ────────────────────────────────────────────
@@ -598,6 +610,17 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
     table[("@native", "report")] = _build_safety_report
     table[("@native", "build_safety_report")] = _build_safety_report
 
+    # DEBUG — dispatch-table boot signal. Lets operators see how many
+    # `(directive, node_name)` entries are wired vs. left to the
+    # "skipped" default path. A future @llm refactor that adds 3 new
+    # nodes should bump this count; if it doesn't, the flow_node_skipped
+    # rate spikes and this log explains why. PHI-safe: only the count
+    # is logged, not the dispatch keys (which are static + non-PHI).
+    logger.debug(
+        "flow_dispatch_table_built",
+        extra={"dispatch_entry_count": len(table)},
+    )
+
     return table
 
 
@@ -709,10 +732,27 @@ def execute(
     # Best-effort invariant evaluation (logged, not enforced — the executor
     # is honest about what it can prove without a full mindc analyzer).
     invariant_violations: list[str] = []
+    invariants_evaluable = 0
     for inv in contract.invariants:
         # We can only evaluate trivially-decidable invariants today.
         # Anything more complex is flagged for future analysis.
         pass
+    # DEBUG — invariant-evaluation summary. Today every invariant is
+    # `pass` (no in-process predicate evaluator); this pin documents the
+    # honest 0-evaluable state so an auditor can see the contract has
+    # invariants but the executor doesn't enforce them yet (the compile-
+    # time mindc analyzer does). When a future iter adds an in-process
+    # evaluator, `invariants_evaluable` becomes the live count and any
+    # discrepancy with `invariant_count` is surfaced for ops review.
+    logger.debug(
+        "flow_invariants_summary",
+        extra={
+            "flow_name": flow_name,
+            "invariant_count": len(contract.invariants),
+            "invariants_evaluable": invariants_evaluable,
+            "violations": len(invariant_violations),
+        },
+    )
 
     # Final output: prefer the assigned output binding; fall back to the
     # last successfully-executed node's output if the assign callable
