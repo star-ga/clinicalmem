@@ -1,17 +1,20 @@
 # Copyright 2026 STARGA Inc. — Apache-2.0
 """Pin Path A v8 (1f0f8859, h=256) per-pair Q16.16 canonical-pin
-determinism — 16 canonical pairs × 4 pinned values + 100×16 = 1600
+determinism — 17 canonical pairs × 4 pinned values + 100×17 = 1700
 forward-pass determinism stress.
 
 Iter 244 v8 sweep landed: doubled hidden_dim 128 → 256 broke the v7
 architectural ceiling. Seed 71 hit 41/41 + 4/4 + 0 FP under Q16.16.
 
-Mirror-shape of the v6 q16 pin (retired iter-245) — but with 16
+Mirror-shape of the v6 q16 pin (retired iter-245) — now with 17
 canonical pairs ALL classifying as documented (8 anchors + 7 v5-
 historical-misses + 1 iter-215 lurasidone+ketoconazole pair that v6
-missed but v8 catches). The iter-244 architectural-double broke the
-ceiling — every prior known-miss is now classified contraindicated
-under v8.
+missed but v8 catches + 1 iter-249 quinidine+ritonavir cohort-growth
+pair pinning the HIV-PI × Class IA antiarrhythmic / dual QT-prolonger
+slot). The iter-244 architectural-double broke the ceiling — every
+prior known-miss is now classified contraindicated under v8, and
+forward cohort growth extends this canonical-pin set so any new pair
+is locked at the encoder + Q16.16 level on commit.
 
 Iter-210 cross-pin discipline preserved: every pair in the inlined
 `_V5_HISTORICAL_MISSES` tuple appears in V8 canonical pins AND has
@@ -109,7 +112,7 @@ _V5_HISTORICAL_MISSES: tuple[tuple[str, str], ...] = (
 _ITER215_V6_KNOWN_MISS = ("ketoconazole", "lurasidone")
 
 
-# 16 canonical pairs × 4 pinned values (logits_q16 + feature_hash +
+# 17 canonical pairs × 4 pinned values (logits_q16 + feature_hash +
 # logits_hash + severity_name). Computed at iter-244 against bundle
 # 1f0f88591c05af57c.
 _V8_CANONICAL_PINS: dict[tuple[str, str], dict] = {
@@ -212,6 +215,15 @@ _V8_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "536f0dc3b7d3e72d079faf4c30c842aed8dc973c158ebbd35cc4dc2abade2cb1",
         "severity_name": "contraindicated",
     },
+    # — Iter-249 cohort-growth (HIV-PI × Class IA antiarrhythmic / dual QT-prolonger slot;
+    #    ritonavir's CYP3A4-strong-inh + quinidine's CYP3A4-substrate flag fires rule 0
+    #    @ +14.59 Q16.16 logit margin; FDA Norvir § 4 + Quinidex Extentabs § 4 contraindication) —
+    ("quinidine", "ritonavir"): {
+        "logits_q16": [-1311044, -3771789, -1733351, -2534658, 2333390],
+        "feature_hash": "d8c3f6fb4e31aca0bec1b922724194ad582be99eedd7261547827be656f0d384",
+        "logits_hash": "cf5be4e3b231390458bc0f2634b2a6548ed603434926bdb68d4829bf04163dff",
+        "severity_name": "contraindicated",
+    },
 }
 
 
@@ -275,7 +287,7 @@ def test_v8_canonical_severity_labels_pinned() -> None:
 
 
 def test_v8_q16_determinism_stress() -> None:
-    """100 iterations × 16 canonical pairs = 1600 forward-pass
+    """100 iterations × 17 canonical pairs = 1700 forward-pass
     determinism stress test. Q16.16 ternary inference MUST be
     bit-identical across iterations (no floating-point ops, no RNG)."""
     bundle = _load_bundle()
@@ -295,7 +307,7 @@ def test_v8_q16_determinism_stress() -> None:
 
 
 def test_v8_severity_class_coverage() -> None:
-    """The 16 canonical pairs must cover all 5 severity classes
+    """The 17 canonical pairs must cover all 5 severity classes
     (excluding 'minor' which the cohort intentionally lacks).
 
     Iter-244 expanded coverage from iter-210's 4 classes (no major
