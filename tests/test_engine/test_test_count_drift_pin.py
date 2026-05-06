@@ -222,6 +222,19 @@ _HISTORICAL_COUNTS = (
     # the active staged surface but stays on disk for FDA SaMD
     # audit-trail rigor). Net +1 test. Live 1274 → 1275.
     "1274",
+    # iter-246 T2 round-52: demo hero stat-chip + trust-bar drift
+    # caught at iter-246 audit — chip 1 still read "35 / 35 · NTI
+    # cohort" (frozen iter-202, 80+ iters behind), trust-bar still
+    # read "1161 / 1161 engine tests" (frozen iter-148-era). Same
+    # iter-232 header-drift class but at a higher-visibility surface
+    # (judges see hero in 5 sec). New pin family
+    # test_demo_hero_stat_consistency_pin.py (4 tests, **15th cross-
+    # pin family**): hero contra-recall fraction reads from live
+    # _V8_CONTRA_TOTAL; hero MUST mention v8 (surface the iter-244
+    # breakthrough); trust-bar test count == _TEST_COUNT_FLOOR;
+    # forbidden pre-iter-235 cohort sizes (35-40) blocked from
+    # chip subtitle. Live 1275 → 1279.
+    "1275",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -235,7 +248,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1275
+_TEST_COUNT_FLOOR = 1279
 
 
 def test_no_stale_test_counts_in_docs():
