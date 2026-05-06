@@ -166,3 +166,152 @@ def test_non_200_warns_with_status_code(caplog_at_debug, monkeypatch):
     assert non200, "non-200 must emit 'fda_adverse_non_200' WARNING"
     assert non200[0].levelname == "WARNING"
     assert getattr(non200[0], "status_code", None) == 429
+
+
+# ────────────────────────────────────────────────────────────────────
+# Iter-214 T4 round-44 ratchet — four previously-silent paths closed
+# in engine/fda_client.py: get_label_warnings start + non-200,
+# get_drug_recalls start + non-200. Density 20.2 -> 29.0/kloc.
+# ────────────────────────────────────────────────────────────────────
+
+
+def test_fda_client_logger_floor_iter214():
+    """Pin a logger-call floor (>= 11) so silent-removal regressions of
+    the iter-214 events fail the gate. Iter-214 added 4 events
+    (fda_label_search_start, fda_label_non_200, fda_recall_search_start,
+    fda_recall_non_200) on previously-silent paths in get_label_warnings
+    and get_drug_recalls."""
+    import re
+    from pathlib import Path
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    src = (repo_root / "engine" / "fda_client.py").read_text()
+    calls = re.findall(
+        r"\blogger\.(debug|info|warning|error|critical)\(",
+        src,
+    )
+    assert len(calls) >= 11, (
+        f"engine/fda_client.py logger-call count regressed: "
+        f"{len(calls)} < floor 11. A structured event from iter-214 "
+        f"was silently removed."
+    )
+
+
+def test_fda_label_search_start_emits_debug_iter214(caplog_at_debug, monkeypatch):
+    """get_label_warnings emits fda_label_search_start DEBUG on entry,
+    mirroring the iter-72 fda_adverse_search_start convention. PHI-safe:
+    only drug_name length + endpoint kind logged."""
+    import logging
+
+    class _Stub200:
+        status_code = 200
+        def json(self):
+            return {"results": [{"boxed_warning": ["TEST"]}]}
+
+    class _StubHttpx:
+        def get(self, *a, **kw):
+            return _Stub200()
+
+    from engine import fda_client
+    monkeypatch.setattr(fda_client, "_get_httpx", lambda: _StubHttpx())
+
+    fda_client.get_label_warnings("aspirin")
+    records = [r for r in caplog_at_debug.records
+               if r.name == "engine.fda_client"]
+    starts = [r for r in records if r.message == "fda_label_search_start"]
+    assert starts, (
+        "get_label_warnings must emit 'fda_label_search_start' DEBUG"
+    )
+    rec = starts[0]
+    assert rec.levelname == "DEBUG"
+    assert rec.endpoint == "drug/label"
+    assert rec.drug_name_length == len("aspirin")
+    # PHI sentinel: drug name itself must NOT appear in any log record
+    for r in records:
+        assert "aspirin" not in str(r.__dict__), (
+            f"drug_name leaked into log record: {r.__dict__}"
+        )
+
+
+def test_fda_label_non_200_warns_with_status_code_iter214(caplog_at_debug, monkeypatch):
+    """get_label_warnings non-200 path emits fda_label_non_200 WARNING
+    with status_code, mirroring fda_adverse_non_200."""
+    class _Stub429:
+        status_code = 429
+        def json(self):
+            return {"error": "rate_limited"}
+
+    class _StubHttpx:
+        def get(self, *a, **kw):
+            return _Stub429()
+
+    from engine import fda_client
+    monkeypatch.setattr(fda_client, "_get_httpx", lambda: _StubHttpx())
+
+    result = fda_client.get_label_warnings("rate-limited-drug")
+    assert result == []
+    records = [r for r in caplog_at_debug.records
+               if r.name == "engine.fda_client"]
+    non200 = [r for r in records if r.message == "fda_label_non_200"]
+    assert non200, (
+        "get_label_warnings non-200 path must emit "
+        "'fda_label_non_200' WARNING"
+    )
+    assert non200[0].levelname == "WARNING"
+    assert getattr(non200[0], "status_code", None) == 429
+    assert non200[0].endpoint == "drug/label"
+
+
+def test_fda_recall_search_start_emits_debug_iter214(caplog_at_debug, monkeypatch):
+    """get_drug_recalls emits fda_recall_search_start DEBUG on entry."""
+    class _Stub200:
+        status_code = 200
+        def json(self):
+            return {"results": []}
+
+    class _StubHttpx:
+        def get(self, *a, **kw):
+            return _Stub200()
+
+    from engine import fda_client
+    monkeypatch.setattr(fda_client, "_get_httpx", lambda: _StubHttpx())
+
+    fda_client.get_drug_recalls("metformin", limit=2)
+    records = [r for r in caplog_at_debug.records
+               if r.name == "engine.fda_client"]
+    starts = [r for r in records if r.message == "fda_recall_search_start"]
+    assert starts, (
+        "get_drug_recalls must emit 'fda_recall_search_start' DEBUG"
+    )
+    rec = starts[0]
+    assert rec.levelname == "DEBUG"
+    assert rec.endpoint == "drug/enforcement"
+    assert rec.drug_name_length == len("metformin")
+    assert rec.limit == 2
+
+
+def test_fda_recall_non_200_warns_with_status_code_iter214(caplog_at_debug, monkeypatch):
+    """get_drug_recalls non-200 path emits fda_recall_non_200 WARNING."""
+    class _Stub503:
+        status_code = 503
+        def json(self):
+            return {"error": "service_unavailable"}
+
+    class _StubHttpx:
+        def get(self, *a, **kw):
+            return _Stub503()
+
+    from engine import fda_client
+    monkeypatch.setattr(fda_client, "_get_httpx", lambda: _StubHttpx())
+
+    result = fda_client.get_drug_recalls("server-error-drug")
+    assert result == []
+    records = [r for r in caplog_at_debug.records
+               if r.name == "engine.fda_client"]
+    non200 = [r for r in records if r.message == "fda_recall_non_200"]
+    assert non200, (
+        "get_drug_recalls non-200 path must emit "
+        "'fda_recall_non_200' WARNING"
+    )
+    assert non200[0].levelname == "WARNING"
+    assert getattr(non200[0], "status_code", None) == 503
+    assert non200[0].endpoint == "drug/enforcement"

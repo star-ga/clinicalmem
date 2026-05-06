@@ -156,6 +156,14 @@ def get_label_warnings(drug_name: str) -> list[FDAAlert]:
         return []
 
     clean_name = drug_name.strip().lower()
+    # PHI discipline: drug name length + endpoint kind only.
+    logger.debug(
+        "fda_label_search_start",
+        extra={
+            "drug_name_length": len(clean_name),
+            "endpoint": "drug/label",
+        },
+    )
     try:
         resp = httpx.get(
             "https://api.fda.gov/drug/label.json",
@@ -166,6 +174,14 @@ def get_label_warnings(drug_name: str) -> list[FDAAlert]:
             timeout=5,
         )
         if resp.status_code != 200:
+            logger.warning(
+                "fda_label_non_200",
+                extra={
+                    "drug_name_length": len(clean_name),
+                    "status_code": resp.status_code,
+                    "endpoint": "drug/label",
+                },
+            )
             return []
 
         data = resp.json()
@@ -240,6 +256,15 @@ def get_drug_recalls(drug_name: str, limit: int = 3) -> list[FDAAlert]:
         return []
 
     clean_name = drug_name.strip().lower()
+    # PHI discipline: drug name length + limit + endpoint kind only.
+    logger.debug(
+        "fda_recall_search_start",
+        extra={
+            "drug_name_length": len(clean_name),
+            "limit": limit,
+            "endpoint": "drug/enforcement",
+        },
+    )
     try:
         resp = httpx.get(
             "https://api.fda.gov/drug/enforcement.json",
@@ -251,6 +276,14 @@ def get_drug_recalls(drug_name: str, limit: int = 3) -> list[FDAAlert]:
             timeout=5,
         )
         if resp.status_code != 200:
+            logger.warning(
+                "fda_recall_non_200",
+                extra={
+                    "drug_name_length": len(clean_name),
+                    "status_code": resp.status_code,
+                    "endpoint": "drug/enforcement",
+                },
+            )
             return []
 
         data = resp.json()
