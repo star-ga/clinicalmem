@@ -80,7 +80,9 @@ _EXPECTED_PER_RULE_CONTRA_COUNTS: tuple[int, ...] = (
          #                                 rule 2 because tacrolimus is P-gp substrate)
     0,   # 3  cyp2c9_inhib_anticoag      (BY DESIGN — see test below)
     8,   # 4  maoi_serotonergic          (well-evidenced class)
-    2,   # 5  pde5_nitrate
+    3,   # 5  pde5_nitrate               (iter-254 +1 vardenafil+nitroglycerin;
+         #                                 vardenafil joins sildenafil + tadalafil
+         #                                 as 3rd PDE5 inhibitor in the cohort)
     2,   # 6  iodinated_metformin        (contrast dye + iodine)
     2,   # 7  cyp1a2_inhib_substrate
     2,   # 8  xanthine_thiopurine

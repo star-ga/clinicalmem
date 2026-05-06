@@ -1,20 +1,21 @@
 # Copyright 2026 STARGA Inc. — Apache-2.0
 """Pin Path A v8 (1f0f8859, h=256) per-pair Q16.16 canonical-pin
-determinism — 17 canonical pairs × 4 pinned values + 100×17 = 1700
+determinism — 18 canonical pairs × 4 pinned values + 100×18 = 1800
 forward-pass determinism stress.
 
 Iter 244 v8 sweep landed: doubled hidden_dim 128 → 256 broke the v7
 architectural ceiling. Seed 71 hit 41/41 + 4/4 + 0 FP under Q16.16.
 
-Mirror-shape of the v6 q16 pin (retired iter-245) — now with 17
+Mirror-shape of the v6 q16 pin (retired iter-245) — now with 18
 canonical pairs ALL classifying as documented (8 anchors + 7 v5-
 historical-misses + 1 iter-215 lurasidone+ketoconazole pair that v6
-missed but v8 catches + 1 iter-249 quinidine+ritonavir cohort-growth
-pair pinning the HIV-PI × Class IA antiarrhythmic / dual QT-prolonger
-slot). The iter-244 architectural-double broke the ceiling — every
-prior known-miss is now classified contraindicated under v8, and
-forward cohort growth extends this canonical-pin set so any new pair
-is locked at the encoder + Q16.16 level on commit.
+missed but v8 catches + 1 iter-249 quinidine+ritonavir HIV-PI ×
+Class IA antiarrhythmic slot + 1 iter-254 vardenafil+nitroglycerin
+PDE5 × nitrate slot extension). The iter-244 architectural-double
+broke the ceiling — every prior known-miss is now classified
+contraindicated under v8, and forward cohort growth extends this
+canonical-pin set so any new pair is locked at the encoder + Q16.16
+level on commit.
 
 Iter-210 cross-pin discipline preserved: every pair in the inlined
 `_V5_HISTORICAL_MISSES` tuple appears in V8 canonical pins AND has
@@ -112,7 +113,7 @@ _V5_HISTORICAL_MISSES: tuple[tuple[str, str], ...] = (
 _ITER215_V6_KNOWN_MISS = ("ketoconazole", "lurasidone")
 
 
-# 17 canonical pairs × 4 pinned values (logits_q16 + feature_hash +
+# 18 canonical pairs × 4 pinned values (logits_q16 + feature_hash +
 # logits_hash + severity_name). Computed at iter-244 against bundle
 # 1f0f88591c05af57c.
 _V8_CANONICAL_PINS: dict[tuple[str, str], dict] = {
@@ -224,6 +225,17 @@ _V8_CANONICAL_PINS: dict[tuple[str, str], dict] = {
         "logits_hash": "cf5be4e3b231390458bc0f2634b2a6548ed603434926bdb68d4829bf04163dff",
         "severity_name": "contraindicated",
     },
+    # — Iter-254 cohort-growth (PDE5 × nitrate slot extension 2 → 3 entries; vardenafil
+    #    joins sildenafil + tadalafil as the third PDE5 inhibitor in the cohort, paired
+    #    with nitroglycerin; rule 5 fires (is_pde5_inhibitor × is_nitrate);
+    #    +150.51 Q16.16 logit margin (strongest of the iter-254 batch);
+    #    FDA Levitra § 4 contraindication) —
+    ("nitroglycerin", "vardenafil"): {
+        "logits_q16": [-9128347, -4111285, -6221339, -2343000, 7520679],
+        "feature_hash": "4461be77fa0a4ac0ae9ac7fab496afba93a5fc234cd4f6bed00689ebc8e5f529",
+        "logits_hash": "b409c5f10288d8f737a9beba919ff43cab3a91dd445d57e3a337df3f082c4c32",
+        "severity_name": "contraindicated",
+    },
 }
 
 
@@ -287,7 +299,7 @@ def test_v8_canonical_severity_labels_pinned() -> None:
 
 
 def test_v8_q16_determinism_stress() -> None:
-    """100 iterations × 17 canonical pairs = 1700 forward-pass
+    """100 iterations × 18 canonical pairs = 1800 forward-pass
     determinism stress test. Q16.16 ternary inference MUST be
     bit-identical across iterations (no floating-point ops, no RNG)."""
     bundle = _load_bundle()
@@ -307,7 +319,7 @@ def test_v8_q16_determinism_stress() -> None:
 
 
 def test_v8_severity_class_coverage() -> None:
-    """The 17 canonical pairs must cover all 5 severity classes
+    """The 18 canonical pairs must cover all 5 severity classes
     (excluding 'minor' which the cohort intentionally lacks).
 
     Iter-244 expanded coverage from iter-210's 4 classes (no major

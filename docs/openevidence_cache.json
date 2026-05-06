@@ -2244,5 +2244,21 @@
     ],
     "retrieved_at": "2026-05-06",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "nitroglycerin",
+    "drug_b": "vardenafil",
+    "drug_pair_canonical": [
+      "nitroglycerin",
+      "vardenafil"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Concurrent administration of vardenafil (Levitra; selective PDE5 inhibitor) with any organic nitrate (including nitroglycerin) is contraindicated. PDE5 inhibition potentiates the cGMP-mediated vasodilation pathway that nitrates activate by donating nitric oxide; the additive effect on cGMP accumulation produces severe, potentially fatal hypotension and reflex tachycardia. The FDA Levitra (vardenafil) label Section 4 Contraindications explicitly lists ALL forms of organic nitrate co-administration as absolute contraindications, with a 24-hour minimum washout interval before nitrate use after vardenafil. The same prohibition appears in the ACC/AHA STEMI / NSTEMI guidelines for emergency department management of patients on PDE5 inhibitors. There is no monitoring regimen that mitigates this risk; an alternative anti-anginal (beta-blocker, calcium channel blocker) must be selected if vardenafil exposure has occurred within the prior 24 hours. Reference: FDA Levitra labeling 2014 (\u00a7 4, \u00a7 5.4), Kloner Am J Cardiol 2003;92(9 Suppl):37M-46M.",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/021400s023lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/14609621/"
+    ],
+    "retrieved_at": "2026-05-06",
+    "source": "CACHED"
   }
 ]

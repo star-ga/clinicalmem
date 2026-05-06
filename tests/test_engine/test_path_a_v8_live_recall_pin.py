@@ -64,8 +64,13 @@ _PATH_A_V8_BUNDLE_ID = (
 # Pre-flight v8 confirmed contraindicated classification at +14.59
 # Q16.16 logit (clear margin), so cohort 41 → 42 with hits 41 → 42
 # in lockstep (zero misses preserved).
-_V8_CONTRA_HITS = 42
-_V8_CONTRA_TOTAL = 42
+# Iter-254 cohort growth: added (nitroglycerin, vardenafil) — extends
+# rule 5 (PDE5 × nitrate) from 2 → 3 entries; vardenafil joins
+# sildenafil + tadalafil as the third PDE5 inhibitor in the cohort.
+# Pre-flight v8 caught at +150.51 Q16.16 (strongest margin yet),
+# cohort 42 → 43 with hits 42 → 43 in lockstep.
+_V8_CONTRA_HITS = 43
+_V8_CONTRA_TOTAL = 43
 _V8_FP_COUNT = 0       # zero FPs invariant holds
 _V8_MAJOR_HITS = 4
 _V8_MAJOR_TOTAL = 4

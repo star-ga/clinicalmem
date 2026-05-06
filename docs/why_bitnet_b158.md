@@ -62,7 +62,7 @@ The clean-room Python implementation in `engine/bitnet_classifier.py`
   the 5-pair frozen anchor set in
   `tests/test_engine/test_bitnet_classifier.py::test_known_pair_produces_severity`
   (warfarin+ibuprofen, amoxicillin+penicillin, metformin+iodine,
-  atorvastatin+grapefruit, aspirin+warfarin) and the 137-pair live
+  atorvastatin+grapefruit, aspirin+warfarin) and the 138-pair live
   OpenEvidence cohort with 41 contraindicated pairs in
   `docs/openevidence_cache.json` driving the PCCP recall gate
   (`scripts/run_clinical_regression_eval.py`).
