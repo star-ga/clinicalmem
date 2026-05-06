@@ -146,6 +146,10 @@ _HISTORICAL_COUNTS = (
     # test_six_model_consensus + added test_nvidia_nemotron_included).
     # 1226 is now the previous floor, so it goes here.
     "1226",
+    # iter-222 T4 round-46 ratchet on engine/snomed_client.py: live
+    # count 1227 → 1231 (+4 — 3 event-presence tests + 1 floor pin).
+    # 1227 is the previous floor.
+    "1227",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -159,7 +163,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1227
+_TEST_COUNT_FLOOR = 1231
 
 
 def test_no_stale_test_counts_in_docs():

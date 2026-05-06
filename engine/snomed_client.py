@@ -121,6 +121,19 @@ def _search_snowstorm(
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
+            # WARNING level — Snowstorm is the primary lookup path. A 401
+            # (auth) / 429 (rate limit) / 503 (outage) here silently
+            # demotes us to the UMLS fallback (or empty results); operators
+            # need the status code to triage. PHI-safe: status + path only,
+            # no term text or response body.
+            logger.warning(
+                "snomed_snowstorm_non_200",
+                extra={
+                    "status_code": resp.status_code,
+                    "endpoint": "snowstorm/MAIN/concepts",
+                    "term_length": len(term),
+                },
+            )
             return []
 
         data = resp.json()
@@ -162,6 +175,20 @@ def _search_umls_snomed(term: str) -> list[SnomedConcept]:
             timeout=_TIMEOUT,
         )
         if resp.status_code != 200:
+            # WARNING level — UMLS is the secondary lookup; if both
+            # Snowstorm AND UMLS fail to return 200 the cross-reactivity
+            # surface is silently empty. Operators triaging "no allergy
+            # alerts firing" need both status codes in audit logs.
+            # PHI-safe: status + path only, never the term itself or the
+            # API key (apiKey appears in params but is NOT logged here).
+            logger.warning(
+                "snomed_umls_non_200",
+                extra={
+                    "status_code": resp.status_code,
+                    "endpoint": "uts-ws/search/current",
+                    "term_length": len(term),
+                },
+            )
             return []
         data = resp.json()
         results_list = data.get("result", {}).get("results", [])
@@ -207,6 +234,18 @@ def is_allergy_cross_reactive(allergy: str, medication: str) -> bool:
             m in expanded_allergy for m in members
         )
         if allergy_match and any(m in med_lower for m in members):
+            # WARNING level — within-class cross-reactivity is a clinical
+            # safety hit, equally important to log as the cross-class
+            # beta-lactam case below (which already logs). Categorical
+            # only: the drug class. Never log allergen / medication strings
+            # — clinical input may carry adjacent narrative the operator
+            # didn't intend to commit to logs.
+            logger.warning(
+                "snomed_within_class_cross_reactive",
+                extra={
+                    "drug_class": class_name,
+                },
+            )
             return True
 
     # Also check cross-class: penicillin allergy + cephalosporin (~2% cross-reactivity)
