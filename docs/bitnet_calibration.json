@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "by_class": {
     "contraindicated": {
-      "correct_count": 43,
-      "count": 43,
+      "correct_count": 44,
+      "count": 44,
       "max_margin_wrong_q16": null,
-      "mean_margin_correct_q16": 6054101,
+      "mean_margin_correct_q16": 6008475,
       "mean_margin_wrong_q16": null,
       "min_margin_wrong_q16": null,
       "recall": 1.0,
@@ -2462,11 +2462,28 @@
       "predicted": "contraindicated",
       "top1_class": "contraindicated",
       "top2_class": "major"
+    },
+    {
+      "correct": true,
+      "drug_a": "tranylcypromine",
+      "drug_b": "venlafaxine",
+      "ground_truth": "contraindicated",
+      "logits_q16": [
+        1903633,
+        -5666497,
+        -7574079,
+        -107241,
+        5950210
+      ],
+      "margin_q16": 4046577,
+      "predicted": "contraindicated",
+      "top1_class": "contraindicated",
+      "top2_class": "none"
     }
   ],
   "license": "Apache-2.0",
   "name": "ClinicalMem BitNet Layer 4.5 Calibration / Margin Diagnostic",
-  "total_pairs": 138,
+  "total_pairs": 139,
   "version": "1.0.0",
   "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
   "worst_close_calls": [

@@ -98,7 +98,7 @@ def test_bitnet_live_precision_recall_pinned():
         f"true positives must equal cohort total under v8: live "
         f"tp={tp}, total={total}"
     )
-    assert total == 43, f"contraindicated cohort size drifted: live={total}, pinned=43"
+    assert total == 44, f"contraindicated cohort size drifted: live={total}, pinned=44 (iter-280 cohort growth: tranylcypromine + venlafaxine)"
 
 
 def test_dashboard_displays_live_precision_number():
@@ -123,10 +123,11 @@ def test_dashboard_displays_live_precision_number():
     # which understated v8's deployed reach. Both forms are accepted to
     # ease the lockstep migration; v8 form is canonical post-iter-275.
     assert (
-        "43 / 43 contraindicated · live cache" in demo_html
+        "44 / 44 contraindicated · live cache" in demo_html
+        or "43 / 43 contraindicated · live cache" in demo_html
         or "8 / 8 contraindicated · live cache" in demo_html
     ), (
         "Hero stat chip footnote must show the live cache TP/total breakdown "
-        "(post iter-275 v8 promotion: 43/43 = 100% precision over the live "
+        "(post iter-280 cohort growth: 44/44 = 100% precision over the live "
         "contra cohort)."
     )

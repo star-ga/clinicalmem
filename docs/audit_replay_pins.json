@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "bundle_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
-  "dateCreated": "2026-05-07T05:22:30.652662+00:00",
+  "dateCreated": "2026-05-07T06:45:06.087827+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -649,6 +649,20 @@
         7520679
       ],
       "repro_hash": "6446ea28b32c8c545a34aa1fc014bed2b8f7cfdfafb6600e6b4f287280883438",
+      "severity_name": "contraindicated"
+    },
+    {
+      "drug_a": "tranylcypromine",
+      "drug_b": "venlafaxine",
+      "feature_hash": "46bd8c964fd80fe8b7a3e45834223856d1a55eca38c0f5a7ee284b1864418727",
+      "logits_q16": [
+        1903633,
+        -5666497,
+        -7574079,
+        -107241,
+        5950210
+      ],
+      "repro_hash": "93adbf9c004f941db256811ee4b8f2f9a4ab465c8fe5a8ec5ebd2b65991f7cea",
       "severity_name": "contraindicated"
     }
   ],

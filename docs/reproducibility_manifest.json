@@ -3,18 +3,18 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-07T06:31:56.843952+00:00",
+  "dateCreated": "2026-05-07T06:59:20.115024+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "d2ee3e91e3b3a8996b2996b22c8d4b99cd59f802",
+  "git_head": "6f98929cc99afe05df40254465c2077260420978",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
-      "sha256": "867796f12ef4a4b72b32d7f1bb3e3416dcba10e7a773f1d239bde451497dfe7b",
-      "entry_count": 138,
+      "sha256": "be71fc3b612f8302e94a1ad9dc0d7a9d88f6a1f727a6a0d59c6482a97c27abd6",
+      "entry_count": 139,
       "per_class_counts": {
         "serious": 69,
-        "contraindicated": 43,
+        "contraindicated": 44,
         "moderate": 22,
         "major": 4
       }
@@ -27,16 +27,16 @@
     },
     "bitnet_confusion_matrix": {
       "path": "docs/bitnet_confusion_matrix.json",
-      "sha256": "1554df285496875b28a98a7db353dc03d431c7a2c42b7c7960bf5de56987dbb5",
+      "sha256": "c40c8d27286811d9d97c9cb0effb63340ed7db3de5c87b0911ff74cd279934b7",
       "safety_invariants": {
         "fp_contraindicated_is_zero": true,
         "tp_contraindicated_at_least_seven": true
       },
-      "cache_pairs_total": 138
+      "cache_pairs_total": 139
     },
     "cohort_coverage_matrix": {
       "path": "docs/cohort_coverage_matrix.md",
-      "sha256": "910295c2383e61c17a9b667f76f1f02ff51367d0ba36e8816ddbaccc4882bb38"
+      "sha256": "bd9abd7bf9b79015683444f3915591f3ad572950f2601566f4f80720eba6c554"
     },
     "synthea_demo_cohort": {
       "path": "docs/synthea_demo_cohort.json",
@@ -47,16 +47,16 @@
     },
     "bitnet_calibration": {
       "path": "docs/bitnet_calibration.json",
-      "sha256": "ec25f437197498d1bb15db5dc72d43d209376c8e85bd3b5efee9b286c15c4487",
+      "sha256": "994652748ab413e5092528667774a25ea9158c134838eb316a76814463ccbc14",
       "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
-      "total_pairs": 138,
+      "total_pairs": 139,
       "contraindicated_recall": 1.0
     },
     "audit_replay_pins": {
       "path": "docs/audit_replay_pins.json",
-      "sha256": "19ac359dcc224a220fe0ed8ef0e4ee3b1bdb34c0aa3b29ec5bbb4282d2ccc21e",
+      "sha256": "7d5d427b08f2ee708083a7d22ca3a2bdd55a68b43705a22d46a380d61f04f222",
       "bundle_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
-      "pair_count": 46
+      "pair_count": 47
     },
     "pharmacology_flags": {
       "path": "docs/pharmacology_flags.json",

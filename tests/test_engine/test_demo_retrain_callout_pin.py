@@ -62,12 +62,12 @@ def test_callout_acknowledges_safety_floor():
 
 def test_heatmap_footer_recall_is_correct():
     """**Iter-275 v8 promotion**: heatmap footer now reads
-    `recall = 43 / 43 = 100% on contraindicated` (full recall under v8;
+    `recall = 44 / 44 = 100% on contraindicated` (full recall under v8;
     pre-v8 v1 baseline was 8/39 = 21%).
     """
     text = _DEMO.read_text()
-    assert "recall = 43 / 43 = 100% on contraindicated" in text, (
-        "Heatmap footer recall must be 43/43 = 100% post v8 promotion. "
+    assert "recall = 44 / 44 = 100% on contraindicated" in text, (
+        "Heatmap footer recall must be 44/44 = 100% post iter-280 cohort growth. "
         "v8 closed every pre-v1 sub-class generalization gap."
     )
     # Block historical phrasings so prior values can't reappear.
@@ -128,7 +128,7 @@ def test_path_a_callout_iter140_numbers_not_stale():
     required_post_iter140 = (
         "26-flag",                                  # iter-146 live count
         "13 pair-derived DDI-rule bits",            # iter-140 live count
-        "43 / 43 contraindicated cache entries (100% explanation coverage)",  # iter-254 cohort 42 -> 43 (vardenafil+nitroglycerin PDE5×nitrate slot extension)
+        "44 / 44 contraindicated cache entries (100% explanation coverage)",  # iter-280 cohort 43 -> 44 (tranylcypromine+venlafaxine MAOI×SNRI slot extension)
         "1f0f8859",                                  # iter-244 v8 bundle id (full-recall breakthrough; v6 retired iter-245 per pin-discipline)
         "193-dim feature input",                    # iter-146 dim
         "256 hidden",                                # iter-244 v8 architectural double from v6's 128

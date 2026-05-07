@@ -2260,5 +2260,21 @@
     ],
     "retrieved_at": "2026-05-06",
     "source": "CACHED"
+  },
+  {
+    "drug_a": "tranylcypromine",
+    "drug_b": "venlafaxine",
+    "drug_pair_canonical": [
+      "tranylcypromine",
+      "venlafaxine"
+    ],
+    "severity": "contraindicated",
+    "clinical_summary": "Concurrent administration of tranylcypromine (Parnate; non-selective irreversible monoamine oxidase inhibitor) with venlafaxine (Effexor; serotonin-norepinephrine reuptake inhibitor) is absolutely contraindicated due to imminent risk of fatal serotonin syndrome and hypertensive crisis. MAOI inhibition of serotonin metabolism combined with venlafaxine's reuptake blockade produces synergistic synaptic 5-HT accumulation that triggers the Hunter Serotonin Toxicity Criteria (autonomic instability, neuromuscular hyperactivity including clonus and hyperreflexia, mental status changes); fatal cases have been reported within hours of co-administration. The FDA Effexor label Section 4 Contraindications lists concomitant MAOI use as an absolute contraindication and mandates a 14-day washout after MAOI discontinuation before venlafaxine initiation, plus a 7-day washout after venlafaxine before MAOI initiation. The FDA Parnate label Section 4 carries the matching prohibition. There is no monitoring regimen that mitigates this risk; alternative antidepressant selection is required if either drug has been administered within the relevant washout window. Reference: FDA Effexor XR labeling 2017 (\u00a7 4, \u00a7 5.2), FDA Parnate labeling 2018 (\u00a7 4), Boyer & Shannon NEJM 2005;352(11):1112-20 (Hunter criteria).",
+    "evidence_urls": [
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020699s107lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/15784664/"
+    ],
+    "retrieved_at": "2026-05-07",
+    "source": "CACHED"
   }
 ]

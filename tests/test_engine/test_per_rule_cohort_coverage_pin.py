@@ -79,7 +79,7 @@ _EXPECTED_PER_RULE_CONTRA_COUNTS: tuple[int, ...] = (
     7,   # 2  p_gp_inhib_substrate       (iter-230 +1: clari+tacrolimus also fires
          #                                 rule 2 because tacrolimus is P-gp substrate)
     0,   # 3  cyp2c9_inhib_anticoag      (BY DESIGN — see test below)
-    8,   # 4  maoi_serotonergic          (well-evidenced class)
+    9,   # 4  maoi_serotonergic          (iter-280 +1 tranylcypromine+venlafaxine — MAOI×SNRI extends slot to non-SSRI sub-class)
     3,   # 5  pde5_nitrate               (iter-254 +1 vardenafil+nitroglycerin;
          #                                 vardenafil joins sildenafil + tadalafil
          #                                 as 3rd PDE5 inhibitor in the cohort)
