@@ -280,3 +280,50 @@ def test_engine_modules_with_loggers_floor():
         f"logging or a major module relocation happened. Anchor this floor "
         f"lower with a deliberate refactor commit if the change is intentional."
     )
+
+
+def test_no_print_calls_in_engine_modules():
+    """Engine modules must NEVER use bare ``print()`` — structured
+    logging is the only emission contract. ``print()`` writes to
+    stdout in the operator's terminal, bypassing log filters,
+    aggregators, log-level controls, and the iter-240 PHI-discipline
+    extras-key scrub.
+
+    iter-268 forward-protective pin (T4 ratchet). Engine is currently
+    clean (0 ``print()`` calls per the iter-268 audit); this pin
+    locks that state so any future ``print(f"...")`` debug breadcrumb
+    fails the gate at commit time and gets rewritten as a structured
+    ``logger.X(...)`` call before merge.
+
+    Scripts are explicitly NOT in scope — they're CLI tools and
+    legitimately use ``print()`` for stdout output to operators.
+    """
+    import re
+
+    # Only scan engine/*.py — scripts/ legitimately use print()
+    engine_dir = _ENGINE_DIR
+    violations: list[tuple[Path, int, str]] = []
+    print_re = re.compile(r"^\s*print\(", re.MULTILINE)
+
+    for p in sorted(engine_dir.glob("*.py")):
+        if p.name == "__init__.py":
+            continue
+        text = p.read_text()
+        for m in print_re.finditer(text):
+            line_no = text[:m.start()].count("\n") + 1
+            # Allow within docstrings / comments — strict regex would
+            # need full Python parse; use simple heuristic: skip if
+            # the line starts with a comment marker.
+            line = text.splitlines()[line_no - 1]
+            stripped = line.lstrip()
+            if stripped.startswith("#"):
+                continue
+            violations.append((p.relative_to(_REPO_ROOT), line_no, stripped[:100]))
+
+    assert not violations, (
+        "Engine modules contain bare ``print()`` calls. Engine emission "
+        "contract is structured logging only — print() bypasses log "
+        "filters / aggregators / level controls / PHI-discipline scrubs. "
+        "Rewrite as ``logger.<level>('event_name', extra={...})``.\n"
+        + "\n".join(f"  • {p}:{n}  {snippet}" for p, n, snippet in violations)
+    )
