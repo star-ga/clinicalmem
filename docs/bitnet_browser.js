@@ -131,14 +131,25 @@
     return out;
   }
 
-  // ─── Drug-pair feature encoding (must match Python _encode_drug_token) ──
+  // ─── Drug-pair feature encoding (must match Python engine pipeline) ────
 
   const TRIT_LOOKUP = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, -1, -1, -1, -1];
 
+  const NITRATE_NAMES = new Set([
+    "isosorbide mononitrate",
+    "isosorbide dinitrate",
+    "nitroglycerin",
+  ]);
+
+  function canonicalName(name) {
+    return name.trim().toLowerCase().split(/\s+/).join(" ");
+  }
+
+  // 64-trit hash encoding — bit-identical with Python
+  // engine.bitnet_classifier._encode_drug_token + the v8 trainer's
+  // _hash_trits().
   function encodeDrugToken(rxcuiOrName) {
-    // Canonicalize: lowercase, whitespace-collapsed.
-    const canonical = rxcuiOrName.trim().toLowerCase().split(/\s+/).join(" ");
-    const bytes = new TextEncoder().encode(canonical);
+    const bytes = new TextEncoder().encode(canonicalName(rxcuiOrName));
     const digest = blake2b(bytes, 16);
     const out = [];
     for (const byte of digest) {
@@ -148,6 +159,84 @@
       out.push(TRIT_LOOKUP[(byte >> 2) & 0xf]);
     }
     return out.slice(0, 64);
+  }
+
+  // ─── V8 ATC pharmacology flag bits + pair-derived DDI rule bits ────────
+  // Bit-identical with engine.bitnet_features_v8 (Python). Loaded from
+  // docs/pharmacology_flags.json on first call; cached for the life of
+  // the page.
+
+  let _PHARM_FLAGS = null;
+
+  async function loadPharmFlags(url) {
+    if (_PHARM_FLAGS !== null) return _PHARM_FLAGS;
+    // Default URL targets the repo-root-served deployment layout (matches
+    // how loadWeights() defaults to "engine/bitnet_weights.json").
+    const u = url || "docs/pharmacology_flags.json";
+    const resp = await fetch(u, { cache: "no-cache" });
+    if (!resp.ok) throw new Error(`fetch ${u}: ${resp.status}`);
+    _PHARM_FLAGS = await resp.json();
+    return _PHARM_FLAGS;
+  }
+
+  // 26 ATC pharmacology flag bits {0,1} per drug — matches the v8
+  // trainer's `_flag_bits()` and engine's `flag_bits()`.
+  function flagBits(name, flagsDoc) {
+    const canonical = canonicalName(name);
+    const entry = (flagsDoc.drugs && flagsDoc.drugs[canonical]) || { flags: [] };
+    const setFlags = new Set(entry.flags || []);
+    return flagsDoc.flag_keys.map(k => setFlags.has(k) ? 1 : 0);
+  }
+
+  // 13 pair-derived DDI-rule bits {0,1} — matches Python
+  // engine.bitnet_features_v8.pair_derived_flags().
+  function pairDerivedFlags(da, db, flagsDoc) {
+    const aNorm = canonicalName(da);
+    const bNorm = canonicalName(db);
+    const aFlags = (flagsDoc.drugs && flagsDoc.drugs[aNorm] && flagsDoc.drugs[aNorm].flags) || [];
+    const bFlags = (flagsDoc.drugs && flagsDoc.drugs[bNorm] && flagsDoc.drugs[bNorm].flags) || [];
+    const fa = new Set(aFlags);
+    const fb = new Set(bFlags);
+
+    function hasPair(x, y) {
+      return (fa.has(x) && fb.has(y)) || (fa.has(y) && fb.has(x));
+    }
+    function bothHave(x) {
+      return fa.has(x) && fb.has(x);
+    }
+
+    const pde5Nitrate =
+      (fa.has("is_pde5_inhibitor") && NITRATE_NAMES.has(bNorm)) ||
+      (fb.has("is_pde5_inhibitor") && NITRATE_NAMES.has(aNorm));
+
+    return [
+      hasPair("is_cyp3a4_strong_inhibitor", "is_cyp3a4_substrate") ? 1 : 0,
+      hasPair("is_oatp1b1_inhibitor", "is_statin") ? 1 : 0,
+      hasPair("is_p_gp_inhibitor", "is_p_gp_substrate") ? 1 : 0,
+      hasPair("is_cyp2c9_inhibitor", "is_anticoagulant") ? 1 : 0,
+      hasPair("is_maoi", "is_serotonergic") ? 1 : 0,
+      pde5Nitrate ? 1 : 0,
+      hasPair("is_iodinated_contrast", "is_metformin") ? 1 : 0,
+      hasPair("is_cyp1a2_inhibitor", "is_cyp1a2_substrate") ? 1 : 0,
+      hasPair("is_xanthine_oxidase_inhibitor", "is_thiopurine") ? 1 : 0,
+      bothHave("is_folate_antagonist") ? 1 : 0,
+      hasPair("is_tetracycline", "is_retinoid") ? 1 : 0,
+      hasPair("is_ace_inhibitor", "is_neprilysin_inhibitor") ? 1 : 0,
+      hasPair("is_metformin", "is_renal_state") ? 1 : 0,
+    ];
+  }
+
+  // 193-dim pair encoding: 64 hash + 26 flag for drug A, same for B,
+  // + 13 pair-derived = 193. Order-canonicalised (lex sort).
+  function encodePairV8(da, db, flagsDoc) {
+    const [a, b] = [da, db].sort();
+    return [
+      ...encodeDrugToken(a),
+      ...flagBits(a, flagsDoc),
+      ...encodeDrugToken(b),
+      ...flagBits(b, flagsDoc),
+      ...pairDerivedFlags(a, b, flagsDoc),
+    ];
   }
 
   // ─── Q16.16 arithmetic ──────────────────────────────────────────────────
@@ -186,17 +275,41 @@
     if (!resp.ok) throw new Error(`fetch ${url}: ${resp.status}`);
     const payload = await resp.json();
 
-    if (payload.hidden_w.length !== 64) throw new Error("hidden_w must be 64 rows");
-    if (payload.hidden_b.length !== 64) throw new Error("hidden_b must be 64");
-    if (payload.output_w.length !== 5) throw new Error("output_w must be 5 rows");
+    // Iter-275 v8 promotion: dim-dynamic + schema-aware loader.
+    // Mirrors engine/bitnet_classifier.py post-iter-275.
+    const meta = payload._meta || {};
+    const schema = meta.schema || "bitnet_classifier_v1";
+    const hiddenFeatures = payload.hidden_w.length;
+    const inFeatures = payload.hidden_w[0] ? payload.hidden_w[0].length : 0;
+    const outFeatures = payload.output_w.length;
+
+    if (schema !== "bitnet_classifier_v1" && schema !== "bitnet_classifier_v3_atc_flags") {
+      throw new Error(`unknown bitnet schema ${schema}`);
+    }
+    if (payload.hidden_b.length !== hiddenFeatures) {
+      throw new Error(`hidden_b length ${payload.hidden_b.length} != hidden_features ${hiddenFeatures}`);
+    }
+    if (outFeatures !== 5) throw new Error(`output_w must be 5 rows, got ${outFeatures}`);
+    if (payload.output_w.some(row => row.length !== hiddenFeatures)) {
+      throw new Error(`output_w cols must be hidden_features ${hiddenFeatures}`);
+    }
     if (payload.output_b.length !== 5) throw new Error("output_b must be 5");
+
+    const expectedIn = schema === "bitnet_classifier_v1" ? 128 : 193;
+    if (inFeatures !== expectedIn) {
+      throw new Error(`schema ${schema} expects in_features=${expectedIn}, got ${inFeatures}`);
+    }
 
     return {
       hidden_w: payload.hidden_w,
       hidden_b: payload.hidden_b,
       output_w: payload.output_w,
       output_b: payload.output_b,
-      bundle_id: (payload._meta && payload._meta.bundle_id) || "",
+      bundle_id: meta.bundle_id || "",
+      schema: schema,
+      in_features: inFeatures,
+      hidden_features: hiddenFeatures,
+      out_features: outFeatures,
     };
   }
 
@@ -227,18 +340,30 @@
 
   // ─── Forward pass ───────────────────────────────────────────────────────
 
-  const SEVERITY_NAMES = ["none", "minor", "moderate", "major", "contraindicated"];
+  // Iter-275 v8 promotion: vocab aligned with the corpus / cache /
+  // engine `_SEVERITY_NAMES`. Pre-v8 used (none, minor, moderate, major,
+  // contraindicated) — the engine's first-era vocab.
+  const SEVERITY_NAMES_V1 = ["none", "minor", "moderate", "major", "contraindicated"];
+  const SEVERITY_NAMES_V8 = ["none", "moderate", "serious", "major", "contraindicated"];
 
   async function classify(drugA, drugB, weights) {
     // Lex-sort the pair.
     const [a, b] = [drugA, drugB].sort();
-    const featureA = encodeDrugToken(a);
-    const featureB = encodeDrugToken(b);
-    const pair = featureA.concat(featureB);
-    if (pair.length !== 128) throw new Error(`pair features length ${pair.length} != 128`);
+
+    // Iter-275: dispatch on schema. v3_atc_flags requires the live
+    // pharmacology_flags.json; v1 uses hash-only encoding.
+    let pair;
+    if (weights.schema === "bitnet_classifier_v3_atc_flags") {
+      const flagsDoc = await loadPharmFlags();
+      pair = encodePairV8(a, b, flagsDoc);
+    } else {
+      pair = encodeDrugToken(a).concat(encodeDrugToken(b));
+    }
+    if (pair.length !== weights.in_features) {
+      throw new Error(`pair features length ${pair.length} != in_features ${weights.in_features}`);
+    }
 
     // feature_hash = SHA-256 over bytes((v + 1) for v in pair)
-    // Python: bytes((v + 1) for v in pair_features) → 128-byte buffer
     const featureBytes = new Uint8Array(pair.map(v => v + 1));
     const featureHashBuf = await crypto.subtle.digest("SHA-256", featureBytes);
     const featureHash = Array.from(new Uint8Array(featureHashBuf))
@@ -247,14 +372,15 @@
     // Scale ternary → Q16.16
     const activations = pair.map(v => v * Q16_ONE);
 
-    // First linear: 128 → 64, plus bias, then ReLU
-    const hiddenPre = new Array(64);
-    for (let j = 0; j < 64; j++) {
+    // First linear: in_features → hidden_features, plus bias, then ReLU
+    const H = weights.hidden_features;
+    const hiddenPre = new Array(H);
+    for (let j = 0; j < H; j++) {
       hiddenPre[j] = q16Clamp(q16DotTernary(activations, weights.hidden_w[j]) + weights.hidden_b[j]);
     }
     const hidden = hiddenPre.map(q16Relu);
 
-    // Second linear: 64 → 5
+    // Second linear: hidden_features → 5
     const logits = new Array(5);
     for (let k = 0; k < 5; k++) {
       logits[k] = q16Clamp(q16DotTernary(hidden, weights.output_w[k]) + weights.output_b[k]);
@@ -276,11 +402,15 @@
     };
     const reproHash = await sha256Hex(canonicalJson(reproPayload));
 
+    const vocab = weights.schema === "bitnet_classifier_v3_atc_flags"
+      ? SEVERITY_NAMES_V8
+      : SEVERITY_NAMES_V1;
+
     return {
       drug_a: a,
       drug_b: b,
       severity: severity,
-      severity_name: SEVERITY_NAMES[severity],
+      severity_name: vocab[severity],
       logits_q16: logits,
       feature_hash: featureHash,
       repro_hash: reproHash,
@@ -303,8 +433,12 @@
 
   window.ClinicalMemBitNet = {
     loadWeights,
+    loadPharmFlags,
     classify,
     encodeDrugToken,
+    encodePairV8,
+    flagBits,
+    pairDerivedFlags,
     blake2b,
     selfTest,
     _internals: { canonicalJson, q16DotTernary, q16Clamp, Q16_ONE },

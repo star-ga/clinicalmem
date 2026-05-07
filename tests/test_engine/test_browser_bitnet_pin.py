@@ -87,13 +87,6 @@ def test_demo_announces_in_browser_q16_inference():
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not on PATH")
-@pytest.mark.skip(
-    reason="iter-275 v8 engine promotion — browser JS port (193-dim + 26 ATC "
-    "flags + 13 pair-derived rules + 256-hidden) deferred to iter-276+. "
-    "Engine-side v8 verified 43/43 contra + 0 FP under Q16.16; the in-browser "
-    "demo path runs the same logic but the JS encoder still targets the v1 "
-    "128-dim hash-only encoding. Re-enable after porting bitnet_browser.js."
-)
 def test_browser_js_reproduces_python_repro_hash(python_reference, tmp_path):
     """Run the JS port via Node.js and assert byte-for-byte match with
     the Python forward pass on warfarin + ibuprofen."""
