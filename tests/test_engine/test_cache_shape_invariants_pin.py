@@ -15,8 +15,12 @@ typo or a half-finished merge can silently break:
     cache misses on the very pair it was supposed to add.
   - No duplicate (drug_a, drug_b) pairs. A duplicate would inflate the
     per-class count and skew every dashboard claim.
-  - clinical_summary length ≥ 100 chars. A one-line stub is not a
-    citation; the dashboard's "evidence-backed" pitch breaks.
+  - clinical_summary length ≥ 400 chars (ratcheted from 100 at iter-259
+    once the cohort matured to 138 entries with min length 470, p10
+    545, median 621 — the original floor was set when the cache was
+    young; tightening it now forces any new stub-length entry to fail
+    the gate visibly). A one-line stub is not a citation; the
+    dashboard's "evidence-backed" pitch breaks.
   - retrieved_at is ISO-8601 ``YYYY-MM-DD``. A free-form date breaks
     the ``audit_replay_pins`` provenance pin.
   - All 8 required fields present on every entry.
@@ -43,7 +47,14 @@ _REQUIRED_FIELDS = (
     "drug_a", "drug_b", "drug_pair_canonical", "severity",
     "clinical_summary", "evidence_urls", "retrieved_at", "source",
 )
-_MIN_SUMMARY_LEN = 100
+_MIN_SUMMARY_LEN = 400  # iter-259 ratchet — live min is 470 (azathioprine+allopurinol),
+                          # p10 = 545, median = 621. The original 100-char floor was set
+                          # at iter-66 when the cache was small; with 138 cohort entries
+                          # the discipline has matured well past stub-length. Ratcheting
+                          # to 400 leaves ~70 char headroom for future entries while
+                          # forcing any new entry that approaches stub-length to fail
+                          # the gate visibly (the iter-117 ratchet pattern: tighten
+                          # invariants once enough headroom exists).
 _ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
