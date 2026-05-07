@@ -388,6 +388,20 @@ _HISTORICAL_COUNTS = (
     # canonical lex-sorted pair hash, source-level no-legacy-%s guard.
     # Live 1334 → 1337.
     "1334",
+    # iter-301 T1 round-63: 25th cross-pin family —
+    # test_demo_pin_description_recall_consistency_pin.py (4 tests).
+    # Same iter-232/iter-298 single-source-of-truth → derived-surface
+    # drift class as the JUDGES header pin, but applied to inline pin-
+    # description text inside docs/demo.html. Caught at iter-301 audit:
+    # 3 stale 43/43 + 1 stale "42 contraindicated" survived the
+    # iter-280 cohort growth from 43 → 44. Pin locks the aggregate
+    # phrase ("aggregate: bundle_id + N/N + 4/4 + 0 FP +
+    # strictly_supersedes"), the iter-275 promotion phrase ("bundle_id
+    # + N/N contra + 4/4 major + 0 FP + meta-block"), the cohort
+    # breakdown ("139-pair recall cohort (X contraindicated · Y
+    # major · Z moderate · W serious)"), and forbids pre-iter-280 4[23]
+    # contra fractions from re-appearing. Live 1337 → 1341.
+    "1337",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -401,7 +415,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1337
+_TEST_COUNT_FLOOR = 1341
 
 
 def test_no_stale_test_counts_in_docs():
