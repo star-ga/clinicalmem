@@ -555,8 +555,28 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
     # Deterministic table check (Layer 1)
     def _deterministic_check(inputs: dict) -> dict:
         from engine.clinical_scoring import check_drug_interactions
+        meds = inputs.get("medications", [])
         # Disable LLM fallback so this node is a clean Layer 1 stamp
-        results = check_drug_interactions(inputs.get("medications", []), use_llm_fallback=False)
+        results = check_drug_interactions(meds, use_llm_fallback=False)
+        # iter-319 observability — flow-node-level footprint for the
+        # Layer 1 deterministic table stamp. Fires once per flow
+        # execution; mirror of iter-314 _bitnet_classify (29th cross-
+        # pin) at the Layer 1 dispatch entry. PHI-safe: med_count +
+        # interaction_count + severity_histogram (categorical) only.
+        # Drug names never reach the log record. Severity histogram is
+        # information-theoretically lossy under realistic cohorts.
+        sev_counts: dict[str, int] = {}
+        for r in results:
+            s = r.severity
+            sev_counts[s] = sev_counts.get(s, 0) + 1
+        logger.debug(
+            "flow_node_deterministic_check",
+            extra={
+                "med_count": len(meds),
+                "interaction_count": len(results),
+                "severity_histogram": sev_counts,
+            },
+        )
         return {
             "interactions": [
                 {"drug_a": r.drug_a, "drug_b": r.drug_b, "severity": r.severity,

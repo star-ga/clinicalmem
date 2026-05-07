@@ -481,6 +481,20 @@ _HISTORICAL_COUNTS = (
     # added docs/clinical_validation.md to scope (was missed by the
     # iter-306 sweep). Live 1356 → 1357.
     "1356",
+    # iter-319 T4 round-68: 30th cross-pin family —
+    # test_flow_node_deterministic_check_logging_pin.py (3 tests).
+    # Closes the 2nd silent flow-node helper (Layer 1 deterministic
+    # table stamp) inside engine.flow_runner._dispatch_table. iter-314
+    # closed the 1st (_bitnet_classify, 29th cross-pin) and noted
+    # _deterministic_check + _rxnorm_normalize + _build_safety_report
+    # as future T4 candidates. Same iter-289/iter-304/iter-314
+    # silent-path observability class. NEW DEBUG event
+    # flow_node_deterministic_check with PHI-safe extras (med_count,
+    # interaction_count, severity_histogram categorical). 3 tests
+    # gate: event_name in source + logger.X call in body + no drug-
+    # name extras keys. Live 1357 → 1360. 2 helpers remain candidates
+    # (_rxnorm_normalize + _build_safety_report).
+    "1357",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -494,7 +508,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1357
+_TEST_COUNT_FLOOR = 1360
 
 
 def test_no_stale_test_counts_in_docs():
