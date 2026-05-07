@@ -467,6 +467,20 @@ _HISTORICAL_COUNTS = (
     # regulatory anchor (FDA SaMD substantial-equivalence pathway
     # requires regulatory backing). Live 1355 → 1356.
     "1355",
+    # iter-316 T1 round-67: extended iter-306 pin family with new
+    # invariant test_no_v1_baseline_held_out_metrics_in_current_tense
+    # (1 test). Closes the iter-308/iter-313 fossil class that the
+    # original iter-306 pin didn't pattern-match: 85.7% / 35/35 /
+    # 31/35 / n=42 (v1 held-out evaluation metrics) appearing as
+    # current-tense LIVE-engine claims. Allowlist extended with
+    # held-out / training-fold / training-time / pre-iter-275 tokens.
+    # NEW section-level fallback: scans upward to nearest markdown /
+    # HTML heading and checks heading text for historical tokens —
+    # legitimises tables/code blocks under "### Pre-promotion v1
+    # baseline" sections that were beyond the 3-line window. Also
+    # added docs/clinical_validation.md to scope (was missed by the
+    # iter-306 sweep). Live 1356 → 1357.
+    "1356",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -480,7 +494,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1356
+_TEST_COUNT_FLOOR = 1357
 
 
 def test_no_stale_test_counts_in_docs():

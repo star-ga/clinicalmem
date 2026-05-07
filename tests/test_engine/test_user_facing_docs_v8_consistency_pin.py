@@ -78,6 +78,11 @@ _USER_FACING_DOCS = (
     _REPO_ROOT / "docs" / "bitnet_training.md",
     _REPO_ROOT / "docs" / "why_bitnet_b158.md",
     _REPO_ROOT / "docs" / "demo.html",
+    # iter-316 scope extension: clinical_validation.md was missed by the
+    # iter-306 sweep but iter-308 caught 5 stale v1-era refs in it
+    # (35/35, 31/35, 85.7%, n=42, etc.). Add to scope so the same
+    # fossil class can never regress here.
+    _REPO_ROOT / "docs" / "clinical_validation.md",
 )
 
 # Historical-context tokens — ANY of these on the same line OR an
@@ -192,6 +197,99 @@ def test_no_19kb_engine_claim_in_current_tense():
         "context. The live engine bundle (v8) is ~118 KB. v1 size "
         "references are legitimate ONLY in audit-chain reconstruction "
         "prose. Hits:\n"
+        + "\n".join(f"  - {v}" for v in violations[:10])
+    )
+
+
+def test_no_v1_baseline_held_out_metrics_in_current_tense():
+    """v1-baseline held-out evaluation metrics — the 85.7% per-class
+    contra accuracy on n=42, the 35 / 35 NTI-cohort recall, the
+    31 / 35 major-cohort recall — must NOT appear as current-tense
+    LIVE-engine claims outside an explicit historical / v1-baseline /
+    pre-promotion / held-out / training-fold context.
+
+    iter-316 ratchet (closes the iter-308/iter-313 fossil class that
+    the original iter-306 pin didn't pattern-match). iter-308 caught
+    5 deeper stale v1-era refs in clinical_validation.md L80-89/L102
+    + bitnet_training.md L37/L148/L154 + DEVPOST.md L13 + demo.html
+    L1154/L1160 (held-out 85.7% / n=42 / NTI 35/35 cohort). iter-313
+    caught the FDA Q-Sub §2.5 narrative gap. All fixed in prose;
+    iter-316 (this pin) prevents regression at the fossil-pattern
+    layer.
+
+    Allowlist (3-line window from `_HISTORICAL_TOKENS` + held-out /
+    training-fold / per-class held-out evaluation tokens that signal
+    legitimate v1 baseline citation):
+      pre-promotion, v1 baseline, pre-v8, preserved at, cfadb4f6,
+      audit-chain reconstruction, audit-trail rigor, historical
+      anchor, decade-replay, prior bundle, bdaf385a, v1 backup,
+      held-out, held out, training fold, training-time, baseline
+      held-out, training-time accuracy, pre-iter-275
+
+    Forbidden patterns (current-tense LIVE-engine claims):
+      85.7%   — v1 held-out per-class contra accuracy
+      35/35   — v1 NTI-cohort full-recall claim
+      31/35   — v1 major-cohort recall claim
+      n=42    — v1 held-out contra test set size
+    """
+    # Extended allowlist — held-out / training-fold tokens are
+    # ALSO legitimate historical context for these fossils.
+    extended_tokens = _HISTORICAL_TOKENS + (
+        "held-out",
+        "held out",
+        "training fold",
+        "training-time",
+        "training-time accuracy",
+        "pre-iter-275",
+    )
+
+    def _ext_line_window_ok(lines: list[str], idx: int) -> bool:
+        # Standard 3-line window
+        lo = max(0, idx - 1)
+        hi = min(len(lines), idx + 2)
+        window = " ".join(lines[lo:hi]).lower()
+        if any(tok in window for tok in extended_tokens):
+            return True
+        # Section-level fallback: scan upward from idx for the nearest
+        # markdown / HTML heading line and check whether IT carries a
+        # historical token. Tables and code blocks under a `### Pre-
+        # promotion v1 baseline` heading are legitimately historical.
+        # Stop at any `## ` or `### ` line, or after 50 lines back.
+        for j in range(idx - 1, max(0, idx - 50) - 1, -1):
+            line_lower = lines[j].lower()
+            if line_lower.lstrip().startswith(("## ", "### ", "#### ",
+                                                "<h2", "<h3", "<h4")):
+                if any(tok in line_lower for tok in extended_tokens):
+                    return True
+                # Hit a heading WITHOUT a token — stop scanning; we're
+                # in a different section.
+                return False
+        return False
+
+    forbidden_patterns = (
+        (re.compile(r"\b85\.7\s*%"), "85.7%"),
+        (re.compile(r"\b35\s*/\s*35\b"), "35/35"),
+        (re.compile(r"\b31\s*/\s*35\b"), "31/35"),
+        (re.compile(r"\bn\s*=\s*42\b"), "n=42"),
+    )
+    violations = []
+    for doc in _USER_FACING_DOCS:
+        if not doc.exists():
+            continue
+        lines = doc.read_text().splitlines()
+        for i, line in enumerate(lines):
+            for pat, label in forbidden_patterns:
+                if pat.search(line) and not _ext_line_window_ok(lines, i):
+                    violations.append(
+                        f"{doc.relative_to(_REPO_ROOT)}:{i+1} [{label}]: "
+                        f"{line.strip()[:140]!r}"
+                    )
+    assert not violations, (
+        "v1-baseline held-out evaluation metrics appear as current-tense "
+        "LIVE-engine claims in user-facing docs. Either reframe to lead "
+        "with v8 LIVE numbers (44/44 + 4/4 major + 0 FP under Q16.16 on "
+        "the 139-pair PCCP cohort) or wrap with a historical / v1 "
+        "baseline / held-out token. Hits:\n"
         + "\n".join(f"  - {v}" for v in violations[:10])
     )
 
