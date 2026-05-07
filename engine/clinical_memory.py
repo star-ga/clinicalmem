@@ -22,10 +22,29 @@ def _hash_id(value: str | None) -> str | None:
     """Return an 8-char SHA-256 fingerprint of an identifier (e.g.
     patient ID) so it can appear in logs without exposing PHI per
     HIPAA § 164.514(b)(2)(i)(R). None passes through.
+
+    NOTE (iter-335): retained for the audit-chain data dicts (which
+    are encrypted at rest via SQLCipher and use 8-char form for
+    compactness). New logger extras should use `_hash_patient_id`
+    (16-char) to match the iter-291 / iter-309 / iter-332 / iter-333
+    PHI discipline pattern.
     """
     if not value:
         return None
     return hashlib.sha256(str(value).encode("utf-8")).hexdigest()[:8]
+
+
+def _hash_patient_id(patient_id: str) -> str:
+    """PHI-safe 16-char SHA-256 prefix of patient_id for logger extras.
+
+    iter-335 PHI extras-key migration: hash patient_id before logging
+    via `extra={}`. Mirrors `engine/fhir_client.py::_hash_patient_id`
+    (iter-332), `engine/fhir_adapter.py::_hash_patient_id` (iter-333),
+    `engine/flow_runner.py::_hash_patient_id` (iter-333),
+    `engine/what_if.py::_hash_patient_id` (iter-334), and the
+    iter-291 / iter-284 / iter-279 / iter-309 PHI discipline pattern.
+    """
+    return hashlib.sha256((patient_id or "").encode("utf-8")).hexdigest()[:16]
 
 from engine.clinical_scoring import (
     AllergyConflict,
@@ -229,7 +248,7 @@ class ClinicalMemEngine:
         logger.debug(
             "clinical_memory_bundle_ingest_start",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "total_entries": len(entries),
                 "resource_type_counts": {
                     rt: len(resources_by_type[rt]) for rt in sorted(resources_by_type)
@@ -522,7 +541,7 @@ class ClinicalMemEngine:
             logger.info(
                 "clinical_memory_recall_empty_patient",
                 extra={
-                    "patient_id": patient_id,
+                    "patient_id_hash_prefix": _hash_patient_id(patient_id),
                     "block_count": 0,
                     "results": 0,
                     "audit_hash_prefix": audit_hash[:16] if audit_hash else None,
@@ -573,7 +592,7 @@ class ClinicalMemEngine:
             logger.debug(
                 "clinical_memory_mindmem_empty_falling_back",
                 extra={
-                    "patient_id": patient_id,
+                    "patient_id_hash_prefix": _hash_patient_id(patient_id),
                     "block_count": len(blocks),
                     "query_length": len(query),
                 },
@@ -630,7 +649,7 @@ class ClinicalMemEngine:
         audit_hash = self._append_audit(
             "recall",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "query": query,
                 "results": len(result_blocks),
                 "confidence": conf.score,
@@ -646,7 +665,7 @@ class ClinicalMemEngine:
         logger.debug(
             "clinical_memory_recall_mindmem_complete",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "block_count": len(blocks),
                 "result_count": len(result_blocks),
                 "confidence": round(conf.score, 4),
@@ -681,7 +700,7 @@ class ClinicalMemEngine:
             logger.debug(
                 "clinical_memory_negation_query_scored",
                 extra={
-                    "patient_id": patient_id,
+                    "patient_id_hash_prefix": _hash_patient_id(patient_id),
                     "block_count": len(blocks),
                     "query_length": len(query),
                 },
@@ -744,7 +763,7 @@ class ClinicalMemEngine:
         audit_hash = self._append_audit(
             "recall",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "query": query,
                 "results": len(result_blocks),
                 "confidence": conf.score,
@@ -759,7 +778,7 @@ class ClinicalMemEngine:
         logger.debug(
             "clinical_memory_recall_fallback_complete",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "block_count": len(blocks),
                 "result_count": len(result_blocks),
                 "confidence": round(conf.score, 4),
@@ -837,7 +856,7 @@ class ClinicalMemEngine:
         audit_hash = self._append_audit(
             "medication_safety_check",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "medications": med_names,
                 "allergies": allergy_names,
                 "interaction_count": len(interactions),
@@ -852,7 +871,7 @@ class ClinicalMemEngine:
         logger.info(
             "clinical_memory_med_safety_check",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "med_count": len(med_names),
                 "allergy_count": len(allergy_names),
                 "interaction_count": len(interactions),
@@ -996,7 +1015,7 @@ class ClinicalMemEngine:
         self._append_audit(
             "detect_contradictions",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "contradiction_count": len(contradictions),
                 "types_found": types_found,
                 "type_counts": type_counts,
@@ -1010,7 +1029,7 @@ class ClinicalMemEngine:
         logger.info(
             "clinical_memory_contradictions_check",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "block_count": len(blocks),
                 "contradiction_count": len(contradictions),
                 "types_found": types_found,
@@ -1190,7 +1209,7 @@ class ClinicalMemEngine:
         logger.debug(
             "clinical_memory_patient_summary",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "block_count": len(blocks),
                 "medication_count": len(meds),
                 "condition_count": len(conditions),
@@ -1200,7 +1219,7 @@ class ClinicalMemEngine:
         )
 
         return {
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "total_blocks": len(blocks),
             "medications": meds,
             "conditions": conditions,
@@ -1237,7 +1256,7 @@ class ClinicalMemEngine:
             logger.info(
                 "clinical_memory_explain_conflict_abstained",
                 extra={
-                    "patient_id": patient_id,
+                    "patient_id_hash_prefix": _hash_patient_id(patient_id),
                     "reason": reason,
                     "conflict_index": conflict_index,
                     "contradiction_count": len(contradictions),
@@ -1278,7 +1297,7 @@ class ClinicalMemEngine:
         self._append_audit(
             "explain_conflict",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "conflict_type": conflict.get("type"),
                 "conflict_index": conflict_index,
                 "abstained": narrative.abstained,
@@ -1300,7 +1319,7 @@ class ClinicalMemEngine:
         logger.info(
             "clinical_memory_explain_conflict_generated",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "conflict_type": conflict.get("type"),
                 "conflict_index": conflict_index,
                 "evidence_block_count": len(evidence),
@@ -1347,7 +1366,7 @@ class ClinicalMemEngine:
         self._append_audit(
             "clinical_handoff",
             {
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "contradiction_count": len(contradictions),
                 "abstained": narrative.abstained,
                 "model_used": narrative.model_used,
@@ -1361,7 +1380,7 @@ class ClinicalMemEngine:
         logger.info(
             "clinical_memory_handoff_generated",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "block_count": len(blocks),
                 "contradiction_count": len(contradictions),
                 "interaction_count": safety_report["interaction_count"],

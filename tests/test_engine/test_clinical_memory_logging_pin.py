@@ -34,6 +34,7 @@ values, or audit-chain entry content.
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 from pathlib import Path
@@ -180,7 +181,9 @@ def test_med_safety_check_emits_info_event_iter138(caplog, tmp_path):
         "`clinical_memory_med_safety_check` INFO event."
     )
     rec = matched[0]
-    assert getattr(rec, "patient_id", None) == "pt-test-iter138"
+    expected_hash = hashlib.sha256(b"pt-test-iter138").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert getattr(rec, "med_count", "MISSING") == 0
     assert getattr(rec, "interaction_count", "MISSING") == 0
 
@@ -203,7 +206,9 @@ def test_detect_contradictions_emits_info_event_iter138(caplog, tmp_path):
         "`clinical_memory_contradictions_check` INFO event."
     )
     rec = matched[0]
-    assert getattr(rec, "patient_id", None) == "pt-test-iter138-b"
+    expected_hash = hashlib.sha256(b"pt-test-iter138-b").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert getattr(rec, "contradiction_count", "MISSING") == 0
     # Iter-294: type_counts dict added so auditors can see the breakdown
     # without re-querying. For empty cohort it's an empty dict.
@@ -369,7 +374,9 @@ def test_bundle_ingest_emits_debug_event_iter171(caplog):
     assert matches, "bundle_ingest_start event missing"
     rec = matches[0]
     assert rec.levelno == logging.DEBUG
-    assert rec.patient_id == "p1"
+    expected_hash = hashlib.sha256(b"p1").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert rec.total_entries == 3
     assert rec.resource_type_counts.get("Condition") == 2
 
@@ -401,7 +408,9 @@ def test_recall_empty_patient_emits_info_event_iter171(caplog):
     assert matches, "recall_empty_patient event missing"
     rec = matches[0]
     assert rec.levelno == logging.INFO
-    assert rec.patient_id == "never-ingested-patient"
+    expected_hash = hashlib.sha256(b"never-ingested-patient").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert rec.block_count == 0
     assert rec.results == 0
 
@@ -457,7 +466,9 @@ def test_explain_conflict_abstained_emits_info_event_iter171(caplog):
     assert matches, "explain_conflict_abstained event missing"
     rec = matches[0]
     assert rec.levelno == logging.INFO
-    assert rec.patient_id == "no-such-patient"
+    expected_hash = hashlib.sha256(b"no-such-patient").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert rec.reason in ("no_conflicts", "conflict_index_out_of_range")
     assert rec.contradiction_count == 0
 
@@ -529,7 +540,9 @@ def test_recall_fallback_complete_emits_debug_event_iter201(caplog, tmp_path):
         "`clinical_memory_recall_fallback_complete` DEBUG event."
     )
     rec = matched[0]
-    assert rec.patient_id == "pt-iter201"
+    expected_hash = hashlib.sha256(b"pt-iter201").hexdigest()[:16]
+    assert getattr(rec, "patient_id_hash_prefix", None) == expected_hash
+    assert getattr(rec, "patient_id", None) is None
     assert rec.block_count == 1
     # PHI sentinel scan — recall log records must not carry the block content.
     for r in caplog.records:

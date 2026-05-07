@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-07T23:16:33.422131+00:00",
+  "dateCreated": "2026-05-07T23:35:08.471889+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "5b846020e3f8fa7124c47b5e751e72cd93a6803e",
+  "git_head": "bf622282fc495a9b9c7e643d47d74ba830da3bcd",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
