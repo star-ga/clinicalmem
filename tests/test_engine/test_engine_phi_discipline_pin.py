@@ -183,8 +183,69 @@ def test_no_positional_phi_risky_logger_calls():
                             break
                 i += 1
             body = text[start:i]
-            # Need a fmt string with %s|%d|%r and at least one comma after
-            fmt_match = re.search(r'(?:[urb]?["\'][^"\']*%[sdr][^"\']*["\'])\s*,', body)
+            # Need a fmt string with %s|%d|%r and a comma after the
+            # WHOLE fmt-string-region (which may be a multi-line
+            # concatenation of adjacent string literals like
+            # `"foo %s" "bar %s",`). Iter-291 closes the gap that
+            # let `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` slip through:
+            # match a contiguous sequence of string literals (each
+            # optionally `u/r/b/f`-prefixed, separated by whitespace
+            # only), where AT LEAST ONE contains `%s|%d|%r`, then a
+            # required comma.
+            #
+            # Pattern parts:
+            #   - `(?:[urbf]?["\'][^"\']*["\']\s*)+` — one-or-more
+            #     adjacent string literals (Python's implicit
+            #     concatenation), with optional prefix
+            #   - lookahead anchor `(?=.{0,2000}%[sdr])` ensures at
+            #     least one of the strings contains a fmt specifier
+            #     (the bounded width `.{0,2000}` keeps it from
+            #     scanning the entire file on no-match).
+            #   - `,` — the load-bearing comma that introduces
+            #     positional args.
+            #
+            # We also still match the simple single-string case the
+            # pre-iter-291 regex caught.
+            fmt_match = re.search(
+                # Single literal containing %s|%d|%r (pre-iter-291 case)
+                r'(?:[urbf]?["\'][^"\']*%[sdr][^"\']*["\'])\s*,'
+                # OR: two-or-more adjacent literals where at least one
+                # carries a fmt specifier.
+                r'|(?:'
+                r'(?:[urbf]?["\'][^"\']*["\']\s*){2,}'
+                r')\s*,',
+                body,
+                flags=re.DOTALL,
+            )
+            # Iter-291 secondary check: if the simple regex didn't match
+            # but the body contains a fmt specifier inside a multi-line
+            # adjacent-string concatenation, do a more thorough probe.
+            if not fmt_match and re.search(r'%[sdr]', body):
+                # Find a sequence: opening string, possibly more strings,
+                # ending with comma. Scan for any %s|%d|%r inside the
+                # whole-fmt-region.
+                # Conservative: match if the body has BOTH a fmt
+                # specifier AND at least one comma at top level (depth 0).
+                # We approximate by checking the first comma at top level
+                # is preceded only by string-literal-or-whitespace-or-
+                # adjacent-strings.
+                # If body starts with a string literal and has %s|%d|%r
+                # before the first top-level comma, treat as fmt-string.
+                first_comma = body.find(",")
+                if first_comma > 0:
+                    prefix = body[:first_comma]
+                    if re.search(r'%[sdr]', prefix) and re.match(
+                        r'^\s*(?:[urbf]?["\'][^"\']*["\']\s*)+\s*$',
+                        prefix,
+                        flags=re.DOTALL,
+                    ):
+                        # Synthetic match span — set fmt_match to a
+                        # truthy stub so the downstream var scan runs.
+                        class _M:
+                            pass
+                        _stub = _M()
+                        _stub.end = lambda: first_comma + 1
+                        fmt_match = _stub
             if not fmt_match:
                 continue
             after_fmt = body[fmt_match.end():]

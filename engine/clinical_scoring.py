@@ -410,13 +410,32 @@ def _attach_bitnet_repro_hashes(
         bitnet_safe = result.severity_name in ("none", "minor")
         if upstream_dangerous and bitnet_safe:
             disagreement_count += 1
+            # Iter-291 PHI-discipline fix: was emitting raw drug names
+            # via positional %s formatting. Replaced with structured
+            # `extra={}` form using SHA-256-prefixed pair hash (mirrors
+            # iter-279/iter-284 discipline). The audit-grade preimage
+            # (feature_hash + repro_hash + weights_id) still surfaces
+            # for replay, but raw drug names never reach the log.
+            import hashlib as _hashlib
+            _a_norm = it.drug_a.strip().lower()
+            _b_norm = it.drug_b.strip().lower()
+            _canonical_pair = f"{min(_a_norm, _b_norm)}|{max(_a_norm, _b_norm)}"
+            _pair_hash = _hashlib.sha256(
+                _canonical_pair.encode("utf-8")
+            ).hexdigest()[:16]
             logger.warning(
-                "BITNET_SAFETY_DOWNGRADE_DISAGREEMENT pair=%s+%s "
-                "upstream=%s bitnet=%s feature_hash=%s repro_hash=%s "
-                "weights_id=%s — upstream verdict preserved; investigate "
-                "before any clinical action",
-                it.drug_a, it.drug_b, it.severity, result.severity_name,
-                result.feature_hash, result.repro_hash, result.weights_id,
+                "BITNET_SAFETY_DOWNGRADE_DISAGREEMENT",
+                extra={
+                    "pair_hash_prefix": _pair_hash,
+                    "drug_a_length": len(it.drug_a),
+                    "drug_b_length": len(it.drug_b),
+                    "upstream_severity": it.severity,
+                    "bitnet_severity": result.severity_name,
+                    "feature_hash": result.feature_hash,
+                    "repro_hash": result.repro_hash,
+                    "weights_id": result.weights_id,
+                    "advisory": "upstream verdict preserved; investigate before any clinical action",
+                },
             )
 
         stamped.append(
