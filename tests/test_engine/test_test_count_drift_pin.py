@@ -569,6 +569,21 @@ _HISTORICAL_COUNTS = (
     # interaction_count). 3 tests gate event_name + logger.X call +
     # no drug-name extras keys. Live 1367 → 1370.
     "1367",
+    # iter-330 T5 round-70: cohort defense extension (iter-285 family)
+    # — NEW invariant test_every_major_cites_two_distinct_authoritative_hosts
+    # (1 test). Stricter than iter-325 (≥ 1 URL): requires ≥ 2 distinct
+    # authoritative hosts per major. Live cohort post-iter-330: 4/4
+    # majors at 2 distinct hosts (paroxetine+tamoxifen pubmed+bmj,
+    # clarithromycin+digoxin pubmed+FDA, tacrolimus+voriconazole
+    # FDA+NIH, dabigatran+dronedarone FDA+NIH). Whitelist gap closed:
+    # added bmj.com / www.bmj.com (BMJ main journal — only ard.bmj.com
+    # rheumatology sub-journal was in the iter-285 whitelist; main
+    # peer-reviewed BMJ deserves authoritative status). Both bmj forms
+    # added to _ALLOWED_UNUSED_HOSTS since paroxetine+tamoxifen is
+    # major-severity (not contra). Live 1370 → 1371. Severity-coverage
+    # extension lineage: iter-285 → iter-310 → iter-315 → iter-320 →
+    # iter-325 → iter-330 (majors ≥2 distinct hosts).
+    "1370",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -582,7 +597,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1370
+_TEST_COUNT_FLOOR = 1371
 
 
 def test_no_stale_test_counts_in_docs():

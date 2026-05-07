@@ -28,7 +28,8 @@ Peer-reviewed primary:
   - pubmed.ncbi.nlm.nih.gov     PubMed
   - ncbi.nlm.nih.gov            NIH PMC full-text
   - ahajournals.org             American Heart Association journals
-  - ard.bmj.com                 BMJ Annals of Rheumatic Diseases
+  - bmj.com / www.bmj.com       BMJ (British Medical Journal, main)
+  - ard.bmj.com                 BMJ Annals of Rheumatic Diseases (sub)
   - academic.oup.com            Oxford University Press medical journals
   - jaad.org                    Journal of American Academy of Dermatology
   - aan.com                     American Academy of Neurology
@@ -65,6 +66,8 @@ _AUTHORITATIVE_HOSTS = frozenset({
     "www.ahajournals.org",
     "ahajournals.org",
     "ard.bmj.com",
+    "bmj.com",
+    "www.bmj.com",
     "academic.oup.com",
     "www.jaad.org",
     "jaad.org",
@@ -184,6 +187,54 @@ def test_every_contra_cites_two_distinct_authoritative_hosts():
     assert not failures, (
         f"{len(failures)} contraindicated entries with < 2 distinct "
         f"authoritative hosts (iter-320 ratchet). Allowed hosts: "
+        f"{sorted(_AUTHORITATIVE_HOSTS)[:8]}...\n"
+        f"First offender: {failures[0]}\n"
+        f"Either add a citation from a different authoritative "
+        f"organisation OR extend _AUTHORITATIVE_HOSTS deliberately."
+    )
+
+
+def test_every_major_cites_two_distinct_authoritative_hosts():
+    """Every `major`-severity cache entry MUST cite ≥ 2 *distinct*
+    authoritative hosts. Stricter than iter-325 (≥ 1 URL).
+
+    iter-330 ratchet (iter-325-era candidate executed). Live cohort
+    audit (4 majors post iter-330 whitelist update — added bmj.com /
+    www.bmj.com to authoritative set; the BMJ main journal was a
+    whitelist gap, only its rheumatology sub-journal ard.bmj.com was
+    in scope):
+      paroxetine + tamoxifen      pubmed + bmj.com    (2 hosts)
+      clarithromycin + digoxin    pubmed + FDA        (2 hosts)
+      tacrolimus + voriconazole   FDA + NIH           (2 hosts)
+      dabigatran + dronedarone    FDA + NIH           (2 hosts)
+      4 / 4 at ≥ 2 distinct authoritative hosts — 0 / 4 at floor.
+
+    Same iter-117 ratchet pattern; complementary axis to iter-325
+    (≥ 1 URL, severity-tier extension to majors). iter-330 = source-
+    independence applied to majors (mirrors iter-320 for contras).
+
+    Severity-coverage extension lineage:
+      iter-285  contras: ≥ 1 authoritative URL
+      iter-310  contras: ≥ 2 path-distinct authoritative URLs
+      iter-315  contras: ≥ 1 FDA OR EMA regulatory URL (100%)
+      iter-320  contras: ≥ 2 distinct authoritative hosts
+      iter-325  majors:  ≥ 1 authoritative URL
+      iter-330  majors:  ≥ 2 distinct authoritative hosts (this commit)
+    """
+    majors = [it for it in _cache() if it["severity"] == "major"]
+    failures = []
+    for it in majors:
+        urls = it.get("evidence_urls", [])
+        auth_hosts = {urlparse(u).netloc for u in urls} & _AUTHORITATIVE_HOSTS
+        if len(auth_hosts) < 2:
+            failures.append({
+                "pair": (it["drug_a"], it["drug_b"]),
+                "auth_host_count": len(auth_hosts),
+                "auth_hosts": sorted(auth_hosts),
+            })
+    assert not failures, (
+        f"{len(failures)} major-severity entries with < 2 distinct "
+        f"authoritative hosts (iter-330 ratchet). Allowed hosts: "
         f"{sorted(_AUTHORITATIVE_HOSTS)[:8]}...\n"
         f"First offender: {failures[0]}\n"
         f"Either add a citation from a different authoritative "
@@ -323,6 +374,13 @@ def test_all_authoritative_hosts_used_by_at_least_one_live_contra():
         "ahajournals.org",
         "jaad.org",
         "aan.com",
+        # iter-330: bmj.com / www.bmj.com (BMJ main journal) added to
+        # whitelist because the major-class paroxetine+tamoxifen entry
+        # cites it. Both forms are unused by any *contra* (it's a
+        # major-severity citation), so both go in the allowlist with
+        # documented rationale per iter-285's orphan-host pattern.
+        "bmj.com",
+        "www.bmj.com",
     })
 
     unused = _AUTHORITATIVE_HOSTS - used_hosts - _ALLOWED_UNUSED_HOSTS
