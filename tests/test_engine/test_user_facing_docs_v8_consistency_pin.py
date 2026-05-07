@@ -294,6 +294,100 @@ def test_no_v1_baseline_held_out_metrics_in_current_tense():
     )
 
 
+def test_no_stale_mind_mem_dep_version_as_live_claim():
+    """Every user-facing doc claim about the LIVE mind-mem dependency
+    version MUST match the pyproject.toml pin. Older versions are OK
+    only inside historical / baseline / pre-iter-275 / audit-chain
+    context (3-line window + section-level fallback).
+
+    Iter-321 ratchet (iter-318/iter-323 candidate executed early).
+    iter-318 caught 5 stale `mind-mem v3.9.0` LIVE-claims that lagged
+    the pyproject `>=3.9.1` pin by 1 patch release. iter-321 (this
+    test) prevents regression: every `LIVE on mind-mem v<X.Y.Z>` /
+    `LIVE against mind-mem v<X.Y.Z>` / `mind-mem v<X.Y.Z> MemoryMesh`
+    / `mind-mem v<X.Y.Z> is shipped` claim must use the current
+    pyproject pin OR be wrapped with a historical context token.
+
+    Same iter-232 / iter-298 / iter-301 / iter-303 / iter-306 /
+    iter-308 / iter-313 / iter-316 / iter-318 single-source-of-truth
+    -> derived-surface drift class, applied at the dependency-
+    version layer.
+    """
+    # Read pyproject pin to determine the live version.
+    pyproject_path = _REPO_ROOT / "pyproject.toml"
+    pyproject_text = pyproject_path.read_text() if pyproject_path.exists() else ""
+    pin_match = re.search(
+        r'"mind-mem>=(\d+)\.(\d+)\.(\d+)"',
+        pyproject_text,
+    )
+    assert pin_match is not None, (
+        "Could not parse mind-mem pin from pyproject.toml. Expected "
+        "'mind-mem>=X.Y.Z' form. If the pin format changed, update "
+        "this pin to track the new shape."
+    )
+    live_major, live_minor, live_patch = (int(g) for g in pin_match.groups())
+    live_pin = f"{live_major}.{live_minor}.{live_patch}"
+
+    # Forbidden = `mind-mem v<X.Y.Z>` where (X, Y, Z) < live pin AND
+    # NOT in a historical / baseline context. We tolerate `v<live>`
+    # in any context (always correct). We tolerate `v<future>` in any
+    # context (forward-looking, e.g. 'v3.10 transport adapter').
+    pat = re.compile(
+        r"\bmind-mem v?(\d+)\.(\d+)\.(\d+)\b",
+    )
+    extended_tokens = _HISTORICAL_TOKENS + (
+        "baseline",          # 'v3.9.0 baseline' is legitimate context
+        "released 2026-",    # release-history phrasing
+        "pre-iter-",         # 'pre-iter-275' covers the iter-308 case
+        "v3.x",              # generic version reference
+        "v3.8.x ship train", # historical release-train phrasing
+    )
+
+    def _ext_line_window_ok(lines: list[str], idx: int) -> bool:
+        lo = max(0, idx - 1)
+        hi = min(len(lines), idx + 2)
+        window = " ".join(lines[lo:hi]).lower()
+        if any(tok in window for tok in extended_tokens):
+            return True
+        for j in range(idx - 1, max(0, idx - 50) - 1, -1):
+            line_lower = lines[j].lower()
+            if line_lower.lstrip().startswith(("## ", "### ", "#### ",
+                                                "<h2", "<h3", "<h4")):
+                if any(tok in line_lower for tok in extended_tokens):
+                    return True
+                return False
+        return False
+
+    violations = []
+    for doc in _USER_FACING_DOCS:
+        if not doc.exists():
+            continue
+        lines = doc.read_text().splitlines()
+        for i, line in enumerate(lines):
+            for m in pat.finditer(line):
+                maj, mn, pt = (int(m.group(k)) for k in (1, 2, 3))
+                cited = (maj, mn, pt)
+                pin = (live_major, live_minor, live_patch)
+                if cited >= pin:
+                    # Equal or future — always allowed
+                    continue
+                if _ext_line_window_ok(lines, i):
+                    continue
+                violations.append(
+                    f"{doc.relative_to(_REPO_ROOT)}:{i+1} "
+                    f"[v{maj}.{mn}.{pt} < pin v{live_pin}]: "
+                    f"{line.strip()[:140]!r}"
+                )
+    assert not violations, (
+        f"User-facing docs cite stale `mind-mem v<X.Y.Z>` versions "
+        f"older than the pyproject pin (`mind-mem>={live_pin}`) "
+        f"outside an explicit historical / baseline / pre-iter / "
+        f"audit-chain context. Either bump the version in the doc to "
+        f"v{live_pin} OR wrap with a historical token. Hits:\n"
+        + "\n".join(f"  - {v}" for v in violations[:10])
+    )
+
+
 def test_at_least_one_doc_actually_cites_v8_live_bundle():
     """Sanity gate — at least ONE of the user-facing docs MUST cite
     the live v8 bundle id `1f0f8859`. Catches the scenario where a

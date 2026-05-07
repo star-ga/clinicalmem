@@ -507,6 +507,20 @@ _HISTORICAL_COUNTS = (
     # iter-310 (URL count) and iter-315 (regulatory jurisdiction).
     # Live 1360 → 1361.
     "1360",
+    # iter-321 T1 round-68: extended iter-306 pin family with new
+    # invariant test_no_stale_mind_mem_dep_version_as_live_claim
+    # (1 test, 6 tests total in family now). Closes the iter-318
+    # fossil class: dependency-version drift where user-facing docs
+    # cite an older mind-mem patch version than the pyproject.toml
+    # pin (e.g., 'mind-mem v3.9.0' when pin is v3.9.1). Pin parses
+    # current pyproject pin and forbids any cited version < pin
+    # outside historical / baseline / pre-iter / audit-chain
+    # context. Future versions (e.g., v3.10 transport reference)
+    # always allowed. Caught 1 real stale ref iter-318 missed:
+    # edge_pi_offline.md L355 'mind-mem v3.9.0 SQLite-backed memory
+    # store' (pre-iter-321 list). iter-318/iter-323 candidate
+    # executed early. Live 1361 → 1362.
+    "1361",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -520,7 +534,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1361
+_TEST_COUNT_FLOOR = 1362
 
 
 def test_no_stale_test_counts_in_docs():

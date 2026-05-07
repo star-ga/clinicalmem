@@ -352,7 +352,7 @@ Software stack on the SD card:
 
 - Raspberry Pi OS Lite (~400 MB)
 - Python 3.12 + the ClinicalMem `engine/` module
-- `mind-mem v3.9.0` SQLite-backed memory store
+- `mind-mem v3.9.1` SQLite-backed memory store
 - Compiled DDI tables + BitNet weights bundle (~45 MB)
 - Optional: nginx serving `docs/demo.html` locally for the clinician UI
 
