@@ -29,7 +29,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _PHARM_FLAGS_PATH = _REPO_ROOT / "docs" / "pharmacology_flags.json"
@@ -63,6 +66,17 @@ N_FLAG_BITS = len(FLAG_KEYS)
 N_PER_DRUG = N_HASH_TRITS + N_FLAG_BITS
 N_PAIR_DERIVED = 13  # iter-140: 6 baseline + 7 closure rules
 FEAT_DIM = N_PER_DRUG * 2 + N_PAIR_DERIVED
+
+# Iter-279: module-load purity preserved (the engine arch-mind gate
+# requires every engine module to be pure on import). The flag-table
+# snapshot identifier and counts are surfaced at FIRST USE via the
+# OOV warning's `extra` block instead — lets auditors correlate every
+# BitNet decision to the encoder version without breaking purity.
+
+# Latch: emit the load-context DEBUG ONCE per process on the first
+# encode_pair_v8 call, instead of at module import. Same audit
+# correlation; preserves engine purity discipline.
+_LOAD_CONTEXT_LOGGED = False
 
 
 def _canonical(name: str) -> str:
@@ -165,8 +179,58 @@ def encode_pair_v8(drug_a: str, drug_b: str) -> list[int]:
     Layout: hash_trits(a) + flag_bits(a) + hash_trits(b) + flag_bits(b)
     + pair_derived_flags(a, b). Bit-identical to the v8 trainer's
     ``encode_pair``.
+
+    Emits a structured WARNING when EITHER drug is unknown to the flag
+    table — this is the OOV signal that says the model is falling back
+    to hash-only encoding for that drug, which is a safety-relevant
+    quality-of-prediction event (the cohort-aggregate recall claim
+    `43/43` covers in-distribution drugs only).
     """
+    global _LOAD_CONTEXT_LOGGED
+    if not _LOAD_CONTEXT_LOGGED:
+        # Iter-279: emit the load-context DEBUG on first call instead of
+        # at import (preserves engine module purity for the arch-mind
+        # gate). Auditors get the same correlation between decisions and
+        # the flag-table snapshot.
+        logger.debug(
+            "bitnet_features_v8_loaded",
+            extra={
+                "flags_path_basename": _PHARM_FLAGS_PATH.name,
+                "flag_keys_count": N_FLAG_BITS,
+                "drug_count": len(_FLAG_DRUGS),
+                "n_pair_derived": N_PAIR_DERIVED,
+                "feat_dim": FEAT_DIM,
+            },
+        )
+        _LOAD_CONTEXT_LOGGED = True
+
     a, b = sorted((drug_a, drug_b))
+    a_canon = _canonical(a)
+    b_canon = _canonical(b)
+    a_known = a_canon in _FLAG_DRUGS
+    b_known = b_canon in _FLAG_DRUGS
+    if not (a_known and b_known):
+        # PHI-safe shape: drug-name fields hashed via the same SHA-256
+        # canonicalisation engine.bitnet_classifier uses for feature
+        # hashes (NOT raw names). Auditors get a stable identifier that
+        # ties the OOV event to the audit-replay row without leaking
+        # patient-context information through the log.
+        logger.warning(
+            "bitnet_v8_oov_drug",
+            extra={
+                "drug_a_known": a_known,
+                "drug_b_known": b_known,
+                "drug_a_hash_prefix": hashlib.sha256(
+                    a_canon.encode("utf-8")
+                ).hexdigest()[:16],
+                "drug_b_hash_prefix": hashlib.sha256(
+                    b_canon.encode("utf-8")
+                ).hexdigest()[:16],
+                "fallback": "hash_only_encoding",
+                "feat_dim": FEAT_DIM,
+            },
+        )
+
     out = (
         hash_trits(a)
         + flag_bits(a)
@@ -175,6 +239,13 @@ def encode_pair_v8(drug_a: str, drug_b: str) -> list[int]:
         + pair_derived_flags(a, b)
     )
     if len(out) != FEAT_DIM:
+        logger.error(
+            "bitnet_v8_encoder_dim_mismatch",
+            extra={
+                "expected_dim": FEAT_DIM,
+                "actual_dim": len(out),
+            },
+        )
         raise RuntimeError(
             f"v8 encoder produced {len(out)}-dim vector, expected {FEAT_DIM}"
         )
