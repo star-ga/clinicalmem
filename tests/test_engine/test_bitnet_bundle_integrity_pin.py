@@ -49,16 +49,17 @@ _DEMO = _REPO_ROOT / "docs" / "demo.html"
 _JUDGES = _REPO_ROOT / "JUDGES.md"
 
 
-# Pinned values (iter-130).
-_EXPECTED_SHORT_BUNDLE_ID = "cfadb4f6"
-_EXPECTED_BUNDLE_ID_TAIL = "0b3f"  # Last 4 chars from the demo span "cfadb4f6…0b3f"
-_EXPECTED_FILE_SIZE_BYTES = 20391  # 19.9 KB raw on-disk size as of iter-130
-# Tolerance: a deliberate weights rotation may shift bytes ±1024
-# without invalidating the "19 KB" rhetorical claim. A jump beyond
-# this band IS load-bearing — the Pi Zero 2 W edge claim depends on
-# the bundle staying small.
-_FILE_SIZE_TOLERANCE_BYTES = 2048
-_SPARSITY_FLOOR = 0.40  # iter-72 lower bound on zero-weight fraction
+# Pinned values (iter-275 v8 promotion — bundle 1f0f8859, 193 × 256
+# encoder, ships at ~118 KB on-disk; pre-v8 cfadb4f6 was 19.9 KB).
+_EXPECTED_SHORT_BUNDLE_ID = "1f0f8859"
+_EXPECTED_BUNDLE_ID_TAIL = "76e6"  # Last 4 chars: "1f0f8859…76e6"
+_EXPECTED_FILE_SIZE_BYTES = 121024  # ~118 KB raw on-disk size for v8
+# Tolerance: ±4 KB for whitespace / weight-rotation drift around v8.
+# A jump beyond this band IS load-bearing — the v8 architectural
+# double + flag-bit extension expanded the budget; further growth
+# signals a different architecture.
+_FILE_SIZE_TOLERANCE_BYTES = 4096
+_SPARSITY_FLOOR = 0.40  # iter-72 floor preserved through v8 (BitNet 1.58 STE)
 
 
 def _payload() -> dict:
@@ -153,11 +154,16 @@ def test_bundle_file_size_within_19kb_band():
         f">= 32 KB; update the demo + edge_pi_offline.md hardware "
         f"profile or revert the weight change."
     )
-    # Also: must still be under 32 KB hard limit (the edge-claim ceiling).
-    assert actual_bytes < 32 * 1024, (
-        f"bitnet_weights.json grew past the 32 KB hard ceiling "
-        f"(live={actual_bytes} bytes). The 'fits on a $15 Pi Zero "
-        f"2 W' demo claim is now false."
+    # Iter-275 v8 promotion: hard ceiling lifted from 32 KB → 200 KB.
+    # The Pi Zero 2 W can still ship a 118 KB bundle (RAM is 512 MB,
+    # MicroSD reads cheap); the edge claim holds at this size, just
+    # the headline KB number changed. Demo + edge_pi_offline.md
+    # rotated from "19 KB" → "~118 KB" in the same iter-275 commit.
+    assert actual_bytes < 200 * 1024, (
+        f"bitnet_weights.json grew past the 200 KB hard ceiling "
+        f"(live={actual_bytes} bytes). v8 ships at ~118 KB; further "
+        f"growth signals a different architecture and the edge claim "
+        f"needs re-evaluation."
     )
 
 

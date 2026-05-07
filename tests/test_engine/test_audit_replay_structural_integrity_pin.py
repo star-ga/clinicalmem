@@ -60,6 +60,13 @@ _ANCHOR_PAIRS = (
     ("warfarin", "ibuprofen"),
 )
 _VALID_SEVERITIES = frozenset(
+    # iter-275 v8 promotion: engine vocab now matches the corpus / cache
+    # vocabulary `{none, moderate, serious, major, contraindicated}`.
+    # Pre-v8 used `{none, minor, moderate, major, contraindicated}` —
+    # the engine's first-era vocab. With the engine `_SEVERITY_NAMES`
+    # rotated to the corpus form in iter-275, the audit-replay pins
+    # now emit "serious" where they previously emitted "minor"
+    # (different label, identical underlying class index).
     {"none", "moderate", "serious", "major", "contraindicated"}
 )
 _HEX64_RE = re.compile(r"^[0-9a-f]{64}$")

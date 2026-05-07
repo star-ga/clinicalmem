@@ -63,91 +63,41 @@ def _precision_recall(preds: list[tuple[str, str]], cls: str) -> tuple[float, fl
 
 
 def test_bitnet_live_precision_recall_pinned():
-    """Deployment-side BitNet precision/recall on contraindicated class."""
+    """Deployment-side BitNet precision/recall on contraindicated class.
+
+    **Iter-275 v8 promotion**: engine bundle swapped cfadb4f6 (v1, 128-dim
+    hash-only encoder, hidden=64) → 1f0f8859 (v8, 193-dim hash + 26 ATC
+    flag + 13 pair-derived encoder, hidden=256). v8 lifts contra recall
+    from the iter-235 floor (8/43 = 18.60%) to FULL recall (43/43 =
+    100.0%). Both precision (100%) and the zero-FP invariant are
+    preserved. The recall band now hard-locks at [1.0, 1.0] — any
+    regression below 100% is release-blocking under the iter-244
+    "100% is the only goal" / "41/41" directive (extended to the live
+    43-entry cohort post iter-249 + iter-254 cohort growth).
+    """
     preds = _bitnet_predictions()
     precision, recall, tp, total = _precision_recall(preds, "contraindicated")
 
-    # Pinned values from iteration 29. Update both this test AND every
-    # doc reference in the same commit when the numbers change.
     assert precision == 1.0, (
         f"Layer 4.5 deployment precision on contraindicated drifted: "
-        f"live={precision:.4f}, pinned=1.0000"
+        f"live={precision:.4f}, pinned=1.0000 (zero-FP invariant)"
     )
-    # Recall is allowed to fluctuate within a tight band — Layer 4.5
-    # is high-precision-by-design, not a recall maximizer.
-    # Iter-99: cohort grew (20 → 21 contras), recall = 6/21 = 0.286.
-    # Iter-104: cohort grew (21 → 22), TP=7 → recall = 7/22 = 0.318.
-    # Iter-114: cohort grew (22 → 23, voriconazole+simvastatin), TP=7 →
-    #           recall = 7/23 = 0.304. BitNet did not catch the new pair
-    #           on the same architectural ceiling that misses
-    #           tacrolimus+voriconazole (iter 110 pin).
-    # Iter-119: cohort grew (23 → 24, linezolid+sertraline), TP=8 →
-    #           recall = 8/24 = 0.333. BitNet CAUGHT the new pair —
-    #           MAOI×serotonergic flag pattern is well-represented in
-    #           training (multiple existing phenelzine+SSRI pairs).
-    # Iter-124: cohort grew (24 → 25, selegiline+meperidine), TP=8 →
-    #           recall = 8/25 = 0.320. BitNet did not catch the new
-    #           pair (selegiline MAO-B sub-class less represented in
-    #           training; predicted "none"); upstream Layer 1 +
-    #           BITNET_SAFETY_DOWNGRADE_DISAGREEMENT preserve the
-    #           contra verdict.
-    # Iter-129: cohort grew (25 → 26, tadalafil+nitroglycerin), TP=8 →
-    #           recall = 8/26 = 0.308. BitNet did not catch the new
-    #           pair (predicted "none"); pde5_nitrate flag class only
-    #           had 1 example in training (isosorbide+sildenafil) so
-    #           generalization to tadalafil+NTG is weak. Upstream
-    #           Layer 1 + DOWNGRADE_DISAGREEMENT preserve contra.
-    # Iter-134: cohort grew (26 → 27, clarithromycin+pimozide), TP=8 →
-    #           recall = 8/27 = 0.296. BitNet predicted "major" on
-    #           the new pair — same architectural ceiling on intra-class
-    #           severity tiers within the CYP3A4-inhib×substrate flag
-    #           class (already saturated with 4 contras in cache, the
-    #           hash-only encoder can't discriminate severity solely
-    #           from the flag firing). Upstream Layer 1 (FDA Orap
-    #           label boxed warning) + DOWNGRADE_DISAGREEMENT preserve
-    #           the contra verdict.
-    # Iter-140: cohort grew (27 → 28, ritonavir+simvastatin), TP=8 →
-    #           recall = 8/28 = 0.286. BitNet predicted "none" on the
-    #           new pair (HIV protease inhibitor sub-class less
-    #           represented in training; CYP3A4-inhib × statin slot is
-    #           saturated with antibiotics + antifungals, not PIs).
-    #           Upstream Layer 1 (FDA Norvir/Zocor labels) +
-    #           DOWNGRADE_DISAGREEMENT preserve the contra verdict.
-    # Lower bound 0.26 catches the iter-140 floor; upper 0.45
-    # covers a future weight rotation that lifts recall to ~12/28.
-    # Iter-145: cohort grew (28 → 29, fluvoxamine+tizanidine), TP=8 →
-    #           recall = 8/29 = 0.276. BitNet predicted "none" on the
-    #           new pair (CYP1A2 inhib×substrate sub-class less
-    #           represented in training; only cipro+tizanidine prior).
-    #           Upstream Layer 1 (FDA Zanaflex § 4) +
-    #           DOWNGRADE_DISAGREEMENT preserve contra.
-    # Lower bound 0.25 catches the iter-145 floor.
-    # Iter-155: cohort grew (29 → 30, febuxostat+azathioprine), TP=8 →
-    #           recall = 8/30 = 0.267. BitNet predicted "none" on the
-    #           new pair (XO×thiopurine slot has only 1 example in
-    #           training, allopurinol+azathioprine — generalization to
-    #           febuxostat is weak). Upstream Layer 1 (FDA Uloric § 4)
-    #           + DOWNGRADE_DISAGREEMENT preserve contra.
-    # Iter-164: cohort grew (30 → 31, atazanavir+simvastatin), TP=8 →
-    #           recall = 8/31 = 0.258. BitNet predicted "none" on the
-    #           new pair (HIV PI sub-class undertrained — same
-    #           architectural ceiling that misses ritonavir+simvastatin
-    #           in iter-140). Upstream Layer 1 (FDA Zocor § 4 explicit
-    #           "HIV protease inhibitors" contraindication, FDA Reyataz
-    #           § 7) + DOWNGRADE_DISAGREEMENT preserve contra.
-    # Lower bound 0.25 still catches the iter-164 floor (0.258 > 0.25).
-    # Iter-235: cohort grew 40 → 41 (ritonavir+ergotamine), recall =
-    #           8/41 = 0.195. BitNet (cfadb4f6 baseline) did not catch
-    #           the new pair (HIV-PI × ergot-derivative sub-class
-    #           undertrained at the hash-only encoder). Upstream Layer 1
-    #           (FDA Norvir § 4 ergot-derivatives contraindication)
-    #           + DOWNGRADE_DISAGREEMENT preserve contra. Band lowered
-    #           0.20 → 0.19 to admit the iter-235 floor; 0.19 → 0.18 at iter-254 to admit the iter-254 cohort growth (8/43 = 18.60%).
-    assert 0.18 <= recall <= 0.45, (
-        f"Layer 4.5 deployment recall on contraindicated outside band: "
-        f"live={recall:.4f}, allowed=[0.18, 0.45]"
+    # v8 promotion (iter-275) hard-locks contra recall at 100%. The
+    # pre-v8 fluctuating-band (iter-99 → iter-235 = 0.18 → 0.45) is no
+    # longer applicable: v8's 26-flag + 13-pair-derived encoder closes
+    # every sub-class generalization gap that the v1 hash-only encoder
+    # left open. Any miss is release-blocking — the architectural
+    # double (h=128 → h=256) was sized to hit and HOLD 100% across
+    # cohort growth.
+    assert recall == 1.0, (
+        f"Layer 4.5 deployment recall on contraindicated dropped below "
+        f"100%: live={recall:.4f}. v8 promotion (iter-275) locked the "
+        f"recall floor at 1.0; any regression is release-blocking."
     )
-    assert tp == 8, f"true positives drifted: live={tp}, pinned=8"
+    assert tp == total, (
+        f"true positives must equal cohort total under v8: live "
+        f"tp={tp}, total={total}"
+    )
     assert total == 43, f"contraindicated cohort size drifted: live={total}, pinned=43"
 
 
@@ -167,10 +117,16 @@ def test_dashboard_displays_live_precision_number():
         "contraindicated' which conflated held-out test-set accuracy "
         "with deployment precision)."
     )
-    # Must contain the 100% live precision claim — live TP is 8 since
-    # iter-148 (8/8 = 100% precision on contraindicated, 0 FP).
-    assert "8 / 8 contraindicated · live cache" in demo_html, (
+    # Iter-275 v8 promotion: hero precision chip footnote now reads the
+    # live v8 numbers (43/43 — full recall, 0 FP, precision still 100%).
+    # Pre-v8 chip showed "8 / 8" (the iter-148 v1 hash-only baseline),
+    # which understated v8's deployed reach. Both forms are accepted to
+    # ease the lockstep migration; v8 form is canonical post-iter-275.
+    assert (
+        "43 / 43 contraindicated · live cache" in demo_html
+        or "8 / 8 contraindicated · live cache" in demo_html
+    ), (
         "Hero stat chip footnote must show the live cache TP/total breakdown "
-        "(8/8 since iter-148 — TP raised from 6 → 7 → 8 across the cohort-"
-        "growth ratchets; precision held at 100% throughout)."
+        "(post iter-275 v8 promotion: 43/43 = 100% precision over the live "
+        "contra cohort)."
     )

@@ -54,44 +54,46 @@ def _column_totals() -> dict[str, int]:
 
 
 def test_bitnet_never_predicts_minor():
-    """BitNet must never emit `minor` on the live cache.
-
-    `minor` is upstream-domain: the 5-LLM consensus + NIH RxNav layer
-    handles non-clinically-significant interactions (e.g. caffeine +
-    aspirin pharmacokinetic interactions). Layer 4.5 emitting `minor`
-    would mean it's doing primary classification, not high-precision
-    veto. A weight rotation that lifts this column off zero must
-    update the demo + JUDGES design-rationale rhetoric explicitly.
+    """V8 promotion: vocab rotated to (none/moderate/serious/major/
+    contraindicated) — "minor" is no longer in the engine output set,
+    so the iter-115 abstention invariant for "minor" is vacuously
+    preserved (no class can emit a label that isn't in the vocab).
     """
     totals = _column_totals()
     assert totals["minor"] == 0, (
         f"BitNet emitted `minor` predictions on {totals['minor']} live "
-        f"pairs. Architectural-by-design invariant violated. Either: "
-        f"(a) revert the weight rotation, or (b) update the demo's "
-        f"'empty serious column is by design' rhetoric AND JUDGES.md "
-        f"design-rationale row to reflect the new behavior. The pin "
-        f"text in tests/test_engine/test_bitnet_design_class_abstention_pin.py "
-        f"explains the safety-case rationale."
+        f"pairs. Post-iter-275, 'minor' is not in the engine output "
+        f"vocabulary; if this fires, the vocab rotation was reverted."
     )
 
 
 def test_bitnet_never_predicts_serious():
-    """BitNet must never emit `serious` on the live cache.
+    """**Iter-275 v8 promotion architectural rotation**: the v8 model
+    is trained against the corpus vocab (none/moderate/serious/major/
+    contraindicated) for full-class prediction, NOT the v1 abstention
+    architecture. v8 emits "serious" on real pairs where the cache
+    ground-truth is "serious" — this is BY DESIGN under the new
+    architecture (contra+major are 100% recall classes; serious is
+    a primary recall class with ~84% live recall).
 
-    `serious` is the largest cohort class (69 of 118 pairs at iter-114)
-    and is fully carried by upstream Layers 1-4. Layer 4.5 emitting
-    `serious` would inflate apparent recall while undermining the
-    "high-precision veto on contraindicated" design rationale.
+    The pre-v8 abstention claim was a property of cfadb4f6's hash-only
+    architecture; v8's hash + ATC + pair-derived encoder + h=256 shifts
+    the safety case from "high-precision veto on 2 classes" to "full-
+    recall on contra/major + good recall on serious". JUDGES.md row 102
+    documents the architectural progression.
+
+    This test is preserved as a tombstone — if it ever turns to
+    `totals['serious'] == 0` again that means v8 was reverted, which
+    would re-open the iter-235 generalization gap.
     """
     totals = _column_totals()
-    assert totals["serious"] == 0, (
-        f"BitNet emitted `serious` predictions on {totals['serious']} "
-        f"live pairs. Architectural-by-design invariant violated. The "
-        f"demo confusion-matrix card explicitly claims the empty "
-        f"serious column is by design — that claim now contradicts "
-        f"the live data. Update the demo + JUDGES design-rationale "
-        f"rhetoric AND inspect the weight rotation that broke the "
-        f"invariant."
+    assert totals["serious"] >= 1, (
+        f"BitNet emitted ZERO `serious` predictions — v8 architecture "
+        f"normally produces 50+ serious predictions on the 138-pair "
+        f"live cache (matching ~84% of the 69 ground-truth serious "
+        f"entries). If this fires, v8 was reverted to a v1-style "
+        f"abstention architecture; check engine/bitnet_weights.json "
+        f"bundle_id."
     )
 
 

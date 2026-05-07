@@ -1,8 +1,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Dataset",
-  "bundle_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f",
-  "dateCreated": "2026-05-06T23:29:24.400813+00:00",
+  "bundle_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
+  "dateCreated": "2026-05-07T05:22:30.652662+00:00",
   "description": "Canonical replay set for FDA SaMD audit-trail verification. Every pair's `repro_hash` MUST reproduce byte-for-byte when re-classified under the same `bundle_id`. Run `scripts/verify_audit_replay.py --check` to verify.",
   "license": "Apache-2.0",
   "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
@@ -10,646 +10,646 @@
     {
       "drug_a": "warfarin",
       "drug_b": "ibuprofen",
-      "feature_hash": "915d4f7fedc194c9307795a8bc8b5866fa9b79b087c1a7dfd3568058bfe9f51e",
+      "feature_hash": "1708f8815641323e65345446c4df53ea3827b0d7913de73e4285ee8e296c5cc2",
       "logits_q16": [
-        332445,
-        -778737,
-        197180,
-        848472,
-        -324252
+        -1928017,
+        -1031470,
+        2423326,
+        747543,
+        -2811021
       ],
-      "repro_hash": "bdaf385a5caf7c9a77ad71ac1bf8d821da9eba6ca7d350f5a6c8e4307a9d99d5",
-      "severity_name": "major"
+      "repro_hash": "a4ca858f562b15da9a6ed5770fc23fcc1ec0392d9735fc12abe3ab7c4b181cf7",
+      "severity_name": "serious"
     },
     {
       "drug_a": "atorvastatin",
       "drug_b": "grapefruit",
-      "feature_hash": "31931b82ae38e6f406925b104e5fbdf5bba263dbdc8e60d0624eaf409bb6da49",
+      "feature_hash": "6f111e1aed9b9a55da1f8c99dce60bbc76155f28d83fa351ad25a2a851840aff",
       "logits_q16": [
-        -660034,
-        -1901520,
-        1258061,
-        -782695,
-        -967905
+        480474,
+        3967176,
+        -6329991,
+        2109040,
+        -7359887
       ],
-      "repro_hash": "5d05e706d6d896d154918f21f03d6e44efc10c17cd9d38c04d5965550dfcb4d2",
+      "repro_hash": "39855f0cfaba54b27c310737267100901191dffb555b635460cecc32333b09d8",
       "severity_name": "moderate"
     },
     {
       "drug_a": "amoxicillin",
       "drug_b": "penicillin",
-      "feature_hash": "8928034a77473286bf88abd817c7db11b1f01e71802eb1a388e632611aef0ef0",
+      "feature_hash": "3423534ee780ba8266a706a057c6744a9c206904058fb74adcb3a22a1467d056",
       "logits_q16": [
-        19485,
-        -2410907,
-        1141434,
-        -423044,
-        -2002063
+        -425437,
+        2248054,
+        -8606112,
+        -3074630,
+        -5816061
       ],
-      "repro_hash": "b694853b27e0120906e6f4822f505d000bf6489b0499acd001f0f0d0659b85d3",
+      "repro_hash": "11e42b2f5b63376e1ad48351eb44ce9c5fdc64994976372bf5a0919dfc9d95e4",
       "severity_name": "moderate"
     },
     {
       "drug_a": "contrast dye",
       "drug_b": "metformin",
-      "feature_hash": "b9cbca7f3a0509b36b4b7d2fcf2225c5a667b5a1fbab76e6e3cc9a22d531f937",
+      "feature_hash": "7722d8b21f607a05c6878be10ca0860226ba4eb20126737d60773d81731aa4b7",
       "logits_q16": [
-        -267278,
-        -2825694,
-        -1511422,
-        -1711538,
-        762082
+        1739048,
+        -6790769,
+        -18358549,
+        -8598329,
+        8291940
       ],
-      "repro_hash": "f2e0e494070e23d0e7aedf1646902fffa7dba7df8ad85fcc7edb2ff0cc4d7da7",
+      "repro_hash": "b4353d328cfb25da44dd574f295a01995d55a5ab5c44205674c5f95f31a70644",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "ciprofloxacin",
       "drug_b": "tizanidine",
-      "feature_hash": "b4e422a10ab9cdc384e57c8c3ae9c28c3561a19ae935aca017e34f62832a8ae0",
+      "feature_hash": "de5798b2800908fdc3528cd8965d78762ec76213b23f56628c9fbe8c1d7699af",
       "logits_q16": [
-        -189865,
-        -2227871,
-        -14426,
-        -835363,
-        816561
+        468310,
+        -1636843,
+        -14026782,
+        -7675825,
+        6622716
       ],
-      "repro_hash": "723814e82581965922007e345ec60f8c6838f0a1b9f9ae944cd701c742307686",
+      "repro_hash": "f212f68396ed668b2d63969db3821283f9d2a3a9f9609534d7afa366bd37d1c2",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "iodine",
       "drug_b": "metformin",
-      "feature_hash": "506e1ce0e86861127f6c03f290532b93623274aa95daa823d343c7f8d2c68dd7",
+      "feature_hash": "fd4bcac13b807511110d338b309f12aad76813e369c044d0e7dfb4ffcf17afbb",
       "logits_q16": [
-        -568547,
-        -1266889,
-        -87875,
-        -534025,
-        497582
+        -36285,
+        -4064442,
+        -17832834,
+        -7460059,
+        9463593
       ],
-      "repro_hash": "f537a7db08419fde8366a45ed1278f2eb260d701a5e6e79a23e6c3140830ba9e",
+      "repro_hash": "1a4af9fe43dadcec90d8489fdde810280982af1119b1d5b902cdc83055583633",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "clarithromycin",
       "drug_b": "simvastatin",
-      "feature_hash": "e656a327dcfa21fe62133831a9172223385d62f1860a84dcb6a39fcb314f5d9e",
+      "feature_hash": "c1e3d76a6ab0edb375de56ee8cd52634a7e6a50c50649dce305fbe97746628ee",
       "logits_q16": [
-        -38658,
-        -745029,
-        -596344,
-        243157,
-        -367014
+        -284901,
+        -333753,
+        -138679,
+        35778,
+        99886
       ],
-      "repro_hash": "e55aed5ec49f9732fa99a05ee671b7e5f34541e3d69286744b7b0c2cadb9c383",
-      "severity_name": "major"
+      "repro_hash": "553b0e3d43218d6ffbe8fe8c3375e256f8e4021d66a1ae2e217214c5764c96f3",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "cyclosporine",
       "drug_b": "simvastatin",
-      "feature_hash": "fa3ded26195aace32c4c53db1824493152d3ed41a72bd0a1d4e3ebf0297a19e2",
+      "feature_hash": "83d5ef9a4314a1f72128fc07aed35846e9bbeaf4a86a5862d6d191fd4de9baf4",
       "logits_q16": [
-        -384924,
-        -973143,
-        -330308,
-        -91533,
-        -256460
+        -1550812,
+        -1884561,
+        -817512,
+        -204328,
+        2629376
       ],
-      "repro_hash": "aa5f0191c16e26867c2c6ae24ba1bea0167d3c7aa322fc22a2759f01d647515d",
-      "severity_name": "major"
+      "repro_hash": "10bc75c4b4c27f671a1c755c754154fce9c93d21aa460591d42ec82ab3d0981a",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "phenelzine",
       "drug_b": "sertraline",
-      "feature_hash": "c7e4e6f2dd94774a91d65a17f9d58ebebcdec5886e22440aea74e6c84562b56f",
+      "feature_hash": "d8320d4c9f6d4c685dd6b2e9f94ea93ca8b04cfca6aa643034ab373328c9eadc",
       "logits_q16": [
-        -1413856,
-        -2013551,
-        -290983,
-        -508447,
-        260508
+        -4267021,
+        -3051129,
+        -11246683,
+        -1572799,
+        6021182
       ],
-      "repro_hash": "27fe7b94b9c234b8fa1645f134d6d102a2ebec7443d04f4008015d2341a74499",
+      "repro_hash": "d50b2c870d3e9ff6d20ddf55a36b9627923adc1c5ec9021cfd363cf8e0712e08",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "fluoxetine",
       "drug_b": "phenelzine",
-      "feature_hash": "a245b72215fa5530a34fcb6d1d8f7fa5b0bf82ebaa97d101e29b9bc8c45683a0",
+      "feature_hash": "1c3bd2c86a2655674bda1cf82f5b071baa026226c5938048206c96ba07b0cf84",
       "logits_q16": [
-        -1061913,
-        -1934986,
-        -2180939,
-        -448705,
-        475777
+        -1917331,
+        -4276984,
+        -5597452,
+        -902223,
+        5368846
       ],
-      "repro_hash": "6f010a0ecc0c9442a3a87217cd2ed96f0e6806ab59431d5478e9e54c98e26a42",
+      "repro_hash": "1d954ccba657569e5b523fa3afaef0a18d1c5ce14ff94e876bc68f2360265fa4",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "gemfibrozil",
       "drug_b": "simvastatin",
-      "feature_hash": "2aa25d3fc04a0030b3a531cfea4c97a301887994660d10c7bb295cae69ba08ea",
+      "feature_hash": "e3f4801b6ed2447d39bf1be385d83d251b30c59168ad63117946039f04a869e0",
       "logits_q16": [
-        -61067,
-        -755273,
-        -568478,
-        305808,
-        -704375
+        -738054,
+        -3997925,
+        -2463074,
+        494971,
+        5171750
       ],
-      "repro_hash": "c9c6cbdf4dc7ec5c6af79c3e95fa9bd19eda7b870199d928ede21200fad27d97",
-      "severity_name": "major"
+      "repro_hash": "06e357d3acd58c62b8f7c14c2d69fa163675b068659660479c4b0deee99f1ce4",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "metformin",
       "drug_b": "renal impairment",
-      "feature_hash": "2dc4dc364f4c7c72415791acb072f8df0c7f4a7417f56ed6001117ca7bf7a8b8",
+      "feature_hash": "ef19a301c165300010a397094385ba1290da144373a6106c313ac1f17ffab4ce",
       "logits_q16": [
-        985761,
-        -3545732,
-        -899630,
-        -581763,
-        -2630643
+        -6229561,
+        -4591728,
+        -12712665,
+        -6780789,
+        10116796
       ],
-      "repro_hash": "a66b473f1ef5e2b30c6c841bf494c789209ebd1e44c5dd159b8100592e1a1a06",
-      "severity_name": "none"
+      "repro_hash": "59f5c2ac4b524f56c7b62f469aa91b6736208c692e570f052f5f20da7fa57889",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "itraconazole",
       "drug_b": "simvastatin",
-      "feature_hash": "414d4576a5f0c5ace9c8a8e1d327490b7af6c243c7b7175494d9aa72c745cd2a",
+      "feature_hash": "5e4d9dd0fa83460c32995444aa13b74508ef02388d2ee4cede0a217271445749",
       "logits_q16": [
-        997864,
-        -768476,
-        -763457,
-        907665,
-        -847480
+        -284901,
+        -333753,
+        -138679,
+        35778,
+        99886
       ],
-      "repro_hash": "a57a0c22c52f91a88e4cc28954bcf22e1c6ff6336bec78793cee62a417aeb54d",
-      "severity_name": "none"
+      "repro_hash": "1b351210d38af9924429faaaaf4fa9b5f751cccc40f2455d38b980189a6884ee",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ketoconazole",
       "drug_b": "simvastatin",
-      "feature_hash": "171960def4ec0a3f3e6823fc1de33b8c526aa490c5e230f5c3a235319577d6e0",
+      "feature_hash": "e472d67177b89e38eb3a3ec4035cf48c3cc5805d0b5480c404fd5795ad93a7dd",
       "logits_q16": [
-        -819579,
-        -1916326,
-        -833551,
-        236971,
-        -1343450
+        -501847,
+        -1317484,
+        -1129883,
+        9708,
+        1003203
       ],
-      "repro_hash": "b4708274b65d2d4ade96ee65ec7eb75b7149a4d20a8d6c93e49f9e41ab3cd1e5",
-      "severity_name": "major"
+      "repro_hash": "dc4d8a73c454a8aa19091e00a6f7686a7444f7b2ee2d15baa5a964718907de86",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "maoi",
       "drug_b": "venlafaxine",
-      "feature_hash": "951baae9643a9ebd834e674bbe098536840fca538e9016095c3ba986f3b8b571",
+      "feature_hash": "ddf0730de92509552a73bd00be74ff08b9d4fb6f052f2cc3472bad0a0b6dad1e",
       "logits_q16": [
-        595868,
-        -805554,
-        -1097855,
-        862755,
-        -1636736
+        -802267,
+        -8009949,
+        -2418182,
+        227400,
+        6439364
       ],
-      "repro_hash": "64268a8f449a658fca351dc7d03876a318b01cf42c47f9b82234de41192058bb",
-      "severity_name": "major"
+      "repro_hash": "c9239aa61874c18c51088e5e12d402b89b304d62eed70fa43982fced42319dfd",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "maoi",
       "drug_b": "tramadol",
-      "feature_hash": "4c4d1b2a4dedfbc1000cc3976d834a78b5646d28849204ed77a85e2eaf2efd70",
+      "feature_hash": "33312d4a0ba90440f1150b694593b2fb92cc7712052f58d06eaa2ab628cf9e30",
       "logits_q16": [
-        339168,
-        -749756,
-        134076,
-        831545,
-        -824085
+        -1214343,
+        -1152698,
+        -1202505,
+        -209116,
+        2138657
       ],
-      "repro_hash": "21f71bf28e1e315b69c3449a6b56da6cee9d079ac5e999ce0353d9afca8f7ee4",
-      "severity_name": "major"
+      "repro_hash": "d12f7a0f0fdb9ee6e0008d46f5815d8e3d0c096ea8cfd94bf9c3346f17b48257",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "amitriptyline",
       "drug_b": "phenelzine",
-      "feature_hash": "2fc2f64e52eed824e8c57b1450a7bfd4bbbb9254cba402a5835a624183526e6f",
+      "feature_hash": "bbff0034cb7e075c270c8ac449b81de4ccf6682aac1c6166aa75b21b28a87b80",
       "logits_q16": [
-        1031733,
-        -1479248,
-        -2707462,
-        -235156,
-        1185748
+        2702753,
+        -10454016,
+        -6133144,
+        -2351177,
+        8331728
       ],
-      "repro_hash": "eedb038465d4f450e65996651d76b77de332ba6143eb776a1408122bccba8e24",
+      "repro_hash": "884a8ae0bab5fd28dd0b1864bc70a2fdf585a9b414fd390da9e69aba28f7b49b",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "allopurinol",
       "drug_b": "azathioprine",
-      "feature_hash": "698305f857e79490f7a1f4f72131847169bbf46bf9026f6c62c87e4a2fdb5f61",
+      "feature_hash": "411fd62ab00bcea30254d0b589e523a650060f3593430e3da8f6c05f34a435d2",
       "logits_q16": [
-        890665,
-        -6403705,
-        1239287,
-        -1538787,
-        -3092145
+        -464108,
+        -2051951,
+        -7974165,
+        -1317657,
+        6841162
       ],
-      "repro_hash": "ca5d626bee59476cb950f55d6c6d64212d50417a9ef79449b5e87062b5887e1a",
-      "severity_name": "moderate"
+      "repro_hash": "dc9c83ab817dc13953641beec08002e58f171e72979654c237374c4048072a53",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "methotrexate",
       "drug_b": "trimethoprim-sulfamethoxazole",
-      "feature_hash": "8130fb3d161dbc5b093421d584720fbd55071840898de418dbdabe6c40cd119d",
+      "feature_hash": "1151f48100e15fbbad3a51e88ff4e2567c066343350bf50ea278b22f452e1e19",
       "logits_q16": [
-        1678845,
-        -1898432,
-        -840668,
-        541186,
-        -1848050
+        1503413,
+        -4032761,
+        -1874846,
+        -1536995,
+        5253219
       ],
-      "repro_hash": "93ff16fa4da9ecfc5089039c07c101e44c24eb0ade8a27136f829b6843ed2aa2",
-      "severity_name": "none"
+      "repro_hash": "54d0c510aeaed75c9b0a7db3973f53a8fc437ebdd4c25b2169459dc0698fd13b",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "isosorbide mononitrate",
       "drug_b": "sildenafil",
-      "feature_hash": "e071510ff5c29454fd092e7ab989632c09f4af28fbc9cdc84a64430adb8148b5",
+      "feature_hash": "08bdd424b3b6f27195dc91f7e5767521dd295909fd7b06cd734222d87d38993c",
       "logits_q16": [
-        884738,
-        -8115243,
-        -1503376,
-        1161362,
-        -3697138
+        -1640236,
+        -8714423,
+        -5592516,
+        -4470685,
+        4650627
       ],
-      "repro_hash": "a7f353f614ca10c82eb018b5cb3288f6a8b70da21c850ba3590f4434db66594e",
-      "severity_name": "major"
+      "repro_hash": "ebc185b4be3671bd599a05b4cd6421c15890fe82354b7ac84d2430e64d6b58f1",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "doxycycline",
       "drug_b": "isotretinoin",
-      "feature_hash": "39fcf3d804c39fc92150ac42f199564b2622dd16dac98face6af2a7311bdffd1",
+      "feature_hash": "fe786cd54d25358e7e7ecdea7e77da84c20a9165432be6aa41ea2cbad9fa694b",
       "logits_q16": [
-        -668600,
-        -1031398,
-        859,
-        866459,
-        -149365
+        -2574142,
+        -4983104,
+        -5382898,
+        -3219314,
+        2276342
       ],
-      "repro_hash": "bcf24d95b3ab91bcc60b179fecc73f6d6ce827de98074f9e91af64d7486dd0be",
-      "severity_name": "major"
+      "repro_hash": "1eac97e2f8a690b99f1d155f91e9de6a35a0d52df635b207b9f0a982cec7f2cc",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "clarithromycin",
       "drug_b": "ergotamine",
-      "feature_hash": "170e3d9ebf8e1f8ddb2b29e86266493c64b73698a58d1093ffc7e9198becf401",
+      "feature_hash": "4661063d2dd4df734ba2429c6593fcbb4002b4eaf9b966cd8568ce8115ce3866",
       "logits_q16": [
-        1010186,
-        -974689,
-        -8769,
-        -292194,
-        -321487
+        -1363832,
+        -3969778,
+        -2069110,
+        -858365,
+        3764438
       ],
-      "repro_hash": "4c2ca27f29eb9a8b3a0e845a8be16b3b8563315efe27eb4a61c30385c594e0f4",
-      "severity_name": "none"
+      "repro_hash": "35f6cd7a22fd07e5fc8d75cbffe3f6c15baaafa7f526f95517afbda40fb43599",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "lisinopril",
       "drug_b": "sacubitril",
-      "feature_hash": "1034b1654057038cece62890c615aa2d8af5b2ded1512c68b7ee7739e13fa425",
+      "feature_hash": "61a4e2d8492b183bc585f132a17bbff4dba3510b6448efc073cb9b32e4f5dbe1",
       "logits_q16": [
-        570841,
-        -3232335,
-        958469,
-        -1976382,
-        -2087514
+        -1126467,
+        -5739706,
+        -6517761,
+        -5256886,
+        3433842
       ],
-      "repro_hash": "125c3698f8b213512852907b47055ca39f8b3ce94dcaa8e45a9fa6942438a508",
-      "severity_name": "moderate"
+      "repro_hash": "be0c2f2d4614670e8c8481fc6c7728f75fafd83d01d5e18dd22a0378e58d1985",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "clarithromycin",
       "drug_b": "colchicine",
-      "feature_hash": "115fc6435421fc3b0d014c7e979cf9c117bf78a8b5d30fa88b5ad617c922ff01",
+      "feature_hash": "089f9a2e18aac6b997220b05ebb379c833f1f1dde1d114ffff9cc8a29697855a",
       "logits_q16": [
-        259757,
-        -892928,
-        -56600,
-        -152765,
-        -345002
+        -543687,
+        -1000558,
+        -1456463,
+        83044,
+        1403768
       ],
-      "repro_hash": "5be8c54865eb173b2def9ec67e0aecb3862669dcd0238897bff0f491774dddd5",
-      "severity_name": "none"
+      "repro_hash": "782c5bb0a6d648f8c15948498ee792120867dbb90b70c6a4616144896b4fa6e4",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "phenelzine",
       "drug_b": "sumatriptan",
-      "feature_hash": "407c51f20be577122d20b8266542e4e75fd89f01cc730c262058aab1f14fd781",
+      "feature_hash": "05b5854f51abcfab0238b8da296d9d5c2ca6f72554979bfa4550f2cc15ce93ec",
       "logits_q16": [
-        13665,
-        -942023,
-        -352846,
-        -501323,
-        713457
+        -4205295,
+        -2389846,
+        -7127336,
+        -1632001,
+        4559131
       ],
-      "repro_hash": "a83692f4d6e2f9558ef548f77eab399de32036e1aba083d850a7554c01678d09",
+      "repro_hash": "1f309059f2083970997b3fff51e5cf30d7446cb71434cdfa63eed8462dcea6df",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "simvastatin",
       "drug_b": "voriconazole",
-      "feature_hash": "8524f6594fd8863915472cb9900e82d5dad193b2ce9adc30d799c0060c04f675",
+      "feature_hash": "71e5941f6b3f1d8d10f1f4e1fe421c3176c52536bd32abb8921b3c076c89709b",
       "logits_q16": [
-        297334,
-        -1379220,
-        875674,
-        1564770,
-        -486942
+        -653683,
+        -558923,
+        -957801,
+        35778,
+        99886
       ],
-      "repro_hash": "d0f62c1aee3d8f5dfd06384c17d4e85796d322f33ee8aa45f187db91cb7b2e92",
-      "severity_name": "major"
+      "repro_hash": "a78c2c65504948dcc4e6df4db43451361270ce73371748dc7b2ad6a98d7016c1",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "linezolid",
       "drug_b": "sertraline",
-      "feature_hash": "b2c0de0474b8e1f994a0b1faead5d284824fdfc98b90c2eb5c970e48dd3abb46",
+      "feature_hash": "a0db33c0fe1964eebbbb2f2be82c0845baa761a57fcb1280d273a8f93419dd97",
       "logits_q16": [
-        10341,
-        -949730,
-        -170040,
-        -817737,
-        640853
+        -2224743,
+        -2589106,
+        -4658942,
+        -1633992,
+        5843330
       ],
-      "repro_hash": "1e6838feaebe1222d10b1df37c1ade4f1c5ef8c04b079325e6bbc123a30e510d",
+      "repro_hash": "8485735d92029114b49de561ae916bfd218512177b24e5cb4c4f13b7eb066a37",
       "severity_name": "contraindicated"
     },
     {
       "drug_a": "meperidine",
       "drug_b": "selegiline",
-      "feature_hash": "3bf1ba615b76ba2309622ed26b2e9ae1eb734a82a7ac4892929c0fb698118596",
+      "feature_hash": "d1d1b438ff3bc364583d93ea184de179c967299b542607c696d595cc7527668d",
       "logits_q16": [
-        1203477,
-        -1524008,
-        -1236079,
-        -173249,
-        417276
+        940681,
+        -2863417,
+        -5232118,
+        -2585396,
+        4717864
       ],
-      "repro_hash": "7875b9a3a268f7300d57eaae09dd160dcaa9d86adc04c4e770b67b3d99e41aa1",
-      "severity_name": "none"
+      "repro_hash": "54d3a8a9622acec2d7b6e6155a7825dadd33ac01a7346d6674267d84cb4960f5",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "nitroglycerin",
       "drug_b": "tadalafil",
-      "feature_hash": "3ed918eef855b3da791288b4e6dde6d7f2d445a094c185f7234765957e00e597",
+      "feature_hash": "db06e76e91d74a1ec380060704c1b1ecc937cb01cb51838f43b7536ce6466e41",
       "logits_q16": [
-        1879361,
-        -8964433,
-        -1905197,
-        -167509,
-        -5713641
+        -20343825,
+        -13687717,
+        -9129957,
+        -12310291,
+        28033320
       ],
-      "repro_hash": "bd8b80991a093ce71b614a7178618600bdea08b2ded6300809b293dea48555bf",
-      "severity_name": "none"
+      "repro_hash": "8672518d404546a4cc90612f2bf3d08fc8d142ffaa4140392088e8531d8d7be1",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "clarithromycin",
       "drug_b": "pimozide",
-      "feature_hash": "9a14c09a292418ece8a7dcfd9fa1c4c0eb530ab512a9db6c2cd8d017e58cb6c5",
+      "feature_hash": "b73840fe2e1e4c7f0cc077f04b361fd2a71e26caf3a0f126368b64cbd36f3fbe",
       "logits_q16": [
-        -437366,
-        -742266,
-        321370,
-        539812,
-        -290905
+        -395357,
+        -405149,
+        -581745,
+        -235841,
+        456230
       ],
-      "repro_hash": "59ceea87335a375c44465508fc4db56bcf0b61dc8663849712b10b171fd98f79",
-      "severity_name": "major"
+      "repro_hash": "3110f2a890dc20d59d23419ca6e2162598086fd7fae02f46d612bd08c2597f39",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ritonavir",
       "drug_b": "simvastatin",
-      "feature_hash": "7cb7f7feca7d8a040f1067d52683d0e7470830091a9d02fbec00ffce14679d60",
+      "feature_hash": "0efede382ad549aa4a005a089b3f79ccbf638115f985104799c70547f36fa803",
       "logits_q16": [
-        392744,
-        -102854,
-        -256975,
-        138117,
-        -196442
+        -389424,
+        -168393,
+        -323129,
+        35778,
+        808780
       ],
-      "repro_hash": "f19a43fd070826598ac23ec2549ea7039c4eb6419d1c2c381f77a79056f65252",
-      "severity_name": "none"
+      "repro_hash": "e2ccd77e9076be2fc8ffc9f4013a800a869484760e4f2410ce5468b8b5457a95",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "fluvoxamine",
       "drug_b": "tizanidine",
-      "feature_hash": "1357c04958df60f035a4a13e11abf02b9435af39d79aa10b36d573c9ce7bf770",
+      "feature_hash": "02ea0d67e80daaefc08747a493acb039caffe904c3463bfcb6869675fb0e32d6",
       "logits_q16": [
-        1095925,
-        -1453546,
-        350925,
-        -373564,
-        -239163
+        -2594560,
+        -2303464,
+        -10749155,
+        -4357089,
+        3291474
       ],
-      "repro_hash": "711c965f37bfba51f00813da9de71206e42da7e7c65bbf131bd53ac071d0654b",
-      "severity_name": "none"
+      "repro_hash": "999badde9fedf1cfd7283e34406f79a3ca063f1d1ba0523d2e21fe43c19c61ab",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "azathioprine",
       "drug_b": "febuxostat",
-      "feature_hash": "cf72be9de184dd90692c5221b789fc4cd6cd0a1e491e4db1282162d6227fe621",
+      "feature_hash": "edc3bb08d0afd704f93a253bfe1045450356b5e5f053bbe0b36940d13dce4d83",
       "logits_q16": [
-        1991402,
-        -5167033,
-        358683,
-        63252,
-        -3176484
+        -5370691,
+        -6001304,
+        -19164559,
+        -8275002,
+        4710843
       ],
-      "repro_hash": "34ed3ea1d9b4b48afedfd97a83ea21062fd1c816f79162b11c5f47dea8d03041",
-      "severity_name": "none"
+      "repro_hash": "a64bf54f66011861d74c7d43622faa80196377e26ae2d75263383f17fef662d9",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "atazanavir",
       "drug_b": "simvastatin",
-      "feature_hash": "cea5a331a12d30d9fe5c43cdec29e629a088d81420da61acc176104f3683c787",
+      "feature_hash": "e70e29670eb3b4730fba340ef4420d0f84d2491cc97151aae3e5f5782c79a51c",
       "logits_q16": [
-        1666857,
-        -1457714,
-        209976,
-        -460721,
-        -1539153
+        -691676,
+        -3293886,
+        -1646880,
+        -385758,
+        3415185
       ],
-      "repro_hash": "566297708cb8bf0fed42d8a33e59a69d7b348dd7cff8c760160afe34db6b59c8",
-      "severity_name": "none"
+      "repro_hash": "a69a27ac9377e26bd2cea59e7d7bece7d7aff7184755cabc1c4427a2ad5028b5",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "isavuconazole",
       "drug_b": "simvastatin",
-      "feature_hash": "4ac187bca5348507a07eed020b7d47c77ed32ca1eae3e9f6bdb3cd70857dbab4",
+      "feature_hash": "06432f1fe97dc0f66c372fbb9987a07c818aee3926c3f3677d7cce68c69d3cbe",
       "logits_q16": [
-        664211,
-        -1562974,
-        -63575,
-        745248,
-        -1360708
+        -284901,
+        -485703,
+        -138679,
+        35778,
+        99886
       ],
-      "repro_hash": "7d367d5c7796ee746362e727ec59e801ccd81e1515e3214ae9612e7642d5203f",
-      "severity_name": "major"
+      "repro_hash": "4abf2066d195c7a8e1e620777921f6636632897e4ffac4f72fcf6759c6b9c828",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ergotamine",
       "drug_b": "ketoconazole",
-      "feature_hash": "9fac4c37082bc014f3f9cd50762f60a9fb54045f3b52ba03ab1a8e40e572c1ba",
+      "feature_hash": "f7fb32937d78cd361264905634e5736f25e38264a05d9e2bf436e9cdebbc0a70",
       "logits_q16": [
-        1162776,
-        -6172619,
-        205021,
-        -2272381,
-        -3559815
+        -304161,
+        -8391173,
+        -285252,
+        -3695122,
+        8366227
       ],
-      "repro_hash": "f7274978e8233ba9bd967c808b5511bef95277dc49b4e5ad5e97b92c39681e29",
-      "severity_name": "none"
+      "repro_hash": "db214bebc8e1e076e65ccbc43d8a9d79c30ac2e02fd043967c0eb2a88f14d8b6",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "isotretinoin",
       "drug_b": "minocycline",
-      "feature_hash": "227976f3d4484db0b18f10c539586c0a2bef9b183efedbd2da459ce68c7a3632",
+      "feature_hash": "3347209a60093e5579b59c039c7bd8dc81a6a9509f026bf56df488dae0e63fe8",
       "logits_q16": [
-        1982829,
-        -3869363,
-        -417041,
-        323290,
-        -1293973
+        845044,
+        -13544258,
+        -13600090,
+        -7053920,
+        13380406
       ],
-      "repro_hash": "4dd7362fe6c5d115c74bf7470b8bfec9b4f712fc7bdb7eba2632b7d680a4716f",
-      "severity_name": "none"
+      "repro_hash": "9f2553a1669aec12a757684bc21c1b61a805f98fb51ff6b4d73f8226a856b9d2",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ketoconazole",
       "drug_b": "midazolam",
-      "feature_hash": "c3d8b95b743e4f81915c986249b50d1e4091afbd34130daa58e21a84e57cdfc2",
+      "feature_hash": "48327b984a4d9b46c1fa3f2805269af7002be83f776780e29ae65c14b1d4793e",
       "logits_q16": [
-        1039491,
-        -4085645,
-        -1463402,
-        799168,
-        -2254612
+        -2317330,
+        -5798717,
+        -8277145,
+        -2746269,
+        5598479
       ],
-      "repro_hash": "6b058ff84e8e0450667246726a88104f7121757bc1d83e0776ddfea8133b76eb",
-      "severity_name": "none"
+      "repro_hash": "bfc35ac08743b1bed4ed6489b4a0aa47d551104fe7a01115cfb338b40a540a54",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "eplerenone",
       "drug_b": "ketoconazole",
-      "feature_hash": "b9039056ec55450ea5f36a6b530f4c917f62a9a6c68cf785783f4c3b5cc6a013",
+      "feature_hash": "accdd98f16bd958839d8d5cebacf1970756ea603a20a4dd77397b4f5526ab65b",
       "logits_q16": [
-        356180,
-        -861911,
-        234630,
-        -71534,
-        -779489
+        -523074,
+        -1274112,
+        281141,
+        -1544055,
+        4739024
       ],
-      "repro_hash": "0fe8a0cbf0b39ebb7f4e953291f3b685502709dddc66325649c8cd9aefbc9d8e",
-      "severity_name": "none"
+      "repro_hash": "502f71e980f1c35d68e282259910c8a9c2127d8231c3941ebcb82273ca0c3b35",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "cyclosporine",
       "drug_b": "rosuvastatin",
-      "feature_hash": "7f82d3b7fe106d60e7f66a2b52436f4e1420b4d026e1ca415b71ea2211b9d184",
+      "feature_hash": "43feba3c8ae6d52cc4be68ff11f5cd53f54121caf598f463829c489658dc098e",
       "logits_q16": [
-        155026,
-        -3631133,
-        -591246,
-        1035300,
-        -1300130
+        -5197984,
+        -5376837,
+        -1732557,
+        569672,
+        4338937
       ],
-      "repro_hash": "137b7afb80239442fd6ba96a82bed7d7a20f2ee8169ce1a93d2dcdda8c5e50a3",
-      "severity_name": "major"
+      "repro_hash": "448dc5c57d0a89eb8ac86ee9025e7af336f41088e08e7a7b5a4ad0c73921ea82",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ketoconazole",
       "drug_b": "tolvaptan",
-      "feature_hash": "a6a8a4deaff3bb916ad4dda65a886bc3699c5d0e984e46c9896e7ce61cf7a332",
+      "feature_hash": "982c0ec99126ce2b938629ceab47cbe71fd7c987728f0012ee16d1fbb6729a0a",
       "logits_q16": [
-        1201855,
-        -6088827,
-        -2213462,
-        -130972,
-        -2147465
+        -3078554,
+        -7802952,
+        -8319117,
+        -1729771,
+        9013915
       ],
-      "repro_hash": "91faa66aeb4ab6b7c1ab0973867b2425788d9fd4965099d6d3613984b33e4caf",
-      "severity_name": "none"
+      "repro_hash": "4b0d3981a81eef768158b67952b21f13511f9245975975d78f55bfcace213988",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ketoconazole",
       "drug_b": "lurasidone",
-      "feature_hash": "2ff6b63017d83b92bb86e1d3105e8ffd1878d32833e14f0c249ed0fb1190a09d",
+      "feature_hash": "47cdd20ad34f8d30340883cbfeb916f9971d7bc2b6a92ab441f9adcaac84c09f",
       "logits_q16": [
-        -173394,
-        -3921786,
-        415248,
-        1192852,
-        -3022559
+        -2509327,
+        -5002563,
+        -7008196,
+        551839,
+        5671254
       ],
-      "repro_hash": "20120fe14b968ca77434b6f1aa9c555bbea0f8626854487559ad9438f9508b11",
-      "severity_name": "major"
+      "repro_hash": "3ee35aaf48d9f3b1ed0e08b08734e42f3daf7ce28229b47dbfd8ab0d399968fd",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "clarithromycin",
       "drug_b": "tacrolimus",
-      "feature_hash": "879ecc77e5dc7ee550042e1824fdae2479d5f5504297c77184f2125f08a4237c",
+      "feature_hash": "b2cabccff105fe2647efa962a72937b0b83291b9bb427fbf9e746904b5847d19",
       "logits_q16": [
-        317536,
-        -1408877,
-        -238659,
-        -662807,
-        -613598
+        -1292451,
+        -3211287,
+        -2510219,
+        65358,
+        2736290
       ],
-      "repro_hash": "9a2a7bb6502ae2580cdb8382954f22d4b0fd53a016906c6f483278c40e5238e9",
-      "severity_name": "none"
+      "repro_hash": "9a149182ac60470ddee749501c68918ee3bc79925178bdb03eb196ae2e90342a",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "ergotamine",
       "drug_b": "ritonavir",
-      "feature_hash": "3287c2922cab186d360a2acdbaf2e13584028ab418954d6439d8b6675f947121",
+      "feature_hash": "adfd5fc55248bb9071895ee8179e72655ce7594b38105c9fd3e09988afc01427",
       "logits_q16": [
-        286131,
-        -5885198,
-        149192,
-        -2706123,
-        -3231842
+        -2085797,
+        -6955605,
+        -446350,
+        -2567406,
+        8526519
       ],
-      "repro_hash": "8d77bad11af21bf5a3d9fda60fd51c2fe3f5684e3066ac8d173fdbd890f3f8ba",
-      "severity_name": "none"
+      "repro_hash": "69a571ea3feb42bcf549e1eb038a878ec7d06c0194804b8dd6d7e988091ec1b2",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "quinidine",
       "drug_b": "ritonavir",
-      "feature_hash": "bc58bf6154e12f4114a4131d24a7c35a8fe036aff92dbc7a3f6979d8c7680f91",
+      "feature_hash": "b548195123f04e9e1619383bf5ff68ac547cb158b2205a8d677c0bbf4ca3c08a",
       "logits_q16": [
-        727001,
-        -6521541,
-        -2342863,
-        472133,
-        -2875723
+        -1311044,
+        -3771789,
+        -1733351,
+        -2534658,
+        2333390
       ],
-      "repro_hash": "81a8c61dd85b80df7d6d92e47a8c01ad9dd8bac893bc3f3fff5227c8de77e697",
-      "severity_name": "none"
+      "repro_hash": "e561f5e466957681e3d861979e37142eac03cc3b8ea9e4e53e604284cb86761d",
+      "severity_name": "contraindicated"
     },
     {
       "drug_a": "nitroglycerin",
       "drug_b": "vardenafil",
-      "feature_hash": "08a67ea40e3489132451d915e422df0357033e41523eff6592b8075b244c98d0",
+      "feature_hash": "e70e8b3dac9fa3f3006c2f669b5ace8d5841acbbb9ae3c273024a3918257f5a3",
       "logits_q16": [
-        -564117,
-        -1343326,
-        174816,
-        475969,
-        -1394624
+        -9128347,
+        -4111285,
+        -6221339,
+        -2343000,
+        7520679
       ],
-      "repro_hash": "49d1dad44d29c8049c7165fdba75461e88e98c796c3dcbb35bed551670642966",
-      "severity_name": "major"
+      "repro_hash": "6446ea28b32c8c545a34aa1fc014bed2b8f7cfdfafb6600e6b4f287280883438",
+      "severity_name": "contraindicated"
     }
   ],
   "version": "1.0.0"

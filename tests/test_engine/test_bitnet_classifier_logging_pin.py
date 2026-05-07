@@ -87,6 +87,11 @@ def test_load_weights_shape_mismatch_emits_structured_error(caplog):
     _sys.path.insert(0, str(_REPO_ROOT))
     from engine.bitnet_classifier import load_weights
 
+    # iter-275 v8 promotion: loader now infers hidden_features from
+    # matrix shape. A 63-row hidden_w + 64-entry hidden_b creates an
+    # internal shape mismatch (hidden_b != hidden_features), still
+    # caught and surfaced as a structured ERROR — same intent, different
+    # field. The structured-error contract is what this test pins.
     bad_payload = _make_weights_payload(hidden_w_rows=63)  # missing one row
 
     with tempfile.NamedTemporaryFile(
@@ -115,9 +120,13 @@ def test_load_weights_shape_mismatch_emits_structured_error(caplog):
             f"{[(r.levelname, r.getMessage()) for r in caplog.records]}"
         )
         rec = matched[0]
-        assert getattr(rec, "field", None) == "hidden_w"
-        assert getattr(rec, "expected_rows", None) == 64
-        assert getattr(rec, "actual_rows", None) == 63
+        # Iter-275: with the dim-dynamic loader, the first failure for a
+        # 63-row hidden_w + 64-entry hidden_b payload is hidden_b length
+        # not matching the inferred hidden_features (63). The structured-
+        # ERROR contract still fires.
+        assert getattr(rec, "field", None) == "hidden_b"
+        assert getattr(rec, "expected_len", None) == 63
+        assert getattr(rec, "actual_len", None) == 64
     finally:
         Path(bad_path).unlink(missing_ok=True)
 
@@ -265,6 +274,6 @@ def test_classifier_layer_first_load_emits_pinning_event_iter219(
     rec = matched[0]
     assert rec.levelno == logging.INFO
     assert len(rec.bundle_id_prefix) == 16  # 16-char SHA-256 prefix
-    assert rec.in_features == 128  # iter-72 baseline cfadb4f6
-    assert rec.hidden_features == 64
+    assert rec.in_features == 193   # iter-275 v8 promotion (1f0f8859)
+    assert rec.hidden_features == 256
     assert rec.out_features == 5

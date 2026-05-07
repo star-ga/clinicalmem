@@ -47,18 +47,21 @@ _CALIB = _REPO_ROOT / "docs" / "bitnet_calibration.json"
 _DEMO_HTML = _REPO_ROOT / "docs" / "demo.html"
 _JUDGES = _REPO_ROOT / "JUDGES.md"
 
-# Frozen as of iter 110.
+# Iter-275 v8 promotion: 4/4 major-class TPs + 0 misses.
+# Pre-v8 (cfadb4f6) had 3/4 correct + 1 miss (tacrolimus+voriconazole
+# missed at the v1 hash-only encoder ceiling). v8's 26-flag + 13-pair-
+# derived encoder closes the P-gp + strong CYP3A4 cross-mechanism
+# slot. Major-recall gate: 4/4 = 100%.
 _BITNET_CORRECT_MAJORS = frozenset({
     ("clarithromycin", "digoxin"),
     ("dabigatran", "dronedarone"),
     ("paroxetine", "tamoxifen"),
-})
-
-_BITNET_MISS_MAJORS = frozenset({
     ("tacrolimus", "voriconazole"),
 })
 
-_BITNET_MISS_PREDICTED_AS = "none"
+_BITNET_MISS_MAJORS = frozenset()  # v8 catches all 4 majors
+
+_BITNET_MISS_PREDICTED_AS = "none"  # tombstone constant; no live misses
 
 
 def _calib_majors():

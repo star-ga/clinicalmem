@@ -117,14 +117,20 @@ def test_bundle_id_is_stable_across_loads() -> None:
 
 
 def test_bundle_shape_is_canonical() -> None:
-    """Weight matrices must match the documented dimensions."""
+    """Weight matrices must match the documented dimensions.
+
+    Iter-275 v8 promotion: dims now driven by `_meta` schema, but the
+    invariants (square first layer, hidden→5-class output, ternary
+    weights, q16.16 biases) still hold. v8 ships at 193×256 hidden,
+    256×5 output. Pre-v8 (cfadb4f6) was 128×64, 64×5.
+    """
     weights = load_weights()
-    assert len(weights.hidden_w) == 64
-    assert all(len(row) == 128 for row in weights.hidden_w)
-    assert len(weights.hidden_b) == 64
-    assert len(weights.output_w) == 5
-    assert all(len(row) == 64 for row in weights.output_w)
-    assert len(weights.output_b) == 5
+    assert weights.hidden_features == len(weights.hidden_w)
+    assert all(len(row) == weights.in_features for row in weights.hidden_w)
+    assert len(weights.hidden_b) == weights.hidden_features
+    assert len(weights.output_w) == weights.out_features == 5
+    assert all(len(row) == weights.hidden_features for row in weights.output_w)
+    assert len(weights.output_b) == weights.out_features
 
 
 def test_all_weights_are_ternary() -> None:

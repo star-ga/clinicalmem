@@ -64,10 +64,18 @@ SEVERITY_MODERATE: int = 2
 SEVERITY_MAJOR: int = 3
 SEVERITY_CONTRAINDICATED: int = 4
 
+# Iter-275 v8 promotion: vocab aligned with the corpus / cache /
+# trainer (`retrain_runpod/train_bitnet_v8_h256.py:39 SEV_NAMES`).
+# Pre-v8 (cfadb4f6) used `(none, minor, moderate, major,
+# contraindicated)` — the engine's first-era vocab — but v3+ trainers
+# all use the corpus vocab `(none, moderate, serious, major,
+# contraindicated)`. Engine output now matches the cache ground-truth
+# vocabulary directly: a class-2 logit emits "serious" (cache match),
+# not "moderate" (vocab-skewed v1 mapping).
 _SEVERITY_NAMES: tuple[str, ...] = (
     "none",
-    "minor",
     "moderate",
+    "serious",
     "major",
     "contraindicated",
 )
@@ -178,18 +186,25 @@ def _q16_scale_features(ternary_features: list[int]) -> list[int]:
 
 # ─── Weights bundle ────────────────────────────────────────────────────────
 
+_SCHEMA_V1 = "bitnet_classifier_v1"
+_SCHEMA_V3_ATC = "bitnet_classifier_v3_atc_flags"
+
+
 @dataclass(frozen=True)
 class BitNetWeights:
     """Loaded ternary-weights bundle.
 
     Layout (matches `engine/bitnet_weights.json`):
 
-      hidden_w  : 64 × 128 ternary matrix (drug-pair feature -> hidden);
-                  hidden_w[j] holds the 128 weights for hidden unit j.
-      hidden_b  : Q16.16 bias vector (length 64)
-      output_w  : 5 × 64 ternary matrix (hidden -> severity logits);
-                  output_w[k] holds the 64 weights for class k.
-      output_b  : Q16.16 bias vector (length 5)
+      schema    : one of ``bitnet_classifier_v1`` (128-dim hash-only
+                  encoding, hidden=64) or ``bitnet_classifier_v3_atc_flags``
+                  (193-dim hash + 26 ATC flag + 13 pair-derived encoding,
+                  hidden=256). Drives encoder dispatch in ``classify``.
+      hidden_w  : ``hidden_features`` × ``in_features`` ternary matrix.
+      hidden_b  : Q16.16 bias vector (length ``hidden_features``)
+      output_w  : ``out_features`` × ``hidden_features`` ternary matrix.
+      output_b  : Q16.16 bias vector (length ``out_features``, = 5 for
+                  the 5-severity classifier)
       bundle_id : SHA-256 over the canonical JSON encoding of the four
                   matrices above (stable across loads — the audit chain
                   records this as the "weights_id" so a verifier can
@@ -201,6 +216,10 @@ class BitNetWeights:
     output_w: list[list[int]]
     output_b: list[int]
     bundle_id: str
+    schema: str = _SCHEMA_V1
+    in_features: int = 128
+    hidden_features: int = 64
+    out_features: int = 5
 
 
 def _bundle_id(payload: dict[str, Any]) -> str:
@@ -246,70 +265,121 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
     output_w = [list(row) for row in payload["output_w"]]
     output_b = list(payload["output_b"])
 
-    if len(hidden_w) != 64:
+    meta = payload.get("_meta", {})
+    schema = meta.get("schema", _SCHEMA_V1)
+    if schema not in (_SCHEMA_V1, _SCHEMA_V3_ATC):
+        logger.error(
+            "bitnet_weights_unknown_schema",
+            extra={"schema": schema, "path": str(path)},
+        )
+        raise ValueError(
+            f"Unknown bitnet schema {schema!r}; expected one of "
+            f"{_SCHEMA_V1!r}, {_SCHEMA_V3_ATC!r}"
+        )
+
+    hidden_features = len(hidden_w)
+    in_features = len(hidden_w[0]) if hidden_w else 0
+    out_features = len(output_w)
+
+    meta_in = meta.get("in_features", in_features)
+    meta_hidden = meta.get("hidden_features", hidden_features)
+    meta_out = meta.get("out_features", out_features)
+
+    for field, observed, declared in (
+        ("in_features", in_features, meta_in),
+        ("hidden_features", hidden_features, meta_hidden),
+        ("out_features", out_features, meta_out),
+    ):
+        if observed != declared:
+            logger.error(
+                "bitnet_weights_meta_mismatch",
+                extra={
+                    "field": field,
+                    "matrix_dim": observed,
+                    "meta_dim": declared,
+                    "path": str(path),
+                },
+            )
+            raise ValueError(
+                f"{field}: matrix dim {observed} != _meta declaration {declared}"
+            )
+
+    if any(len(row) != in_features for row in hidden_w):
         logger.error(
             "bitnet_weights_shape_mismatch",
             extra={
                 "field": "hidden_w",
-                "expected_rows": 64,
-                "actual_rows": len(hidden_w),
+                "expected_cols": in_features,
                 "path": str(path),
             },
         )
-        raise ValueError(f"hidden_w must have 64 rows (one per hidden unit); got {len(hidden_w)}")
-    if any(len(row) != 128 for row in hidden_w):
-        logger.error(
-            "bitnet_weights_shape_mismatch",
-            extra={
-                "field": "hidden_w",
-                "expected_cols": 128,
-                "path": str(path),
-            },
+        raise ValueError(
+            f"hidden_w rows must all be length {in_features} (drug-pair feature dim)"
         )
-        raise ValueError("hidden_w rows must all be length 128 (drug-pair feature dim)")
-    if len(hidden_b) != 64:
+    if len(hidden_b) != hidden_features:
         logger.error(
             "bitnet_weights_shape_mismatch",
             extra={
                 "field": "hidden_b",
-                "expected_len": 64,
+                "expected_len": hidden_features,
                 "actual_len": len(hidden_b),
                 "path": str(path),
             },
         )
-        raise ValueError(f"hidden_b must have 64 entries; got {len(hidden_b)}")
-    if len(output_w) != 5:
+        raise ValueError(
+            f"hidden_b must have {hidden_features} entries; got {len(hidden_b)}"
+        )
+    if out_features != 5:
         logger.error(
             "bitnet_weights_shape_mismatch",
             extra={
                 "field": "output_w",
                 "expected_rows": 5,
-                "actual_rows": len(output_w),
+                "actual_rows": out_features,
                 "path": str(path),
             },
         )
-        raise ValueError(f"output_w must have 5 rows (one per severity class); got {len(output_w)}")
-    if any(len(row) != 64 for row in output_w):
+        raise ValueError(
+            f"output_w must have 5 rows (one per severity class); got {out_features}"
+        )
+    if any(len(row) != hidden_features for row in output_w):
         logger.error(
             "bitnet_weights_shape_mismatch",
             extra={
                 "field": "output_w",
-                "expected_cols": 64,
+                "expected_cols": hidden_features,
                 "path": str(path),
             },
         )
-        raise ValueError("output_w rows must all be length 64 (hidden dim)")
-    if len(output_b) != 5:
+        raise ValueError(
+            f"output_w rows must all be length {hidden_features} (hidden dim)"
+        )
+    if len(output_b) != out_features:
         logger.error(
             "bitnet_weights_shape_mismatch",
             extra={
                 "field": "output_b",
-                "expected_len": 5,
+                "expected_len": out_features,
                 "actual_len": len(output_b),
                 "path": str(path),
             },
         )
-        raise ValueError(f"output_b must have 5 entries; got {len(output_b)}")
+        raise ValueError(f"output_b must have {out_features} entries; got {len(output_b)}")
+
+    expected_in = 128 if schema == _SCHEMA_V1 else 193
+    if in_features != expected_in:
+        logger.error(
+            "bitnet_weights_schema_dim_mismatch",
+            extra={
+                "schema": schema,
+                "expected_in_features": expected_in,
+                "actual_in_features": in_features,
+                "path": str(path),
+            },
+        )
+        raise ValueError(
+            f"schema {schema!r} expects in_features={expected_in}, got {in_features}"
+        )
 
     for matrix_name, matrix in (("hidden_w", hidden_w), ("output_w", output_w)):
         for i, row in enumerate(matrix):
@@ -329,10 +399,20 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
         output_w=output_w,
         output_b=output_b,
         bundle_id=_bundle_id(payload),
+        schema=schema,
+        in_features=in_features,
+        hidden_features=hidden_features,
+        out_features=out_features,
     )
     logger.info(
         "bitnet_weights_loaded",
-        extra={"bundle_id": weights.bundle_id, "path": str(path)},
+        extra={
+            "bundle_id": weights.bundle_id,
+            "path": str(path),
+            "schema": schema,
+            "in_features": in_features,
+            "hidden_features": hidden_features,
+        },
     )
     return weights
 
@@ -360,12 +440,17 @@ def classify(
     `tests/test_engine/test_bitnet_classifier.py` regression set.
     """
     a_canonical, b_canonical = sorted((drug_a, drug_b))
-    feature_a = _encode_drug_token(a_canonical)
-    feature_b = _encode_drug_token(b_canonical)
-    pair_features = feature_a + feature_b
-    if len(pair_features) != 128:
+    if weights.schema == _SCHEMA_V3_ATC:
+        from engine.bitnet_features_v8 import encode_pair_v8
+        pair_features = encode_pair_v8(a_canonical, b_canonical)
+    else:
+        feature_a = _encode_drug_token(a_canonical)
+        feature_b = _encode_drug_token(b_canonical)
+        pair_features = feature_a + feature_b
+    if len(pair_features) != weights.in_features:
         raise RuntimeError(
-            f"internal error: pair features length {len(pair_features)} != 128"
+            f"internal error: pair features length {len(pair_features)} != "
+            f"weights.in_features {weights.in_features}"
         )
 
     activations_q16 = _q16_scale_features(pair_features)
@@ -373,17 +458,17 @@ def classify(
         bytes((v + 1) for v in pair_features)        # ternary -> {0,1,2}
     ).hexdigest()
 
-    # First linear layer: 128 -> 64
+    # First linear layer: in_features -> hidden_features
     hidden_pre_q16 = [
         _q16_clamp(_q16_dot_ternary(activations_q16, weights.hidden_w[j]) + weights.hidden_b[j])
-        for j in range(64)
+        for j in range(weights.hidden_features)
     ]
     hidden_q16 = [_q16_relu(v) for v in hidden_pre_q16]
 
-    # Second linear layer: 64 -> 5 (one logit per severity class)
+    # Second linear layer: hidden_features -> out_features (5 severity classes)
     logits_q16 = [
         _q16_clamp(_q16_dot_ternary(hidden_q16, weights.output_w[k]) + weights.output_b[k])
-        for k in range(5)
+        for k in range(weights.out_features)
     ]
 
     # Argmax — pure integer compare; ties broken by lower-index class.
