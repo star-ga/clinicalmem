@@ -6,7 +6,9 @@ or regulatory citations. This test asserts structural well-formedness
 without making any network calls (CI-safe).
 
 What's pinned:
-  • Every cache entry has ≥ 1 evidence URL.
+  • Every cache entry has ≥ 2 evidence URLs (ratcheted iter-264 from ≥ 1
+    once live distribution showed min=2, median=2, max=3 across all
+    138 entries — FDA SaMD cross-citation discipline).
   • Every URL is HTTPS (never plain http: — auditors must be able to
     reproduce the citation later, and HTTP-without-TLS is unstable).
   • Every URL has a non-empty host AND a non-empty path (catches
@@ -67,12 +69,27 @@ def _load_cache():
     return json.loads(_CACHE.read_text())
 
 
-def test_every_entry_has_at_least_one_evidence_url():
+def test_every_entry_has_at_least_two_evidence_urls():
+    """Every cache entry MUST have ≥ 2 evidence URLs.
+
+    iter-264 ratchet (was ≥ 1 at iter-66): live distribution shows
+    min=2 across all 138 cache entries (median=2, max=3). The original
+    1-URL floor was set when the cache was young; tightening to 2
+    forces any future stub-evidence entry to fail the gate visibly.
+    Same iter-117 / iter-259 pattern (ratchet floors once enough
+    headroom exists). FDA SaMD audit-trail rigor benefits from
+    cross-citation: a single URL is a single-point-of-failure if the
+    citation rots; two independent URLs (typically FDA label + PubMed)
+    survive one-link rot.
+    """
     cache = _load_cache()
     for entry in cache:
         urls = entry.get("evidence_urls", [])
         pair = f"{entry.get('drug_a', '?')} + {entry.get('drug_b', '?')}"
-        assert len(urls) >= 1, f"Cache entry {pair} has no evidence_urls"
+        assert len(urls) >= 2, (
+            f"Cache entry {pair} has only {len(urls)} evidence_urls; "
+            f"iter-264 floor is 2 (FDA SaMD cross-citation discipline)"
+        )
 
 
 def test_every_url_is_https():
