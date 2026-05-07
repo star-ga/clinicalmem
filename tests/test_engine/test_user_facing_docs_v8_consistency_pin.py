@@ -388,6 +388,95 @@ def test_no_stale_mind_mem_dep_version_as_live_claim():
     )
 
 
+def test_no_stale_pipeline_tier_count_in_user_facing_docs():
+    """Every `N-tier pipeline` / `N-layer pipeline` claim in user-
+    facing docs MUST use N == 6 (the live convention). Older claims
+    (3-tier / 4-tier / 5-tier / 5-layer) are forbidden in current-
+    tense outside an explicit historical / lineage context.
+
+    iter-326 ratchet (iter-328 candidate executed early). iter-323
+    caught 2 stale '5-tier pipeline' refs (README L95 ASCII diagram +
+    why_bitnet_b158 L117 competitive table) while every other surface
+    used '6-tier' or '6-layer'. The pipeline has 6 distinct tiers
+    (Layer 1 deterministic table + Layer 2 OpenEvidence + Layer 3
+    RxNorm + Layer 4 6-LLM consensus + Layer 4.5 BitNet anchor +
+    Layer 5 LLM synthesis + Layer 6 abstention gate, with 4.5
+    sometimes counted alongside 4).
+
+    Forward-protects against the same drift class that iter-323 fixed
+    in prose. Same iter-232 / iter-298 / iter-301 / iter-303 /
+    iter-306 / iter-308 / iter-313 / iter-316 / iter-318 / iter-321
+    single-source-of-truth -> derived-surface drift class but at the
+    pipeline-tier-count layer.
+
+    Forbidden patterns (the documented historical stale form — the
+    iter-323 catch class):
+      `5-tier pipeline`   (was iter-X-era convention before Layer 4.5
+                            was formalised as a distinct tier)
+      `5-layer pipeline`
+
+    Allowed:
+      `6-tier` / `6-layer` (live convention — always correct)
+      `4-tier` / `3-tier` (legitimate sub-pipeline references — the
+                            upstream Layers 1-4 sub-system that feeds
+                            into Layer 4.5; the Drug-Safety feature
+                            card on demo.html L2098 uses this)
+
+    Allowlist tokens (3-line window + section-level fallback):
+      historical, lineage, evolution, predecessor, retired,
+      pre-iter-, baseline, v1, v3, v5, v6, v7
+    """
+    forbidden_pat = re.compile(
+        r"\b5-(?:tier|layer)\s+pipeline\b",
+        re.IGNORECASE,
+    )
+    extended_tokens = _HISTORICAL_TOKENS + (
+        "lineage",
+        "evolution",
+        "predecessor",
+        "retired",
+        "pre-iter-",
+    )
+
+    def _ext_line_window_ok(lines: list[str], idx: int) -> bool:
+        lo = max(0, idx - 1)
+        hi = min(len(lines), idx + 2)
+        window = " ".join(lines[lo:hi]).lower()
+        if any(tok in window for tok in extended_tokens):
+            return True
+        for j in range(idx - 1, max(0, idx - 50) - 1, -1):
+            line_lower = lines[j].lower()
+            if line_lower.lstrip().startswith(("## ", "### ", "#### ",
+                                                "<h2", "<h3", "<h4")):
+                if any(tok in line_lower for tok in extended_tokens):
+                    return True
+                return False
+        return False
+
+    violations = []
+    for doc in _USER_FACING_DOCS:
+        if not doc.exists():
+            continue
+        lines = doc.read_text().splitlines()
+        for i, line in enumerate(lines):
+            for m in forbidden_pat.finditer(line):
+                if _ext_line_window_ok(lines, i):
+                    continue
+                violations.append(
+                    f"{doc.relative_to(_REPO_ROOT)}:{i+1} "
+                    f"[{m.group(0)}]: "
+                    f"{line.strip()[:140]!r}"
+                )
+    assert not violations, (
+        "User-facing docs cite '5-tier pipeline' / '5-layer pipeline' "
+        "outside an explicit historical / lineage context. The "
+        "pipeline is canonically 6-tier / 6-layer (Layer 1 + 2 + 3 + "
+        "4 + 4.5 + 5 + 6, with 4.5 collapsed into 4). Either bump to "
+        "6 OR wrap with a historical token. Hits:\n"
+        + "\n".join(f"  - {v}" for v in violations[:10])
+    )
+
+
 def test_at_least_one_doc_actually_cites_v8_live_bundle():
     """Sanity gate — at least ONE of the user-facing docs MUST cite
     the live v8 bundle id `1f0f8859`. Catches the scenario where a

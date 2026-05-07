@@ -545,6 +545,20 @@ _HISTORICAL_COUNTS = (
     # (contras FDA-or-EMA) → iter-320 (contras >=2 distinct hosts) →
     # iter-325 (majors >=1 auth URL). Live 1365 → 1366.
     "1365",
+    # iter-326 T1 round-69: extended iter-306 pin family with new
+    # invariant test_no_stale_pipeline_tier_count_in_user_facing_docs
+    # (1 test, 7 tests total in family now). Closes the iter-323
+    # fossil class: '5-tier pipeline' / '5-layer pipeline' as current-
+    # tense LIVE-engine claims (live convention is 6-tier / 6-layer).
+    # Pattern is narrowed to ONLY catch the documented historical
+    # stale form (5-); legitimate 4-tier / 3-tier sub-pipeline
+    # references (e.g., demo.html L1300 'upstream 4-tier pipeline'
+    # for Layers 1-4 + L2098 'Drug Safety / 4-Tier Pipeline' card)
+    # are preserved. Allowlist extended with lineage / evolution /
+    # predecessor / retired / pre-iter- tokens (3-line window +
+    # section-level fallback, mirrors iter-316 / iter-321 structure).
+    # iter-328 T1 candidate executed early. Live 1366 → 1367.
+    "1366",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -558,7 +572,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1366
+_TEST_COUNT_FLOOR = 1367
 
 
 def test_no_stale_test_counts_in_docs():
