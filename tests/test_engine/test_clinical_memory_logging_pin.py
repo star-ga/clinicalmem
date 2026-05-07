@@ -205,6 +205,17 @@ def test_detect_contradictions_emits_info_event_iter138(caplog, tmp_path):
     rec = matched[0]
     assert getattr(rec, "patient_id", None) == "pt-test-iter138-b"
     assert getattr(rec, "contradiction_count", "MISSING") == 0
+    # Iter-294: type_counts dict added so auditors can see the breakdown
+    # without re-querying. For empty cohort it's an empty dict.
+    type_counts = getattr(rec, "type_counts", "MISSING")
+    assert isinstance(type_counts, dict), (
+        f"detect_contradictions log must carry `type_counts` dict "
+        f"(iter-294); got {type_counts!r}"
+    )
+    assert type_counts == {}, (
+        f"empty patient detect_contradictions must report empty "
+        f"type_counts dict, got {type_counts!r}"
+    )
 
 
 def test_verify_audit_chain_success_emits_debug_event_iter138(caplog, tmp_path):

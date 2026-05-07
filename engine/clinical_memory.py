@@ -985,12 +985,21 @@ class ClinicalMemEngine:
             })
 
         types_found = sorted({c["type"] for c in contradictions})
+        # Iter-294: per-type counts so auditors can see the breakdown
+        # without re-querying — distinguishes 1 drug + 10 allergy + 1
+        # trend (cohort with allergy red flag) from 10 drug + 1 allergy
+        # + 1 trend (polypharmacy red flag) at the same total count.
+        type_counts: dict[str, int] = {}
+        for c in contradictions:
+            t = c["type"]
+            type_counts[t] = type_counts.get(t, 0) + 1
         self._append_audit(
             "detect_contradictions",
             {
                 "patient_id": patient_id,
                 "contradiction_count": len(contradictions),
                 "types_found": types_found,
+                "type_counts": type_counts,
             },
         )
 
@@ -1005,6 +1014,7 @@ class ClinicalMemEngine:
                 "block_count": len(blocks),
                 "contradiction_count": len(contradictions),
                 "types_found": types_found,
+                "type_counts": type_counts,
             },
         )
 
