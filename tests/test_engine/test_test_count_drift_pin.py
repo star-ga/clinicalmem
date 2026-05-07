@@ -324,6 +324,21 @@ _HISTORICAL_COUNTS = (
     # the iter-268 regex. 4 → 5 tests in test_engine_phi_discipline_pin.
     # Live 1298 → 1299.
     "1298",
+    # iter-274 T5 round-57: clinical_summary upper bound (≤ 2000 chars)
+    # complements iter-259 lower bound (≥ 400). Live max=1347, p99=1257,
+    # 0/138 entries > 1500. test_cache_shape_invariants_pin.py 8 → 9
+    # tests. Live 1299 → 1300.
+    "1299",
+    # iter-279 T4 round-58: 19th cross-pin family — bitnet_features_v8
+    # logging pin (5 tests). Engine module purity preserved via one-shot
+    # latch on first encode_pair_v8 call (instead of module-top-level
+    # debug). Live 1300 → 1305.
+    "1300",
+    # iter-281 T1 round-59: 20th cross-pin family — bundle_id cross-file
+    # consistency pin (5 tests). Forward-protects against the iter-275
+    # cascade drift class (iter-278 caught 6 stale v1 references on
+    # judge-visible surfaces post-promotion). Live 1305 → 1310.
+    "1305",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -337,7 +352,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1300
+_TEST_COUNT_FLOOR = 1310
 
 
 def test_no_stale_test_counts_in_docs():
