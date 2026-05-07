@@ -21,6 +21,11 @@ typo or a half-finished merge can silently break:
     young; tightening it now forces any new stub-length entry to fail
     the gate visibly). A one-line stub is not a citation; the
     dashboard's "evidence-backed" pitch breaks.
+  - clinical_summary length ≤ 2000 chars (iter-274 upper-bound
+    complement; live max = 1347, p99 = 1257, 0 entries > 1500). A
+    future essay-length entry would blow the dashboard render budget
+    and signal long-form rationale leaking into the wrong layer (it
+    belongs in evidence_urls).
   - retrieved_at is ISO-8601 ``YYYY-MM-DD``. A free-form date breaks
     the ``audit_replay_pins`` provenance pin.
   - All 8 required fields present on every entry.
@@ -55,6 +60,13 @@ _MIN_SUMMARY_LEN = 400  # iter-259 ratchet — live min is 470 (azathioprine+all
                           # forcing any new entry that approaches stub-length to fail
                           # the gate visibly (the iter-117 ratchet pattern: tighten
                           # invariants once enough headroom exists).
+_MAX_SUMMARY_LEN = 2000  # iter-274 upper-bound complement to the iter-259 lower bound.
+                          # Live max = 1347 chars (cyclosporine+rosuvastatin), p95 = 1066,
+                          # p99 = 1257. 0 / 138 entries exceed 1500. Cap at 2000 leaves
+                          # ~650 char headroom over the live max while preventing any
+                          # future essay-length entry from creeping in. Keeps the
+                          # dashboard summary panel render budget predictable and
+                          # forces long-form rationales into the evidence_urls layer.
 _ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -167,6 +179,26 @@ def test_every_clinical_summary_is_at_least_100_chars():
         f"{len(short)} cache entries have clinical_summary < {_MIN_SUMMARY_LEN} "
         f"chars. First: index={short[0][0]} pair={short[0][1]} "
         f"length={short[0][2]}"
+    )
+
+
+def test_every_clinical_summary_is_at_most_2000_chars():
+    """Upper-bound complement to the iter-259 lower bound. Live max is
+    1347 (cyclosporine+rosuvastatin), p95 = 1066, p99 = 1257. 0 / 138
+    entries exceed 1500. A future essay-length entry would (1) blow the
+    dashboard summary panel render budget unpredictably, and (2) signal
+    that long-form rationale leaked into the wrong layer (it belongs in
+    evidence_urls). Cap at 2000 with ~650 char live-max headroom."""
+    long = []
+    for i, it in enumerate(_cache()):
+        summary = it.get("clinical_summary", "")
+        if len(summary) > _MAX_SUMMARY_LEN:
+            long.append((i, (it.get("drug_a"), it.get("drug_b")), len(summary)))
+    assert not long, (
+        f"{len(long)} cache entries have clinical_summary > {_MAX_SUMMARY_LEN} "
+        f"chars. First: index={long[0][0]} pair={long[0][1]} "
+        f"length={long[0][2]}. Either trim the summary or move long-form "
+        f"rationale into the evidence_urls layer."
     )
 
 

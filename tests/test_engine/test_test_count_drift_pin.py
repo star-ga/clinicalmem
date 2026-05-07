@@ -295,6 +295,35 @@ _HISTORICAL_COUNTS = (
     # ratchet pattern (tighten existing pin once headroom exists).
     # Live 1294 → 1295.
     "1294",
+    # iter-268 T4 round-56: forward-protective `no print() in engine`
+    # pin extending iter-240 PHI-discipline file (4 tests now). Engine
+    # is clean (0 violations); pin is pre-emptive — a future debug
+    # `print(f"...")` breadcrumb in engine code would bypass log
+    # filters/aggregators/level-controls + the iter-240 PHI extras-
+    # key scrub. Live 1295 → 1296.
+    "1295",
+    # iter-269 T5 round-56: cohort-defense ratchet — `source` field
+    # VALUE vocabulary lock added to iter-94 cache_shape pin (was
+    # only existence-checked, 7 → 8 tests). Live 138/138 = "CACHED";
+    # _VALID_SOURCES = frozenset({"CACHED"}). Future debug values
+    # ("API_LIVE", "STAGING") would silently skew downstream metrics
+    # without this lock. Live 1296 → 1297.
+    "1296",
+    # iter-270 T1 round-57: orphan-flag-drug allowlist bound on
+    # pharmacology_flags.json (10 tests now). 126 flag entries, 124
+    # cache-referenced; 2 intentional orphans (ketorolac NSAID pre-
+    # staging, tranylcypromine MAOI pre-staging at iter-264) locked
+    # to _ALLOWED_ORPHAN_DRUGS whitelist; soft floor ≤5 total
+    # orphans signals cohort-cadence vs flag-table lag. Live 1297 → 1298.
+    "1297",
+    # iter-273 T4 round-57: extended iter-268 print-prohibition pin
+    # to also catch sys.stdout.write / sys.stderr.write / warnings.warn
+    # (broader emission-bypass surface). Engine clean (0 violations
+    # across all 3 patterns); pin is pre-emptive — these 3 paths
+    # bypass structured logging identically to print() but escape
+    # the iter-268 regex. 4 → 5 tests in test_engine_phi_discipline_pin.
+    # Live 1298 → 1299.
+    "1298",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -308,7 +337,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1299
+_TEST_COUNT_FLOOR = 1300
 
 
 def test_no_stale_test_counts_in_docs():
