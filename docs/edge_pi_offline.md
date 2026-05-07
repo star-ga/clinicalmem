@@ -66,7 +66,7 @@ flowchart TB
     h1 --> h2["Hidden 2 &mdash; 256 → 128<br/>ternary, ReLU"]
     h2 --> h3["Hidden 3 &mdash; 128 → 64<br/>ternary, ReLU"]
     h3 --> out["Output &mdash; 64 → 5<br/>ternary, argmax"]
-    out --> result["severity ∈ {none, minor, moderate, major, contraindicated}<br/>+ Q16.16 logits + SHA-256 repro_hash"]
+    out --> result["severity ∈ {none, moderate, serious, major, contraindicated}<br/>+ Q16.16 logits + SHA-256 repro_hash"]
 
     classDef tier fill:#F0FDFA,stroke:#0F766E,stroke-width:1.5px,color:#0F172A
     class embed,h1,h2,h3,out,result tier

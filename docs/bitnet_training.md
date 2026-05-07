@@ -40,15 +40,17 @@ hidden : 64 units · ternary linear · Q16.16 bias · ReLU
 output : 5 units (severity logits) · ternary linear · Q16.16 bias · argmax
 ```
 
-5 severity classes:
+5 severity classes (post iter-275 v8 promotion — corpus-aligned vocab):
 
 | Class | Integer | Meaning |
 |---|---|---|
-| `none` | 0 | No clinically significant interaction |
-| `minor` | 1 | Reserved (corpus has 0 examples — see below) |
-| `moderate` | 2 | Monitor; document; consider alternatives |
+| `none` | 0 | No clinically significant interaction (engine output only — cache holds 0 entries by design; upstream Layers 1–4 carry this class) |
+| `moderate` | 1 | Monitor; document; consider alternatives |
+| `serious` | 2 | High-probability adverse event; requires justification + monitoring |
 | `major` | 3 | Avoid concomitant use unless benefit > risk |
 | `contraindicated` | 4 | Do not co-administer; documented harm |
+
+Pre-iter-275 v1 vocab was `(none, minor, moderate, major, contraindicated)` — the v1 baseline (`engine/bitnet_weights.v1.cfadb4f6.bak.json`) preserved on disk emits the older vocab when loaded directly for audit-chain replay of pre-iter-275 decisions.
 
 Total parameters (v8, LIVE since iter-275 promotion): `193 × 256 + 256 × 5 + 256 + 5 = 50,949` (50,688 ternary weights + 261 Q16.16 biases). Ternary weights encode losslessly in 2 bits → ~12.4 KB raw weights + ~1 KB for biases = ~13.4 KB on the wire. JSON serialisation inflates that to ~118 KB.
 
