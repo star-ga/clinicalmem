@@ -136,24 +136,44 @@ def test_zero_misses_callout_in_v8_body():
     """The v8 callout body (separate from the velocity badge) must
     also surface the miss-count state. The callout is judges'
     medium-detail surface; missing this would mean only the hover
-    tooltip carries the headline claim."""
+    tooltip carries the headline claim.
+
+    Iter-275 v8 promotion: callout phrasing rotated from
+    "V8 staged" (pre-promotion) to "v8 LIVE" / "v8 ENGINE-PROMOTED".
+    Both forms accepted to preserve historical-iter coherence; either
+    counts as the v8-callout anchor."""
     miss_count = _live_v8_miss_count()
     demo = _DEMO.read_text()
 
-    # The body callout is in the L1270 / L1357 paragraphs about V8 staged
-    body_starts = [m.start() for m in re.finditer(r'V8 staged', demo)]
-    assert body_starts, "V8 staged callout not found in demo.html"
+    # The body callout is in the L1270 / L1357 paragraphs.
+    # Accept either pre-promotion ("V8 staged") or post-promotion
+    # ("v8 LIVE" / "v8 ENGINE-PROMOTED" / "v8 promotion") phrasing.
+    anchors = (
+        r"V8 staged",
+        r"v8 LIVE",
+        r"v8 ENGINE-PROMOTED",
+        r"iter-275 v8 promotion",
+        r"Path A v8 LIVE in engine",
+        r"Path A v8 is the LIVE engine bundle",
+    )
+    body_starts = []
+    for pat in anchors:
+        body_starts.extend(m.start() for m in re.finditer(pat, demo))
+    assert body_starts, (
+        f"v8 callout not found in demo.html — expected one of "
+        f"{anchors!r}"
+    )
 
     if miss_count == 0:
         # At least ONE of the callout paragraphs must say "zero known
-        # misses" (case-insensitive)
+        # misses" (case-insensitive) or "0 known misses".
         callouts = [demo[s:s + 4000] for s in body_starts]
         has_zero_phrase = any(
             "zero known misses" in c.lower() or "0 known misses" in c
             for c in callouts
         )
         assert has_zero_phrase, (
-            "V8 staged callout body must surface 'zero known misses' "
+            "v8 callout body must surface 'zero known misses' "
             "or '0 known misses' when _V8_EXPECTED_MISSES is empty. "
             "The visible badge alone isn't enough — the body callout "
             "is the medium-detail surface judges read on tap/scroll."
