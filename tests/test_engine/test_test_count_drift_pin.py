@@ -308,7 +308,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1298
+_TEST_COUNT_FLOOR = 1299
 
 
 def test_no_stale_test_counts_in_docs():

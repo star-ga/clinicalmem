@@ -327,3 +327,60 @@ def test_no_print_calls_in_engine_modules():
         "Rewrite as ``logger.<level>('event_name', extra={...})``.\n"
         + "\n".join(f"  • {p}:{n}  {snippet}" for p, n, snippet in violations)
     )
+
+
+def test_no_stdio_or_warnings_emission_in_engine_modules():
+    """Engine modules must NEVER use ``sys.stdout.write()``,
+    ``sys.stderr.write()``, or ``warnings.warn()`` — these are
+    additional bypass paths around the structured-logging contract.
+
+    iter-273 forward-protective pin (T4 ratchet). Engine is currently
+    clean (0 of each per iter-273 audit). Extends iter-268's bare-
+    print prohibition to cover the broader emission surface:
+
+    - ``sys.stdout.write(...)`` / ``sys.stderr.write(...)`` — bypass
+      identical to print() but escapes the simple regex iter-268
+      uses.
+    - ``warnings.warn(...)`` — emits to stderr by default, bypassing
+      log aggregators and the PHI-discipline scrubs. Engine code
+      that wants to flag deprecation should emit a structured
+      WARNING via logger, not warnings.warn.
+
+    Scripts excluded — CLI tools use these legitimately for status
+    output.
+    """
+    import re
+
+    engine_dir = _ENGINE_DIR
+    violations: list[tuple[Path, int, str, str]] = []
+    patterns = [
+        ("sys.stdout.write", re.compile(r"^\s*sys\.stdout\.write\(", re.MULTILINE)),
+        ("sys.stderr.write", re.compile(r"^\s*sys\.stderr\.write\(", re.MULTILINE)),
+        ("warnings.warn", re.compile(r"^\s*warnings\.warn\(", re.MULTILINE)),
+    ]
+
+    for p in sorted(engine_dir.glob("*.py")):
+        if p.name == "__init__.py":
+            continue
+        text = p.read_text()
+        for kind, pat in patterns:
+            for m in pat.finditer(text):
+                line_no = text[:m.start()].count("\n") + 1
+                line = text.splitlines()[line_no - 1]
+                stripped = line.lstrip()
+                if stripped.startswith("#"):
+                    continue
+                violations.append(
+                    (p.relative_to(_REPO_ROOT), line_no, kind, stripped[:100])
+                )
+
+    assert not violations, (
+        "Engine modules contain non-logger emission calls (sys.stdout.write / "
+        "sys.stderr.write / warnings.warn). These bypass the structured-logging "
+        "contract and the iter-240 PHI-discipline scrubs. Rewrite as "
+        "structured ``logger.<level>('event_name', extra={...})``.\n"
+        + "\n".join(
+            f"  • {p}:{n}  ({kind})  {snippet}"
+            for p, n, kind, snippet in violations
+        )
+    )
