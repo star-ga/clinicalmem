@@ -411,6 +411,22 @@ _HISTORICAL_COUNTS = (
     # v1-baseline / cfadb4f6 / audit-chain context (3-line window).
     # Live 1345 → 1349.
     "1345",
+    # iter-311 T1 round-66: 28th cross-pin family —
+    # test_bitnet_classify_log_phi_safe_pin.py (3 tests). Runtime
+    # regression test for the iter-309 PHI fix on the LIVE classifier's
+    # bitnet_classified DEBUG event. Mirror of iter-296 (which is the
+    # runtime regression test for the iter-291 PHI fix). 3 tests gate:
+    # (a) classify(sentinel_a, sentinel_b) emits pair_hash_prefix +
+    # NO drug_a/drug_b/drug/drug_pair/medication/med extras + raw
+    # sentinels never appear in record + args is empty; (b) swap(a,b)
+    # produces same pair_hash_prefix (canonical lex-sort) AND matches
+    # expected hashlib.sha256(canonical).hexdigest()[:16]; (c) source-
+    # level guard — bitnet_classifier.py contains pair_hash_prefix
+    # token in extras block AND no forbidden raw drug-name keys. The
+    # fix runs on EVERY classify() call (~50× per patient handoff)
+    # so any regression would leak ~50 PHI events per request.
+    # Live 1349 → 1352.
+    "1349",
     # iter-301 T1 round-63: 25th cross-pin family —
     # test_demo_pin_description_recall_consistency_pin.py (4 tests).
     # Same iter-232/iter-298 single-source-of-truth → derived-surface
@@ -438,7 +454,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1349
+_TEST_COUNT_FLOOR = 1352
 
 
 def test_no_stale_test_counts_in_docs():
