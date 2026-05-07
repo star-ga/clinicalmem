@@ -138,6 +138,59 @@ _REGULATORY_HOSTS = frozenset({
 })
 
 
+def test_every_contra_cites_two_distinct_authoritative_hosts():
+    """Every contraindicated cache entry MUST cite ≥ 2 *distinct*
+    authoritative hosts. Stricter than the iter-310 path-distinct
+    URL-count ratchet — three FDA labels at the same accessdata.fda.
+    gov host count as one source for cross-jurisdictional
+    independence purposes.
+
+    iter-320 ratchet (iter-310-era candidate executed). Live cohort
+    audit (44 contra post iter-280 + iter-315 enrichment + iter-320
+    enrichment of ketoconazole+tolvaptan with PubMed Shoaf 2012 DDI
+    study, PMID 22220626): 0 / 44 at the floor of 1, 32 / 44 at 2,
+    12 / 44 at 3 (mean 2.27 distinct hosts). Tightening from 'no
+    distinct-host floor' to ≥ 2 leaves 0 entries at the new floor
+    with full cohort-growth tolerance: a new contra cited only by
+    multiple URLs at a single FDA-label host (e.g., 3 labels at
+    accessdata.fda.gov) would fail the gate, forcing operators to
+    add at least one independent regulatory or peer-reviewed source.
+
+    Same iter-117 ratchet-when-headroom-exists pattern; complementary
+    axis to the iter-310 path-distinct URL count and iter-315 FDA-OR-
+    EMA mandatory floor:
+
+      iter-310  citation breadth (URL count, ≥ 2 path-distinct)
+      iter-315  citation jurisdiction (≥ 1 FDA OR EMA, 100%)
+      iter-320  source independence (≥ 2 distinct hosts, this ratchet)
+
+    Forward-protects against cohort-growth events where a single
+    organisation publishes multiple labels covering both drugs in a
+    pair. Two distinct authoritative hosts is the FDA SaMD source-
+    independence discipline floor (the iter-72 'no single point of
+    citation failure' invariant applied to evidence sources).
+    """
+    contras = [it for it in _cache() if it["severity"] == "contraindicated"]
+    failures = []
+    for it in contras:
+        urls = it.get("evidence_urls", [])
+        auth_hosts = {urlparse(u).netloc for u in urls} & _AUTHORITATIVE_HOSTS
+        if len(auth_hosts) < 2:
+            failures.append({
+                "pair": (it["drug_a"], it["drug_b"]),
+                "auth_host_count": len(auth_hosts),
+                "auth_hosts": sorted(auth_hosts),
+            })
+    assert not failures, (
+        f"{len(failures)} contraindicated entries with < 2 distinct "
+        f"authoritative hosts (iter-320 ratchet). Allowed hosts: "
+        f"{sorted(_AUTHORITATIVE_HOSTS)[:8]}...\n"
+        f"First offender: {failures[0]}\n"
+        f"Either add a citation from a different authoritative "
+        f"organisation OR extend _AUTHORITATIVE_HOSTS deliberately."
+    )
+
+
 def test_every_contra_cites_fda_or_ema_regulatory_label():
     """Every contraindicated cache entry MUST cite ≥ 1 URL from a
     primary regulatory body (FDA accessdata.fda.gov / fda.gov OR

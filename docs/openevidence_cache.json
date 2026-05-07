@@ -2172,7 +2172,8 @@
     "evidence_urls": [
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/022275s011lbl.pdf",
       "https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/204441s002lbl.pdf",
-      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018533s040lbl.pdf"
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2014/018533s040lbl.pdf",
+      "https://pubmed.ncbi.nlm.nih.gov/22220626"
     ],
     "retrieved_at": "2026-05-06",
     "source": "CACHED",

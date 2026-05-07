@@ -495,6 +495,18 @@ _HISTORICAL_COUNTS = (
     # name extras keys. Live 1357 → 1360. 2 helpers remain candidates
     # (_rxnorm_normalize + _build_safety_report).
     "1357",
+    # iter-320 T5 round-68: cohort defense ratchet (iter-285 family) —
+    # NEW invariant test_every_contra_cites_two_distinct_authoritative_hosts
+    # (1 test). Stricter than iter-310 path-distinct URL count: requires
+    # ≥ 2 *distinct* authoritative hosts per contra (3 FDA labels at
+    # accessdata.fda.gov count as 1 source). Live cohort post-iter-315
+    # had 1/44 at floor of 1 (ketoconazole+tolvaptan, 3 FDA labels at
+    # same host); iter-320 enriched with PubMed Shoaf 2012 DDI study
+    # (PMID 22220626) → 0/44 at new floor of 2, 32/44 at 2, 12/44 at 3
+    # (mean 2.27). Source-independence axis complementary to
+    # iter-310 (URL count) and iter-315 (regulatory jurisdiction).
+    # Live 1360 → 1361.
+    "1360",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -508,7 +520,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1360
+_TEST_COUNT_FLOOR = 1361
 
 
 def test_no_stale_test_counts_in_docs():
