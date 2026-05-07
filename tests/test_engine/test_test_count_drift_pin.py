@@ -345,6 +345,15 @@ _HISTORICAL_COUNTS = (
     # safe _hash_pair helper for drug-name hashing. NEW pin family
     # test_openevidence_cache_logging_pin.py (6 tests). Live 1310 → 1316.
     "1310",
+    # iter-285 T5 round-59: 21st cross-pin family — every contra cache
+    # entry MUST cite ≥ 1 URL from the authoritative whitelist (FDA /
+    # EMA / ACR / PubMed / AHA Journals / BMJ / Oxford Academic / AGS
+    # Beers / JAAD / AAN). Catches cohort-growth events that introduce
+    # a contra backed only by secondary review sources. 4 tests:
+    # per-entry coverage; whitelist breadth ≥ 10 hosts; every host in
+    # whitelist is live-used (or in _ALLOWED_UNUSED_HOSTS); JUDGES
+    # cites the pin. Live 1316 → 1320.
+    "1316",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -358,7 +367,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1316
+_TEST_COUNT_FLOOR = 1320
 
 
 def test_no_stale_test_counts_in_docs():
