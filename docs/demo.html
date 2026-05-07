@@ -663,12 +663,12 @@ tailwind.config = {
         <div class="rounded-xl bg-white border border-trust-100 px-3 sm:px-4 py-3 shadow-trust min-w-0">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-trust-700 break-words">Live precision · L4.5</div>
           <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">100<span class="text-trust-600">%</span></div>
-          <div class="text-[10px] text-slate-400 mt-1 font-mono break-all">8 / 8 contraindicated · live cache</div>
+          <div class="text-[10px] text-slate-400 mt-1 font-mono break-all">43 / 43 contraindicated · live cache</div>
         </div>
         <a href="edge_pi_offline.md" class="rounded-xl bg-white border border-premium-400/30 px-4 py-3 shadow-premium block hover:border-premium-500 transition-colors cursor-pointer">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-premium-600">BitNet weights</div>
-          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">8,581<span class="text-premium-600 text-base align-top">·</span><span class="text-base">19 KB</span></div>
-          <div class="text-[10px] text-slate-400 mt-1 font-mono">$15 Pi Zero 2 W &middot; v8 staged 50,688/38 KB</div>
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-premium-600">BitNet weights · v8 LIVE</div>
+          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">50,949<span class="text-premium-600 text-base align-top">·</span><span class="text-base">118 KB</span></div>
+          <div class="text-[10px] text-slate-400 mt-1 font-mono">$15 Pi Zero 2 W &middot; iter-275 promotion · v1 archived</div>
         </a>
         <div class="rounded-xl bg-white border border-slate-200 px-4 py-3 shadow-soft">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-700">Federation invariants</div>
@@ -1158,7 +1158,7 @@ tailwind.config = {
       </details>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200">85.7% held-out · 100% live precision</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">8,512 ternary weights + 69 Q16.16 biases / 19 KB</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-purple-50 text-clinical-purple border border-purple-200">v8 · 50,688 ternary weights + 261 Q16.16 biases / ~118 KB</span>
         <a href="edge_pi_offline.md" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-green-50 text-clinical-green border border-green-200 hover:bg-green-100 transition-colors cursor-pointer" title="Edge profile spec: Pi Zero 2 W, USB plug-in, offline-capable, same SHA-256 audit hash as cloud">Runs offline &middot; $15 Pi Zero 2 W &middot; USB plug-in</a>
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-clinical-amber border border-amber-200">Pure Python &mdash; zero ML framework deps</span>
       </div>
@@ -1216,26 +1216,26 @@ tailwind.config = {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <!-- Ternary weight distribution -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Ternary weight distribution &mdash; 8,512 weights</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Ternary weight distribution: 27.1% −1, 48.4% 0, 24.5% +1">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Ternary weight distribution &mdash; v8 LIVE · 50,688 weights</p>
+          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Ternary weight distribution under v8: 32.4% −1, 44.3% 0, 23.3% +1">
             <!-- −1 bar -->
-            <rect x="40" y="25" width="173" height="22" rx="3" fill="#0F766E" fill-opacity="0.78"/>
+            <rect x="40" y="25" width="207" height="22" rx="3" fill="#0F766E" fill-opacity="0.78"/>
             <text x="8"  y="40" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">−1</text>
-            <text x="220" y="40" font-family="JetBrains Mono, monospace" font-size="10" fill="#0F766E">2,303 · 27.1%</text>
+            <text x="252" y="40" font-family="JetBrains Mono, monospace" font-size="10" fill="#0F766E">16,424 · 32.4%</text>
             <!-- 0 bar (largest) -->
-            <rect x="40" y="55" width="241" height="22" rx="3" fill="#94a3b8" fill-opacity="0.85"/>
+            <rect x="40" y="55" width="240" height="22" rx="3" fill="#94a3b8" fill-opacity="0.85"/>
             <text x="8"  y="70" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">0</text>
-            <text x="288" y="70" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">4,121 · 48.4%</text>
+            <text x="287" y="70" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">22,478 · 44.3%</text>
             <!-- +1 bar -->
-            <rect x="40" y="85" width="156" height="22" rx="3" fill="#FF6B35" fill-opacity="0.75"/>
+            <rect x="40" y="85" width="148" height="22" rx="3" fill="#FF6B35" fill-opacity="0.75"/>
             <text x="8"  y="100" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">+1</text>
-            <text x="203" y="100" font-family="JetBrains Mono, monospace" font-size="10" fill="#FF6B35">2,088 · 24.5%</text>
+            <text x="195" y="100" font-family="JetBrains Mono, monospace" font-size="10" fill="#FF6B35">11,786 · 23.3%</text>
             <!-- Title -->
             <text x="0" y="14" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">SHARE OF WEIGHTS</text>
           </svg>
-          <p class="text-xs text-slate-400 mt-2 leading-relaxed">~48% of weights collapse to <code class="font-mono">0</code> &mdash; structured sparsity from quantization-aware training (STE) is what lets the 8,581-parameter model fit in 19&nbsp;KB.</p>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">~44% of weights collapse to <code class="font-mono">0</code> &mdash; structured sparsity from quantization-aware training (STE) is what lets the 50,949-parameter v8 model fit in ~118&nbsp;KB (still <1&nbsp;ms/pair on Pi Zero 2&nbsp;W).</p>
           <p class="text-[10px] text-slate-500 mt-2 leading-relaxed border-l-2 border-clinical-purple/40 pl-3 bg-purple-50/20 py-2 rounded-r">
-            <strong class="text-slate-700">🔒 Bundle integrity</strong> &mdash; the <code class="font-mono text-[10px]">bundle_id</code> chip above is the SHA-256 of the canonical-form weight matrices. <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_bundle_integrity_pin.py</code> gates eight invariants a future weight rotation cannot silently break: (1) live <code class="font-mono text-[10px]">bundle_id</code> first-8 = <code class="font-mono text-[10px]">cfadb4f6</code> AND last-4 = <code class="font-mono text-[10px]">0b3f</code>; (2-3) demo + JUDGES cite the pinned short form; (4) file size stays within ±2&nbsp;KB of 19&nbsp;KB AND under the 32&nbsp;KB hard ceiling (the Pi Zero 2 W edge claim breaks past that); (5) ternary-weight sparsity ≥ 40% (the iter-72 "structured sparsity" rhetoric); (6) JSON key set is exactly <code class="font-mono text-[10px]">{_meta, hidden_b, hidden_w, output_b, output_w}</code>; (7) <code class="font-mono text-[10px]">_meta</code> carries provenance fields; (8) self-referenced <code class="font-mono text-[10px]">_meta.bundle_id</code> matches live SHA-256. Param counts (8,512 / 69 / 8,581) are independently pinned by <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_param_count_pin.py</code>.
+            <strong class="text-slate-700">🔒 Bundle integrity (v8 LIVE since iter-275 promotion)</strong> &mdash; the <code class="font-mono text-[10px]">bundle_id</code> chip above is the SHA-256 of the canonical-form weight matrices. <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_bundle_integrity_pin.py</code> gates nine invariants a future weight rotation cannot silently break: (1) live <code class="font-mono text-[10px]">bundle_id</code> first-8 = <code class="font-mono text-[10px]">1f0f8859</code> AND last-4 = <code class="font-mono text-[10px]">76e6</code>; (2-3) demo + JUDGES cite the pinned short form; (4) file size stays within ±4&nbsp;KB of 118&nbsp;KB AND under the 200&nbsp;KB hard ceiling (the Pi Zero 2 W edge claim still holds — 118&nbsp;KB on a 512&nbsp;MB-RAM board); (5) ternary-weight sparsity ≥ 40% (the iter-72 "structured sparsity" rhetoric, preserved through v8); (6) JSON key set is exactly <code class="font-mono text-[10px]">{_meta, hidden_b, hidden_w, output_b, output_w}</code>; (7) <code class="font-mono text-[10px]">_meta</code> carries provenance fields including <code class="font-mono text-[10px]">schema=bitnet_classifier_v3_atc_flags</code> + <code class="font-mono text-[10px]">training_iter=iter-242-path-a-v8-h256</code>; (8) self-referenced <code class="font-mono text-[10px]">_meta.bundle_id</code> matches live SHA-256; (9) <code class="font-mono text-[10px]">_meta</code> VALUE pinning (iter-265: <code class="font-mono text-[10px]">flag_keys_count=26</code>, <code class="font-mono text-[10px]">pair_derived_rule_count=13</code>). Param counts (50,688 / 261 / 50,949) are independently pinned by <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_param_count_pin.py</code>. The pre-promotion v1 baseline (<code class="font-mono text-[10px]">cfadb4f6</code>, 8,512 / 69 / 8,581 / 19&nbsp;KB) is preserved at <code class="font-mono text-[10px]">engine/bitnet_weights.v1.cfadb4f6.bak.json</code> for full audit-chain reconstruction.
           </p>
         </div>
 

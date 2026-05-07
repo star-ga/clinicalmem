@@ -19,7 +19,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 1. **6-layer clinical safety pipeline** with a Q16.16 ternary anchor
    at Layer 4.5. Layer 4.5's job is *deterministic verification*, not
    headline accuracy: same SHA-256 `repro_hash` on any chip in
-   healthcare. Bundle is 8,581 parameters (8,512 ternary weights + 69 Q16.16 biases) / 19 KB.
+   healthcare. v8 (LIVE, iter-275 promotion) is 50,949 parameters (50,688 ternary weights + 261 Q16.16 biases) / ~118 KB. Pre-promotion v1 baseline (cfadb4f6: 8,581 params / 19 KB) preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction.
 2. **Recall gate (PCCP):** **100% recall** on every severity class
    represented in the 138-pair OpenEvidence-cited cohort —
    contraindicated (33/33), major (4/4), serious (69/69), moderate
