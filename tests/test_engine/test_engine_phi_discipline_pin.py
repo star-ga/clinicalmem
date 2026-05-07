@@ -299,6 +299,18 @@ def test_engine_logger_extras_have_no_phi_field_keys():
         "raw_response",
         "exception_msg",
         "error_message",
+        # iter-309 extension: drug-pair raw-name keys. Pre-iter-309 the
+        # iter-240 pin checked positional %s var names (`drug_a` /
+        # `drug_b` in _PHI_RISKY_VAR_NAMES) but NOT extras-dict keys —
+        # `engine/bitnet_classifier.py:501` was leaking raw drug names
+        # via `extra={"drug_a": ..., "drug_b": ...}` on EVERY
+        # classification (live since iter-72-era). Closing the gap.
+        "drug_a",
+        "drug_b",
+        "drug",
+        "drug_pair",
+        "medication",
+        "med",
     )
     violations: list[tuple[Path, str, str]] = []
 

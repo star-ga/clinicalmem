@@ -498,11 +498,21 @@ def classify(
 
     # Audit-grade trace: structured DEBUG log so production INFO-level
     # surfaces stay quiet but a reviewer can opt in by raising verbosity.
+    # iter-309 PHI fix: replace raw drug_a/drug_b with 16-char SHA-256
+    # pair_hash_prefix (lex-sorted canonical form). Same iter-291 /
+    # iter-284 / iter-279 PHI discipline class — drug-pair identity stays
+    # grep-able for forensic correlation but raw names never reach handlers.
+    # Pre-iter-309 this event leaked drug_a + drug_b on EVERY classification
+    # (live since the iter-72-era classifier landing); caught by audit
+    # because both keys are absent from the iter-240 forbidden-extras-keys
+    # list (which is now extended in iter-309 to catch this regression class).
+    _pair_hash_prefix = hashlib.sha256(
+        f"{a_canonical}+{b_canonical}".encode("utf-8")
+    ).hexdigest()[:16]
     logger.debug(
         "bitnet_classified",
         extra={
-            "drug_a": a_canonical,
-            "drug_b": b_canonical,
+            "pair_hash_prefix": _pair_hash_prefix,
             "severity": severity,
             "severity_name": _SEVERITY_NAMES[severity],
             "repro_hash": repro_hash,
