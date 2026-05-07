@@ -61,6 +61,58 @@ def test_every_cache_drug_has_pharmacology_flag_entry():
     )
 
 
+# iter-270 ratchet — bound the orphan-flag-drug set (drugs flagged
+# but not yet referenced by any cache entry). These are intentional
+# pre-staging entries for future cohort growth (e.g., tranylcypromine
+# passed iter-264 v8 pre-flight at +42.95 margin and is reserved for
+# a future T5 growth iter). The pin lets a small bounded set live but
+# fails the gate if orphans drift past the documented allowlist —
+# preventing dead-code accumulation.
+_ALLOWED_ORPHAN_DRUGS = frozenset({
+    # NSAID class — pre-staged for future ketorolac+lithium or
+    # ketorolac+ACE-inhibitor cohort growth. FDA Toradol § 4 flags
+    # multiple high-risk combinations.
+    "ketorolac",
+    # MAOI class — pre-staged for tranylcypromine+tramadol, +sertraline,
+    # +meperidine etc. cohort growth (tranylcypromine+tramadol passed
+    # iter-264 v8 pre-flight at +42.95 Q16.16 margin, reserved for a
+    # future T5 iter). FDA Parnate § 4 explicit serotonergic contras.
+    "tranylcypromine",
+})
+
+
+def test_orphan_flag_drugs_bounded_to_allowlist():
+    """Drugs in `pharmacology_flags.json` that have no cache
+    reference must be in the explicit `_ALLOWED_ORPHAN_DRUGS`
+    allowlist. Intentional pre-staging entries are documented;
+    accidental dead-code orphans fail the gate.
+
+    To add a new orphan (e.g., post a v8 pre-flight that selected
+    a candidate but didn't yet land in cache), extend
+    `_ALLOWED_ORPHAN_DRUGS` deliberately with the rationale.
+    """
+    cache_drugs = _cache_drug_set()
+    flagged = set(_flags_doc()["drugs"].keys())
+    orphans = flagged - cache_drugs
+    unauthorized = orphans - _ALLOWED_ORPHAN_DRUGS
+    assert not unauthorized, (
+        f"{len(unauthorized)} flag-drug entries have no cache reference "
+        f"and are NOT in the documented allowlist: {sorted(unauthorized)}. "
+        f"Either remove the orphan from pharmacology_flags.json, OR "
+        f"add it to `_ALLOWED_ORPHAN_DRUGS` in this pin file with a "
+        f"comment explaining the pre-staging rationale (typically a "
+        f"v8 pre-flight pass)."
+    )
+    # Soft floor: don't let the allowlist itself grow without bound.
+    # If 10+ orphans accumulate, that's a signal the cohort growth
+    # cadence is lagging the flag-table additions.
+    assert len(orphans) <= 5, (
+        f"{len(orphans)} orphan flag-drugs exceeds the soft-floor of 5. "
+        f"Either run a T5 cohort-growth iter to land the pre-staged "
+        f"candidates, or trim the flag table to match live cohort scope."
+    )
+
+
 def test_every_flagged_drug_has_at_least_one_evidence_url():
     """The curated-table pitch is 'every flag traces to a published
     FDA label or peer-reviewed reference'. An entry with no URLs
