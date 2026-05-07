@@ -10,9 +10,20 @@ before a treatment change reaches the patient, run it through the same
 deterministic interaction checks and evidence grounding used for real-time safety.
 """
 import copy
+import hashlib
 import logging
 from dataclasses import dataclass
 from typing import Any
+
+
+def _hash_patient_id(patient_id: str) -> str:
+    """PHI-safe 16-char SHA-256 prefix of patient_id.
+
+    iter-334 PHI extras-key migration: hash patient_id before logging
+    via `extra={}`. Mirrors the iter-291 / iter-284 / iter-279 /
+    iter-309 / iter-332 / iter-333 PHI discipline pattern.
+    """
+    return hashlib.sha256((patient_id or "").encode("utf-8")).hexdigest()[:16]
 
 from engine.clinical_scoring import (
     DrugInteraction,
@@ -58,7 +69,7 @@ def simulate_add_medication(
     logger.debug(
         "what_if_add_entry",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "scenario": "add",
             "current_med_count": len(current_medications),
             "allergy_count": len(allergies),
@@ -132,7 +143,7 @@ def simulate_add_medication(
         logger.warning(
             "what_if_add_critical_risk",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "add",
                 "new_interaction_count": len(new_interactions),
                 "new_allergy_count": len(new_allergy_conflicts),
@@ -144,7 +155,7 @@ def simulate_add_medication(
         logger.info(
             "what_if_add_outcome",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "add",
                 "new_risk_count": new_risk_count,
                 "safe_to_proceed": True,
@@ -161,7 +172,7 @@ def simulate_add_medication(
         logger.debug(
             "what_if_recommendation_path",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "add",
                 "branch": "no_new_risks",
                 "new_risk_count": 0,
@@ -181,7 +192,7 @@ def simulate_add_medication(
         logger.debug(
             "what_if_recommendation_path",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "add",
                 "branch": "critical",
                 "new_risk_count": new_risk_count,
@@ -210,7 +221,7 @@ def simulate_add_medication(
         logger.debug(
             "what_if_recommendation_path",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "add",
                 "branch": "monitored",
                 "new_risk_count": new_risk_count,
@@ -253,7 +264,7 @@ def simulate_remove_medication(
     logger.debug(
         "what_if_remove_entry",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "scenario": "remove",
             "current_med_count": len(current_medications),
         },
@@ -282,7 +293,7 @@ def simulate_remove_medication(
         logger.warning(
             "what_if_remove_drug_not_in_list",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "remove",
                 "current_med_count": len(current_medications),
             },
@@ -321,7 +332,7 @@ def simulate_remove_medication(
     logger.info(
         "what_if_remove_outcome",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "scenario": "remove",
             "resolved_risk_count": len(removed_risks),
         },
@@ -333,7 +344,7 @@ def simulate_remove_medication(
         logger.debug(
             "what_if_remove_recommendation_path",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "remove",
                 "branch": "resolved",
                 "resolved_risk_count": len(removed_risks),
@@ -353,7 +364,7 @@ def simulate_remove_medication(
         logger.debug(
             "what_if_remove_recommendation_path",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "remove",
                 "branch": "no_change",
                 "resolved_risk_count": 0,
@@ -394,7 +405,7 @@ def simulate_swap_medication(
     logger.debug(
         "what_if_swap_entry",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "scenario": "swap",
             "current_med_count": len(current_medications),
         },
@@ -412,7 +423,7 @@ def simulate_swap_medication(
         logger.warning(
             "what_if_swap_remove_target_not_found",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "scenario": "swap",
                 "current_med_count": len(current_medications),
             },
@@ -451,7 +462,7 @@ def simulate_swap_medication(
     log_fn(
         "what_if_swap_outcome",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "scenario": "swap",
             "net_delta": net_delta,
             "direction": swap_direction,

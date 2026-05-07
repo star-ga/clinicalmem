@@ -208,7 +208,9 @@ def test_simulate_remove_emits_warning_when_drug_not_in_list_iter181(caplog):
     assert matches, "what_if_remove_drug_not_in_list WARNING missing"
     rec = matches[0]
     assert rec.levelno == logging.WARNING
-    assert rec.patient_id == "p-test"
+    # iter-334 PHI migration: hashed patient_id
+    assert rec.patient_id_hash_prefix == "3b6fb8f2904728bb"
+    assert getattr(rec, "patient_id", None) is None
     assert rec.scenario == "remove"
     assert rec.current_med_count == 2
 
@@ -244,7 +246,9 @@ def test_simulate_swap_emits_warning_when_remove_target_not_found_iter181(caplog
     assert matches, "what_if_swap_remove_target_not_found WARNING missing"
     rec = matches[0]
     assert rec.levelno == logging.WARNING
-    assert rec.patient_id == "p-test"
+    # iter-334 PHI migration: hashed patient_id
+    assert rec.patient_id_hash_prefix == "3b6fb8f2904728bb"
+    assert getattr(rec, "patient_id", None) is None
     assert rec.scenario == "swap"
     assert rec.current_med_count == 2
 
@@ -346,7 +350,9 @@ def test_simulate_add_critical_emits_recommendation_path_iter226(caplog):
     rec = critical_paths[0]
     assert rec.levelno == _lg.DEBUG
     assert rec.scenario == "add"
-    assert rec.patient_id == "p-test"
+    # iter-334 PHI migration: hashed patient_id
+    assert rec.patient_id_hash_prefix == "3b6fb8f2904728bb"
+    assert getattr(rec, "patient_id", None) is None
     assert isinstance(rec.new_risk_count, int)
     assert rec.new_risk_count >= 1
 
@@ -383,7 +389,9 @@ def test_simulate_remove_resolved_emits_recommendation_path_iter226(caplog):
     # whether the offline interaction table catches warfarin+ibuprofen)
     assert paths[0].branch in ("resolved", "no_change")
     assert paths[0].scenario == "remove"
-    assert paths[0].patient_id == "p-test"
+    # iter-334 PHI migration: hashed patient_id
+    assert paths[0].patient_id_hash_prefix == "3b6fb8f2904728bb"
+    assert getattr(paths[0], "patient_id", None) is None
 
 
 def test_simulate_remove_no_change_emits_recommendation_path_iter226(caplog):
