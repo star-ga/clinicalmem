@@ -74,7 +74,8 @@
     "clinical_summary": "Iodinated contrast media can cause acute contrast-induced nephropathy (CIN), transiently impairing renal clearance of metformin; since metformin is renally excreted and not metabolised, impaired clearance can precipitate lactic acidosis, a rare but life-threatening complication (mortality ~50%). Current ACR contrast manual guidelines recommend withholding metformin at the time of contrast administration in patients with eGFR <60 mL/min and reassessing renal function 48 hours after the procedure before resuming. For patients with normal renal function, suspension on the day of the procedure with 48-hour hold remains standard institutional practice in many centres.",
     "evidence_urls": [
       "https://www.acr.org/Clinical-Resources/Contrast-Manual",
-      "https://www.ncbi.nlm.nih.gov/pubmed/28025645"
+      "https://www.ncbi.nlm.nih.gov/pubmed/28025645",
+      "https://www.accessdata.fda.gov/drugsatfda_docs/label/2017/020357s037s039,021202s021s023lbl.pdf"
     ],
     "retrieved_at": "2026-05-03",
     "source": "CACHED"

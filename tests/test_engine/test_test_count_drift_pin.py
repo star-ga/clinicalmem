@@ -454,6 +454,19 @@ _HISTORICAL_COUNTS = (
     # logger.X call in body + no drug-name extras keys. Live 1352 →
     # 1355.
     "1352",
+    # iter-315 T5 round-67: cohort defense ratchet (iter-285 family) —
+    # NEW invariant test_every_contra_cites_fda_or_ema_regulatory_label
+    # (1 test). 100% floor: every contra MUST cite ≥ 1 URL from a
+    # primary regulatory body (FDA accessdata / EMA). Live cohort
+    # post iter-280: 43/44 = 97.7% (one outlier `contrast dye +
+    # metformin` was ACR + PubMed only). iter-315 enriched the outlier
+    # with the FDA Glucophage label PDF (Section 5.2 names iodinated
+    # contrast media as a lactic-acidosis precipitant) — 44/44 = 100%.
+    # Forward-protects against cohort-growth events grounded only in
+    # clinical-society + journal citations without an FDA / EMA
+    # regulatory anchor (FDA SaMD substantial-equivalence pathway
+    # requires regulatory backing). Live 1355 → 1356.
+    "1355",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -467,7 +480,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1355
+_TEST_COUNT_FLOOR = 1356
 
 
 def test_no_stale_test_counts_in_docs():

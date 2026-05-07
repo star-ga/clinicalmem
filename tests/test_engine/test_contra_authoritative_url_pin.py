@@ -128,6 +128,59 @@ def test_every_contra_has_two_authoritative_urls():
     )
 
 
+_REGULATORY_HOSTS = frozenset({
+    "accessdata.fda.gov",
+    "www.accessdata.fda.gov",
+    "fda.gov",
+    "www.fda.gov",
+    "ema.europa.eu",
+    "www.ema.europa.eu",
+})
+
+
+def test_every_contra_cites_fda_or_ema_regulatory_label():
+    """Every contraindicated cache entry MUST cite ≥ 1 URL from a
+    primary regulatory body (FDA accessdata.fda.gov / fda.gov OR
+    EMA ema.europa.eu). Cross-jurisdictional regulatory grounding.
+
+    iter-315 ratchet (iter-310-era candidate executed). Live cohort
+    audit (44 contra entries post iter-280 cohort growth + iter-315
+    enrichment of contrast dye+metformin with the FDA Glucophage
+    label): 44/44 (100%) cite FDA or EMA. The single pre-iter-315
+    outlier (`contrast dye + metformin`, originally backed by ACR
+    Contrast Manual + PubMed only — both authoritative under iter-285,
+    but neither regulatory) was enriched with the FDA Glucophage label
+    PDF (Section 5.2 explicitly names iodinated contrast media as a
+    lactic-acidosis precipitant).
+
+    Forward-protects against cohort-growth events that introduce a
+    contra grounded only in clinical-society guidelines + journal
+    citations without an FDA / EMA regulatory anchor. The FDA SaMD
+    substantial-equivalence pathway requires regulatory backing for
+    safety-critical claims; this pin enforces that floor at the
+    citation layer.
+    """
+    contras = [it for it in _cache() if it["severity"] == "contraindicated"]
+    failures = []
+    for it in contras:
+        urls = it.get("evidence_urls", [])
+        hosts = {urlparse(u).netloc for u in urls}
+        if not (hosts & _REGULATORY_HOSTS):
+            failures.append({
+                "pair": (it["drug_a"], it["drug_b"]),
+                "hosts": sorted(hosts),
+            })
+    assert not failures, (
+        f"{len(failures)} contraindicated entries without ≥ 1 "
+        f"regulatory-body URL (FDA / EMA). iter-315 floor = 100%.\n"
+        f"First offender: {failures[0]}\n"
+        f"Allowed regulatory hosts: {sorted(_REGULATORY_HOSTS)}\n"
+        f"Either add the relevant FDA label / EMA reference URL OR "
+        f"extend _REGULATORY_HOSTS deliberately + document the "
+        f"jurisdictional rationale."
+    )
+
+
 def test_authoritative_whitelist_is_not_overfit_to_one_source():
     """Reject the trivial-bypass case where the whitelist is reduced
     to a single host. The pin's value comes from breadth — at least
