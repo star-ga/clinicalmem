@@ -270,6 +270,19 @@ _HISTORICAL_COUNTS = (
     # pin applied to v8 staged surface. Defends user's "100% is the
     # only goal" demand at the bundle-content layer. Live 1282 → 1291.
     "1282",
+    # iter-260 T1 round-55: cross-surface "0 known misses" claim
+    # consistency. iter-256 surfaced "0 known misses" in the velocity
+    # badge + body callout, but no pin tied that claim back to the
+    # live `_V8_EXPECTED_MISSES = ()` empty-tuple invariant. If a
+    # future cohort growth adds a v8-miss pair, _V8_EXPECTED_MISSES
+    # gains entries but the demo claim could silently stay at "0
+    # known misses". New pin family test_zero_known_misses_consistency_pin.py
+    # (3 tests, **18th cross-pin family**): demo "0 known misses" /
+    # "zero known misses" claims iff len(_V8_EXPECTED_MISSES) == 0;
+    # if non-zero, demo MUST quote the actual count. Same shape as
+    # iter-232/iter-246/iter-247 (single source → derived surface).
+    # Live 1291 → 1294.
+    "1291",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -283,7 +296,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1291
+_TEST_COUNT_FLOOR = 1294
 
 
 def test_no_stale_test_counts_in_docs():
