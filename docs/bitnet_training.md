@@ -50,9 +50,9 @@ output : 5 units (severity logits) · ternary linear · Q16.16 bias · argmax
 | `major` | 3 | Avoid concomitant use unless benefit > risk |
 | `contraindicated` | 4 | Do not co-administer; documented harm |
 
-Total parameters: `128 × 64 + 64 × 5 + 64 + 5 = 8,581` (8,512 ternary weights + 69 Q16.16 biases). Ternary weights
-encode losslessly in 2 bits → ~2.1 KB raw weights + ~280 B for biases =
-~2.4 KB on the wire. JSON serialisation inflates that to ~19 KB.
+Total parameters (v8, LIVE since iter-275 promotion): `193 × 256 + 256 × 5 + 256 + 5 = 50,949` (50,688 ternary weights + 261 Q16.16 biases). Ternary weights encode losslessly in 2 bits → ~12.4 KB raw weights + ~1 KB for biases = ~13.4 KB on the wire. JSON serialisation inflates that to ~118 KB.
+
+Pre-promotion v1 baseline (preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction): `128 × 64 + 64 × 5 + 64 + 5 = 8,581` (8,512 ternary weights + 69 Q16.16 biases) / ~19 KB JSON.
 
 ## Corpus (`clinicalmem-bitnet-training/drug_corpus.jsonl`)
 

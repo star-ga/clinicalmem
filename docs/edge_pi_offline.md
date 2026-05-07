@@ -15,11 +15,15 @@ x86_64 server or NVIDIA H100.
 > drug-interaction safety pipeline on a $15 Raspberry Pi Zero 2 W with
 > no internet, and emit the same audit hash as the cloud build.**
 
-The hackathon dashboard ships an 8,581-parameter / **19 KB** ternary
-classifier that's already deployable. The "Edge" profile below is the
-post-hackathon scaling target: full DrugBank coverage, learned
-RxCUI embeddings, ~688K ternary parameters / **1.7 MB**, still bit-
-identical, still small enough for a Cortex-A53.
+The hackathon dashboard ships a **50,949-parameter / ~118 KB** v8
+ternary classifier (Path A v8, LIVE since iter-275 promotion) that's
+already deployable on a Pi Zero 2 W (512 MB RAM, MicroSD-class read,
+<1 ms/pair Q16.16 forward pass). The pre-promotion v1 baseline (8,581
+parameters / 19 KB at `engine/bitnet_weights.v1.cfadb4f6.bak.json`)
+is preserved on disk for full audit-chain reconstruction. The "Edge"
+profile below is the post-hackathon scaling target: full DrugBank
+coverage, learned RxCUI embeddings, ~688K ternary parameters / **1.7
+MB**, still bit-identical, still small enough for a Cortex-A53.
 
 This document is the answer to the question every clinical buyer asks:
 *"Can I run this in my rural clinic / FOB / disaster-response truck

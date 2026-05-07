@@ -2,513 +2,513 @@
   "pair_count": 39,
   "pairs": {
     "alcohol|metformin": {
-      "feature_hash": "cc6f203522651ff86e2bdccff52b15b5f46d55dae81686c6a74a11da4787573a",
+      "feature_hash": "c850a228cff593771cdf87372d169ca2d274b31670f64fc2458af8e218cdd35f",
       "logits_q16": [
-        50971,
-        -2576730,
-        -1192962,
-        -366855,
-        -82223
+        2865201,
+        -6985054,
+        -11325435,
+        -6280899,
+        3907309
       ],
-      "repro_hash": "02901db83417e7c044a77f97b9ee0e16e8b4aefa2ca8d4128a31458f877d4fbf",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "1796c9d18088db949d6cb1edc49ef419603ede0e0920d203498ac1457ed47416",
+      "severity_name": "contraindicated",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "alcohol|warfarin": {
-      "feature_hash": "3174d8fffb8713cbfc549f21ba62406004abff0a47099e230e866a02dc73212b",
+      "feature_hash": "4438e71b62ac23103703503cf7b84190ca691ac3fb6b78cce0ee849e0af2343d",
       "logits_q16": [
-        610562,
-        -1341488,
-        -72941,
-        253187,
-        167325
+        -2460752,
+        -250473,
+        -5363555,
+        240659,
+        -4832084
       ],
-      "repro_hash": "dade6ceb3343dea87fbc7583048e9af17ef9f434b7abe8daccdd208adb9ca6e8",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "cd2aa11fb7e0797013f447bd032691808f7bebff0264858b43648f38c125e636",
+      "severity_name": "major",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "alprazolam|oxycodone": {
-      "feature_hash": "92bc185205e2e85e1817e3e0a689dd1eb05ec798e1bf5dee1b3e7899711c5ab7",
+      "feature_hash": "f434f6604880c0dfac649633447629c50a468f46acead715259bebfbe2287796",
       "logits_q16": [
-        847959,
-        -6521384,
-        -929939,
-        2740884,
-        -4303891
+        -1316846,
+        -2790045,
+        -1725546,
+        4097024,
+        -7058019
       ],
-      "repro_hash": "edab9e922eb85069c368ced586405a0abc93fb6d397c230e1c2a145d442fccce",
+      "repro_hash": "29d5b0e3188b9923204c73cecc801108b0490ef19fa2d58b8b0f2f8d224a5f0e",
       "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "amiodarone|digoxin": {
-      "feature_hash": "ae4b343806849c2926e202415513496695f9cf5ed6027a16d513f7a580eadc1e",
+      "feature_hash": "5a4abc060e5271f3638ff6d31983b337098e5d70650ebe09c48ef877f2f0c4f5",
       "logits_q16": [
-        533442,
-        -1210247,
-        -402000,
-        76964,
-        -214635
+        -2354247,
+        -355023,
+        2398204,
+        1297394,
+        -2840912
       ],
-      "repro_hash": "f0b8039428b69fe47226867ccc086bebdf947452e20b68e8744ad02ae90931ec",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "2ef897433c3a931024f40834fb5f5ba95d2f9b569838fc5cb52dbc307246e38c",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "amiodarone|warfarin": {
-      "feature_hash": "7521d5bacddb89fe9fd7725fa946a387afba64ef6e2c29431615dfe5dd667f58",
+      "feature_hash": "359bd0bbd42622f3d6af2c21a1f228aa92bd028eecfd5d58a7db329b923bf59b",
       "logits_q16": [
-        457072,
-        -388910,
-        -28216,
-        918991,
-        123829
+        -2096255,
+        -2046643,
+        3445914,
+        1690183,
+        -3820879
       ],
-      "repro_hash": "36dcec7eb04cfea4890c6cef4c516868210306f67ca073ce4cae3012ebb8dfc3",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "c1e9ee25d2e0bcdb9098b646c463b00dc75baff4552c35a6f894465b450495ec",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "amoxicillin|cefalexin": {
-      "feature_hash": "cf2895ca7fc106e37a76fab419540772fca8459a1e399ee51f898a7cb45643bc",
+      "feature_hash": "302833d351fc75626a54a4094bc368de0367fcd200fdc414237e636ecc78eacb",
       "logits_q16": [
-        -60853,
-        -1952540,
-        -113433,
-        -1237752,
-        -880640
+        -405636,
+        4341148,
+        -6596006,
+        -2594682,
+        -2602116
       ],
-      "repro_hash": "a4308a72245cd812aeacd76839f139bb0b3155db7abe909f0a22441aab1f3f07",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "6c19c1c9212280b1f4b108ad5827e21842ed3bb314d702c375e477ed40dab424",
+      "severity_name": "moderate",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "amoxicillin|penicillin": {
-      "feature_hash": "8928034a77473286bf88abd817c7db11b1f01e71802eb1a388e632611aef0ef0",
+      "feature_hash": "3423534ee780ba8266a706a057c6744a9c206904058fb74adcb3a22a1467d056",
       "logits_q16": [
-        19485,
-        -2410907,
-        1141434,
-        -423044,
-        -2002063
+        -425437,
+        2248054,
+        -8606112,
+        -3074630,
+        -5816061
       ],
-      "repro_hash": "b694853b27e0120906e6f4822f505d000bf6489b0499acd001f0f0d0659b85d3",
+      "repro_hash": "11e42b2f5b63376e1ad48351eb44ce9c5fdc64994976372bf5a0919dfc9d95e4",
       "severity_name": "moderate",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "aspirin|clopidogrel": {
-      "feature_hash": "6279edfcb981a284f8b7e90680bc40e51f6eaedee222b24ce7bddb1949d2b41c",
+      "feature_hash": "fb30a51eeeff2330f365f9d876dca5734bca8e8494c22695e061efb6be88698b",
       "logits_q16": [
-        54592,
-        -2219467,
-        151649,
-        414689,
-        -687703
+        4936039,
+        -1403004,
+        -15699677,
+        462764,
+        -9567841
       ],
-      "repro_hash": "62eb81f8744b38ebde4329102f801c35c4c360718754d503b90f85f86a207b62",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "82961822b90c3e59a10e5e306fb84378c0eff7ca15f365cf85e7dd6f304fdb49",
+      "severity_name": "none",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "aspirin|coumadin": {
-      "feature_hash": "db39be3622c78033a1776678fd3e963141c4d4abfe77c20f88f601d6e0bafdd1",
+      "feature_hash": "f6eda7dc797702efa31a5850ba63ba9393562c9139e3237c9cba6f94680e0225",
       "logits_q16": [
-        2702593,
-        -6178929,
-        1558674,
-        -28,
-        -5120712
+        4358228,
+        4920988,
+        -15938740,
+        -1343629,
+        -18779110
       ],
-      "repro_hash": "5f5299ea1b9064ae1978425e954d86dcb608cd47494515903fa1bff05383c9e3",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "fd821d03d5aa150bf5523c2b6ca06b45068de2327e6e7f63f4896e911839d445",
+      "severity_name": "moderate",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "aspirin|plavix": {
-      "feature_hash": "ab49756439fe51ecd647cc4dd7a52ce03d1a1e9ff8e8fe1084aab199e1fde5e9",
+      "feature_hash": "d85cc5f4d40cd4e33126bce6f73dd7ea8619799f939ff491bfff4e728a76a40e",
       "logits_q16": [
-        2957075,
-        -7050383,
-        -1802399,
-        -1359917,
-        -3304069
+        5828404,
+        -2725347,
+        -19417853,
+        -1481455,
+        -10896599
       ],
-      "repro_hash": "a0d8543199f8a9a4b3e4049c4bdbc857fb324df7381af5ce80b9c16d6c493172",
+      "repro_hash": "e04ec23dd32dd1522c3b20d83a8611decaab00d8ff8eda9e237dd1e9c563bdf8",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "aspirin|vitaminc": {
-      "feature_hash": "964c10d1d2aab8e07e44144d3b514ef312eb40dc88be88251568e11715558fb4",
+      "feature_hash": "7bb88468a0dae9d37aa19ecbe9dd33f0a6214261944bbc14423d187ef5b5154e",
       "logits_q16": [
-        1143879,
-        -4213162,
-        -229666,
-        -445649,
-        -3037963
+        4048742,
+        2721246,
+        -8596608,
+        -2452436,
+        -11720116
       ],
-      "repro_hash": "ab4c177752deebae5861441564bcce44cdbb9d40cf4c4789b75e30386b9a3cd3",
+      "repro_hash": "bc2f21cc757ea26246316039422a20601ce074d0a4a8bf82be60330191d75e5b",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "aspirin|warfarin": {
-      "feature_hash": "96d25b1af99e1e2e9c6cf16cc47bc5c2b0b90768f1a25383b80a5b68c5b77cad",
+      "feature_hash": "7b511651a6876a32031d4b39242659a34250d2dd205edeb787464ababe4689e6",
       "logits_q16": [
-        583800,
-        -1175551,
-        50861,
-        1232329,
-        -415882
+        -1435142,
+        -2528408,
+        -4721608,
+        2060718,
+        -6381544
       ],
-      "repro_hash": "842399cd199611bae5d208593144af1401c58d265245383531038a345faac3ed",
+      "repro_hash": "07c5843ee36adb7b5611c10cfb1c23d6296be4e9795b34ea40b61127201df6a9",
       "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "atenolol|verapamil": {
-      "feature_hash": "d1fd6e119e4044c010f9c2097dedccb865575fa67a7f7e5a7f2e23d912f680e2",
+      "feature_hash": "51fa5d3c891e1629bb266029543a9be30a14820e6d9d5295b149804260d13aea",
       "logits_q16": [
-        796286,
-        -3279296,
-        -362248,
-        1322127,
-        -3673638
+        -1146605,
+        -978432,
+        1073714,
+        62508,
+        -75885
       ],
-      "repro_hash": "66fd9a9f9bfe1ec65718a95d6a30b149a8325242cb0fcd5618cca3038e74ec85",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "42d294aec3d2e563756dba17c868cae26d31ac11475e618ae1069a8674b48d7e",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "atorvastatin|grapefruit": {
-      "feature_hash": "31931b82ae38e6f406925b104e5fbdf5bba263dbdc8e60d0624eaf409bb6da49",
+      "feature_hash": "6f111e1aed9b9a55da1f8c99dce60bbc76155f28d83fa351ad25a2a851840aff",
       "logits_q16": [
-        -660034,
-        -1901520,
-        1258061,
-        -782695,
-        -967905
+        480474,
+        3967176,
+        -6329991,
+        2109040,
+        -7359887
       ],
-      "repro_hash": "5d05e706d6d896d154918f21f03d6e44efc10c17cd9d38c04d5965550dfcb4d2",
+      "repro_hash": "39855f0cfaba54b27c310737267100901191dffb555b635460cecc32333b09d8",
       "severity_name": "moderate",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "benzodiazepine|opioid": {
-      "feature_hash": "4faf53e0baf3ce0c61bebd4d8e79d7b416410d8bb4b3fd2b58a5adf19b059bf0",
+      "feature_hash": "56249f478ba671ec5f3f849e440d7ab9393169a1170d0fe3f09ffc665fd6fd70",
       "logits_q16": [
-        293942,
-        -6772976,
-        -366562,
-        2204187,
-        -5399919
+        -4248017,
+        119095,
+        3345653,
+        438630,
+        -1653787
       ],
-      "repro_hash": "db94acab03c0f70edaf087d1abed80f3683790ee29ea080864a7014cef733026",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "9ddbfb72a0cf0983c895cdb552b31fb09ee3fca400a1d57d3ec1650f3b049a34",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "calcium|vitamind": {
-      "feature_hash": "b178b4344266369b2f555d0745730ab1018b54e7714341b8ea6e25656ba7a5e3",
+      "feature_hash": "b449284a0afa9e34e24ada311e5fd9308b27fac01eddcc1d44e916974236ea8f",
       "logits_q16": [
-        678942,
-        -2690111,
-        32014,
-        2003468,
-        -4541746
+        4995196,
+        -2270637,
+        -7437267,
+        -440961,
+        -5191440
       ],
-      "repro_hash": "90d8f09bc88490b80021335219d61cfa09f740acdac34f5ae2fbaaef0c10796a",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "bc6a4ef058bfb8a6e9843f5d507de4053d59b50b6068686efb6ec678ad3ffa78",
+      "severity_name": "none",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "cefazolin|penicillin": {
-      "feature_hash": "e1569937ea1080f8d5e3c20fe5cba9fdbc4866e297681987663b83368f91b9bc",
+      "feature_hash": "0f1c5f8ae47b787bf3246142e4d71272de80de445fa10d92eeded11511adcb3e",
       "logits_q16": [
-        1528381,
-        -1823292,
-        -848718,
-        -541869,
-        -1535803
+        8978415,
+        -5704903,
+        -8124621,
+        -1071966,
+        -5915015
       ],
-      "repro_hash": "e2bdbc2a84503a8b82151ae715b76074851679dffac7d7861b52aca568494f8f",
+      "repro_hash": "cefe578a8ff98d365ee8a6f758f878e22147ab29b03afaedb3dc2769e5e77440",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "cephalexin|penicillin": {
-      "feature_hash": "b3d4606864fd99da8e3bc303dceebc9eaf0188eeff0f5fdceef39415dc2d9219",
+      "feature_hash": "3938a8a306594275596152727bba70270d25dd7b04ef38baf768557afeb9bccd",
       "logits_q16": [
-        985671,
-        -1326235,
-        -106784,
-        393554,
-        -1167286
+        8006039,
+        -2666379,
+        -8376685,
+        -5887655,
+        -10739416
       ],
-      "repro_hash": "cc4389ef7b0d97f784398293e7b2d82f16eb5acadbe887169970056473e52766",
+      "repro_hash": "33bbd5414b610975f64f30160738a3f8220f26a742eb173859360e065492cb5e",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "clarithromycin|simvastatin": {
-      "feature_hash": "e656a327dcfa21fe62133831a9172223385d62f1860a84dcb6a39fcb314f5d9e",
+      "feature_hash": "c1e3d76a6ab0edb375de56ee8cd52634a7e6a50c50649dce305fbe97746628ee",
       "logits_q16": [
-        -38658,
-        -745029,
-        -596344,
-        243157,
-        -367014
+        -284901,
+        -333753,
+        -138679,
+        35778,
+        99886
       ],
-      "repro_hash": "e55aed5ec49f9732fa99a05ee671b7e5f34541e3d69286744b7b0c2cadb9c383",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "553b0e3d43218d6ffbe8fe8c3375e256f8e4021d66a1ae2e217214c5764c96f3",
+      "severity_name": "contraindicated",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "coffee|water": {
-      "feature_hash": "723aadc4ae625a078749c8475f19b19d0a50e428eeb6d89dbc186230e9dbabfb",
+      "feature_hash": "7709dea43178be3291be4bfd0d35aa6c54f4ed7dcfbed25775e6773fd42fc1e6",
       "logits_q16": [
-        960812,
-        -2817670,
-        -933992,
-        -157905,
-        -1917220
+        -952636,
+        -3182251,
+        -5606279,
+        145278,
+        -4102454
       ],
-      "repro_hash": "5808987dea1f167e12efb2662f8dc4494b4a50759faf4b371af0180b9a7fabf0",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "812c350dcec845dbd7a1e97be46b2f790e0aa063482ff16477c69eb21c6910cf",
+      "severity_name": "major",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "contrast|metformin": {
-      "feature_hash": "908af6edfed64700ff4733e955ac78cb75bcff391de1b8efc74fdea1a0d7f2e0",
+      "feature_hash": "e91d22f39f68b0738086acef53f0a06ba3004b7723c5c6f08865deda46fa485a",
       "logits_q16": [
-        67581,
-        -4487719,
-        -890097,
-        -2615247,
-        1147398
+        1936979,
+        -3505291,
+        -13877526,
+        -10605281,
+        7924584
       ],
-      "repro_hash": "6a8d416ded728e27d1faff907a33b5caefa4d9f2a54587290a8b9983223a42b0",
+      "repro_hash": "031b920e00fa3906dac7700d9c2577f05242da1455c36f2675e17e2e0fef4fbd",
       "severity_name": "contraindicated",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "coumadin|ibuprofen": {
-      "feature_hash": "6f62acfb9be799db206cb5c43c376d67db4578904516b15358442a116542a4ca",
+      "feature_hash": "97aa5329ca1bceb1aa53fe61bd180df83cee364a3da3901d3db92836e36fbab4",
       "logits_q16": [
-        2062549,
-        -6434555,
-        1141997,
-        -338713,
-        -6442313
+        3257956,
+        3045733,
+        -6988304,
+        -888997,
+        -17155130
       ],
-      "repro_hash": "53d613122d64b408dafdf74e46c5d690f2a770529bd2cc9c237b5df523d537e3",
+      "repro_hash": "83044509bc0e55f152e25a9afd605776c6385df5ecceef76cebb16614d73c038",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "diazepam|morphine": {
-      "feature_hash": "d58e813792189a6a46d713f474963876e113b250635fca755f98af183664c587",
+      "feature_hash": "1d9c43d6247fbd074d3f0ca77ab401aee5e97cf693759df2f73ed5cc73a88efc",
       "logits_q16": [
-        569213,
-        -1314503,
-        397992,
-        1013783,
-        -1391596
+        -1374169,
+        -841012,
+        -605768,
+        2160816,
+        -2998272
       ],
-      "repro_hash": "bc189a6b8ca1664b22d8be0b3e9fcb5fac298ca871918682ca3d1d911aca10d7",
+      "repro_hash": "057f53665cd74e0441632595545b6567492410ba2fad7bdc1fcdef6e8ca55fcc",
       "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "digoxin|furosemide": {
-      "feature_hash": "5f39ccee6aa85a26ea09a631938fcbef374f03ad7ea9a14b755a2f8508770b8e",
+      "feature_hash": "1ec93c28d01776259fe8cf16f70b074f4abee90eace034bdc7e7a73662395de4",
       "logits_q16": [
-        1868142,
-        -3312181,
-        1833582,
-        -1207587,
-        -2367832
+        -38270,
+        4212763,
+        -3267332,
+        503881,
+        -3215958
       ],
-      "repro_hash": "0b08a1819f6bef7c0f0e65a048fe9d890e0e4eb7e98f19cb332263c2ab15d319",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "b4d6eecae53d9dab803c6fbbdef85db02f95044ecfb5275c314895c8ae3ee35a",
+      "severity_name": "moderate",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "fluconazole|warfarin": {
-      "feature_hash": "7a8d26f8e3d5d80f57c4c4031689588dbddb260e67cd82e0b63db9f794e513cd",
+      "feature_hash": "3f00607865cb561fd8a6885a80f77dc66d26cb6a0cce3e71e197d78629627333",
       "logits_q16": [
-        269450,
-        -611024,
-        13700,
-        579992,
-        115745
+        -1133361,
+        455361,
+        136368,
+        1979348,
+        -4282934
       ],
-      "repro_hash": "6a955df8ac808d41ddefac6fb6db8182a14692ef4fc45c428e498d49c875d4d1",
+      "repro_hash": "c8e4e0157ca11c34cd0af3373985ea2694c42a3e25090f863a7b57a05e145ad8",
       "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "fluoxetine|tramadol": {
-      "feature_hash": "3c7a1915bde6ab9a9500fa9602bd8f7202803b0af93aa1803986d70cd422080a",
+      "feature_hash": "acc972e7170446ee56cf95150050158713a58d5e525a7c41eeb34ff4710d74e0",
       "logits_q16": [
-        -1229312,
-        -2101730,
-        -480162,
-        946430,
-        -1203985
+        -2626861,
+        -646958,
+        1131454,
+        622227,
+        -1128734
       ],
-      "repro_hash": "38db9bbb7591314f67d238af8d2254d098a5a963f91c6259a621b70203ce7833",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "28952c37685cce1fd4a1cad0163b52a2adeef93ffdc9ffb9da55d7f1963cb1d2",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "grapefruit|simvastatin": {
-      "feature_hash": "bbad99e6cd0cb23db21a3776ed916035f9608214bfd70ad6a4f327703797f50f",
+      "feature_hash": "3892f4b99febbf6cb0705cad0d1b0fbab22e8ec76916df2e27fe796f5ff23516",
       "logits_q16": [
-        113471,
-        -1288497,
-        78537,
-        -647767,
-        -480824
+        -448781,
+        -506610,
+        418658,
+        100345,
+        -294762
       ],
-      "repro_hash": "ee54e6c228eada8a129e1593ad2f38604c2e451c947de237ca36d1e45b45e3de",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "7987deec1e1df4fb7d903c262876ebab2f04467460e62a8d198f6f8e9f2fc255",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "ibuprofen|warfarin": {
-      "feature_hash": "915d4f7fedc194c9307795a8bc8b5866fa9b79b087c1a7dfd3568058bfe9f51e",
+      "feature_hash": "1708f8815641323e65345446c4df53ea3827b0d7913de73e4285ee8e296c5cc2",
       "logits_q16": [
-        332445,
-        -778737,
-        197180,
-        848472,
-        -324252
+        -1928017,
+        -1031470,
+        2423326,
+        747543,
+        -2811021
       ],
-      "repro_hash": "bdaf385a5caf7c9a77ad71ac1bf8d821da9eba6ca7d350f5a6c8e4307a9d99d5",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "a4ca858f562b15da9a6ed5770fc23fcc1ec0392d9735fc12abe3ab7c4b181cf7",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "iodine|metformin": {
-      "feature_hash": "506e1ce0e86861127f6c03f290532b93623274aa95daa823d343c7f8d2c68dd7",
+      "feature_hash": "fd4bcac13b807511110d338b309f12aad76813e369c044d0e7dfb4ffcf17afbb",
       "logits_q16": [
-        -568547,
-        -1266889,
-        -87875,
-        -534025,
-        497582
+        -36285,
+        -4064442,
+        -17832834,
+        -7460059,
+        9463593
       ],
-      "repro_hash": "f537a7db08419fde8366a45ed1278f2eb260d701a5e6e79a23e6c3140830ba9e",
+      "repro_hash": "1a4af9fe43dadcec90d8489fdde810280982af1119b1d5b902cdc83055583633",
       "severity_name": "contraindicated",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "lisinopril|potassium": {
-      "feature_hash": "602a186861f812b8cb41687612d44b0f9afeb919dc2054b810117ed326016de1",
+      "feature_hash": "75f650102126c90510ad534bc4a8569065ece905bd8f52e14d2674c24e58b070",
       "logits_q16": [
-        -602657,
-        -2241992,
-        1129225,
-        329775,
-        -1549529
+        -2894334,
+        1426570,
+        -3267971,
+        -331335,
+        -4604506
       ],
-      "repro_hash": "f23b1e3585154fb2b44dcf47f5f3ff0a21dec3d7f69b756b95e65ea4e7c0f86b",
+      "repro_hash": "7382ad2625e708f146ee9df7996b84aaec532143f349ea8f891b7fc0dbfe13d4",
       "severity_name": "moderate",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "lisinopril|spironolactone": {
-      "feature_hash": "99604da7118729aee3abfd6c5534341f16a2570ec7d021249ab39e65c93d3ba2",
+      "feature_hash": "05746681cf5b42bf3a01c30028de9a6f5563ed31d377a90d0b50be80f1ac84c4",
       "logits_q16": [
-        -379505,
-        -2321480,
-        1779933,
-        -1851680,
-        -3295717
+        -2157241,
+        4230121,
+        -1806158,
+        -3205341,
+        -8513913
       ],
-      "repro_hash": "b434029a889caf8cfeb2dce400df6be1b1aa15186c13c88a87c5d6598b8b188d",
+      "repro_hash": "643cf72dbcba4767149b03071cd7990ad2c06f6ab175bca5e9a9767eda9f9f8a",
       "severity_name": "moderate",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "maoi|ssri": {
-      "feature_hash": "35f9a769d7075d2c1259413c149e8cb5e3fd8c49c85575f7d2cbcda503f50fd9",
+      "feature_hash": "df38a1110779d2ae03e68172d4e9d1c0eb52e78fdbb2b77cfd8af12c4a0b8207",
       "logits_q16": [
-        1265675,
-        -2143402,
-        796681,
-        721828,
-        -2492030
+        1912352,
+        -2268444,
+        -12960681,
+        -3433248,
+        39489
       ],
-      "repro_hash": "bef4595d1c39a8968471bdcad05e1b8b9f366e75b4dc968416cfb5722b54f40d",
+      "repro_hash": "4b45de384043072f88e38475dee983c2c1f970eed9383964ee10b3da6719c405",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "metoprolol|verapamil": {
-      "feature_hash": "2322abdfd02ab2e902d149792c765d12549fcd0e11b340aa18ba87d2155dbe4f",
+      "feature_hash": "80900ec082f31ab66b90201678df7e0d58d0fea1f34e0052775ee7368b5df472",
       "logits_q16": [
-        -6255,
-        -3402902,
-        -1232880,
-        1579152,
-        -2756700
+        -700984,
+        -2376009,
+        85413,
+        -189281,
+        -1255541
       ],
-      "repro_hash": "0424d8c194563476c19836b3d00835b2c09d1a0fa7eb0acc67b600c47a46a0f1",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "cf41bdba7d227ba479f3bc5eb4fe0eaa30c3d1a0ceb8ad1a87e9011c5286b77e",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "metronidazole|warfarin": {
-      "feature_hash": "7ee1751feecb16972b0a7b79478bf30c53307a4db6ae6bde60d60acbfc1bf0d5",
+      "feature_hash": "5c3c5801a180da02f0a1923a04f218ad4262b99eb63bcb11019264b5f3fe5965",
       "logits_q16": [
-        687938,
-        -1486191,
-        -745961,
-        -206649,
-        61027
+        1365488,
+        -3124545,
+        -2989415,
+        -1117941,
+        -1912294
       ],
-      "repro_hash": "13eb64da6016a2271633196f4a9ebddbe7bb1fcdf296e7f9eba2b7a17763b79f",
+      "repro_hash": "4d38d8c391ab144333947b6b48ac3c5669bf504e52e50180f26079e150fd011d",
       "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "naproxen|warfarin": {
-      "feature_hash": "3d0070121da44b3f2f88366a9551f678a646a2ced0a8071643ed557789e86eb6",
+      "feature_hash": "934e8dffa7de501e6ca0682651d7eacd51aac49c28f82f5e516e5ba7a80d1f39",
       "logits_q16": [
-        45322,
-        -487693,
-        33682,
-        166655,
-        -173353
+        -2102162,
+        -61978,
+        4776992,
+        414740,
+        -3739875
       ],
-      "repro_hash": "a2a5d934eb29aee6b89e1098ebd72bdd2025422e6c3e52b4ad41d09ee407fd22",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "dfc844a9d185a500ac85b06641ccc5b36d9c60adf6fa905ad49aa1322aa24b31",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "omeprazole|plavix": {
-      "feature_hash": "296b37b041822cb1000747ff08d6253e68e6a47f8007618966317316094ebefe",
+      "feature_hash": "5e513a3886b5a4f7708d211533b77b8a738a97cfaa51da4e65eaa97d3baaac99",
       "logits_q16": [
-        1789127,
-        -4153400,
-        -1686114,
-        401998,
-        -1526206
+        2447840,
+        -3943433,
+        -4468762,
+        3383195,
+        -4323975
       ],
-      "repro_hash": "f1ff68d3ef3cffc853a35ff70d4b3ac433ab3a6579bd9ca78218bb8eb117661f",
-      "severity_name": "none",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "4f0219d4a9263a7ca4cb73032b1eec28ad6f6b9754ce07c49cea44a6e0234ae3",
+      "severity_name": "major",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "paroxetine|phenelzine": {
-      "feature_hash": "618db5f6e66e51d8cb419cf01bff4d324762f708663ac6f9d5940da43ae57ff7",
+      "feature_hash": "d9cdaf7b845872876c4bbd9cea269f39aef4cf35758da9902592b5148b1c0351",
       "logits_q16": [
-        -243391,
-        -991452,
-        -1935856,
-        -853338,
-        681646
+        -1114271,
+        -2274241,
+        -2828191,
+        -40090,
+        3385013
       ],
-      "repro_hash": "4d262eb67e4d4f2648b6533ddd169721b320d8bd3a03831e96dac229c32b1178",
+      "repro_hash": "a73af3ef131fae2b2aec5f26d43ecc12977503c096bc0ebc0f8cd4bb7a0db168",
       "severity_name": "contraindicated",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "paroxetine|tramadol": {
-      "feature_hash": "f0ebe98814c07f9547a5a721ee98e49dc4cc9fc9b41edafb500974cf8585eb54",
+      "feature_hash": "07db4ba989a59d615ba9098fd86543b0c440f2d1a3e6f34116a1bc147df3e2aa",
       "logits_q16": [
-        -108826,
-        -1380322,
-        -576605,
-        1011842,
-        -315733
+        -902571,
+        -115169,
+        397466,
+        156002,
+        -160683
       ],
-      "repro_hash": "9fe90d75e80a3a83957051867446b67d37fc55024f3f9e8e1b7a20a38e5512bd",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "778bfffdb0977c2723f652c0c1548a723861a3da4584e4c64c5be27195e60c13",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     },
     "sertraline|tramadol": {
-      "feature_hash": "b72a5dc4132c1d09c97780f9fcf7ae029873e5210acdc49c030e6eb472aada19",
+      "feature_hash": "86808963e947740047ce3245d3327c51571eb89d92de98ea3bd30feaf4b47659",
       "logits_q16": [
-        -111298,
-        -1383392,
-        -177503,
-        939901,
-        -826364
+        -2326099,
+        428492,
+        1438076,
+        1062415,
+        -1407523
       ],
-      "repro_hash": "a44b10fa87919992b323d61dae33eaa47bdc6139465fdba8c8f1f535199b35d6",
-      "severity_name": "major",
-      "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+      "repro_hash": "b62794b2a1bdd6a9209cf390e9f40bd6613f76c251ef2dc976c447f4734a21b2",
+      "severity_name": "serious",
+      "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
     }
   },
-  "weights_file_sha256": "4078396f17124c89df2f1788b7b28a71b6d14233a97d0b2ead87915f809dfec9",
-  "weights_id": "cfadb4f6bdc023760224d7c7f7b8a5ca2de3707c5f64c84b079d367851da0b3f"
+  "weights_file_sha256": "f7f67afddcf03949a42a56ba913579fba268f1b12f5ef1633c34d043979ca483",
+  "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6"
 }
