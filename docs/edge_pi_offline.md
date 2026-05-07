@@ -37,7 +37,8 @@ Yes. Here is the engineering envelope.
 
 | Profile | Audience | Hidden | Embed | Params | Disk | Inference (Pi 5) | Status |
 |---|---|---|---|---|---|---|---|
-| **Hackathon (today)** | Judges, demo, FDA Q-Sub | 64 | 64-trit BLAKE2b hash | 8,581 | **19 KB** | **<1 ms** | ✅ live in `engine/bitnet_weights.json` |
+| **Hackathon (today, v8 LIVE since iter-275)** | Judges, demo, FDA Q-Sub | 256 | 64-trit BLAKE2b hash + 26 ATC flag bits + 13 pair-derived rule bits | 50,949 | **~118 KB** | **<1 ms** | ✅ live in `engine/bitnet_weights.json` (`1f0f8859…`) |
+| **Pre-promotion v1 baseline (cfadb4f6)** | Audit-chain reconstruction | 64 | 64-trit BLAKE2b hash | 8,581 | **19 KB** | **<1 ms** | preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` |
 | **Edge (roadmap)** | Rural clinics, EHR vendors, military medics | 512 → 256 → 128 (3 layers) | 256-trit learned RxCUI table | ~688 K | **~1.7 MB** | ~3 ms | 🔵 spec — gated on DrugBank license |
 
 Both profiles share:
@@ -401,7 +402,7 @@ on DrugBank licensing and the field pilot agreements.
 The hackathon prize is for the team that can plausibly ship a clinical-AI
 safety primitive that hospital IT departments would actually deploy.
 
-- A 19 KB ternary classifier is a strong proof of architecture.
+- A ~118 KB ternary classifier (v8 LIVE since iter-275; the 19 KB pre-promotion v1 baseline is preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction) is a strong proof of architecture.
 - A 45 MB Pi-deployable bundle that emits the same audit hash as the
   cloud is the **deployment story**.
 - An Apache-2.0 + patent-grant license is the **adoption story**.

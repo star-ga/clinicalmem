@@ -396,6 +396,21 @@ _HISTORICAL_COUNTS = (
     # SUCCESS path was silent, so operators couldn't compute the
     # explanation rate. Live 1341 → 1345.
     "1341",
+    # iter-306 T1 round-64: 27th cross-pin family —
+    # test_user_facing_docs_v8_consistency_pin.py (4 tests). Broader
+    # companion to the iter-301 demo.html-only cross-pin: where iter-301
+    # catches stale 4[23]/4[23] recall fractions in three demo.html
+    # phrases, iter-306 catches v1-baseline weight-count + bundle-size
+    # fossils (8,517 / 8,581 / 19 KB) across nine user-facing pitch +
+    # regulator + judge surfaces (DEVPOST, demo-script, README, JUDGES,
+    # FDA Q-Sub, edge_pi_offline, bitnet_training, why_bitnet_b158,
+    # demo.html). Caught 6 real stale 19 KB / 8,581 claims as the LIVE
+    # bundle on first run (in edge_pi_offline.md L40+L404 +
+    # why_bitnet_b158.md L102+L113+L124 + DEVPOST.md L59 — surfaces
+    # iter-303 didn't reach). Allowlists historical / pre-promotion /
+    # v1-baseline / cfadb4f6 / audit-chain context (3-line window).
+    # Live 1345 → 1349.
+    "1345",
     # iter-301 T1 round-63: 25th cross-pin family —
     # test_demo_pin_description_recall_consistency_pin.py (4 tests).
     # Same iter-232/iter-298 single-source-of-truth → derived-surface
@@ -423,7 +438,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1345
+_TEST_COUNT_FLOOR = 1349
 
 
 def test_no_stale_test_counts_in_docs():

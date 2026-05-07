@@ -99,10 +99,13 @@ The BitNet b1.58 layer satisfies all three:
    the hash chain and re-runs the BitNet forward pass to assert
    end-to-end byte-identity.
 3. **Verifier independence.** The classifier is one Python file plus a
-   ~19 KB JSON weights bundle. No `numpy`, no `torch`, no GPU. A
-   regulator with Python 3.12 and `engine/bitnet_classifier.py` can
-   verify any past clinical decision in less than a millisecond per
-   pair.
+   ~118 KB JSON weights bundle (v8 LIVE since iter-275; the ~19 KB
+   pre-promotion v1 baseline is preserved on disk at
+   `engine/bitnet_weights.v1.cfadb4f6.bak.json` for full audit-chain
+   reconstruction of decisions made before the iter-275 promotion).
+   No `numpy`, no `torch`, no GPU. A regulator with Python 3.12 and
+   `engine/bitnet_classifier.py` can verify any past clinical
+   decision in less than a millisecond per pair.
 
 ## How this layer differentiates ClinicalMem in the hackathon field
 
@@ -110,7 +113,7 @@ The BitNet b1.58 layer satisfies all three:
 |---|---|---|
 | Bit-identical inference across architectures | ✓ — Q16.16 ternary forward, no float anywhere | none |
 | Reproducible classification under FDA SaMD lineage requirements | ✓ — `repro_hash` per decision, JSON weights bundle hashed | none |
-| Verifier independence (no proprietary toolchain) | ✓ — pure Python + 19 KB JSON | partial (single repo build path) |
+| Verifier independence (no proprietary toolchain) | ✓ — pure Python + ~118 KB JSON (v8 LIVE; ~19 KB v1 baseline preserved for audit-chain reconstruction) | partial (single repo build path) |
 | Layered with deterministic + evidence + LLM-consensus tiers | ✓ — Layer 4.5 sits inside the 5-tier pipeline | n/a |
 
 No other entry visible in the May 2 competitive landscape can credibly
@@ -121,7 +124,7 @@ criterion.
 ## Cross-reference
 
 - `engine/bitnet_classifier.py` — implementation.
-- `engine/bitnet_weights.json` — ternary weights bundle (~19 KB).
+- `engine/bitnet_weights.json` — ternary weights bundle (~118 KB, v8 LIVE since iter-275; ~19 KB pre-promotion v1 baseline preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction).
 - `tests/test_engine/test_bitnet_classifier.py` — 17 tests covering
   byte-stability, order invariance, Q16.16 invariants, bundle-ID
   stability, and the known-pair regression set.
