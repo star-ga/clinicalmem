@@ -241,7 +241,12 @@ class TestFHIRClientLoggerRatchetIter156:
         rec = recs[0]
         assert getattr(rec, 'hostname', None) == 'fhir.example.com'
         assert getattr(rec, 'scheme', None) == 'https'
-        assert getattr(rec, 'patient_id', None) == 'p-1'
+        # iter-332 PHI migration: patient_id is now hashed (16-char SHA-256)
+        # before reaching the log handler. Raw patient_id MUST NOT appear.
+        import hashlib  # noqa: PLC0415
+        expected_hash = hashlib.sha256(b'p-1').hexdigest()[:16]
+        assert getattr(rec, 'patient_id_hash_prefix', None) == expected_hash
+        assert getattr(rec, 'patient_id', None) is None  # Raw must not leak
 
     def test_client_init_emits_debug(self, caplog):
         ctx = FHIRContext(url="https://fhir.example.com/r4", token="secrettoken", patient_id="p-2")
@@ -251,7 +256,11 @@ class TestFHIRClientLoggerRatchetIter156:
         assert len(recs) >= 1
         rec = recs[0]
         assert getattr(rec, 'host', None) == 'fhir.example.com'
-        assert getattr(rec, 'patient_id', None) == 'p-2'
+        # iter-332 PHI migration: hashed patient_id only.
+        import hashlib  # noqa: PLC0415
+        expected_hash = hashlib.sha256(b'p-2').hexdigest()[:16]
+        assert getattr(rec, 'patient_id_hash_prefix', None) == expected_hash
+        assert getattr(rec, 'patient_id', None) is None
         # Token must NEVER appear in any log record
         for r in caplog.records:
             haystack = str(r.message) + ' ' + ' '.join(str(v) for v in vars(r).values()
@@ -266,7 +275,11 @@ class TestFHIRClientLoggerRatchetIter156:
         recs = [r for r in caplog.records if r.message == 'fhir_bundle_client_init']
         assert len(recs) >= 1
         rec = recs[0]
-        assert getattr(rec, 'patient_id', None) == 'p-3'
+        # iter-332 PHI migration: hashed patient_id only.
+        import hashlib  # noqa: PLC0415
+        expected_hash = hashlib.sha256(b'p-3').hexdigest()[:16]
+        assert getattr(rec, 'patient_id_hash_prefix', None) == expected_hash
+        assert getattr(rec, 'patient_id', None) is None
         assert getattr(rec, 'resource_types', None) == 2
         assert getattr(rec, 'total_resources', None) == 3
 

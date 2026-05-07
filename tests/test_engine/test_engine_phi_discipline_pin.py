@@ -311,6 +311,15 @@ def test_engine_logger_extras_have_no_phi_field_keys():
         "drug_pair",
         "medication",
         "med",
+        # iter-332 deferred: patient_id-class extras migration
+        # (~30 sites across fhir_client + clinical_memory + what_if +
+        # flow_runner + fhir_adapter). PHI extras-key migration kickoff
+        # at iter-332 covers fhir_client.py only (SSRF / URL-error
+        # paths where exfiltration risk is highest). The remaining
+        # ~25 sites are queued for iter-337+ T4 cycles. Once ALL
+        # sites are migrated to patient_id_hash_prefix, uncomment
+        # "patient_id" below to lock in the discipline.
+        # "patient_id",
     )
     violations: list[tuple[Path, str, str]] = []
 

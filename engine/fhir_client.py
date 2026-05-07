@@ -4,11 +4,26 @@ FHIR R4 client — query patient resources from a FHIR server.
 Wraps httpx with Bearer token auth and FHIR JSON accept headers.
 All methods return parsed dicts; errors raise FHIRClientError.
 """
+import hashlib
 import logging
 from dataclasses import dataclass
 from typing import Any
 
 import httpx
+
+
+def _hash_patient_id(patient_id: str) -> str:
+    """PHI-safe 16-char SHA-256 prefix of patient_id.
+
+    iter-332 PHI extras-key migration: hash patient_id before logging
+    via `extra={}`. Mirrors iter-291 / iter-284 / iter-279 / iter-309
+    PHI discipline pattern. Even though Synthea IDs are synthetic
+    (not real PHI), the iter-248 HIPAA-designed-identifier discipline
+    treats patient_id as PHI-adjacent for defense-in-depth. The hash
+    is grep-able for forensic correlation but the raw ID never reaches
+    the log handler.
+    """
+    return hashlib.sha256((patient_id or "").encode("utf-8")).hexdigest()[:16]
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +63,10 @@ class FHIRContext:
         if parsed.scheme not in ("https", "http"):
             logger.error(
                 "fhir_url_invalid_scheme",
-                extra={"scheme": parsed.scheme, "patient_id": self.patient_id},
+                extra={
+                    "scheme": parsed.scheme,
+                    "patient_id_hash_prefix": _hash_patient_id(self.patient_id),
+                },
             )
             raise FHIRClientError(f"Invalid FHIR URL scheme: {parsed.scheme}")
         # Strip IPv6 brackets for comparison
@@ -57,7 +75,10 @@ class FHIRContext:
         if bare_host in ("localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254", "::1"):
             logger.error(
                 "fhir_url_blocked_ssrf",
-                extra={"hostname": bare_host, "patient_id": self.patient_id},
+                extra={
+                    "hostname": bare_host,
+                    "patient_id_hash_prefix": _hash_patient_id(self.patient_id),
+                },
             )
             raise FHIRClientError("FHIR URL must not point to localhost or metadata endpoints")
         if bare_host:
@@ -91,7 +112,7 @@ class FHIRContext:
                                     "link_local" if addr.is_link_local else
                                     "reserved"
                                 ),
-                                "patient_id": self.patient_id,
+                                "patient_id_hash_prefix": _hash_patient_id(self.patient_id),
                             },
                         )
                         raise FHIRClientError("FHIR URL must not point to private network addresses")
@@ -106,7 +127,7 @@ class FHIRContext:
             extra={
                 "hostname": bare_host,
                 "scheme": parsed.scheme,
-                "patient_id": self.patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(self.patient_id),
             },
         )
 
@@ -128,7 +149,7 @@ class FHIRClient:
             "fhir_client_init",
             extra={
                 "host": (urlparse(self._url).hostname or "unknown"),
-                "patient_id": self._patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(self._patient_id),
             },
         )
 
@@ -149,7 +170,7 @@ class FHIRClient:
                 extra={
                     "path": path,
                     "status": resp.status_code,
-                    "patient_id": self._patient_id,
+                    "patient_id_hash_prefix": _hash_patient_id(self._patient_id),
                 },
             )
             raise FHIRClientError(
@@ -161,7 +182,7 @@ class FHIRClient:
             extra={
                 "path": path,
                 "status": resp.status_code,
-                "patient_id": self._patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(self._patient_id),
                 "bytes": len(resp.content),
             },
         )
@@ -227,7 +248,7 @@ class BundleFHIRClient:
         logger.debug(
             "fhir_bundle_client_init",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "resource_types": len(resources_by_type),
                 "total_resources": sum(len(v) for v in resources_by_type.values()),
             },
