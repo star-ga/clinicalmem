@@ -128,11 +128,20 @@ def test_marker_breadth_floor_at_least_three_classes():
     )
 
 
-def test_at_least_eighty_percent_contras_cite_fda_or_primary():
-    """At least 80% of contras must cite FDA labels OR primary
+def test_at_least_eighty_five_percent_contras_cite_fda_or_primary():
+    """At least 85% of contras must cite FDA labels OR primary
     peer-reviewed sources (PMID/DOI). Catches the drift class where
     a future cohort addition leans heavily on guideline-only
-    citations without primary-source grounding."""
+    citations without primary-source grounding.
+
+    iter-305 ratchet (was 80% at iter-295): live cohort is at 93.2%
+    (41 / 44 contras cite FDA-or-primary post iter-280 cohort growth);
+    tightening to 85% leaves ~8.2 percentage points of cohort-growth
+    headroom (one new non-FDA-cited entry would drop to 41/45 = 91.1%
+    — still above the new 85% floor). Same iter-117 ratchet-when-
+    headroom-exists discipline applied to citation-quality vs the
+    iter-300 length-bound ratchet (clinical_summary 2000 → 1500).
+    """
     contras = _cache_contras()
     fda_or_primary = 0
     for it in contras:
@@ -141,8 +150,9 @@ def test_at_least_eighty_percent_contras_cite_fda_or_primary():
                 or _CITATION_MARKERS["primary_citation"].search(s)):
             fda_or_primary += 1
     ratio = fda_or_primary / len(contras) if contras else 0.0
-    assert ratio >= 0.80, (
+    assert ratio >= 0.85, (
         f"Only {ratio:.1%} of contras cite FDA OR primary "
-        f"(PMID/DOI/journal-DOI). Discipline floor: ≥ 80%. "
-        f"Cohort = {len(contras)}, FDA-or-primary = {fda_or_primary}."
+        f"(PMID/DOI/journal-DOI). Discipline floor: ≥ 85% "
+        f"(iter-305 ratchet from 80%). Cohort = {len(contras)}, "
+        f"FDA-or-primary = {fda_or_primary}."
     )
