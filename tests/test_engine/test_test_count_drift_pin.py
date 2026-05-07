@@ -339,6 +339,12 @@ _HISTORICAL_COUNTS = (
     # cascade drift class (iter-278 caught 6 stale v1 references on
     # judge-visible surfaces post-promotion). Live 1305 → 1310.
     "1305",
+    # iter-284 T4 round-59: openevidence_cache.py logger ratchet
+    # 18.2/kloc → 41/kloc (the lowest-density engine module). 4 new
+    # success-path events (cache load + hit + miss + invalidate) + PHI-
+    # safe _hash_pair helper for drug-name hashing. NEW pin family
+    # test_openevidence_cache_logging_pin.py (6 tests). Live 1310 → 1316.
+    "1310",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -352,7 +358,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1310
+_TEST_COUNT_FLOOR = 1316
 
 
 def test_no_stale_test_counts_in_docs():
