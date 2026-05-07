@@ -225,17 +225,22 @@ def _build() -> dict:
 
 
 def _diff(live: dict, on_disk: dict) -> list[str]:
-    """Return non-trivial differences (ignoring dateCreated and test_count).
+    """Return non-trivial differences (ignoring auto-derived bookkeeping).
 
-    test_count is allowed to grow as new tests land; the floor pin in
-    test_reproducibility_manifest.py enforces the lower bound. A `--check`
-    fail on test_count would force regeneration on every test addition,
-    which is wasteful churn — the floor pin catches the real signal
-    (test_count drops below floor)."""
+    Skipped fields:
+      • dateCreated — wall-clock timestamp, drifts every regen
+      • test_count — allowed to grow; floor pin enforces lower bound
+      • git_head   — auto-derived from `git rev-parse HEAD` and advances
+                     on every commit. Pinning git_head in `--check` is a
+                     chicken-and-egg trap: every regen-commit advances HEAD
+                     and re-stales the manifest. The artifact SHAs +
+                     gate verdicts + test_count floor are the real
+                     audit signal; git_head is informational metadata.
+    """
     diffs: list[str] = []
 
     def _walk(a, b, path):
-        if path in ("dateCreated", "test_count"):
+        if path in ("dateCreated", "test_count", "git_head"):
             return
         if isinstance(a, dict) and isinstance(b, dict):
             for k in set(a) | set(b):
