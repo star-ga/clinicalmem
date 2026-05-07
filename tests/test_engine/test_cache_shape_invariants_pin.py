@@ -93,6 +93,34 @@ def test_every_severity_is_in_canonical_vocabulary():
     )
 
 
+# iter-269 ratchet — `source` field VALUES (not just existence). Live
+# distribution shows all 138 entries use "CACHED". A future debug
+# value like "API_LIVE" or "STAGING" landing in production data
+# would silently skew downstream metrics. Lock the closed set.
+_VALID_SOURCES = frozenset({"CACHED"})
+
+
+def test_every_source_is_in_canonical_vocabulary():
+    """``source`` field MUST be in the canonical closed set. Live
+    distribution (iter-269 audit): 138/138 = "CACHED". Locking the
+    set prevents debug values like "API_LIVE" from polluting the
+    audit trail.
+
+    To add a new source value (e.g., "OPENEVIDENCE_LIVE_API"), extend
+    `_VALID_SOURCES` deliberately — the test failure forces the
+    discussion."""
+    bad = []
+    for i, it in enumerate(_cache()):
+        src = it.get("source")
+        if src not in _VALID_SOURCES:
+            bad.append((i, (it.get("drug_a"), it.get("drug_b")), src))
+    assert not bad, (
+        f"{len(bad)} cache entries have non-canonical source. "
+        f"Allowed: {sorted(_VALID_SOURCES)}. "
+        f"First offender: index={bad[0][0]} pair={bad[0][1]} source={bad[0][2]!r}"
+    )
+
+
 def test_drug_pair_canonical_is_alphabetical_sort_of_drug_pair():
     """drug_pair_canonical is the lookup key. It MUST equal the
     alphabetical sort of [drug_a, drug_b] — otherwise the engine's
