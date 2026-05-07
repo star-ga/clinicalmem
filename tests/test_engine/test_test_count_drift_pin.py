@@ -371,6 +371,14 @@ _HISTORICAL_COUNTS = (
     # (one per branch + PHI scrub + source-level ≥3 logger.* guard).
     # Live 1326 → 1331.
     "1326",
+    # iter-295 T5 round-61: cohort-defense ratchet — every contra cache
+    # entry's clinical_summary MUST contain ≥ 1 citation marker (FDA
+    # label / PMID-DOI / major journal / guideline body / mechanism
+    # token). 3 tests: per-entry coverage; ≥ 3 marker classes used
+    # collectively; ≥ 80% cite FDA OR primary peer-reviewed source.
+    # Same iter-285 shape applied to summary text instead of URL
+    # layer. Live 1331 → 1334.
+    "1331",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -384,7 +392,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1331
+_TEST_COUNT_FLOOR = 1334
 
 
 def test_no_stale_test_counts_in_docs():
