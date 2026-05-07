@@ -52,6 +52,18 @@ def confidence_gate(
         abstention_threshold: Below this, abstain from answering
     """
     if not bm25_scores:
+        # Iter-289: forced-abstain event so auditors can distinguish
+        # "no records" abstentions from "low confidence" abstentions.
+        # PHI-safe: scalar scores only, no record content.
+        logger.info(
+            "confidence_gate_no_records",
+            extra={
+                "should_abstain": True,
+                "abstention_threshold": abstention_threshold,
+                "score_weight": score_weight,
+                "overlap_weight": overlap_weight,
+            },
+        )
         return ClinicalConfidence(
             score=0.0,
             should_abstain=True,
@@ -69,8 +81,33 @@ def confidence_gate(
             f"Confidence {confidence:.2f} below clinical threshold "
             f"{abstention_threshold}. Insufficient evidence for a safe answer."
         )
+        # Iter-289: WARNING-level — abstention is a load-bearing safety
+        # event that the upstream caller needs to surface as "system
+        # refused to answer". PHI-safe: scalar metrics only.
+        logger.warning(
+            "confidence_gate_abstained",
+            extra={
+                "confidence": round(confidence, 4),
+                "abstention_threshold": abstention_threshold,
+                "n_records": n,
+                "avg_bm25": round(avg_score, 4),
+                "avg_entity_overlap": round(avg_overlap, 4),
+            },
+        )
     else:
         reason = f"Confidence {confidence:.2f} — sufficient clinical evidence."
+        # Iter-289: DEBUG-level pass event — auditors correlate
+        # successful retrievals to the same scalar metrics. PHI-safe.
+        logger.debug(
+            "confidence_gate_pass",
+            extra={
+                "confidence": round(confidence, 4),
+                "abstention_threshold": abstention_threshold,
+                "n_records": n,
+                "avg_bm25": round(avg_score, 4),
+                "avg_entity_overlap": round(avg_overlap, 4),
+            },
+        )
 
     return ClinicalConfidence(
         score=confidence,

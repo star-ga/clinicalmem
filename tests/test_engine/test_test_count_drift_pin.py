@@ -364,6 +364,13 @@ _HISTORICAL_COUNTS = (
     # forward pass deterministic, _meta.bundle_id self-reference
     # matches canonical SHA. 6 tests. Live 1320 → 1326.
     "1320",
+    # iter-289 T4 round-60: structured logging on
+    # engine.clinical_scoring.confidence_gate (the abstention gate that
+    # decides answer-vs-refuse). 3 new events: INFO no_records, WARNING
+    # abstained, DEBUG pass. PHI-safe: scalar metrics only. 5 tests
+    # (one per branch + PHI scrub + source-level ≥3 logger.* guard).
+    # Live 1326 → 1331.
+    "1326",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -377,7 +384,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1326
+_TEST_COUNT_FLOOR = 1331
 
 
 def test_no_stale_test_counts_in_docs():
