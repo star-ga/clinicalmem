@@ -72,13 +72,17 @@ _MIN_SUMMARY_LEN = 400  # iter-259 ratchet — live min is 470 (azathioprine+all
                           # forcing any new entry that approaches stub-length to fail
                           # the gate visibly (the iter-117 ratchet pattern: tighten
                           # invariants once enough headroom exists).
-_MAX_SUMMARY_LEN = 2000  # iter-274 upper-bound complement to the iter-259 lower bound.
-                          # Live max = 1347 chars (cyclosporine+rosuvastatin), p95 = 1066,
-                          # p99 = 1257. 0 / 138 entries exceed 1500. Cap at 2000 leaves
-                          # ~650 char headroom over the live max while preventing any
-                          # future essay-length entry from creeping in. Keeps the
-                          # dashboard summary panel render budget predictable and
-                          # forces long-form rationales into the evidence_urls layer.
+_MAX_SUMMARY_LEN = 1500  # iter-300 ratchet (was 2000 at iter-274). Live max =
+                          # 1347 chars (cyclosporine+rosuvastatin), p99 = 1304. 0 / 139
+                          # entries exceed 1500 even after the iter-280 cohort growth
+                          # (tranylcypromine+venlafaxine, len=1304). Tightening the cap
+                          # 2000 → 1500 leaves ~150 char (~11%) headroom over live max,
+                          # well within the iter-117 ratchet-when-headroom-exists
+                          # discipline. The 25% tighter bound forces any new long-form
+                          # entry to either trim verbosity or migrate detail into the
+                          # evidence_urls layer (iter-285 authoritative URL pin already
+                          # gates the URL layer's quality). Keeps the dashboard summary
+                          # panel render budget predictable; iter-274 lineage continues.
 _ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -194,13 +198,14 @@ def test_every_clinical_summary_is_at_least_100_chars():
     )
 
 
-def test_every_clinical_summary_is_at_most_2000_chars():
+def test_every_clinical_summary_is_at_most_1500_chars():
     """Upper-bound complement to the iter-259 lower bound. Live max is
-    1347 (cyclosporine+rosuvastatin), p95 = 1066, p99 = 1257. 0 / 138
-    entries exceed 1500. A future essay-length entry would (1) blow the
-    dashboard summary panel render budget unpredictably, and (2) signal
-    that long-form rationale leaked into the wrong layer (it belongs in
-    evidence_urls). Cap at 2000 with ~650 char live-max headroom."""
+    1347 (cyclosporine+rosuvastatin), p99 = 1304. 0 / 139 entries exceed
+    1500 across all 4 severity classes. A future essay-length entry would
+    (1) blow the dashboard summary panel render budget unpredictably, and
+    (2) signal that long-form rationale leaked into the wrong layer (it
+    belongs in evidence_urls). Cap at 1500 with ~150 char (~11%) live-max
+    headroom — iter-300 ratchet of the iter-274 ceiling (was 2000)."""
     long = []
     for i, it in enumerate(_cache()):
         summary = it.get("clinical_summary", "")
