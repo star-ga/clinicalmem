@@ -63,21 +63,21 @@ def test_every_cache_drug_has_pharmacology_flag_entry():
 
 # iter-270 ratchet — bound the orphan-flag-drug set (drugs flagged
 # but not yet referenced by any cache entry). These are intentional
-# pre-staging entries for future cohort growth (e.g., tranylcypromine
-# passed iter-264 v8 pre-flight at +42.95 margin and is reserved for
-# a future T5 growth iter). The pin lets a small bounded set live but
-# fails the gate if orphans drift past the documented allowlist —
-# preventing dead-code accumulation.
+# pre-staging entries for future cohort growth. The pin lets a small
+# bounded set live but fails the gate if orphans drift past the
+# documented allowlist — preventing dead-code accumulation.
+#
+# Iter-288 drift catch: tranylcypromine REMOVED from this allowlist
+# because iter-280 cohort growth landed tranylcypromine+venlafaxine
+# (MAOI×SNRI, the 44th contra). It's no longer an orphan. The
+# allowlist must reflect ACTUAL pre-staging entries, not historical
+# iter notes. Same iter-247-class drift (single source advances,
+# derived constants lag).
 _ALLOWED_ORPHAN_DRUGS = frozenset({
     # NSAID class — pre-staged for future ketorolac+lithium or
     # ketorolac+ACE-inhibitor cohort growth. FDA Toradol § 4 flags
     # multiple high-risk combinations.
     "ketorolac",
-    # MAOI class — pre-staged for tranylcypromine+tramadol, +sertraline,
-    # +meperidine etc. cohort growth (tranylcypromine+tramadol passed
-    # iter-264 v8 pre-flight at +42.95 Q16.16 margin, reserved for a
-    # future T5 iter). FDA Parnate § 4 explicit serotonergic contras.
-    "tranylcypromine",
 })
 
 
