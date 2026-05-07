@@ -388,6 +388,14 @@ _HISTORICAL_COUNTS = (
     # canonical lex-sorted pair hash, source-level no-legacy-%s guard.
     # Live 1334 → 1337.
     "1334",
+    # iter-304 T4 round-64: 26th cross-pin family —
+    # test_explain_conflict_logging_pin.py (4 tests). Closes the
+    # iter-289-class observability-gap on
+    # ClinicalMemory.explain_clinical_conflict's success path. Pre-iter-
+    # 304 the function fired the abstention event at INFO but the
+    # SUCCESS path was silent, so operators couldn't compute the
+    # explanation rate. Live 1341 → 1345.
+    "1341",
     # iter-301 T1 round-63: 25th cross-pin family —
     # test_demo_pin_description_recall_consistency_pin.py (4 tests).
     # Same iter-232/iter-298 single-source-of-truth → derived-surface
@@ -415,7 +423,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1341
+_TEST_COUNT_FLOOR = 1345
 
 
 def test_no_stale_test_counts_in_docs():

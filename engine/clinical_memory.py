@@ -1287,6 +1287,29 @@ class ClinicalMemEngine:
             },
         )
 
+        # INFO — clinician-ready conflict explanation is a high-stakes
+        # SaMD event. iter-304 closes the iter-289-class observability
+        # gap: pre-iter-304, abstention fired at INFO (L1237) but the
+        # SUCCESS path was silent — operators couldn't compute the
+        # explanation rate (success / (success + abstain)) or
+        # distinguish "no calls" from "all abstained". PHI-safe:
+        # patient_id (synthetic Synthea), conflict_type (structural
+        # token like "provider_attribution_disagreement", not patient
+        # data), conflict_index, abstention flag, model_used (model id,
+        # not patient data), evidence + citation counts.
+        logger.info(
+            "clinical_memory_explain_conflict_generated",
+            extra={
+                "patient_id": patient_id,
+                "conflict_type": conflict.get("type"),
+                "conflict_index": conflict_index,
+                "evidence_block_count": len(evidence),
+                "abstained": narrative.abstained,
+                "model_used": narrative.model_used,
+                "citation_count": len(narrative.evidence_citations),
+            },
+        )
+
         return narrative
 
     def clinical_handoff(self, patient_id: str) -> ClinicalNarrative:
