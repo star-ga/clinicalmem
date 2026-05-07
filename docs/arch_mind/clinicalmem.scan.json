@@ -2,7 +2,7 @@
   "_fixture": "clinicalmem/docs/arch_mind/clinicalmem.fixture.json",
   "acyclicity_q16": 655360000,
   "depth_q16": 655360000,
-  "equality_q16": 646803559,
+  "equality_q16": 646776703,
   "evidence_chain_density": 318925190,
   "governance_kernel_coverage": 0,
   "mcp_tool_isolation": 655360000,

@@ -7,11 +7,24 @@ without requiring the commercial runtime.
 
 Kernel sources: https://github.com/star-ga/mind/tree/main/mind/
 """
+import hashlib
 import logging
 import math
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
+
+
+def _hash_pair(drug_a: str, drug_b: str) -> str:
+    """PHI-safe canonical pair hash (16-char SHA-256 prefix).
+
+    Mirrors `engine.openevidence_cache._hash_pair`. Used in structured log
+    extras so drug pair identity is grep-able for forensic correlation
+    without ever emitting raw drug names through the logging surface.
+    Same iter-291 / iter-284 PHI discipline class.
+    """
+    canonical = "+".join(sorted([drug_a.strip().lower(), drug_b.strip().lower()]))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
 
 
 @dataclass(frozen=True)
@@ -515,7 +528,13 @@ def _openevidence_check_interactions(
                 timeout=5,
             )
             if resp.status_code != 200:
-                logger.warning("OpenEvidence API returned %d", resp.status_code)
+                logger.warning(
+                    "openevidence_api_non_200",
+                    extra={
+                        "status_code": resp.status_code,
+                        "med_count": len(medications),
+                    },
+                )
             else:
                 data = resp.json()
                 # OpenEvidence returns a narrative analysis — parse for drug pairs
@@ -528,7 +547,11 @@ def _openevidence_check_interactions(
                 )
                 if results:
                     logger.info(
-                        "OpenEvidence detected %d additional interactions", len(results)
+                        "openevidence_api_interactions_detected",
+                        extra={
+                            "interactions_added": len(results),
+                            "med_count": len(medications),
+                        },
                     )
                 return results
 
@@ -588,11 +611,15 @@ def _openevidence_cache_fallback(
                 )
             )
             logger.info(
-                "openevidence_cache: returning cached entry pair=%s+%s severity=%s source=%s",
-                cached.drug_pair_canonical[0],
-                cached.drug_pair_canonical[1],
-                cached.severity,
-                cached.source,
+                "openevidence_cache_returned_entry",
+                extra={
+                    "pair_hash_prefix": _hash_pair(
+                        cached.drug_pair_canonical[0],
+                        cached.drug_pair_canonical[1],
+                    ),
+                    "severity": cached.severity,
+                    "source": cached.source,
+                },
             )
 
     # DEBUG — cache-fallback completion signal. Tracks how many of the
@@ -754,7 +781,10 @@ def _rxnorm_check_interactions(
             already_found.add(pair)
 
     if results:
-        logger.info("RxNorm API detected %d additional interactions", len(results))
+        logger.info(
+            "rxnorm_api_interactions_detected",
+            extra={"interactions_added": len(results)},
+        )
     return results
 
 
@@ -787,7 +817,10 @@ def _call_openai_json(prompt: str, api_key: str) -> str | None:
             timeout=5,
         )
         if resp.status_code != 200:
-            logger.info("OpenAI returned %d", resp.status_code)
+            logger.info(
+                "openai_api_non_200",
+                extra={"status_code": resp.status_code},
+            )
             return None
         data = resp.json()
         return data["choices"][0]["message"]["content"]
@@ -817,7 +850,13 @@ def _call_google_json(prompt: str, api_key: str, model_id: str) -> str | None:
             timeout=5,
         )
         if resp.status_code != 200:
-            logger.info("%s returned %d", model_id, resp.status_code)
+            logger.info(
+                "google_genai_non_200",
+                extra={
+                    "model_id": model_id,
+                    "status_code": resp.status_code,
+                },
+            )
             return None
         data = resp.json()
         candidates = data.get("candidates", [])
@@ -900,7 +939,10 @@ JSON array:"""
         try:
             parsed = json.loads(text)
         except json.JSONDecodeError:
-            logger.info("%s returned invalid JSON, trying next", model_label)
+            logger.info(
+                "llm_returned_invalid_json",
+                extra={"model_label": model_label},
+            )
             continue
         if not isinstance(parsed, list):
             continue
@@ -924,7 +966,13 @@ JSON array:"""
                 )
             )
         if results:
-            logger.info("%s detected %d additional drug interactions", model_label, len(results))
+            logger.info(
+                "llm_interactions_detected",
+                extra={
+                    "model_label": model_label,
+                    "interactions_added": len(results),
+                },
+            )
         return results
 
     return []
