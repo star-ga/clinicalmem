@@ -297,17 +297,27 @@ audit record identifies which weights to load.
 The following artifacts constitute the evidentiary basis for the reproducibility
 claim asserted in Question (a):
 
-### 5.1 Architecture
+### 5.1 Architecture (v8 — LIVE in engine since iter-275 promotion)
 
-`engine/bitnet_classifier.py` (Apache-2.0, STARGA, Inc., 2026)
+`engine/bitnet_classifier.py` + `engine/bitnet_features_v8.py` (Apache-2.0,
+STARGA, Inc., 2026)
 
-- Input: 128-dimensional ternary feature vector (concatenation of two 64-dim
-  BLAKE2b-derived per-drug encodings).
-- Hidden layer: 64 units, ternary linear, Q16.16 bias, integer ReLU.
+- Input: **193-dimensional** ternary feature vector — for each drug, 64 BLAKE2b-
+  derived hash trits + 26 ATC pharmacology flag bits (FDA-label-cited per drug)
+  = 90 dim/drug × 2 = 180; plus 13 pair-derived DDI rule bits ⇒ 193 total.
+- Hidden layer: **256 units**, ternary linear, Q16.16 bias, integer ReLU.
 - Output: 5 logit units, ternary linear, Q16.16 bias, argmax over integers.
-- Total parameters: 8,581 (8,512 ternary weights + 69 Q16.16 biases; ternary weights ~2.1 KB raw; JSON serialization: ~19 KB).
+- Total parameters: **50,949** (50,688 ternary weights + 261 Q16.16 biases;
+  JSON serialization: ~118 KB; bundle hash `1f0f8859…`).
 - No floating-point arithmetic in the forward pass. All multiply-accumulate
   operations are 32-bit integer; no saturation arithmetic is used.
+
+**Pre-promotion v1 baseline preserved for audit-chain reconstruction**:
+`engine/bitnet_weights.v1.cfadb4f6.bak.json` — 128-dim hash-only × 64-hidden,
+8,581 params (8,512 ternary + 69 Q16.16 biases), 19 KB JSON. Any auditor
+can replay decisions made before the iter-275 v8 promotion under this prior
+bundle (same Python file, no proprietary toolchain; pinned by
+`tests/test_engine/test_v1_backup_bundle_replayable_pin.py`).
 
 ### 5.2 Training Recipe
 
@@ -325,8 +335,10 @@ Corpus is deterministically reproducible from the builder script at seed
 
 | Safety metric | Value |
 |---|---|
-| Recall on contraindicated (full pipeline) | 35/35 — **100%** |
-| False-negative on contraindicated | **0** (release-blocking invariant) |
+| Recall on contraindicated (live engine cohort under v8 Q16.16) | 44/44 — **100%** |
+| Recall on major (live engine cohort under v8 Q16.16) | 4/4 — **100%** |
+| False positives on contraindicated (Layer 4.5 alone) | **0** (release-blocking invariant) |
+| False-negative on contraindicated (full pipeline) | **0** (release-blocking invariant) |
 | Contraindicated → none in held-out test (Layer 4.5 alone, n=42) | **0** |
 | Contraindicated → minor in held-out test | **0** |
 | Macro test accuracy (Layer 4.5 alone) | 68.6% (n=647) |
