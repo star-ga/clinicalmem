@@ -354,6 +354,16 @@ _HISTORICAL_COUNTS = (
     # whitelist is live-used (or in _ALLOWED_UNUSED_HOSTS); JUDGES
     # cites the pin. Live 1316 → 1320.
     "1316",
+    # iter-286 T1 round-60: 22nd cross-pin family — v1 backup bundle
+    # replayability. iter-281 pinned the v1 backup file EXISTS;
+    # iter-286 pins it's FUNCTIONAL via the live engine loader: schema
+    # = bitnet_classifier_v1, dims=128/64/5, bundle_id starts with
+    # cfadb4f6, warfarin+ibuprofen → severity='major' + repro_hash
+    # starts with bdaf385a (iter-26 historical anchor), v1 vs v8
+    # repro_hashes differ (catches accidental v8-overwrite-of-v1),
+    # forward pass deterministic, _meta.bundle_id self-reference
+    # matches canonical SHA. 6 tests. Live 1320 → 1326.
+    "1320",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -367,7 +377,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1320
+_TEST_COUNT_FLOOR = 1326
 
 
 def test_no_stale_test_counts_in_docs():

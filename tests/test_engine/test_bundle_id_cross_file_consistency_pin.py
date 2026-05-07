@@ -129,10 +129,16 @@ def test_no_orphan_eight_hex_bundle_prefixes_in_pin_files():
             # of other artifacts).
             if prefix in allowed:
                 continue
-            # Heuristic — only flag if it co-occurs with bundle_id near
-            # the match (within 200 chars before).
-            window_start = max(0, m.start() - 200)
-            window = text[window_start:m.start() + 50]
+            # Heuristic — only flag if it co-occurs with bundle_id
+            # tightly. Iter-286 narrowed the window from 200 → 60
+            # chars to eliminate false positives where a repro_hash
+            # prefix (e.g., the iter-26 warfarin+ibuprofen anchor
+            # `bdaf385a`) appears in a pin file whose docstring
+            # mentions `bundle_id` elsewhere. The 60-char window
+            # captures legitimate `bundle_id 1f0f8859…` adjacency
+            # without false-matching distant docstring co-occurrences.
+            window_start = max(0, m.start() - 60)
+            window = text[window_start:m.start() + 20]
             if "bundle_id" in window.lower():
                 orphans.append((str(pyfile.relative_to(_REPO_ROOT)), prefix))
 
