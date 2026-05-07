@@ -46,7 +46,19 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
 
 _VALID_SEVERITIES = frozenset({
-    "none", "minor", "moderate", "serious", "major", "contraindicated",
+    # Iter-290 ratchet: cache severities tightened to the 4 LIVE-USED
+    # classes (139-pair distribution: serious=69, contraindicated=44,
+    # moderate=22, major=4). Pre-iter-290 the set included "none" +
+    # "minor" too (engine's full output vocabulary) but the CACHE only
+    # carries CLINICALLY-SIGNIFICANT severity ground-truth — by
+    # design, "none" and "minor" are upstream-domain (carried by
+    # Layers 1-4 RxNorm + OpenEvidence + NIH RxNav + 6-LLM consensus).
+    # Tightening here catches the drift class where someone
+    # accidentally adds a cache entry with non-clinically-significant
+    # severity, which would silently expand the cohort with low-stakes
+    # pairs that don't belong in the safety classifier's test set.
+    # Same iter-117 ratchet pattern applied to vocab membership.
+    "moderate", "serious", "major", "contraindicated",
 })
 _REQUIRED_FIELDS = (
     "drug_a", "drug_b", "drug_pair_canonical", "severity",
