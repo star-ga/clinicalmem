@@ -183,7 +183,7 @@ Honest gaps for the May 11 hackathon submission:
   await the dedicated MIC@2 federation-transport adapter targeting
   mind-mem v3.10). The live transport (mind-mem MIC@2/MAP/binary)
   is being implemented in parallel by the upstream mind-mem team
-  and is not yet runnable end-to-end. mind-mem v3.9.0 is shipped
+  and is not yet runnable end-to-end. mind-mem v3.9.1 is shipped
   and pinned, but its `http_transport.py` is a single-workspace
   REST adapter for non-MCP clients, not p2p federation.
 
