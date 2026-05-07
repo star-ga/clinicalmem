@@ -191,6 +191,52 @@ def test_every_contra_cites_two_distinct_authoritative_hosts():
     )
 
 
+def test_every_major_cites_at_least_one_authoritative_url():
+    """Every `major`-severity cache entry MUST cite ≥ 1 URL whose
+    netloc is in the authoritative whitelist.
+
+    iter-325 ratchet: extends iter-285 (which gated contras only) to
+    the second-highest severity tier. Live cohort audit (4 major
+    entries: paroxetine+tamoxifen, clarithromycin+digoxin,
+    tacrolimus+voriconazole, dabigatran+dronedarone): 4/4 cite ≥ 1
+    authoritative URL (3/4 cite 2 distinct hosts; 1/4 cite 1 distinct
+    host, paroxetine+tamoxifen at PubMed only). Adding the floor at
+    ≥ 1 URL leaves 0/4 at the new floor — full cohort-growth
+    tolerance.
+
+    Forward-protects against cohort-growth events that introduce a
+    major-severity pair backed only by secondary review sources
+    (UpToDate, MedScape) without primary FDA/EMA/PubMed grounding.
+    Same iter-285 shape applied one severity tier broader.
+
+    Lineage of severity-coverage extensions:
+      iter-285  contras: ≥ 1 authoritative URL
+      iter-310  contras: ≥ 2 path-distinct authoritative URLs
+      iter-315  contras: ≥ 1 FDA OR EMA regulatory URL
+      iter-320  contras: ≥ 2 distinct authoritative hosts
+      iter-325  majors:  ≥ 1 authoritative URL (this commit)
+    """
+    majors = [it for it in _cache() if it["severity"] == "major"]
+    failures = []
+    for it in majors:
+        urls = it.get("evidence_urls", [])
+        hosts = {urlparse(u).netloc for u in urls}
+        if not (hosts & _AUTHORITATIVE_HOSTS):
+            failures.append({
+                "pair": (it["drug_a"], it["drug_b"]),
+                "hosts": sorted(hosts),
+            })
+    assert not failures, (
+        f"{len(failures)} major-severity entries without ≥ 1 "
+        f"authoritative-source URL. Allowed hosts: "
+        f"{sorted(_AUTHORITATIVE_HOSTS)[:8]}...\n"
+        f"First offender: {failures[0]}\n"
+        f"Either add a primary citation (FDA / EMA / PubMed / ACR / "
+        f"AHA / BMJ) or extend _AUTHORITATIVE_HOSTS deliberately + "
+        f"document the source-grade rationale."
+    )
+
+
 def test_every_contra_cites_fda_or_ema_regulatory_label():
     """Every contraindicated cache entry MUST cite ≥ 1 URL from a
     primary regulatory body (FDA accessdata.fda.gov / fda.gov OR

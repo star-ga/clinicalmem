@@ -534,6 +534,17 @@ _HISTORICAL_COUNTS = (
     # extras keys. Live 1362 → 1365. 1 silent helper remains
     # (_build_safety_report) as the last future T4 candidate.
     "1362",
+    # iter-325 T5 round-69: cohort defense extension (iter-285 family)
+    # — NEW invariant test_every_major_cites_at_least_one_authoritative_url
+    # (1 test). Extends iter-285 from contras-only to the second-
+    # highest severity tier (major). Live cohort: 4/4 majors cite >= 1
+    # authoritative URL (3/4 at 2 distinct hosts; 1/4 paroxetine+
+    # tamoxifen at 1 host PubMed only). 0/4 at new floor with full
+    # cohort-growth tolerance. Severity-coverage extension lineage:
+    # iter-285 (contras >=1) → iter-310 (contras >=2 URLs) → iter-315
+    # (contras FDA-or-EMA) → iter-320 (contras >=2 distinct hosts) →
+    # iter-325 (majors >=1 auth URL). Live 1365 → 1366.
+    "1365",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -547,7 +558,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1365
+_TEST_COUNT_FLOOR = 1366
 
 
 def test_no_stale_test_counts_in_docs():
