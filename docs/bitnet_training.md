@@ -31,14 +31,19 @@ Three reasons:
    of FMA reduction order. Ternary linear over Python integers has
    none of those ambiguities.
 
-## Architecture (matches `engine/bitnet_classifier.py` bit-for-bit)
+## Architecture (live v8, matches `engine/bitnet_classifier.py` + `engine/bitnet_features_v8.py` bit-for-bit since iter-275 promotion)
 
 ```
-input  : 128-dim ternary {-1, 0, +1}
-         (concatenation of two 64-dim BLAKE2b-derived per-drug vectors)
-hidden : 64 units · ternary linear · Q16.16 bias · ReLU
+input  : 193-dim ternary {-1, 0, +1}
+         per drug: 64 BLAKE2b hash trits + 26 ATC pharmacology flag bits
+                  (FDA-label-cited)  ⇒  90 / drug × 2 drugs = 180
+         pair-derived: 13 DDI rule bits  ⇒  +13
+                                            193 total
+hidden : 256 units · ternary linear · Q16.16 bias · ReLU
 output : 5 units (severity logits) · ternary linear · Q16.16 bias · argmax
 ```
+
+The v1 baseline (`128 × 64 + 64 × 5 + 64 + 5 = 8,581` params, 8,512 ternary + 69 Q16.16 biases, ~19 KB JSON) is preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction (pre-promotion v1 backup). The architecture above describes the LIVE v8 bundle (`1f0f8859…`, ~118 KB, 50,949 params).
 
 5 severity classes (post iter-275 v8 promotion — corpus-aligned vocab):
 
@@ -139,26 +144,52 @@ trivially defensible.
 
 ## Held-out evaluation
 
-| Class | Support | Accuracy |
+### Live v8 — 139-pair PCCP regression cohort (post iter-275 promotion)
+
+| Class | Live cohort size | Recall under v8 Q16.16 |
+|---|---:|---:|
+| `contraindicated` | 44 | **100%** (44 / 44 + 0 FP) |
+| `major` | 4 | **100%** (4 / 4) |
+| `moderate` | 22 | 91% |
+| `serious` | 69 | 84% |
+| `none` (negative-control cohort) | 10 | **100% specificity** (0 FP) |
+
+The release-blocking invariant: **zero false negatives on
+contraindicated + zero false positives on the negative-control cohort**.
+v8 holds both invariants under cross-arch Q16.16 (pinned by
+`tests/test_engine/test_path_a_v8_live_recall_pin.py` +
+`test_path_a_v8_q16_determinism_pin.py`).
+
+### Pre-promotion v1 baseline (preserved for audit-chain reconstruction)
+
+| Class | Support | Accuracy (v1 held-out, pre-promotion) |
 |---|---:|---:|
 | `none` | 324 | 67.0% |
 | `minor` | 0 | N/A |
 | `moderate` | 139 | 59.0% |
 | `major` | 142 | 76.8% |
-| `contraindicated` | 42 | **85.7%** |
-| **macro test acc** | 647 | **68.6%** |
+| `contraindicated` | 42 | 85.7% |
+| **macro test acc** | 647 | 68.6% |
 
-Two observations:
+The v1 baseline numbers above describe the original held-out evaluation
+of the cfadb4f6 bundle (preserved at
+`engine/bitnet_weights.v1.cfadb4f6.bak.json`). They remain the correct
+measurement for any pre-iter-275 `repro_hash`. Live v8 supersedes them
+for current-tense claims about the LIVE engine — see the v8 table
+above.
 
-- **`contraindicated` is the safest class to over-predict** and the
-  model gets it right 85.7% of the time. Of the misclassified
-  `contraindicated` pairs, none was downgraded to `none` — the failure
-  mode is "major instead of contraindicated", which still triggers the
-  Layer-5 abstention gate. Zero false-negatives on contraindicated is
-  the load-bearing safety claim, not raw accuracy.
-- The `none → moderate` and `none → major` errors on the held-out fold
-  are conservative — the model errs toward flagging when uncertain.
-  For a clinical safety system this is the desired bias.
+Two observations on the v1 held-out fold (preserved historically):
+
+- **`contraindicated` is the safest class to over-predict.** Of the
+  misclassified `contraindicated` pairs in the v1 held-out fold, none
+  was downgraded to `none` — the failure mode was "major instead of
+  contraindicated", which still triggers the Layer-5 abstention gate.
+  Zero false-negatives on contraindicated is the load-bearing safety
+  claim, not raw accuracy.
+- The `none → moderate` and `none → major` errors on the v1 held-out
+  fold are conservative — the model erred toward flagging when
+  uncertain. For a clinical safety system this is the desired bias.
+  v8 closed the historical-miss class entirely on the live cohort.
 
 ## Reproducibility hashes
 

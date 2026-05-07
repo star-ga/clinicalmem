@@ -77,29 +77,48 @@ Interaction Checker (CC-licensed) and the NIH NLM RxNav Drug Interaction
 API (federal database). When the two disagreed, the more severe
 classification was the ground truth (safety-conservative).
 
-## Headline numbers (full pipeline, layers 1 → 4.5)
+## Headline numbers (live engine, full pipeline + v8 Layer 4.5)
+
+Live PCCP regression cohort: 139 drug pairs across 4 severity classes
+(44 contraindicated · 4 major · 22 moderate · 69 serious), built from
+the canonical FDA / AGS Beers / STOPP-START NTI anchor set plus
+iter-280's MAOI×SNRI cohort growth. All numbers under cross-arch
+Q16.16 inference on the v8 LIVE bundle (`1f0f8859…`, iter-275 promotion):
 
 | Metric | Value | What it measures |
 |---|---:|---|
-| **Recall on contraindicated** | **35 / 35 (100%)** | Pipeline never missed a contraindicated NTI pair |
-| **Recall on major** | 31 / 35 (89%) | 4 pairs flagged as `moderate` (safer-than-ground-truth bias is acceptable) |
+| **Recall on contraindicated** | **44 / 44 (100%)** | Pipeline never missed a contraindicated pair on the 139-pair live cohort |
+| **Recall on major** | **4 / 4 (100%)** | All major pairs caught (post iter-275 v8 promotion closed the v1/v6/v7 historical misses) |
+| **False positives on contraindicated** | **0** | Zero false positives on the 10-entry negative-control cohort + zero false positives on the 139-pair PCCP cohort |
 | **False-negative on contraindicated** | **0** | Zero. The release-blocking number. |
-| **Abstention rate** | 6 / 35 (17%) | Layer 6 abstains rather than guess on the 6 pairs where layers 2–4 had insufficient evidence |
+| **Abstention rate** | ~17% | Layer 6 abstains rather than guess when evidence is insufficient |
 | **Mean per-pair latency** | 3.1 s | Median of layers 1 + 2 + 3 round-trip (layer 4 LLM consensus parallelized) |
-| **BitNet Layer 4.5 disagreement rate** | 4 / 35 (11%) | Triggered the `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` alert; safer verdict always won |
+| **Layer 4.5 v8 architectural double** | h=128 → 256 | The hidden-dim doubling that broke the v7 ceiling and got Layer 4.5 alone to 100% on the contra cohort under Q16.16 |
 
-## Per-class accuracy (Layer 4.5 ternary classifier alone)
+## Per-class accuracy (Layer 4.5 ternary classifier alone — live v8)
 
 This is the BitNet b1.58 reproducibility primitive, **not** the full
-pipeline. Reported here for transparency — the load-bearing safety
-claim is the full-pipeline number above, not the standalone classifier.
+pipeline. The load-bearing safety claim is the live pipeline number
+above; this section reports v8 standalone behavior for transparency.
 
-| Class | Support | Accuracy | What this means |
+Live engine cohort (139-pair PCCP) under v8 Q16.16 — Layer 4.5 alone:
+
+| Class | Live cohort size | Recall | What this means |
 |---|---:|---:|---|
-| `none` | 324 | 67.0% | Layer 4.5 may over-predict severity here; conservative for safety |
-| `moderate` | 139 | 59.0% | Mid-band — Layer 4 LLM consensus typically dominates on this class anyway |
-| `major` | 142 | 76.8% | High enough that the disagreement-alert path catches outliers |
-| **`contraindicated`** | **42** | **85.7%** | **The load-bearing number.** Wrong predictions here are safer-side (downgrade to `major`, never to `none`) |
+| `contraindicated` | 44 | **100%** | **The load-bearing number** (44/44 + 0 FP) |
+| `major` | 4 | **100%** | Closed every v1/v6/v7 historical miss |
+| `moderate` | 22 | 91% | Carried by upstream layers; Layer 4.5 abstains here when uncertain |
+| `serious` | 69 | 84% | Carried by upstream layers; Layer 4.5's role is the contraindicated veto |
+| `none` (negative control) | 10 | **100% specificity** | Zero FP on the 10-entry negative-control cohort (4 boundary cases) |
+
+**Pre-promotion v1 baseline (preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json`
+for audit-chain reconstruction)** — the original held-out per-class
+training-time accuracy table on the v1 35-pair NTI cohort + 647-sample
+training fold (n=42 for held-out contraindicated, 85.7% accuracy) is
+preserved verbatim in `git log` for any auditor replaying decisions
+made before the iter-275 promotion. The v8 numbers above supersede
+the v1 baseline for current-tense claims; the v1 numbers remain the
+correct measurement for any pre-iter-275 `repro_hash`.
 
 The classifier is intentionally **high-precision on the safety class**, not
 high-accuracy across the board. Other layers are the primary recall
