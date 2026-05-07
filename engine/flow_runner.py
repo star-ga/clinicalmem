@@ -545,9 +545,23 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
         from engine.clinical_scoring import _KNOWN_INTERACTIONS
         known = {drug for drug_a, drug_b, _, _ in _KNOWN_INTERACTIONS for drug in (drug_a, drug_b)}
         coverage = sum(1 for m in meds if any(d in m.lower() for d in known))
+        coverage_ratio = coverage / max(len(meds), 1)
+        # iter-324 observability — flow-node-level footprint for Layer 3
+        # RxNorm normalisation. Mirror of iter-314 (Layer 4.5) +
+        # iter-319 (Layer 1). PHI-safe: med_count + resolved_count +
+        # coverage_ratio only — no drug names. Drug names never reach
+        # the log record.
+        logger.debug(
+            "flow_node_rxnorm_normalize",
+            extra={
+                "med_count": len(meds),
+                "resolved_count": coverage,
+                "coverage_ratio_q4": round(coverage_ratio, 4),
+            },
+        )
         return {
             "medications": meds,
-            "coverage_ratio": coverage / max(len(meds), 1),
+            "coverage_ratio": coverage_ratio,
         }
     table[("@native", "normalized")] = _rxnorm_normalize
     table[("@native", "normalize")] = _rxnorm_normalize

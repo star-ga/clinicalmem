@@ -521,6 +521,19 @@ _HISTORICAL_COUNTS = (
     # store' (pre-iter-321 list). iter-318/iter-323 candidate
     # executed early. Live 1361 → 1362.
     "1361",
+    # iter-324 T4 round-69: 31st cross-pin family —
+    # test_flow_node_rxnorm_normalize_logging_pin.py (3 tests). Closes
+    # the 3rd silent flow-node helper (Layer 3 RxNorm normalisation)
+    # inside engine.flow_runner._dispatch_table. iter-314 closed the
+    # 1st (_bitnet_classify, Layer 4.5); iter-319 closed the 2nd
+    # (_deterministic_check, Layer 1); iter-324 closes the 3rd
+    # (_rxnorm_normalize, Layer 3). NEW DEBUG event
+    # flow_node_rxnorm_normalize with PHI-safe extras (med_count,
+    # resolved_count, coverage_ratio_q4 rounded). 3 tests gate:
+    # event_name in source + logger.X call in body + no drug-name
+    # extras keys. Live 1362 → 1365. 1 silent helper remains
+    # (_build_safety_report) as the last future T4 candidate.
+    "1362",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -534,7 +547,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1362
+_TEST_COUNT_FLOOR = 1365
 
 
 def test_no_stale_test_counts_in_docs():
