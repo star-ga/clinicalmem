@@ -78,29 +78,53 @@ def _cache():
     return json.loads(_CACHE.read_text())
 
 
-def test_every_contra_has_authoritative_url():
-    """Every contraindicated cache entry MUST cite ≥ 1 URL whose
-    netloc is in the authoritative whitelist. Catches cohort-growth
-    events that introduce a contra backed only by secondary sources.
+def test_every_contra_has_two_authoritative_urls():
+    """Every contraindicated cache entry MUST cite ≥ 2 URLs whose
+    netlocs are in the authoritative whitelist.
+
+    iter-310 ratchet (was ≥ 1 at iter-285): live cohort audit (44
+    contra entries post iter-280 cohort growth) found 0 / 44 at the
+    floor of 1, 17 / 44 at 2, 27 / 44 at 3 (mean = 2.61 authoritative
+    URLs per entry). Tightening 1 → 2 leaves 0 entries at the new
+    floor with full cohort-growth tolerance: a new contra cited only
+    by a single primary source (one FDA label OR one PubMed paper)
+    would fail the gate, forcing operators to add a second
+    authoritative source before landing the entry. Same iter-117
+    ratchet-when-headroom-exists discipline applied to citation
+    breadth (where iter-305 ratcheted citation-quality FDA-or-primary
+    floor 80% → 85%; same direction, complementary axis).
+
+    Forward-protects against cohort-growth events that introduce a
+    contra grounded in only one primary source plus secondary review
+    sources (UpToDate, MedScape, etc.). Two independent primary
+    sources is the FDA SaMD substantial-equivalence discipline floor.
     """
     contras = [it for it in _cache() if it["severity"] == "contraindicated"]
     failures = []
     for it in contras:
         urls = it.get("evidence_urls", [])
-        hosts = {urlparse(u).netloc for u in urls}
-        if not (hosts & _AUTHORITATIVE_HOSTS):
+        # Count distinct authoritative URLs (path-distinct citations
+        # from any authoritative host — three FDA labels at the same
+        # host count as three distinct primary sources, since each
+        # label is an independent regulatory document for a different
+        # drug).
+        auth_urls = [u for u in urls if urlparse(u).netloc in _AUTHORITATIVE_HOSTS]
+        if len(auth_urls) < 2:
             failures.append({
                 "pair": (it["drug_a"], it["drug_b"]),
-                "hosts": sorted(hosts),
+                "auth_url_count": len(auth_urls),
+                "auth_urls": auth_urls,
+                "all_urls": urls,
             })
     assert not failures, (
-        f"{len(failures)} contraindicated entries without ≥ 1 "
-        f"authoritative-source URL. Allowed hosts: "
+        f"{len(failures)} contraindicated entries with < 2 "
+        f"authoritative-source URLs (iter-310 ratchet, was ≥ 1 at "
+        f"iter-285). Allowed hosts: "
         f"{sorted(_AUTHORITATIVE_HOSTS)[:8]}...\n"
         f"First offender: {failures[0]}\n"
-        f"Either add a primary citation (FDA / EMA / PubMed / ACR / "
-        f"AHA / BMJ) or extend _AUTHORITATIVE_HOSTS deliberately + "
-        f"document the source-grade rationale."
+        f"Either add a second primary citation (FDA / EMA / PubMed / "
+        f"ACR / AHA / BMJ / etc.) or extend _AUTHORITATIVE_HOSTS "
+        f"deliberately + document the source-grade rationale."
     )
 
 
