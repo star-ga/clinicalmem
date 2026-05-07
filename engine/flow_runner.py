@@ -658,10 +658,28 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
 
     # Final aggregator — the flow's output
     def _build_safety_report(inputs: dict) -> dict:
+        patient_id = inputs.get("patient_id", "")
+        node_count = inputs.get("_node_count", 0)
+        interactions = inputs.get("_tier1_interactions", [])
+        # iter-329 observability — flow-node-level footprint for the
+        # final aggregator (Layer 6 / safety-report assembly). Mirror
+        # of iter-314 (Layer 4.5) + iter-319 (Layer 1) + iter-324
+        # (Layer 3). Completes the _dispatch_table observability sweep
+        # (4/4 silent helpers now closed). PHI-safe: patient_id is
+        # synthetic Synthea, node_count + interaction_count are
+        # structural counts; drug names never reach the log record.
+        logger.debug(
+            "flow_node_build_safety_report",
+            extra={
+                "patient_id": patient_id,
+                "node_count": node_count,
+                "interaction_count": len(interactions),
+            },
+        )
         return {
-            "patient_id": inputs.get("patient_id", ""),
-            "node_count": inputs.get("_node_count", 0),
-            "interactions": inputs.get("_tier1_interactions", []),
+            "patient_id": patient_id,
+            "node_count": node_count,
+            "interactions": interactions,
         }
     table[("@native", "report")] = _build_safety_report
     table[("@native", "build_safety_report")] = _build_safety_report

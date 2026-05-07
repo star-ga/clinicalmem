@@ -559,6 +559,16 @@ _HISTORICAL_COUNTS = (
     # section-level fallback, mirrors iter-316 / iter-321 structure).
     # iter-328 T1 candidate executed early. Live 1366 → 1367.
     "1366",
+    # iter-329 T4 round-70: 32nd cross-pin family —
+    # test_flow_node_build_safety_report_logging_pin.py (3 tests).
+    # Closes the LAST silent flow-node helper (final aggregator).
+    # Completes the dispatch-table observability sweep 4/4: iter-314
+    # Layer 4.5 + iter-319 Layer 1 + iter-324 Layer 3 + iter-329 final
+    # aggregator. NEW DEBUG event flow_node_build_safety_report with
+    # PHI-safe extras (patient_id synthetic, node_count,
+    # interaction_count). 3 tests gate event_name + logger.X call +
+    # no drug-name extras keys. Live 1367 → 1370.
+    "1367",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -572,7 +582,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1367
+_TEST_COUNT_FLOOR = 1370
 
 
 def test_no_stale_test_counts_in_docs():
