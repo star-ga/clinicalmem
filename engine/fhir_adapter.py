@@ -38,6 +38,17 @@ from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
+
+def _hash_patient_id(patient_id: str) -> str:
+    """PHI-safe 16-char SHA-256 prefix of patient_id.
+
+    iter-333 PHI extras-key migration: hash patient_id before logging
+    via `extra={}`. Mirrors `engine/fhir_client.py::_hash_patient_id`
+    (iter-332) and the iter-291/iter-284/iter-279/iter-309 PHI
+    discipline pattern.
+    """
+    return hashlib.sha256((patient_id or "").encode("utf-8")).hexdigest()[:16]
+
 # ── constants ──────────────────────────────────────────────────────────────────
 
 _KNOWN_RESOURCE_TYPES: frozenset[str] = frozenset(
@@ -599,7 +610,7 @@ def ingest_bundle(
         logger.debug(
             "fhir_bundle_rejection_summary",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "total_rejected": len(rejected),
                 "by_resource_type": rejection_type_counts,
             },
@@ -609,7 +620,7 @@ def ingest_bundle(
     log_fn(
         "fhir_bundle_ingest_complete",
         extra={
-            "patient_id": patient_id,
+            "patient_id_hash_prefix": _hash_patient_id(patient_id),
             "bundle_sha256_prefix": bundle_sha256[:16],
             "medication_count": len(medications),
             "condition_count": len(conditions),

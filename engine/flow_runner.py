@@ -62,6 +62,17 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
+def _hash_patient_id(patient_id: str) -> str:
+    """PHI-safe 16-char SHA-256 prefix of patient_id.
+
+    iter-333 PHI extras-key migration: hash patient_id before logging
+    via `extra={}`. Mirrors `engine/fhir_client.py::_hash_patient_id`
+    (iter-332) and the iter-291/iter-284/iter-279/iter-309 PHI
+    discipline pattern.
+    """
+    return hashlib.sha256((patient_id or "").encode("utf-8")).hexdigest()[:16]
+
 # Canonical flows directory — relative to the repo root.
 _FLOWS_DIR: Path = Path(__file__).parent.parent / "flows"
 
@@ -671,7 +682,7 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
         logger.debug(
             "flow_node_build_safety_report",
             extra={
-                "patient_id": patient_id,
+                "patient_id_hash_prefix": _hash_patient_id(patient_id),
                 "node_count": node_count,
                 "interaction_count": len(interactions),
             },
