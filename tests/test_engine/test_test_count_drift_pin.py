@@ -379,6 +379,15 @@ _HISTORICAL_COUNTS = (
     # Same iter-285 shape applied to summary text instead of URL
     # layer. Live 1331 → 1334.
     "1331",
+    # iter-296 T1 round-62: runtime regression test for the iter-291
+    # PHI fix in BITNET_SAFETY_DOWNGRADE_DISAGREEMENT. iter-240 source
+    # scan + iter-291 regex extension catch the leaking PATTERN; this
+    # pin tests the LIVE log record shape via a mocked classifier
+    # (forces the disagreement path which v8 100%-recall makes
+    # otherwise unreachable). 3 tests: structured-extras-no-raw-names,
+    # canonical lex-sorted pair hash, source-level no-legacy-%s guard.
+    # Live 1334 → 1337.
+    "1334",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -392,7 +401,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1334
+_TEST_COUNT_FLOOR = 1337
 
 
 def test_no_stale_test_counts_in_docs():
