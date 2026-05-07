@@ -242,6 +242,63 @@ def test_v8_meta_contra_recall_is_one():
     )
 
 
+def test_v8_meta_provenance_values_pinned():
+    """iter-265 ratchet: pin the EXACT VALUES of safety-critical
+    provenance fields, not just their existence. The iter-255 pin
+    asserts all 17 _meta fields are present; this extends it to
+    pin their values for fields that should never change unless v8
+    is being deliberately retired (e.g., a future v9 sweep would
+    write different training_iter / schema).
+
+    Catches the drift mode where someone hand-edits _meta values
+    without rotating the bundle_id (which is hashed only over
+    weight matrices, not over _meta), leaving stale provenance
+    that mis-attributes the bundle to a different sweep iteration.
+    """
+    bundle = _load_v8()
+    meta = bundle["_meta"]
+    # Schema is the bundle-format identifier — pinned at iter-244.
+    # If someone re-writes v8 with a different schema, the engine
+    # bundle_classifier loader won't recognize it and silently fall
+    # back to the iter-72 baseline.
+    assert meta["schema"] == "bitnet_classifier_v3_atc_flags", (
+        f"v8 _meta.schema = {meta['schema']!r}, expected "
+        f"'bitnet_classifier_v3_atc_flags' — schema string is the "
+        f"format identifier, must not change without a deliberate "
+        f"v9 architecture migration."
+    )
+    # training_iter is the audit-trail anchor — every claim about
+    # 'iter-244 breakthrough' depends on this string being pinned.
+    assert meta["training_iter"] == "iter-242-path-a-v8-h256", (
+        f"v8 _meta.training_iter = {meta['training_iter']!r}, expected "
+        f"'iter-242-path-a-v8-h256' — the iter-242 trainer + iter-244 "
+        f"sweep authorship must remain auditable."
+    )
+    # weight_dtype + bias_dtype are the Q16.16 bit-identity contract.
+    assert meta["weight_dtype"] == "ternary", (
+        f"v8 _meta.weight_dtype = {meta['weight_dtype']!r}, expected "
+        f"'ternary' — the BitNet b1.58 thesis breaks if weights "
+        f"silently flip to dense floats."
+    )
+    assert meta["bias_dtype"] == "q16.16", (
+        f"v8 _meta.bias_dtype = {meta['bias_dtype']!r}, expected "
+        f"'q16.16' — the cross-arch bit-identity contract requires "
+        f"fixed-point biases."
+    )
+    # flag_keys_count + pair_derived_rule_count must match the iter-140
+    # / iter-146 design state (26 flags + 13 pair-derived rules).
+    assert meta["flag_keys_count"] == 26, (
+        f"v8 _meta.flag_keys_count = {meta['flag_keys_count']}, "
+        f"expected 26 — iter-146 set this; cohort growth that adds "
+        f"flags should retrain the bundle, not edit _meta."
+    )
+    assert meta["pair_derived_rule_count"] == 13, (
+        f"v8 _meta.pair_derived_rule_count = {meta['pair_derived_rule_count']}, "
+        f"expected 13 — iter-140 set this; rule additions require a "
+        f"deliberate retrain, not a _meta edit."
+    )
+
+
 def test_v8_architecture_dimensions_match_pinned():
     """v8 architecture: in=193, hidden=256, out=5. Any of these
     changing requires a deliberate cascade refactor (encoder lift,

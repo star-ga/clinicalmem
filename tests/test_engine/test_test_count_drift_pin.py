@@ -283,6 +283,18 @@ _HISTORICAL_COUNTS = (
     # iter-232/iter-246/iter-247 (single source → derived surface).
     # Live 1291 → 1294.
     "1291",
+    # iter-265 T1 round-56: extended iter-255 v8 bundle integrity pin
+    # with EXACT VALUE assertions on safety-critical _meta provenance
+    # fields (was just existence checks). New test added to existing
+    # pin file: schema == "bitnet_classifier_v3_atc_flags",
+    # training_iter == "iter-242-path-a-v8-h256", weight_dtype ==
+    # "ternary", bias_dtype == "q16.16", flag_keys_count == 26,
+    # pair_derived_rule_count == 13. Catches drift where someone
+    # hand-edits _meta values without rotating bundle_id (which is
+    # hashed only over weight matrices, not _meta). Same iter-117
+    # ratchet pattern (tighten existing pin once headroom exists).
+    # Live 1294 → 1295.
+    "1294",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -296,7 +308,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1294
+_TEST_COUNT_FLOOR = 1295
 
 
 def test_no_stale_test_counts_in_docs():
