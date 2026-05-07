@@ -17,12 +17,28 @@ receives a description prefixed with "[CACHED <date>]" and a structured INFO
 log line, so reviewers can distinguish cached entries from live API responses.
 """
 
+import hashlib
 import json
 import logging
 import os
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
+
+
+def _hash_pair(drug_a: str, drug_b: str) -> str:
+    """16-char SHA-256 prefix of the canonical pair key.
+
+    PHI-safe identifier for log records: stable across calls, traceable
+    to the audit-replay row, but never leaks the raw drug names. Same
+    discipline as engine.bitnet_features_v8 OOV warnings.
+    """
+    a = drug_a.strip().lower()
+    b = drug_b.strip().lower()
+    if a > b:
+        a, b = b, a
+    canonical = f"{a}|{b}"
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
 
 # Path resolved relative to this file so the module works regardless of CWD.
 _CACHE_JSON_PATH = os.path.join(
@@ -123,6 +139,24 @@ def _load_cache() -> list[CachedOpenEvidenceResponse]:
                 },
             )
 
+    # Iter-284: success-path DEBUG event so auditors can correlate every
+    # cache lookup chain to the snapshot the engine loaded. PHI-safe:
+    # entry count + per-severity tally + total URL count only — no drug
+    # names, no clinical summaries.
+    severity_counts: dict[str, int] = {}
+    url_total = 0
+    for entry in entries:
+        severity_counts[entry.severity] = severity_counts.get(entry.severity, 0) + 1
+        url_total += len(entry.evidence_urls)
+    logger.debug(
+        "openevidence_cache_loaded",
+        extra={
+            "entry_count": len(entries),
+            "url_count_total": url_total,
+            "severity_counts": severity_counts,
+        },
+    )
+
     return entries
 
 
@@ -152,7 +186,26 @@ def lookup_cached(drug_a: str, drug_b: str) -> CachedOpenEvidenceResponse | None
     key = canonical_pair_key(drug_a, drug_b)
     for entry in _get_cache():
         if entry.drug_pair_canonical == key:
+            # Iter-284: PHI-safe cache-hit DEBUG. Drug names hashed (not
+            # raw); severity + URL count surfaced for auditor correlation.
+            logger.debug(
+                "openevidence_cache_hit",
+                extra={
+                    "pair_hash_prefix": _hash_pair(drug_a, drug_b),
+                    "severity": entry.severity,
+                    "evidence_url_count": len(entry.evidence_urls),
+                    "source": entry.source,
+                },
+            )
             return entry
+    # Iter-284: PHI-safe cache-miss DEBUG. Hashed pair only.
+    logger.debug(
+        "openevidence_cache_miss",
+        extra={
+            "pair_hash_prefix": _hash_pair(drug_a, drug_b),
+            "cache_size": len(_get_cache()),
+        },
+    )
     return None
 
 
@@ -162,4 +215,12 @@ def invalidate_cache() -> None:
     Useful in tests that temporarily replace the JSON file.
     """
     global _CACHE
+    # Iter-284: cache-invalidation INFO event so auditors see when the
+    # in-process snapshot was rotated. Carries pre-invalidation entry
+    # count for context.
+    prev_count = len(_CACHE) if _CACHE is not None else 0
+    logger.info(
+        "openevidence_cache_invalidated",
+        extra={"prev_entry_count": prev_count},
+    )
     _CACHE = None
