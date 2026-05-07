@@ -114,7 +114,7 @@ The BitNet b1.58 layer satisfies all three:
 | Bit-identical inference across architectures | ✓ — Q16.16 ternary forward, no float anywhere | none |
 | Reproducible classification under FDA SaMD lineage requirements | ✓ — `repro_hash` per decision, JSON weights bundle hashed | none |
 | Verifier independence (no proprietary toolchain) | ✓ — pure Python + ~118 KB JSON (v8 LIVE; ~19 KB v1 baseline preserved for audit-chain reconstruction) | partial (single repo build path) |
-| Layered with deterministic + evidence + LLM-consensus tiers | ✓ — Layer 4.5 sits inside the 5-tier pipeline | n/a |
+| Layered with deterministic + evidence + LLM-consensus tiers | ✓ — Layer 4.5 sits inside the 6-layer pipeline | n/a |
 
 No other entry visible in the May 2 competitive landscape can credibly
 claim FDA-grade reproducibility for clinical inference. This is the

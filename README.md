@@ -92,7 +92,7 @@ Plus 2 bonus findings discovered autonomously:
               |   (BM25 + Vector)    (Scoring)              |
               |                                             |
               |   Drug Interactions  LLM Synthesizer        |
-              |   (5-tier pipeline)  (evidence-cited)       |
+              |   (6-tier pipeline)  (evidence-cited)       |
               |                                             |
               |   RxNorm Client      SNOMED CT Client       |
               |   (drug normalize)   (allergy hierarchy)    |
