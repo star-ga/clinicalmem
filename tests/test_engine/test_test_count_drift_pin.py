@@ -441,6 +441,19 @@ _HISTORICAL_COUNTS = (
     # major · Z moderate · W serious)"), and forbids pre-iter-280 4[23]
     # contra fractions from re-appearing. Live 1337 → 1341.
     "1337",
+    # iter-314 T4 round-67: 29th cross-pin family —
+    # test_flow_node_bitnet_classify_logging_pin.py (3 tests). Closes
+    # the silent flow-node observability gap on _bitnet_classify
+    # inside engine.flow_runner._dispatch_table. Pre-iter-314 the
+    # closure called classifier_layer() per pair (per-pair PHI-safe
+    # event from iter-309) but emitted no flow-node-level footprint.
+    # Same iter-289/iter-304 silent-path observability class. NEW
+    # DEBUG event flow_node_bitnet_classify with PHI-safe extras
+    # (med_count, pair_count, severity_histogram categorical,
+    # weights_id_prefix). 3 tests gate: event_name in source +
+    # logger.X call in body + no drug-name extras keys. Live 1352 →
+    # 1355.
+    "1352",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -454,7 +467,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1352
+_TEST_COUNT_FLOOR = 1355
 
 
 def test_no_stale_test_counts_in_docs():

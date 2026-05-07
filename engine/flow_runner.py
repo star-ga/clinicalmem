@@ -582,6 +582,28 @@ def _dispatch_table() -> dict[tuple[str, str], object]:
                     "repro_hash": r.repro_hash,
                     "weights_id": r.weights_id,
                 })
+        # iter-314 observability — flow-node-level footprint for the
+        # per-pair Layer 4.5 stamp. Fires once per flow execution
+        # regardless of cohort size; complements the per-pair DEBUG
+        # event from engine.bitnet_classifier (iter-309 PHI-safe form).
+        # PHI-safe: only counts + structural metadata + the canonical
+        # weights_id (a SHA-256 bundle hash, not patient data). Drug
+        # names never reach the log record. Severity-class breakdown is
+        # categorical histogram only — never per-pair correspondence.
+        sev_counts: dict[str, int] = {}
+        for entry in out:
+            s = entry["severity"]
+            sev_counts[s] = sev_counts.get(s, 0) + 1
+        weights_id_prefix = (out[0]["weights_id"][:16] if out else "")
+        logger.debug(
+            "flow_node_bitnet_classify",
+            extra={
+                "med_count": len(meds),
+                "pair_count": len(out),
+                "severity_histogram": sev_counts,
+                "weights_id_prefix": weights_id_prefix,
+            },
+        )
         return {"pairs": out, "weights_id": out[0]["weights_id"] if out else ""}
     table[("@native", "bitnet")] = _bitnet_classify
     table[("@native", "bitnet_ternary_classify")] = _bitnet_classify
