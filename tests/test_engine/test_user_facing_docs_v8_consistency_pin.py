@@ -83,6 +83,14 @@ _USER_FACING_DOCS = (
     # (35/35, 31/35, 85.7%, n=42, etc.). Add to scope so the same
     # fossil class can never regress here.
     _REPO_ROOT / "docs" / "clinical_validation.md",
+    # iter-372 scope extension: architecture.md was missed by the iter-
+    # 306/iter-316 sweeps but iter-372 caught 2 stale '19 KB ternary'
+    # refs (L135 mermaid Pi Zero diagram + L146 FDA-replay narrative)
+    # implying the LIVE engine still ships the 19 KB v1 baseline rather
+    # than the ~118 KB v8 promoted at iter-275. Same iter-306 fossil
+    # class — implies-live-but-was-true-only-pre-promotion — at the
+    # architectural-narrative layer the prior scope didn't reach.
+    _REPO_ROOT / "docs" / "architecture.md",
 )
 
 # Historical-context tokens — ANY of these on the same line OR an

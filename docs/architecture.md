@@ -132,7 +132,7 @@ flowchart TB
     subgraph PI["Raspberry Pi Zero (~$15)"]
         direction TB
         SPECS["**Hardware:** 512 MB RAM · ARM Cortex-A53 single-core<br/>**Software:** Python 3.10+ · no GPU · no internet"]
-        FILES["engine/bitnet_classifier.py · 15 KB<br/>engine/bitnet_weights.json · 19 KB ternary<br/>engine/clinical_scoring.py · Layer 1 only"]
+        FILES["engine/bitnet_classifier.py · 15 KB<br/>engine/bitnet_weights.json · ~118 KB ternary (v8 LIVE since iter-275)<br/>engine/clinical_scoring.py · Layer 1 only"]
         PERF["**Forward pass:** &lt; 1 ms per drug pair<br/>**Same repro_hash** as the datacenter run<br/>**Same severity verdicts** bit-for-bit"]
         SPECS --> FILES --> PERF
     end
@@ -143,7 +143,7 @@ flowchart TB
 The edge deployment is the load-bearing demonstration of the bit-identical
 reproducibility primitive: a $15 Pi Zero produces the same SHA-256
 `repro_hash` for every drug pair as a datacenter A100. An FDA auditor with
-the 19 KB weights bundle and the 15 KB Python file can replay any past
+the ~118 KB v8 weights bundle and the 15 KB Python file can replay any past
 clinical decision on any device, decades later.
 
 > **Full spec:** See [`edge_pi_offline.md`](./edge_pi_offline.md) for the
@@ -165,7 +165,7 @@ clinical decision on any device, decades later.
 | 21 CFR Part 11 audit export | ✅ Live | `engine/audit_export_part11.py` |
 | PCCP regression harness | ✅ Live | `scripts/run_clinical_regression_eval.py` |
 | Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash cbfaf3e8…4e18b — pinned by `tests/test_scripts/test_federation_plan_hash.py`) |
-| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.10.0` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
+| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.10.1` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
 | Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
 | Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ Pending future mind-mem release — v3.10.0 (released 2026-05-07) shipped no new federation-transport module; its `http_transport.py` remains a **single-workspace REST adapter** (status / query / memories / consolidate / clear endpoints for non-MCP clients like Slack bots, Streamlit dashboards), NOT a peer-to-peer federation transport; a dedicated MIC@2 transport adapter targets a future release | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
 | MCP server (18 tools) | ✅ Live | `mcp_server*.py` deployed on Azure Container Apps |
@@ -173,7 +173,7 @@ clinical decision on any device, decades later.
 
 The control plane (peer registry, 7 sync scopes, per-scope conflict
 resolution, sync audit log, governance pub/sub fan-out) is now LIVE
-against `mind-mem v3.10.0`'s `MemoryMesh` and `EventFanout`. Every
+against `mind-mem v3.10.1`'s `MemoryMesh` and `EventFanout`. Every
 publish, ingest, and PHI quarantine in the federation demo writes a
 `SyncEvent` to the local mesh and broadcasts a structured event on the
 fanout stream — observable end-to-end in the demo's stdout and in the
