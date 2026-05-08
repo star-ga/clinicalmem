@@ -200,8 +200,8 @@ runnable and meaningful after the real transport ships.
 - `flows/JointMemoryFederation.flow.mind` — **shipped** (typed
   contract, **21 typed invariants** — 16 exercised end-to-end by
   the mock demo, 5 X25519-sealing invariants 17-21 declared but
-  pending the MIC@2 federation-transport adapter targeting mind-mem
-  v3.10; plan_hash `cbfaf3e8…4e18b`)
+  pending a dedicated MIC@2 federation-transport adapter targeting
+  a future mind-mem release; plan_hash `cbfaf3e8…4e18b`)
 - `scripts/federation_mock_demo.py` — **shipped** (end-to-end
   runnable proof of the contract; mock in-process transport)
 - `mind-mem` MIC@2 / MAP / binary multi-machine transport —
