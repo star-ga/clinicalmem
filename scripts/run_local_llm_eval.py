@@ -89,7 +89,7 @@ Categories:
 9. test_coverage_evidence (1371 engine + scripts tests; CI green)
 10. ui_visual_design (information density, hierarchy, brand consistency)
 
-Output ONLY a single JSON object (no prose, no code fences, no markdown):
+Output ONLY a single JSON object. NO prose, NO markdown, NO code fences (```), NO commentary before or after. Start your response with `{` and end with `}`.
 
 {
   "scores": {
@@ -126,7 +126,7 @@ def _call_ollama(model: str, prompt: str, timeout: float = 600.0) -> tuple[str, 
         "options": {
             "temperature": 0.1,
             "num_ctx": 8192,
-            "num_predict": 1500,
+            "num_predict": 2500,
         },
     }
     t0 = time.time()
@@ -137,36 +137,66 @@ def _call_ollama(model: str, prompt: str, timeout: float = 600.0) -> tuple[str, 
     return data.get("response", ""), time.time() - t0
 
 
-def _parse_response(text: str) -> dict | None:
-    """Extract the first JSON object that has a 'scores' key."""
-    # Strip <think> blocks (deepseek-r1 etc.)
+def _strip_thinking_and_fences(text: str) -> str:
+    """Remove <think>…</think> blocks (deepseek-r1, mind-mem:4b) and
+    markdown code fences (glm4:9b wraps JSON in ```json … ```)."""
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.S)
-    # Find balanced JSON
-    candidates = re.findall(r"\{[^{]*\"scores\".*?\}", text, re.S)
-    for c in candidates:
+    # Strip ```json fences
+    text = re.sub(r"```(?:json)?\s*", "", text)
+    text = re.sub(r"```", "", text)
+    return text
+
+
+def _parse_response(text: str) -> dict | None:
+    """Extract the first JSON object that has a 'scores' key. Iter-348
+    parser ratchet: also handles markdown code fences (```json …```)
+    and balances braces by scanning forward for the first object whose
+    'scores' key is followed by a 10-key dict."""
+    cleaned = _strip_thinking_and_fences(text)
+
+    # Try every '{' as a candidate start; scan forward for balanced
+    # closing brace; accept if parsed JSON has a dict 'scores'.
+    starts = [i for i, ch in enumerate(cleaned) if ch == "{"]
+    for s in starts:
         depth = 0
-        end = -1
-        for i, ch in enumerate(c):
+        in_str = False
+        esc = False
+        for i in range(s, len(cleaned)):
+            ch = cleaned[i]
+            if esc:
+                esc = False
+                continue
+            if ch == "\\":
+                esc = True
+                continue
+            if ch == '"':
+                in_str = not in_str
+                continue
+            if in_str:
+                continue
             if ch == "{":
                 depth += 1
             elif ch == "}":
                 depth -= 1
                 if depth == 0:
-                    end = i + 1
+                    snippet = cleaned[s:i + 1]
+                    try:
+                        obj = json.loads(snippet)
+                    except json.JSONDecodeError:
+                        break
+                    if isinstance(obj, dict) and isinstance(
+                        obj.get("scores"), dict
+                    ):
+                        return obj
                     break
-        if end < 0:
-            continue
-        try:
-            obj = json.loads(c[:end])
-            if isinstance(obj.get("scores"), dict):
-                return obj
-        except json.JSONDecodeError:
-            continue
-    # Fallback: try the whole text
+    # Last-ditch: try the whole cleaned text
     try:
-        return json.loads(text)
+        obj = json.loads(cleaned)
+        if isinstance(obj, dict) and isinstance(obj.get("scores"), dict):
+            return obj
     except json.JSONDecodeError:
-        return None
+        pass
+    return None
 
 
 def _score_one(model: str, package: str) -> dict:
