@@ -606,12 +606,18 @@ def test_no_stale_test_counts_in_docs():
             continue
         text = path.read_text()
         for stale in _HISTORICAL_COUNTS:
-            # Look for the count followed by "tests" or " passed" or "%20passed"
+            # Look for the count followed by "tests" / " passed" /
+            # "%20passed" / "%20tests" — with optional `+` suffix
+            # (the iter-353 catch class: 'NNNN+ passed' floor claims
+            # in tutorials and badges).
             for pattern in (
                 rf"\b{stale}\s+tests?\b",
+                rf"\b{stale}\+\s+tests?\b",
                 rf"\b{stale}\s+passed\b",
+                rf"\b{stale}\+\s+passed\b",
                 rf"-{stale}%20passed",
                 rf"-{stale}%20tests",
+                rf"-{stale}\+%20passed",
             ):
                 m = re.search(pattern, text)
                 assert m is None, (

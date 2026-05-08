@@ -199,7 +199,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-aligned, designed for § 164.312(b) audit-control compliance) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
 | **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
-| **Test coverage** | 1139+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
+| **Test coverage** | 1371+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 
 ### vs. Commercial Clinical Decision Support
@@ -372,7 +372,7 @@ clinicalmem/
 │   ├── demo.html               # Interactive demo dashboard
 │   └── index.html              # Redirect to demo
 ├── .github/workflows/
-│   ├── test.yaml               # CI: Run tests on push (1139+ tests across engine + scripts)
+│   ├── test.yaml               # CI: Run tests on push (1371+ tests across engine + scripts)
 │   ├── deploy-mcp-prod.yaml    # CD: Deploy MCP to Azure
 │   ├── deploy-a2a-prod.yaml    # CD: Deploy A2A to Azure
 │   ├── deploy-env.yaml         # Shared deployment config
@@ -464,7 +464,7 @@ Coverage includes:
 | **RxNorm + OpenEvidence** | ~2-3s (parallel NIH/evidence API calls) |
 | **Six-model LLM consensus** | ~3-5s (all 6 US-based models queried in parallel) |
 | **End-to-end safety check** | ~5-8s total (all 6 layers) |
-| **Test suite execution** | ~40 s for 1139+ engine + script tests (full suite ~5 min including a2a/mcp) |
+| **Test suite execution** | ~40 s for 1371+ engine + script tests (full suite ~5 min including a2a/mcp) |
 | **Code coverage** | Per-suite line coverage measured via `pytest --cov`; not enforced as a CI gate (see Tests section for canonical test count) |
 
 ### Cost Analysis (per patient safety check)
@@ -528,7 +528,7 @@ ClinicalMem is currently validated against **synthetic patient data** (Sarah Mit
 
 ### Current State (Hackathon)
 
-- &check; 1139+ automated tests including adversarial cases (negation detection, boundary conditions)
+- &check; 1371+ automated tests including adversarial cases (negation detection, boundary conditions)
 - &check; SSRF protection validated against RFC 1918, link-local, and IPv6 private ranges
 - &check; PHI detection tested against 25 patterns (SSN, MRN, phone, email, DOB, address)
 - &check; Hallucination detection validated against fabricated citations and unsupported claims
