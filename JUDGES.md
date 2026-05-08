@@ -32,6 +32,29 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 For verbatim per-pillar evidence + module/test paths, continue
 reading. The rest of this file is the long-form drill-down.
 
+## Demo dashboard walkthrough (text-only — for judges who can't render the HTML)
+
+`docs/demo.html` is a static single-page Tailwind dashboard with
+14 sections. Open it with `python3 -m http.server -d docs 8080` then
+`http://localhost:8080/demo.html`. Visual structure, top to bottom:
+
+1. **Hero** — Lexend display headline "Bit-identical clinical decisions, on every chip in healthcare." with 4 v8-LIVE stat chips (Contra recall · v8 staged: **100% / 44 of 44** · Q16.16 ; Live precision Layer 4.5: **100% / 44 of 44 contraindicated** ; BitNet weights v8 LIVE: **50,949 params / 118 KB** on a $15 Pi Zero 2 W ; Federation invariants: **21** typed runtime, X25519 + PHI gate) + animated audit-chain ring rotating around a 6-layer pipeline visualization. Dual CTAs: "View live demo" (ink-fill primary) + "GitHub" (outline). 350+ velocity badge with 32 cross-pin discipline families. (v1 baseline numbers — held-out fold, 35 / 35 contraindicated, 8,581 params / 19 KB — preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction; not displayed in current hero.)
+2. **Patient (`#patient`)** — synthetic patient card "Sarah Mitchell" with allergies, medications, NPI-attributed providers; pulled from `docs/synthea_demo_cohort.json`.
+3. **Findings (`#findings`)** — 4 drug-pair finding cards: warfarin+ibuprofen (contraindicated bleed risk), penicillin+amoxicillin (allergy override), declining GFR + metformin (renal contraindication), conflicting BP targets (clinician disagreement). Each card shows verdict + evidence URL + audit-replay hash.
+4. **What-If Drug Substitution Simulator** — interactive simulate_add / simulate_remove / simulate_swap with PHI-safe extras logging.
+5. **Flows (`#flows`)** — Mermaid typed-graph rendering of `JointMemoryFederation.flow.mind` (21 typed invariants).
+6. **Governance (`#governance`)** — 6 healthcare-specific invariants + 9 generic kernel rules + arch-mind L1 gate verification status.
+7. **BitNet Layer 4.5 (`#bitnet`)** — pipeline-landing diagram + interactive Verify Replay button (in-browser BitNet bit-identical with engine since iter-276) + trained model stats card (50,688 ternary / 261 biases / ~118 KB / bundle `1f0f8859…`).
+8. **FHIR (`#fhir`)** — 18-resource bundle visualization (Patient × 30 + Practitioner × 47 + MedicationRequest + AllergyIntolerance + Condition + Observation + Encounter etc.).
+9. **Federation (`#federation`)** — NEW JointMemoryFederation flow with two-lane PHI gate visualization, defence-in-depth 5 hard constraints card, mock transport demo, control plane status chip "LIVE — MIND-Mem v3.10.1 MemoryMesh".
+10. **Pipeline (`#pipeline`)** — 6-layer pipeline cards (Layer 1 Deterministic Table · Layer 2 OpenEvidence API · Layer 3 RxNorm API · Layer 4 Multi-LLM Consensus · Layer 4.5 BitNet anchor · Layer 5 LLM Synthesis · Layer 6 Abstention Gate).
+11. **Terminology (`#terminology`)** — RxNorm + SNOMED CT + UMLS Metathesaurus integration cards.
+12. **Audit (`#audit`)** — Reproducibility Manifest card (`docs/reproducibility_manifest.json`) with 7 SHA-256 artifact hashes + dateCreated.
+13. **Tools (`#tools`)** — MCP server (18 tools) + A2A agent (13 skills) deployment status.
+14. **Architecture (`#architecture`)** — control-plane + mock-vs-live transport breakdown + federation_transport.py wire-bytes card.
+
+Brand palette: Prompt Opinion orange (`#FF6B35`) accent + Trust teal (`#0F766E`) primary + Mint canvas. Lexend display + Source Sans 3 body + Baloo 2 brand-accent (FDA-grade clinical aesthetic, not early-iteration).
+
 ---
 
 ## The 5-bullet pitch
