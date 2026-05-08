@@ -48,11 +48,26 @@ _MAX_LAG_ITERS = 50
 
 def _highest_iter_in_log() -> int:
     """Parse AUTONOMOUS_WORK_LOG.md and return the highest iter number
-    in any '| <N> | ...' row.
+    in either format:
+      - '| <N> | ...' table rows (the original cron-tracking format,
+        used through iter-334)
+      - '## Iter <N>' prose-block headings (the format used iter-335+
+        when the cron started producing more detailed iteration notes)
+
+    iter-343 ratchet: pre-iter-343 the pin only counted table rows,
+    which froze its `live_max` at 334 and silently understated the
+    velocity-badge upper bound by 8+ iters. Mirrors the iter-339
+    re.IGNORECASE ratchet on the iter-321 dep-version pin (extending
+    a regex to cover a second valid format).
     """
     text = _LOG.read_text()
-    matches = re.findall(r"^\| (\d+) \|", text, re.MULTILINE)
-    assert matches, "No '| <N> |' rows found in AUTONOMOUS_WORK_LOG.md"
+    table = re.findall(r"^\| (\d+) \|", text, re.MULTILINE)
+    prose = re.findall(r"^## Iter (\d+)\b", text, re.MULTILINE)
+    matches = table + prose
+    assert matches, (
+        "No '| <N> |' rows or '## Iter <N>' prose blocks found in "
+        "AUTONOMOUS_WORK_LOG.md"
+    )
     return max(int(m) for m in matches)
 
 
