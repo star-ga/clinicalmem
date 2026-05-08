@@ -1048,34 +1048,45 @@ tailwind.config = {
               <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-clinical-amber flex-shrink-0 pulse-high">HIGH</span>
             </div>
             <p class="text-sm text-slate-500 mb-2">eGFR declining over 6 months. Approaching metformin contraindication at &lt;30.</p>
-            <!-- eGFR Sparkline Chart -->
-            <div class="bg-slate-50 rounded-lg p-3 mb-3" id="egfr-sparkline">
-              <svg viewBox="0 0 200 80" class="w-full h-16">
-                <!-- Danger zone -->
-                <rect x="0" y="55" width="200" height="25" fill="#fef2f2" rx="2" class="sparkline-danger"/>
-                <text x="4" y="75" class="text-[8px]" fill="#dc2626" opacity="0.6">Danger &lt;30</text>
-                <!-- Grid lines -->
-                <line x1="0" y1="15" x2="200" y2="15" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4"/>
-                <line x1="0" y1="35" x2="200" y2="35" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4"/>
-                <line x1="0" y1="55" x2="200" y2="55" stroke="#fecaca" stroke-width="0.5" stroke-dasharray="4"/>
-                <!-- Y-axis labels -->
-                <text x="2" y="13" class="text-[7px]" fill="#94a3b8">50</text>
-                <text x="2" y="33" class="text-[7px]" fill="#94a3b8">40</text>
-                <text x="2" y="53" class="text-[7px]" fill="#94a3b8">30</text>
-                <!-- Data line: 45→38→32 mapped to y-coords (50=5, 45=15, 40=25, 38=29, 32=41, 30=45) -->
-                <polyline points="30,17 100,31 170,43" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sparkline-path"/>
-                <!-- Data points -->
-                <circle cx="30" cy="17" r="4" fill="white" stroke="#d97706" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
-                <circle cx="100" cy="31" r="4" fill="white" stroke="#d97706" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
-                <circle cx="170" cy="43" r="4" fill="white" stroke="#dc2626" stroke-width="2" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
-                <!-- Data labels -->
-                <text x="30" y="10" text-anchor="middle" class="text-[8px] font-bold" fill="#d97706">45</text>
-                <text x="100" y="24" text-anchor="middle" class="text-[8px] font-bold" fill="#d97706">38</text>
-                <text x="170" y="37" text-anchor="middle" class="text-[8px] font-bold" fill="#dc2626">32</text>
+            <!-- eGFR Trend Chart — full card width, large readable axes -->
+            <div class="bg-slate-50 rounded-lg p-4 mb-3" id="egfr-sparkline">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold italic uppercase tracking-wider text-slate-600">eGFR · mL/min/1.73m² · 6-month trend</span>
+                <span class="text-[10px] font-mono font-bold text-clinical-amber">−13 in 6mo</span>
+              </div>
+              <svg viewBox="0 0 400 200" class="w-full h-44" role="img" aria-label="eGFR trend showing 45 at 6 months ago, 38 at 3 months ago, 32 now — declining toward the metformin-contraindication threshold of 30.">
+                <!-- Danger zone (eGFR < 30) -->
+                <rect x="40" y="148" width="350" height="40" fill="#fef2f2" class="sparkline-danger"/>
+                <text x="48" y="178" font-family="Lexend, sans-serif" font-size="11" font-weight="700" fill="#dc2626" opacity="0.85">Metformin contraindication zone (eGFR &lt; 30)</text>
+                <!-- Y-axis -->
+                <line x1="40" y1="20" x2="40" y2="188" stroke="#cbd5e1" stroke-width="0.8"/>
+                <line x1="40" y1="188" x2="390" y2="188" stroke="#cbd5e1" stroke-width="0.8"/>
+                <!-- Y-axis labels + grid lines -->
+                <text x="34" y="29" font-family="JetBrains Mono, monospace" font-size="10" fill="#94a3b8" text-anchor="end">50</text>
+                <line x1="40" y1="25" x2="390" y2="25" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <text x="34" y="65" font-family="JetBrains Mono, monospace" font-size="10" fill="#94a3b8" text-anchor="end">45</text>
+                <line x1="40" y1="61" x2="390" y2="61" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <text x="34" y="101" font-family="JetBrains Mono, monospace" font-size="10" fill="#94a3b8" text-anchor="end">40</text>
+                <line x1="40" y1="97" x2="390" y2="97" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <text x="34" y="137" font-family="JetBrains Mono, monospace" font-size="10" fill="#94a3b8" text-anchor="end">35</text>
+                <line x1="40" y1="133" x2="390" y2="133" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <text x="34" y="153" font-family="JetBrains Mono, monospace" font-size="10" fill="#dc2626" font-weight="700" text-anchor="end">30</text>
+                <line x1="40" y1="149" x2="390" y2="149" stroke="#fca5a5" stroke-width="1" stroke-dasharray="6 3"/>
+                <!-- Trend line (45 at x=80 → 38 at x=215 → 32 at x=350) -->
+                <polyline points="80,61 215,111 350,154" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="sparkline-path"/>
+                <!-- Subtle area-fill below the trend -->
+                <polygon points="80,61 215,111 350,154 350,188 80,188" fill="#d97706" fill-opacity="0.07"/>
+                <!-- Data points + value labels above -->
+                <circle cx="80" cy="61" r="6" fill="white" stroke="#d97706" stroke-width="2.5" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <text x="80" y="48" font-family="Lexend, sans-serif" font-size="13" font-weight="800" fill="#d97706" text-anchor="middle">45</text>
+                <circle cx="215" cy="111" r="6" fill="white" stroke="#d97706" stroke-width="2.5" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <text x="215" y="98" font-family="Lexend, sans-serif" font-size="13" font-weight="800" fill="#d97706" text-anchor="middle">38</text>
+                <circle cx="350" cy="154" r="7" fill="white" stroke="#dc2626" stroke-width="2.8" class="sparkline-path" style="stroke-dasharray:0;stroke-dashoffset:0"/>
+                <text x="350" y="141" font-family="Lexend, sans-serif" font-size="14" font-weight="800" fill="#dc2626" text-anchor="middle">32</text>
                 <!-- X-axis labels -->
-                <text x="30" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">6mo ago</text>
-                <text x="100" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">3mo ago</text>
-                <text x="170" y="78" text-anchor="middle" class="text-[7px]" fill="#94a3b8">Now</text>
+                <text x="80" y="200" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569" text-anchor="middle">6mo ago</text>
+                <text x="215" y="200" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569" text-anchor="middle">3mo ago</text>
+                <text x="350" y="200" font-family="JetBrains Mono, monospace" font-size="10" fill="#dc2626" font-weight="700" text-anchor="middle">Now</text>
               </svg>
             </div>
             <div class="flex flex-wrap gap-1.5 text-[10px]">
@@ -1360,20 +1371,23 @@ tailwind.config = {
         <div>
           <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Ternary weight distribution &mdash; v8 LIVE · 50,688 weights</p>
           <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Ternary weight distribution under v8: 32.4% −1, 44.3% 0, 23.3% +1">
-            <!-- −1 bar -->
-            <rect x="40" y="25" width="207" height="22" rx="3" fill="#0F766E" fill-opacity="0.78"/>
+            <!-- Title -->
+            <text x="0" y="14" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">SHARE OF WEIGHTS</text>
+            <!-- −1 bar — label inside bar (white) on left, percent at end (right) -->
+            <rect x="40" y="25" width="207" height="22" rx="3" fill="#0F766E" fill-opacity="0.85"/>
             <text x="8"  y="40" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">−1</text>
-            <text x="252" y="40" font-family="JetBrains Mono, monospace" font-size="10" fill="#0F766E">16,424 · 32.4%</text>
+            <text x="48" y="40" font-family="JetBrains Mono, monospace" font-size="9" fill="white" font-weight="600">16,424</text>
+            <text x="316" y="40" font-family="JetBrains Mono, monospace" font-size="9" fill="#0F766E" text-anchor="end" font-weight="700">32.4%</text>
             <!-- 0 bar (largest) -->
             <rect x="40" y="55" width="240" height="22" rx="3" fill="#94a3b8" fill-opacity="0.85"/>
             <text x="8"  y="70" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">0</text>
-            <text x="287" y="70" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">22,478 · 44.3%</text>
+            <text x="48" y="70" font-family="JetBrains Mono, monospace" font-size="9" fill="white" font-weight="600">22,478</text>
+            <text x="316" y="70" font-family="JetBrains Mono, monospace" font-size="9" fill="#475569" text-anchor="end" font-weight="700">44.3%</text>
             <!-- +1 bar -->
-            <rect x="40" y="85" width="148" height="22" rx="3" fill="#FF6B35" fill-opacity="0.75"/>
+            <rect x="40" y="85" width="148" height="22" rx="3" fill="#FF6B35" fill-opacity="0.85"/>
             <text x="8"  y="100" font-family="Lexend, sans-serif" font-size="11" font-weight="600" fill="#475569">+1</text>
-            <text x="195" y="100" font-family="JetBrains Mono, monospace" font-size="10" fill="#FF6B35">11,786 · 23.3%</text>
-            <!-- Title -->
-            <text x="0" y="14" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">SHARE OF WEIGHTS</text>
+            <text x="48" y="100" font-family="JetBrains Mono, monospace" font-size="9" fill="white" font-weight="600">11,786</text>
+            <text x="316" y="100" font-family="JetBrains Mono, monospace" font-size="9" fill="#FF6B35" text-anchor="end" font-weight="700">23.3%</text>
           </svg>
           <p class="text-xs text-slate-400 mt-2 leading-relaxed">~44% of weights collapse to <code class="font-mono">0</code> &mdash; structured sparsity from quantization-aware training (STE) is what lets the 50,949-parameter v8 model fit in ~118&nbsp;KB (still <1&nbsp;ms/pair on Pi Zero 2&nbsp;W).</p>
           <p class="text-[10px] text-slate-500 mt-2 leading-relaxed border-l-2 border-clinical-purple/40 pl-3 bg-purple-50/20 py-2 rounded-r">
@@ -1384,28 +1398,35 @@ tailwind.config = {
         <!-- Per-class recall on PCCP regression cohort -->
         <div>
           <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recall by severity class &mdash; 139-pair PCCP regression</p>
-          <svg viewBox="0 0 320 110" class="w-full h-auto" role="img" aria-label="Recall by severity: contraindicated 100% on 44/44, major 100% on 4/4, serious 100% on 69/69, moderate 100% on 22/22.">
-            <!-- Axis baseline at 100% (=288) -->
-            <line x1="40" y1="14" x2="40" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
-            <line x1="40" y1="106" x2="312" y2="106" stroke="#cbd5e1" stroke-width="0.5"/>
+          <svg viewBox="0 0 320 130" class="w-full h-auto" role="img" aria-label="Recall by severity, with bar widths proportional to cohort size: contraindicated 100% on 44/44, major 100% on 4/4, serious 100% on 69/69, moderate 100% on 22/22. All 4 classes hit 100% on the live 139-pair cohort.">
+            <!-- Title bar -->
+            <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">PER-CLASS RECALL · COHORT-PROPORTIONAL BARS</text>
+            <!-- Headline strip — 100% across the entire cohort -->
+            <rect x="0" y="20" width="320" height="22" rx="3" fill="#10b981" fill-opacity="0.12" stroke="#059669" stroke-width="0.7"/>
+            <text x="10" y="35" font-family="Lexend, sans-serif" font-size="11" font-weight="700" fill="#059669">✓ 100% recall · all 4 classes · 0 false negatives</text>
+            <text x="312" y="35" font-family="JetBrains Mono, monospace" font-size="9" fill="#059669" text-anchor="end" font-weight="700">139 / 139</text>
+            <!-- Bars proportional to cohort size n. Total = 139.
+                 Width scale: 272px max → px-per-pair = 272/69 ≈ 3.94 (largest class anchors scale)
+                 contraindicated n=44 → 173px
+                 major          n=4  → 16px
+                 serious        n=69 → 272px (largest, full width)
+                 moderate       n=22 → 87px -->
             <!-- Contraindicated (n=44) -->
-            <rect x="40" y="20" width="272" height="14" rx="2" fill="#dc2626" fill-opacity="0.82"/>
-            <text x="8"  y="31" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">contra·indicated</text>
-            <text x="318" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#dc2626" text-anchor="end">100% · 44 / 44</text>
-            <!-- Major (n=4, tamoxifen + paroxetine added iter 39, clarithromycin + digoxin added iter 83, voriconazole + tacrolimus added iter 93, dronedarone + dabigatran added iter 109) -->
-            <rect x="40" y="42" width="272" height="14" rx="2" fill="#FF6B35" fill-opacity="0.78"/>
-            <text x="8"  y="53" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">major</text>
-            <text x="318" y="53" font-family="JetBrains Mono, monospace" font-size="9" fill="#FF6B35" text-anchor="end">100% · 4 / 4</text>
-            <!-- Serious (n=69) -->
-            <rect x="40" y="64" width="272" height="14" rx="2" fill="#0369A1" fill-opacity="0.78"/>
-            <text x="8"  y="75" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">serious</text>
-            <text x="318" y="75" font-family="JetBrains Mono, monospace" font-size="9" fill="#0369A1" text-anchor="end">100% · 69 / 69</text>
+            <text x="38" y="60" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#dc2626" text-anchor="end">contraindicated</text>
+            <rect x="40" y="50" width="173" height="14" rx="2" fill="#dc2626" fill-opacity="0.85"/>
+            <text x="46" y="60" font-family="JetBrains Mono, monospace" font-size="9" fill="white" font-weight="700">100% · 44 / 44</text>
+            <!-- Major (n=4) -->
+            <text x="38" y="80" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#FF6B35" text-anchor="end">major</text>
+            <rect x="40" y="70" width="16" height="14" rx="2" fill="#FF6B35" fill-opacity="0.85"/>
+            <text x="62" y="80" font-family="JetBrains Mono, monospace" font-size="9" fill="#FF6B35" font-weight="700">100% · 4 / 4</text>
+            <!-- Serious (n=69, full width as the largest cohort) -->
+            <text x="38" y="100" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#0369A1" text-anchor="end">serious</text>
+            <rect x="40" y="90" width="272" height="14" rx="2" fill="#0369A1" fill-opacity="0.85"/>
+            <text x="46" y="100" font-family="JetBrains Mono, monospace" font-size="9" fill="white" font-weight="700">100% · 69 / 69</text>
             <!-- Moderate (n=22) -->
-            <rect x="40" y="86" width="272" height="14" rx="2" fill="#0F766E" fill-opacity="0.78"/>
-            <text x="8"  y="97" font-family="Lexend, sans-serif" font-size="9" font-weight="600" fill="#475569">moderate</text>
-            <text x="318" y="97" font-family="JetBrains Mono, monospace" font-size="9" fill="#0F766E" text-anchor="end">100% · 22 / 22</text>
-            <!-- Title -->
-            <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" letter-spacing="0.5">RECALL · 0% &rarr; 100%</text>
+            <text x="38" y="120" font-family="Lexend, sans-serif" font-size="9" font-weight="700" fill="#0F766E" text-anchor="end">moderate</text>
+            <rect x="40" y="110" width="87" height="14" rx="2" fill="#0F766E" fill-opacity="0.85"/>
+            <text x="133" y="120" font-family="JetBrains Mono, monospace" font-size="9" fill="#0F766E" font-weight="700">100% · 22 / 22</text>
           </svg>
           <p class="text-xs text-slate-400 mt-2 leading-relaxed">Zero false-negatives on the entire 139-pair recall cohort. The PCCP gate (<code class="font-mono">scripts/run_clinical_regression_eval.py</code>) blocks any weight change that breaks this. Precision is verified separately: <strong>0 / 10 false positives</strong> on the negative-control cohort (<code class="font-mono">scripts/run_negative_control_eval.py</code>, 6 clean negatives + 4 boundary cases — clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim). The cohort itself is pinned for integrity by <code class="font-mono">tests/test_engine/test_negative_control_cohort_integrity_pin.py</code> — 6 invariants gate <em>what</em> may live in the precision cohort: size = 10, every entry's <code class="font-mono">expected_severity</code> must be <code class="font-mono">"none"</code>, ZERO collision with cache <code class="font-mono">contraindicated</code> entries (a logical contradiction), every entry has ≥ 1 evidence URL, the 4 named CYP-pathway boundary cases must be present, and clean negatives may not silently include drugs from any cache contra context (with documented allow-listed exceptions for <code class="font-mono">metformin</code> and <code class="font-mono">lisinopril</code>, which deliberately demonstrate non-collision behavior).</p>
           <p class="text-xs text-slate-500 mt-3 leading-relaxed border-l-2 border-amber-300 pl-3 bg-amber-50/40 py-2 rounded-r">
@@ -1529,9 +1550,55 @@ tailwind.config = {
     <div id="fhir-grid" class="space-y-5">
       <div class="card p-5 animate-pulse"><div class="h-4 bg-slate-100 rounded w-3/4 mb-3"></div><div class="h-3 bg-slate-100 rounded w-full"></div></div>
     </div>
-    <p class="text-xs text-slate-500 mt-6 leading-relaxed border-l-2 border-clinical-blue/40 pl-3 bg-blue-50/30 py-2 rounded-r max-w-3xl mx-auto">
-      <strong class="text-slate-700">Beyond Sarah Mitchell &mdash;</strong> the live cohort is <strong>29 synthetic patients · 46 NPIs</strong> in <code class="font-mono text-[10px]">docs/synthea_demo_cohort.json</code> (233 FHIR R4 entries). Cohort integrity is gated by <code class="font-mono text-[10px]">tests/test_engine/test_synthea_cohort_integrity_pin.py</code> &mdash; <strong>8 invariants</strong> a future commit cannot silently break: FHIR R4 Bundle top-level shape; Patient count floor &ge; 29; Practitioner count floor &ge; 46; every Practitioner has a <code class="font-mono text-[10px]">us-npi</code> identifier; every NPI passes the CMS Luhn check digit (80840 prefix + 9 digits + check digit); every identity-bearing resource carries <code class="font-mono text-[10px]">meta._synthetic = true</code>; every Practitioner carries <code class="font-mono text-[10px]">meta.npi_source = "DEMO_LUHN_GENERATED"</code> (fail-safe against fictional NPIs polluting future real-EHR ingest); zero NPI collision with the known-real clinical-validation NPI 1932159530. Every Synthea-generated identifier is auditable from the test suite, not just the live demo.
-    </p>
+    <div class="mt-6 max-w-3xl mx-auto">
+      <div class="rounded-xl border border-clinical-blue/30 bg-blue-50/30 p-4 sm:p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-4 h-4 text-clinical-blue flex-shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/></svg>
+          <p class="text-[11px] font-bold italic uppercase tracking-wider text-clinical-blue">Beyond Sarah Mitchell &middot; full Synthea cohort</p>
+        </div>
+
+        <!-- 4 stat chips — cohort scale at a glance -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+          <div class="rounded-lg bg-white border border-blue-100 px-3 py-2.5">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-clinical-blue whitespace-nowrap">Patients</div>
+            <div class="font-display font-extrabold text-xl text-slate-900 mt-0.5 leading-none">29</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-mono">synthetic</div>
+          </div>
+          <div class="rounded-lg bg-white border border-blue-100 px-3 py-2.5">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-clinical-blue whitespace-nowrap">NPIs</div>
+            <div class="font-display font-extrabold text-xl text-slate-900 mt-0.5 leading-none">46</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-mono">Luhn-valid</div>
+          </div>
+          <div class="rounded-lg bg-white border border-blue-100 px-3 py-2.5">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-clinical-blue whitespace-nowrap">FHIR R4 entries</div>
+            <div class="font-display font-extrabold text-xl text-slate-900 mt-0.5 leading-none">233</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-mono">typed</div>
+          </div>
+          <div class="rounded-lg bg-white border border-clinical-green/30 px-3 py-2.5">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-clinical-green whitespace-nowrap">Invariants</div>
+            <div class="font-display font-extrabold text-xl text-clinical-green mt-0.5 leading-none">8 / 8</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-mono">pinned</div>
+          </div>
+        </div>
+
+        <!-- 8 invariants as compact pill grid -->
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">8 cohort-integrity invariants</p>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-700 mb-3">
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>FHIR R4 Bundle top-level shape</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Patient count floor &ge; 29</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Practitioner count floor &ge; 46</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Every Practitioner has a <code class="font-mono text-[10px]">us-npi</code> identifier</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Every NPI passes CMS Luhn check digit</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span><code class="font-mono text-[10px]">meta._synthetic = true</code> on every identity resource</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span><code class="font-mono text-[10px]">meta.npi_source = "DEMO_LUHN_GENERATED"</code></span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Zero NPI collision with real NPI 1932159530</span></li>
+        </ul>
+
+        <p class="text-[10px] text-slate-500 leading-relaxed">
+          Source: <code class="font-mono text-[10px]">docs/synthea_demo_cohort.json</code>. Pinned by <code class="font-mono text-[10px]">tests/test_engine/test_synthea_cohort_integrity_pin.py</code>. Every Synthea-generated identifier is auditable from the test suite, not just the live demo &mdash; a future commit cannot silently break the cohort.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
