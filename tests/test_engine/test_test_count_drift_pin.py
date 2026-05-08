@@ -43,12 +43,34 @@ _USER_FACING_DOCS = (
     # any future strategic-pitch surface that lands in this filename
     # gets covered automatically.
     _REPO_ROOT / "competitive-analysis-v2.md",
+    # iter-371 T3 round-33 + ratchet: 3 more public-facing surfaces
+    # caught with the iter-302 historical-771 / forbidden-100%-coverage
+    # cluster. CONTRIBUTING.md is contributor-facing (FIRST thing a
+    # would-be contributor reads); devpost-submission.md is the canonical
+    # Devpost form text (mirror of devpost-form-fields.md); devpost-form-
+    # fields.md was already covered by iter-369's DEVPOST.md scope
+    # extension only by name-match accident — making it explicit so the
+    # surface stays scoped if either filename is renamed. Same drift
+    # class as iter-369 / iter-370 — single-source-of-truth → derived-
+    # surface freezes — at the contributor + Devpost-form layer.
+    _REPO_ROOT / "CONTRIBUTING.md",
+    _REPO_ROOT / "devpost-submission.md",
+    _REPO_ROOT / "devpost-form-fields.md",
 )
 
 # Historical test counts that have appeared in user-facing docs and
 # are no longer accurate. As the count grows, append the previous
 # floor here when bumping; this list catches half-completed rotations.
 _HISTORICAL_COUNTS = (
+    # iter-371 T3 round-33: CONTRIBUTING.md '356/356' + devpost-submission
+    # + devpost-form-fields '771 automated tests, 100% line coverage'
+    # cluster caught when the 3 surfaces were added to _USER_FACING_DOCS
+    # scope. 771 was the live count circa iter-110 era (between iter-50's
+    # 356 and iter-200's larger counts); '100% line coverage' is forbidden
+    # per _FORBIDDEN_COVERAGE_CLAIMS regardless of count. Same drift class
+    # as iter-369 / iter-370 — single-source-of-truth → derived-surface
+    # freezes — at the contributor + Devpost-form layer.
+    "771",
     # iter-370 T3 round-32: competitive-analysis-v2.md 3 stale '235+ tests'
     # claims caught when the doc was added to _USER_FACING_DOCS scope.
     # 235 was the live count circa iter-30 era (ahead of the iter-50 356
