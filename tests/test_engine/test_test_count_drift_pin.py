@@ -27,12 +27,26 @@ _USER_FACING_DOCS = (
     _REPO_ROOT / "JUDGES.md",
     _REPO_ROOT / "docs" / "demo.html",
     _REPO_ROOT / "docs" / "architecture.md",
+    # iter-369 T3 round-31 + T1 ratchet: DEVPOST.md is the public Devpost
+    # submission text (the FIRST thing hackathon judges read on the listing).
+    # iter-369 caught a 1,017-test stale claim ('356 tests passing' while
+    # live count was 1373) — same single-source-of-truth → derived-surface
+    # drift class as iter-301/306/318/338, but at the public-listing layer
+    # the prior 4-surface scope didn't reach.
+    _REPO_ROOT / "DEVPOST.md",
 )
 
 # Historical test counts that have appeared in user-facing docs and
 # are no longer accurate. As the count grows, append the previous
 # floor here when bumping; this list catches half-completed rotations.
 _HISTORICAL_COUNTS = (
+    # iter-369 T3 round-31: DEVPOST.md L101 stale '356 tests passing'
+    # claim caught when DEVPOST.md was added to _USER_FACING_DOCS scope.
+    # 356 was the live count circa iter-50 era; survived 300+ cron iters
+    # because the scan didn't cover DEVPOST. Same drift class as iter-78
+    # / iter-301 / iter-306 — single source-of-truth advances, derived
+    # surface freezes — but at the public-listing layer.
+    "356",
     "429",
     "623",
     "771",
