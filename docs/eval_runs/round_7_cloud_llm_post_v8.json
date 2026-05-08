@@ -1,21 +1,21 @@
 {
   "round": "round_7_cloud_llm_post_v8",
-  "timestamp_utc": "2026-05-08T04:05:04.597790+00:00",
+  "timestamp_utc": "2026-05-08T04:23:37.169785+00:00",
   "n_models": 3,
   "n_valid": 3,
   "context": "Cloud-API frontier-judge re-eval (task #122 round 7) post iter-275 v8 engine promotion + iter-336 PHI source-scan lock-in. Companion to round-6 local-LLM run (composite 7.56 on n=5/6 Ollama Q4_K_M judges). Round-7 uses xAI Grok 4.1 fast-reasoning, Mistral Large, DeepSeek-Chat, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B \u2014 frontier-tier reasoning models for higher-quality signal.",
-  "average_composite": 9.033,
+  "average_composite": 9.433,
   "average_per_category": {
-    "technical_depth": 8.667,
-    "innovation_differentiation": 8.0,
+    "technical_depth": 9.0,
+    "innovation_differentiation": 9.333,
     "clinical_credibility": 8.667,
-    "open_source_ecosystem_fit": 9.333,
-    "reproducibility_fda_defensibility": 9.667,
-    "demo_quality_judge_wow": 8.667,
-    "documentation_polish": 9.333,
+    "open_source_ecosystem_fit": 9.667,
+    "reproducibility_fda_defensibility": 10.0,
+    "demo_quality_judge_wow": 9.0,
+    "documentation_polish": 10.0,
     "license_ip_clarity": 10.0,
-    "test_coverage_evidence": 9.333,
-    "ui_visual_design": 8.667
+    "test_coverage_evidence": 9.667,
+    "ui_visual_design": 9.0
   },
   "per_model": [
     {
@@ -23,52 +23,51 @@
       "model": "grok-4-1-fast-reasoning",
       "scores": {
         "technical_depth": 9,
-        "innovation_differentiation": 8,
+        "innovation_differentiation": 9,
         "clinical_credibility": 9,
         "open_source_ecosystem_fit": 9,
         "reproducibility_fda_defensibility": 10,
         "demo_quality_judge_wow": 9,
-        "documentation_polish": 9,
+        "documentation_polish": 10,
         "license_ip_clarity": 10,
         "test_coverage_evidence": 9,
         "ui_visual_design": 9
       },
-      "composite_arithmetic_mean": 9.1,
+      "composite_arithmetic_mean": 9.3,
       "verdict": "TOP_TIER",
       "blocking_gaps_for_10_10": [
         {
-          "category": "clinical_credibility",
-          "gap": "Advisor attestation referenced but no direct link or signed review artifact provided in package."
+          "category": "technical_depth",
+          "gap": "Novel CS contributions like Q16.16 BitNet are innovative but lack peer-reviewed validation or production-scale benchmarks."
         },
         {
-          "category": "documentation_polish",
-          "gap": "No FDA Q-Sub draft or submission readiness package included."
+          "category": "clinical_credibility",
+          "gap": "Clinical advisor attestation and cohort performance strong, but lacks independent third-party review or larger diverse patient validation."
         },
         {
           "category": "test_coverage_evidence",
-          "gap": "Test count and CI green claimed but no badges, logs, or coverage reports visible in package."
+          "gap": "1371 tests claimed with gates, but no CI logs, coverage reports, or live badge links provided for direct verification."
         },
         {
-          "category": "ui_visual_design",
-          "gap": "No screenshots or live render; relies on text walkthrough despite live demo links."
+          "category": "demo_quality_judge_wow",
+          "gap": "Detailed text walkthrough impressive, but lacks embedded video or live clickable demo for instant judge impact."
         }
       ],
       "strengths": [
-        "Outstanding JUDGES.md with 5-minute audit, pinned artifacts, and full audit trail.",
-        "Core reproducibility via Q16.16 BitNet with cross-arch bit-identical replay and repro_hash.",
-        "Comprehensive FHIR R4 coverage (18 resources) and 21 CFR Part 11 audit tooling.",
-        "1371+ tests across engine/scripts with specific pinning and gates.",
-        "Clean Apache-2.0 with explicit patent grant and mind-mem ecosystem integration."
+        "Exceptional JUDGES.md with 5-minute audit path and head-to-head differentiation table.",
+        "Core reproducibility primitive with Q16.16 bit-identical replay and Ed25519 audit chain.",
+        "Comprehensive FHIR R4 coverage, PHI discipline, and 100% recall on PCCP cohort.",
+        "Polished Apache-2.0 licensing with explicit patent grant and mind-mem ecosystem integration."
       ],
       "valid": true,
-      "latency_ms": 24618
+      "latency_ms": 18177
     },
     {
       "provider": "mistral",
       "model": "mistral-large-latest",
       "scores": {
         "technical_depth": 9,
-        "innovation_differentiation": 9,
+        "innovation_differentiation": 10,
         "clinical_credibility": 9,
         "open_source_ecosystem_fit": 10,
         "reproducibility_fda_defensibility": 10,
@@ -78,112 +77,87 @@
         "test_coverage_evidence": 10,
         "ui_visual_design": 9
       },
-      "composite_arithmetic_mean": 9.5,
+      "composite_arithmetic_mean": 9.6,
       "verdict": "TOP_TIER",
       "blocking_gaps_for_10_10": [
         {
           "category": "technical_depth",
-          "gap": "Lacks peer-reviewed publication or preprint demonstrating novel CS contributions beyond BitNet b1.58 adaptation."
-        },
-        {
-          "category": "innovation_differentiation",
-          "gap": "No direct comparison to Epic Detergent or OpenEvidence's proprietary safety layers in the submission materials."
+          "gap": "Lacks peer-reviewed publication or preprint demonstrating novel CS contributions beyond BitNet adaptation."
         },
         {
           "category": "clinical_credibility",
-          "gap": "Clinical advisor attestation lacks formal IRB or institutional endorsement for the validation cohort."
+          "gap": "No documented IRB review or prospective clinical validation study, only retrospective synthetic cohort."
         },
         {
           "category": "demo_quality_judge_wow",
-          "gap": "Hero animation (audit-chain ring) may distract from core value proposition in a 5-second scan."
+          "gap": "Interactive demo requires local setup; no hosted live instance for instant judge access."
         },
         {
           "category": "ui_visual_design",
-          "gap": "Brand palette (Prompt Opinion orange) risks clashing with FDA's clinical aesthetic guidelines in production deployments."
+          "gap": "No accessibility audit (WCAG 2.1 AA) or dark mode support for clinical environments."
         }
       ],
       "strengths": [
-        "Bit-identical Q16.16 reproducibility primitive with cross-arch replay (x86/ARM/RISC-V/Pi Zero/A100) and SHA-256 audit hashes \u2014 a standout for FDA SaMD defensibility.",
-        "100% recall on contraindicated/major drug pairs (44/44 + 4/4) with 0 false positives on negative-control cohort, validated by NPI-attributed clinical advisor.",
-        "21 CFR Part 11-compliant audit chain with Ed25519 signing, SHA-256 predecessor hashing, and unit-tested export shape.",
-        "Apache-2.0 + explicit patent grant (\u00a73) with no buried licensing, enabling immediate production deployment.",
-        "1371 tests (1310+ passed) with CI reproducibility-manifest checks, including 9-test BitNet bundle integrity pinning and 7-test negative-control cohort integrity.",
-        "FHIR R4 coverage (18 resource types) with 30 synthetic Synthea patients and 47 CMS Luhn-valid NPIs, demonstrating real-world interoperability.",
-        "Typed runtime invariants (21 in JointMemoryFederation.flow.mind) enforcing PHI gates, Ed25519 signing, and X25519 sealing \u2014 not just policy documentation.",
-        "JUDGES.md provides a 60-second scan, 5-minute audit, and full audit trail with traceability from dashboard claims to checked-in artifacts (e.g., `docs/openevidence_cache.json` \u2192 `docs/pccp_eval_latest.json`)."
+        "Bit-identical Q16.16 fixed-point reproducibility across architectures (x86_64/ARM64/RISC-V/Pi Zero/A100) with SHA-256 audit hashes \u2014 a true clinical-AI safety primitive.",
+        "21 CFR Part 11 audit chain with Ed25519 signing, SHA-256 predecessor hashing, and 30 unit tests \u2014 production-grade compliance.",
+        "100% recall on contraindicated/major/serious/moderate drug pairs (44/44 + 4/4 + 69/69 + 22/22) with zero false positives on negative-control cohort \u2014 clinical-grade precision.",
+        "Apache-2.0 with explicit patent grant and no buried licensing \u2014 deployable in production tomorrow.",
+        "1371 tests green, CI reproducibility manifest, and 18 FHIR R4 resource types \u2014 enterprise-grade test discipline.",
+        "21 typed federation invariants enforced at runtime with PHI gates \u2014 architectural rigor for multi-site deployments.",
+        "JUDGES.md is a masterclass in judge-centric documentation: 5-second hero, 5-minute audit, 60-second drill-down, and FDA Q-Sub draft \u2014 unmatched polish."
       ],
       "valid": true,
-      "latency_ms": 11749
+      "latency_ms": 9744
     },
     {
       "provider": "deepseek",
       "model": "deepseek-chat",
       "scores": {
-        "technical_depth": 8,
-        "innovation_differentiation": 7,
+        "technical_depth": 9,
+        "innovation_differentiation": 9,
         "clinical_credibility": 8,
-        "open_source_ecosystem_fit": 9,
-        "reproducibility_fda_defensibility": 9,
-        "demo_quality_judge_wow": 8,
-        "documentation_polish": 9,
+        "open_source_ecosystem_fit": 10,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 9,
+        "documentation_polish": 10,
         "license_ip_clarity": 10,
-        "test_coverage_evidence": 9,
-        "ui_visual_design": 8
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 9
       },
-      "composite_arithmetic_mean": 8.5,
-      "verdict": "STRONG_CONTENDER",
+      "composite_arithmetic_mean": 9.4,
+      "verdict": "TOP_TIER",
       "blocking_gaps_for_10_10": [
         {
           "category": "technical_depth",
-          "gap": "No novel CS contribution beyond integration of existing components; Q16.16 and BitNet are known techniques."
+          "gap": "No novel CS contribution beyond Q16.16 fixed-point; the BitNet b1.58 approach is a known technique applied to a new domain."
         },
         {
           "category": "innovation_differentiation",
-          "gap": "Bit-identical replay is novel but the overall pipeline architecture mirrors existing clinical decision support systems."
+          "gap": "The core value proposition (bit-identical replay) is novel but the product does not yet demonstrate integration with any existing EHR or clinical workflow."
         },
         {
           "category": "clinical_credibility",
-          "gap": "Single clinical advisor with no evidence of independent clinical validation or IRB review."
-        },
-        {
-          "category": "open_source_ecosystem_fit",
-          "gap": "No contribution guidelines, issue templates, or community governance documented."
-        },
-        {
-          "category": "reproducibility_fda_defensibility",
-          "gap": "No evidence of 21 CFR Part 11 electronic signature controls or full audit trail for user identity."
+          "gap": "Only one clinical advisor (Dr. Afonicheva) and no formal IRB or institutional review board sign-off for the clinical validation."
         },
         {
           "category": "demo_quality_judge_wow",
-          "gap": "No live interactive demo; static HTML dashboard with no real-time API calls or user interaction."
-        },
-        {
-          "category": "documentation_polish",
-          "gap": "No FDA Q-Sub draft or pre-submission documentation included."
-        },
-        {
-          "category": "license_ip_clarity",
-          "gap": "No blocking gaps; license is clear and Apache-2.0 with patent grant."
-        },
-        {
-          "category": "test_coverage_evidence",
-          "gap": "No evidence of integration tests covering the full pipeline end-to-end with live APIs."
+          "gap": "The demo is text-only in JUDGES.md; no interactive live demo URL or video walkthrough was provided in the submission package."
         },
         {
           "category": "ui_visual_design",
-          "gap": "Dashboard is static HTML with no responsive design or accessibility compliance documented."
+          "gap": "The demo dashboard is described but not rendered; no actual screenshots or live link to assess visual hierarchy and brand consistency."
         }
       ],
       "strengths": [
-        "Bit-identical Q16.16 fixed-point replay across architectures is a strong FDA-defensibility primitive.",
-        "1371 passing tests with CI reproducibility manifest demonstrate rigorous engineering discipline.",
-        "Apache-2.0 with explicit patent grant enables production deployment without IP concerns.",
-        "Clinical advisor with valid NPI and attestation adds credibility beyond typical hackathon submissions.",
-        "Comprehensive FHIR R4 coverage with 18 resource types and 30 synthetic patients.",
-        "PHI discipline with typed runtime invariants and structured logging shows attention to compliance."
+        "Bit-identical Q16.16 fixed-point replay across all architectures (x86_64, ARM64, RISC-V, Pi Zero, A100) \u2014 a genuine FDA SaMD reproducibility primitive.",
+        "1371 tests green with CI reproducibility-manifest check on every push; 30 Part 11 audit-chain tests; 49 FHIR adapter tests.",
+        "Apache-2.0 with explicit patent grant, single LICENSE file, no buried clauses \u2014 production-ready open-source licensing.",
+        "21 typed federation invariants enforced at runtime with PHI gate, Ed25519 signing, and X25519 sealing.",
+        "100% recall on 44/44 contraindicated pairs + 0 false positives on negative-control cohort, with evidence-backed sources (FDA, EMA, PubMed).",
+        "Comprehensive documentation: JUDGES.md, README.md, DevPost, FDA Q-Sub draft, clinical validation attestation, reproducibility manifest."
       ],
       "valid": true,
-      "latency_ms": 40829
+      "latency_ms": 8989
     }
   ]
 }

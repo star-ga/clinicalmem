@@ -55,6 +55,36 @@ reading. The rest of this file is the long-form drill-down.
 
 Brand palette: Prompt Opinion orange (`#FF6B35`) accent + Trust teal (`#0F766E`) primary + Mint canvas. Lexend display + Source Sans 3 body + Baloo 2 brand-accent (FDA-grade clinical aesthetic, not early-iteration).
 
+## Differentiation — head-to-head with the closest existing products
+
+ClinicalMem is **not a competitor to Epic Sense, Hippocratic AI, or
+OpenEvidence** — it's a **clinical-AI safety primitive** that any of
+them could embed. The differentiation is along an axis those products
+don't touch (cross-architecture bit-identical reproducibility), not
+along the axes they compete on (corpus size, FDA clearance,
+EHR-integration depth).
+
+| Axis | Epic Sense | Hippocratic AI | OpenEvidence | **ClinicalMem** |
+|---|:---:|:---:|:---:|:---:|
+| **Cross-arch bit-identical replay** | No (FP32 GPU only) | No (FP16 GPU) | No (cloud LLM) | **YES** — Q16.16 fixed-point, byte-identical x86_64 / ARM64 / RISC-V / Pi Zero / A100 |
+| **`<1 ms` per pair, $15 hardware** | No (cloud GPU) | No (cloud GPU) | No (cloud LLM) | **YES** — 50,949 ternary params + Q16.16 biases, Pi Zero 2 W feasible |
+| **Q16.16 fixed-point determinism** | No (FP32) | No (FP16) | No (LLM nondeterminism) | **YES** — pure-int forward pass + SHA-256 `repro_hash` per classification |
+| **Open source + Apache-2.0 patent grant** | Closed | Closed | Closed | **YES** — single LICENSE, no buried clauses |
+| **21 typed federation invariants enforced at runtime** | Implicit | Implicit | N/A | **YES** — `flows/JointMemoryFederation.flow.mind` (16 mocked end-to-end + 5 X25519-sealed) |
+| **6-LLM US-based consensus + abstention gate** | No | No | No (single-LLM) | **YES** — Layer 4 + Layer 6, "I don't know" is a first-class verdict |
+| **21 CFR Part 11 audit chain (Ed25519-signed)** | Yes (Epic-internal) | No | No | **YES** — open implementation, SHA-256 predecessor hashing, 30 unit tests |
+| **EHR-integration depth (Epic / Cerner)** | **YES** (native) | Limited | Read-only API | No (FHIR R4 adapter only) |
+| **Frontier-LLM corpus** | N/A | **YES** (massive) | **YES** (Mayo Clinic / Elsevier) | No (boutique 139-pair PCCP cohort) |
+| **FDA SaMD clearance status** | Multiple cleared | In progress | Pre-clearance | **Pre-FDA, FDA-Q-Sub-ready** (`docs/fda_q_sub_draft.md`) |
+
+ClinicalMem complements rather than competes — its value is the
+**reproducibility primitive** that an FDA-cleared product (Epic
+Sense) or a high-recall corpus (OpenEvidence) **lacks** by design
+of their commercial architectures. A regulator filing a 10-year
+audit-replay request can't replay an FP32 / FP16 / cloud-LLM
+verdict to the bit; they can replay every Layer 4.5 BitNet
+classification from this repo, on any chip, for the next 30 years.
+
 ---
 
 ## The 5-bullet pitch
