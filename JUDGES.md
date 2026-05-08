@@ -157,7 +157,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1310+ passed** (live floor as of iter-281; bumped from 1173 across iter-280 cohort growth + iter-279/iter-281 cross-pin family additions + iter-275 v8 promotion cascade).
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1371+ passed** (live floor as of iter-336; bumped from 1310 (iter-281) across iter-282..iter-329 cross-pin family additions, the iter-280 cohort growth, the iter-275 v8 promotion cascade, the iter-289 confidence-gate logging family, and the iter-329 dispatch-table observability sweep completing 4/4 silent flow-graph helpers).
 
 ---
 
