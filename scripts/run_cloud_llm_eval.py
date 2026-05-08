@@ -211,7 +211,15 @@ async def _score_one(provider_key: str, prompt: str) -> dict:
         "PerplexityProvider": PerplexityProvider,
         "NvidiaProvider": NvidiaProvider,
     }[klass_name]
-    rate = RateLimitConfig()
+    # iter-350 ratchet: extended retry envelope for rate-limited
+    # providers (Perplexity + NVIDIA exhausted default 5 retries in
+    # round-7). 10 retries with 4s base + 60s 429-cooldown gives a
+    # ~10-minute total retry window per provider.
+    rate = RateLimitConfig(
+        max_retries=10,
+        base_retry_delay_s=4.0,
+        cooldown_on_429_s=60.0,
+    )
     provider = klass(api_key=api_key, model=model, rate_config=rate)
     print(f"[{provider_key}/{model}] generating...", file=sys.stderr, flush=True)
     t0 = time.time()

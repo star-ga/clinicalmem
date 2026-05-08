@@ -1,21 +1,21 @@
 {
   "round": "round_7_cloud_llm_post_v8",
-  "timestamp_utc": "2026-05-08T03:23:24.529996+00:00",
-  "n_models": 5,
+  "timestamp_utc": "2026-05-08T03:49:16.877335+00:00",
+  "n_models": 3,
   "n_valid": 3,
   "context": "Cloud-API frontier-judge re-eval (task #122 round 7) post iter-275 v8 engine promotion + iter-336 PHI source-scan lock-in. Companion to round-6 local-LLM run (composite 7.56 on n=5/6 Ollama Q4_K_M judges). Round-7 uses xAI Grok 4.1 fast-reasoning, Mistral Large, DeepSeek-Chat, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B \u2014 frontier-tier reasoning models for higher-quality signal.",
-  "average_composite": 8.9,
+  "average_composite": 9.067,
   "average_per_category": {
-    "technical_depth": 8.667,
-    "innovation_differentiation": 8.667,
-    "clinical_credibility": 7.667,
+    "technical_depth": 9.0,
+    "innovation_differentiation": 8.333,
+    "clinical_credibility": 9.0,
     "open_source_ecosystem_fit": 9.333,
     "reproducibility_fda_defensibility": 10.0,
-    "demo_quality_judge_wow": 8.667,
-    "documentation_polish": 9.333,
+    "demo_quality_judge_wow": 8.333,
+    "documentation_polish": 9.667,
     "license_ip_clarity": 10.0,
-    "test_coverage_evidence": 9.333,
-    "ui_visual_design": 7.333
+    "test_coverage_evidence": 10.0,
+    "ui_visual_design": 7.0
   },
   "per_model": [
     {
@@ -24,38 +24,37 @@
       "scores": {
         "technical_depth": 9,
         "innovation_differentiation": 8,
-        "clinical_credibility": 7,
-        "open_source_ecosystem_fit": 9,
+        "clinical_credibility": 9,
+        "open_source_ecosystem_fit": 10,
         "reproducibility_fda_defensibility": 10,
         "demo_quality_judge_wow": 9,
-        "documentation_polish": 9,
+        "documentation_polish": 10,
         "license_ip_clarity": 10,
-        "test_coverage_evidence": 9,
-        "ui_visual_design": 8
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 7
       },
-      "composite_arithmetic_mean": 8.8,
+      "composite_arithmetic_mean": 9.2,
       "verdict": "TOP_TIER",
       "blocking_gaps_for_10_10": [
         {
-          "category": "clinical_credibility",
-          "gap": "No explicit clinical advisor review, full FHIR R4 coverage details, or 21 CFR Part 11 compliance evidence."
+          "category": "innovation_differentiation",
+          "gap": "Differentiation from Epic Sense, Hippocratic AI, OpenEvidence relies on claims without direct benchmarks or head-to-head comparisons."
         },
         {
-          "category": "innovation_differentiation",
-          "gap": "Lacks head-to-head benchmarks against Epic Sense, Hippocratic AI, or OpenEvidence on live cohorts."
+          "category": "clinical_credibility",
+          "gap": "Clinical advisor attestation provided but lacks detailed review report or independent validation beyond self-reported metrics."
         },
         {
           "category": "ui_visual_design",
-          "gap": "Demo dashboard visuals inferred but no screenshots or density/hierarchy details provided in package."
+          "gap": "No UI screenshots, live demo visuals, or design details in submission package to assess density, hierarchy, or consistency."
         }
       ],
       "strengths": [
-        "Bit-identical Q16.16 reproducibility primitive with full audit-chain pinning and replay scripts.",
-        "Comprehensive JUDGES.md with 5-minute all-gates PASS command and 1300+ pinned tests.",
-        "Apache-2.0 clarity with explicit patent grant and mind-mem ecosystem integration."
+        "Outstanding reproducibility with Q16.16 bit-identical replay and full audit chains verifiable across architectures.",
+        "Comprehensive documentation including JUDGES.md with 5-minute audits and 1371 pinned tests demonstrating production-grade rigor."
       ],
       "valid": true,
-      "latency_ms": 14358
+      "latency_ms": 15471
     },
     {
       "provider": "mistral",
@@ -64,7 +63,7 @@
         "technical_depth": 9,
         "innovation_differentiation": 9,
         "clinical_credibility": 9,
-        "open_source_ecosystem_fit": 10,
+        "open_source_ecosystem_fit": 9,
         "reproducibility_fda_defensibility": 10,
         "demo_quality_judge_wow": 9,
         "documentation_polish": 10,
@@ -72,88 +71,76 @@
         "test_coverage_evidence": 10,
         "ui_visual_design": 8
       },
-      "composite_arithmetic_mean": 9.4,
+      "composite_arithmetic_mean": 9.3,
       "verdict": "TOP_TIER",
       "blocking_gaps_for_10_10": [
         {
           "category": "technical_depth",
-          "gap": "Lacks peer-reviewed publication or preprint demonstrating novel CS contributions beyond BitNet b1.58 adaptation."
+          "gap": "Lacks novel CS contributions beyond BitNet b1.58 adaptation and deterministic replay; architecture is robust but not groundbreaking."
+        },
+        {
+          "category": "innovation_differentiation",
+          "gap": "While differentiated from Epic/Sense/Hippocratic, the six-model LLM consensus is not uniquely novel compared to existing multi-agent systems."
         },
         {
           "category": "clinical_credibility",
-          "gap": "No explicit 21 CFR Part 11 audit trail or NPI-linked advisor attestation in submitted materials."
+          "gap": "Clinical advisor attestation is strong, but lacks formal FDA Q-Sub engagement or published clinical validation studies."
         },
         {
           "category": "ui_visual_design",
-          "gap": "Dashboard screenshots or live demo lack the information density and brand consistency expected for clinical-grade software."
+          "gap": "Information density is high, but lacks a polished, clinician-ready UI with EHR-grade visual hierarchy and brand consistency."
         }
       ],
       "strengths": [
-        "Bit-identical Q16.16 reproducibility with SHA-256 audit hashes, enabling FDA SaMD defensibility.",
-        "100% recall on contraindicated drug pairs with 0 false positives, validated against OpenEvidence-cited cohort.",
-        "Apache-2.0 license with explicit patent grant and no buried licensing, enabling immediate production deployment.",
-        "1371+ tests with CI green, including bundle integrity pins and clinical cohort validation.",
-        "JUDGES.md provides a 5-minute audit path with single-command verification of all safety gates."
+        "Bit-identical Q16.16 reproducibility primitive with FDA defensibility (10/10 in reproducibility_fda_defensibility).",
+        "Comprehensive test coverage (1371 tests) with CI integration and audit-chain pinning (10/10 in test_coverage_evidence).",
+        "Exceptional documentation polish (JUDGES.md, README depth, FDA Q-Sub draft readiness) (10/10 in documentation_polish).",
+        "Apache-2.0 license with explicit patent grant and no buried clauses (10/10 in license_ip_clarity).",
+        "Six-layer clinical safety pipeline with deterministic veto anchor and 100% recall on contraindicated pairs (9/10 in clinical_credibility)."
       ],
       "valid": true,
-      "latency_ms": 8137
+      "latency_ms": 8963
     },
     {
       "provider": "deepseek",
       "model": "deepseek-chat",
       "scores": {
-        "technical_depth": 8,
-        "innovation_differentiation": 9,
-        "clinical_credibility": 7,
+        "technical_depth": 9,
+        "innovation_differentiation": 8,
+        "clinical_credibility": 9,
         "open_source_ecosystem_fit": 9,
         "reproducibility_fda_defensibility": 10,
-        "demo_quality_judge_wow": 8,
+        "demo_quality_judge_wow": 7,
         "documentation_polish": 9,
         "license_ip_clarity": 10,
-        "test_coverage_evidence": 9,
+        "test_coverage_evidence": 10,
         "ui_visual_design": 6
       },
-      "composite_arithmetic_mean": 8.5,
+      "composite_arithmetic_mean": 8.7,
       "verdict": "STRONG_CONTENDER",
       "blocking_gaps_for_10_10": [
         {
-          "category": "clinical_credibility",
-          "gap": "No named clinical advisor or formal NPI-linked review; FHIR coverage is claimed but not demonstrated with a live FHIR server integration test."
+          "category": "demo_quality_judge_wow",
+          "gap": "No live interactive demo or video walkthrough showing the 5-second comprehension hero flow with a clear call-to-action."
         },
         {
           "category": "ui_visual_design",
-          "gap": "No screenshots or design system evidence in the submission; information density and brand consistency cannot be assessed."
+          "gap": "No screenshots or UI mockups provided; information density and brand consistency cannot be assessed from text alone."
         },
         {
-          "category": "demo_quality_judge_wow",
-          "gap": "The 5-second comprehension is hindered by the massive JUDGES.md; a concise hero demo video or interactive walkthrough is missing."
+          "category": "innovation_differentiation",
+          "gap": "The six-model LLM consensus and deterministic table approach, while solid, do not clearly differentiate from existing clinical decision support systems like Epic Sense or OpenEvidence."
         }
       ],
       "strengths": [
-        "Bit-identical Q16.16 fixed-point replay with SHA-256 audit chain is a genuine FDA SaMD reproducibility primitive, unmatched by any other submission.",
-        "100% recall on contraindicated class (44/44) with zero false positives on a 10-pair negative control cohort, backed by a 1371-test suite.",
-        "Apache-2.0 with explicit patent grant and full open-source ecosystem fit (mind-mem, MIND Lang, arch-mind governance).",
-        "Six-layer safety pipeline with deterministic tables, OpenEvidence, RxNorm, LLM consensus, and BitNet veto layer shows deep clinical engineering rigor.",
-        "Comprehensive audit trail with pinned bundle hashes, versioned weight files, and cross-pin tests for every claim on the dashboard."
+        "Bit-identical Q16.16 fixed-point replay with SHA-256 repro_hash across any architecture \u2014 a genuine FDA SaMD reproducibility primitive.",
+        "1371 tests green with CI reproducibility-manifest check; comprehensive test coverage across engine and scripts.",
+        "Apache-2.0 with explicit patent grant and single LICENSE file \u2014 production-deployable IP clarity.",
+        "Clinical advisor with valid NPI, 21 CFR Part 11 audit trail, FHIR R4 coverage, and 100% recall on contraindicated drug pairs.",
+        "arch-mind L1 governance gate and typed runtime invariants for PHI discipline and federation integrity."
       ],
       "valid": true,
-      "latency_ms": 7927
-    },
-    {
-      "provider": "perplexity",
-      "model": "sonar-pro",
-      "error": "Max retries (5) exceeded",
-      "raw_response_head": "",
-      "valid": false,
-      "latency_ms": 43174
-    },
-    {
-      "provider": "nvidia",
-      "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
-      "error": "Max retries (5) exceeded",
-      "raw_response_head": "",
-      "valid": false,
-      "latency_ms": 43135
+      "latency_ms": 7216
     }
   ]
 }
