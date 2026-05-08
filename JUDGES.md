@@ -224,17 +224,22 @@ artifact. Audit map:
    deterministic Layer 1 / Layer 2 cache / Layer 4.5 BitNet path.
    Multi-LLM consensus rounds are out of scope of the precision +
    recall gates above.
-5. **Layer 4.5 BitNet alone catches 3 of 4 majors.** The engine
-   reaches `100% · 4 / 4` on the major class only because Layer 4.5's
-   safety policy (`engine/clinical_scoring.py:329-339`) preserves
-   the upstream verdict on any BitNet downgrade and emits a
-   `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` warning. BitNet alone misses
+5. **Layer 4.5 BitNet alone caught 3 of 4 majors pre-iter-275.**
+   v1 baseline (`cfadb4f6`, hash-only 128-dim × 64-hidden) missed
    `tacrolimus + voriconazole` (transporter + strong CYP3A4
    cross-mechanism) — the architectural ceiling of a hash-only
-   encoder. The Q16.16 margin on the miss is large (≈ 15.4 in natural
-   units), so this is a confident wrong, not a close call. Path A
-   (curated ATC pharmacology table integration) is the candidate fix
-   but has not yet been wired into the deployment path.
+   encoder. **Resolved at iter-275 by promoting Path A v8** (193-dim
+   hash + 26 ATC pharmacology flags + 13 pair-derived DDI rule bits
+   × 256-hidden, bundle `1f0f8859…`): BitNet alone now hits **4 / 4
+   majors (100%)** + 44 / 44 contraindicated (100%) + 0 FP under
+   cross-arch Q16.16 inference on the live 139-pair cache. The
+   `engine/clinical_scoring.py` safety policy still preserves the
+   upstream verdict on any BitNet downgrade and emits a
+   `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` warning — the policy is
+   defensive in case a future cohort growth re-introduces a miss,
+   but no live miss exists today. v1 baseline preserved at
+   `engine/bitnet_weights.v1.cfadb4f6.bak.json` for FDA SaMD audit-
+   trail reconstruction.
 
 ---
 
@@ -251,7 +256,7 @@ and `docs/arch_mind_federation_audit.md`.
 ## Contact
 
 - Repo: <https://github.com/star-ga/clinicalmem> (PUBLIC on submission day 2026-05-11; PRIVATE before that)
-- Engineering: STARGA Inc. — `noreply@star.ga`
+- Engineering: STARGA Inc. — `info@star.ga`
 - Clinical Advisor: Dr. Ludmila Afonicheva, MD — Family Medicine, US-licensed (NPI on file in `docs/clinical_validation.md`)
 
 *Apache-2.0 — STARGA, Inc. — 2026.*
