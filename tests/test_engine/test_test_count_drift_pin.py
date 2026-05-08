@@ -34,12 +34,27 @@ _USER_FACING_DOCS = (
     # drift class as iter-301/306/318/338, but at the public-listing layer
     # the prior 4-surface scope didn't reach.
     _REPO_ROOT / "DEVPOST.md",
+    # iter-370 T3 round-32 + ratchet: competitive-analysis-v2.md is the
+    # current strategic pitch surface ('May 2 2026, 9 days remaining').
+    # iter-370 caught 3 stale '235+ tests' claims (L24 / L126 / L212)
+    # alongside a self-acknowledging '(CHANGELOG / DEVPOST cite 356)'
+    # note that confirmed the doc-author knew the count was uncertain
+    # at write-time. Same drift class as iter-369; extending scope so
+    # any future strategic-pitch surface that lands in this filename
+    # gets covered automatically.
+    _REPO_ROOT / "competitive-analysis-v2.md",
 )
 
 # Historical test counts that have appeared in user-facing docs and
 # are no longer accurate. As the count grows, append the previous
 # floor here when bumping; this list catches half-completed rotations.
 _HISTORICAL_COUNTS = (
+    # iter-370 T3 round-32: competitive-analysis-v2.md 3 stale '235+ tests'
+    # claims caught when the doc was added to _USER_FACING_DOCS scope.
+    # 235 was the live count circa iter-30 era (ahead of the iter-50 356
+    # snapshot below). Same drift class as iter-369; flagged here so re-
+    # introduction fires the pin.
+    "235",
     # iter-369 T3 round-31: DEVPOST.md L101 stale '356 tests passing'
     # claim caught when DEVPOST.md was added to _USER_FACING_DOCS scope.
     # 356 was the live count circa iter-50 era; survived 300+ cron iters
