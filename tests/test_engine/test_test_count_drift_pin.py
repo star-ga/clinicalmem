@@ -650,6 +650,17 @@ _HISTORICAL_COUNTS = (
     # Same iter-117 / iter-300 / iter-305 ratchet-when-headroom-exists
     # pattern at the test-count layer (2-test growth from iter-366).
     "1372",
+    # iter-374 T1 round-79: 34th cross-pin family — FHIR-resource-type-
+    # count drift catch (test_fhir_resource_type_count_pin.py adds 4
+    # tests). Floor stayed at 1373 atomically with the new pin family
+    # commit; iter-375 ratchets the floor + bumps surfaces in lockstep.
+    "1373",
+    # iter-375 intermediate counts between iter-374's 4-test growth
+    # (1373 -> 1377). Same iter-368 pattern of capturing intermediates
+    # so any future stale surface stuck at 1374/1375/1376 fires the pin.
+    "1374",
+    "1375",
+    "1376",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -663,7 +674,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1373
+_TEST_COUNT_FLOOR = 1377
 
 
 def test_no_stale_test_counts_in_docs():
