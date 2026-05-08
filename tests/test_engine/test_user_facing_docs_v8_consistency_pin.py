@@ -338,8 +338,18 @@ def test_no_stale_mind_mem_dep_version_as_live_claim():
     # 'Mind-Mem') escaped the scan, which is how 8 stale 'MIND-Mem
     # v3.9.0' / 'MIND-Mem v3.10 target' refs survived in demo.html +
     # arch_mind_federation_audit.md + architecture.md until iter-338.
+    #
+    # iter-345 ratchet: patch component is now OPTIONAL. Pre-iter-345
+    # the regex required X.Y.Z (3-component) form, so 2-component
+    # refs like 'mind-mem v3.10' / 'MIC@2 (v3.10)' silently escaped.
+    # iter-341 + iter-344 caught 6 such surfaces by hand. Pin now
+    # matches both forms; 2-component refs are evaluated at the minor
+    # version (cited (maj, mn) > pin (maj, mn) → allowed forward-
+    # looking; otherwise flagged as stale unless in historical
+    # context). Same iter-117 ratchet-when-headroom-exists pattern
+    # applied at the regex-coverage layer.
     pat = re.compile(
-        r"\bmind-mem v?(\d+)\.(\d+)\.(\d+)\b",
+        r"\bmind-mem v?(\d+)\.(\d+)(?:\.(\d+))?\b",
         re.IGNORECASE,
     )
     extended_tokens = _HISTORICAL_TOKENS + (
@@ -372,19 +382,40 @@ def test_no_stale_mind_mem_dep_version_as_live_claim():
         lines = doc.read_text().splitlines()
         for i, line in enumerate(lines):
             for m in pat.finditer(line):
-                maj, mn, pt = (int(m.group(k)) for k in (1, 2, 3))
-                cited = (maj, mn, pt)
-                pin = (live_major, live_minor, live_patch)
-                if cited >= pin:
-                    # Equal or future — always allowed
-                    continue
-                if _ext_line_window_ok(lines, i):
-                    continue
-                violations.append(
-                    f"{doc.relative_to(_REPO_ROOT)}:{i+1} "
-                    f"[v{maj}.{mn}.{pt} < pin v{live_pin}]: "
-                    f"{line.strip()[:140]!r}"
-                )
+                maj = int(m.group(1))
+                mn = int(m.group(2))
+                pt = int(m.group(3)) if m.group(3) is not None else None
+                if pt is None:
+                    # 2-component ref (iter-345 ratchet). Forward-
+                    # looking refs to a strictly higher minor version
+                    # are allowed (e.g., at pin v3.10.1, citing 'v3.11'
+                    # is legitimate). Same-or-lower minor is flagged
+                    # as stale unless in historical context — the
+                    # author should either make the version specific
+                    # or reframe to 'future mind-mem release'.
+                    if (maj, mn) > (live_major, live_minor):
+                        continue
+                    if _ext_line_window_ok(lines, i):
+                        continue
+                    violations.append(
+                        f"{doc.relative_to(_REPO_ROOT)}:{i+1} "
+                        f"[v{maj}.{mn} (2-component, <= pin minor "
+                        f"v{live_major}.{live_minor})]: "
+                        f"{line.strip()[:140]!r}"
+                    )
+                else:
+                    cited = (maj, mn, pt)
+                    pin = (live_major, live_minor, live_patch)
+                    if cited >= pin:
+                        # Equal or future — always allowed
+                        continue
+                    if _ext_line_window_ok(lines, i):
+                        continue
+                    violations.append(
+                        f"{doc.relative_to(_REPO_ROOT)}:{i+1} "
+                        f"[v{maj}.{mn}.{pt} < pin v{live_pin}]: "
+                        f"{line.strip()[:140]!r}"
+                    )
     assert not violations, (
         f"User-facing docs cite stale `mind-mem v<X.Y.Z>` versions "
         f"older than the pyproject pin (`mind-mem>={live_pin}`) "
