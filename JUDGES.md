@@ -22,7 +22,7 @@ If you have an hour, follow [§ Full audit trail](#full-audit-trail).
 | **21 CFR Part 11 audit** | `engine/audit_export_part11.py` — Ed25519-signed event chain, SHA-256 predecessor hashing, Part 11-§11.10 export shape. **30 unit tests green.** |
 | **Live engine recall** | **44/44 contraindicated (100%) + 4/4 major (100%) + 0 false positives** under cross-arch Q16.16 inference on the 139-pair live cache. Bundle `1f0f8859…`, LIVE in engine since iter-275. |
 | **Bit-identical replay** | Q16.16 fixed-point inference in `engine/bitnet_classifier.py` — every classification carries a `repro_hash` an FDA auditor can recompute on x86_64 / ARM64 / RISC-V / Pi Zero / A100 and get the same bytes back. |
-| **Test gate** | **1371 tests green** across `tests/test_engine/` + `tests/test_scripts/`. CI runs the full suite + a reproducibility-manifest check on every push. |
+| **Test gate** | **1373 tests green** across `tests/test_engine/` + `tests/test_scripts/`. CI runs the full suite + a reproducibility-manifest check on every push. |
 | **License + patent grant** | **Apache-2.0** with explicit patent grant (§3 — every contributor licenses their patent claims to every user). Single LICENSE file, no buried clauses. |
 | **FHIR R4 coverage** | 18 resource types in the demo bundle (Patient, Practitioner, MedicationRequest, AllergyIntolerance, Condition, Observation, Encounter, etc.) — `engine/fhir_adapter.py` (49 tests). 30 synthetic Synthea patients, 47 NPIs, all CMS Luhn-valid. |
 | **Federation flow** | `flows/JointMemoryFederation.flow.mind` — **21 typed runtime invariants** (16 exercised by the mock demo end-to-end; 5 X25519-sealing invariants declared, await a future MIC@2 transport adapter). |
@@ -157,7 +157,7 @@ python3 scripts/federation_mock_demo.py
 python3 scripts/run_arch_mind_gate.py
 ```
 
-Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1371+ passed** (live floor as of iter-336; bumped from 1310 (iter-281) across iter-282..iter-329 cross-pin family additions, the iter-280 cohort growth, the iter-275 v8 promotion cascade, the iter-289 confidence-gate logging family, and the iter-329 dispatch-table observability sweep completing 4/4 silent flow-graph helpers).
+Optional: full pytest suite — `python3 -m pytest tests/test_engine/ tests/test_scripts/ -q`. Should report **1373+ passed** (live floor as of iter-368; bumped from 1310 (iter-281) across iter-282..iter-329 cross-pin family additions, the iter-280 cohort growth, the iter-275 v8 promotion cascade, the iter-289 confidence-gate logging family, the iter-329 dispatch-table observability sweep completing 4/4 silent flow-graph helpers, and the iter-366 FHIR-resource-count drift catch (33rd cross-pin family, +2 tests)).
 
 ---
 

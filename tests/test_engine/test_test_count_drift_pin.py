@@ -584,6 +584,21 @@ _HISTORICAL_COUNTS = (
     # extension lineage: iter-285 → iter-310 → iter-315 → iter-320 →
     # iter-325 → iter-330 (majors ≥2 distinct hosts).
     "1370",
+    # iter-366 T3 round-30: 33rd cross-pin family — FHIR-resource-count
+    # drift catch (test_fhir_resource_count_drift_pin.py adds 2 tests,
+    # closes the iter-78 cohort_count_drift_pin.py gap at the FHIR-
+    # bundle-cardinality layer). Live 1371 → 1373. Same iter-301 / iter-
+    # 306 / iter-318 / iter-338 single-source-of-truth → derived-surface
+    # drift class pattern at the FHIR-bundle layer.
+    "1371",
+    # iter-368 T1 round-78: ratchet _TEST_COUNT_FLOOR 1371 → 1373 +
+    # add stale historical floor "1371" + intermediate "1372" so the
+    # iter-302 / iter-354 (+ suffix) drift pin catches any future
+    # surface that gets stuck at the old floor. README + JUDGES claims
+    # bumped 1371+ → 1373+ in lockstep (3 README sites + 1 JUDGES site).
+    # Same iter-117 / iter-300 / iter-305 ratchet-when-headroom-exists
+    # pattern at the test-count layer (2-test growth from iter-366).
+    "1372",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -597,7 +612,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1371
+_TEST_COUNT_FLOOR = 1373
 
 
 def test_no_stale_test_counts_in_docs():
