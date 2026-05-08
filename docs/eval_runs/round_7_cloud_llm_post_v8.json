@@ -1,0 +1,159 @@
+{
+  "round": "round_7_cloud_llm_post_v8",
+  "timestamp_utc": "2026-05-08T03:23:24.529996+00:00",
+  "n_models": 5,
+  "n_valid": 3,
+  "context": "Cloud-API frontier-judge re-eval (task #122 round 7) post iter-275 v8 engine promotion + iter-336 PHI source-scan lock-in. Companion to round-6 local-LLM run (composite 7.56 on n=5/6 Ollama Q4_K_M judges). Round-7 uses xAI Grok 4.1 fast-reasoning, Mistral Large, DeepSeek-Chat, Perplexity Sonar Pro, NVIDIA Nemotron Ultra 253B \u2014 frontier-tier reasoning models for higher-quality signal.",
+  "average_composite": 8.9,
+  "average_per_category": {
+    "technical_depth": 8.667,
+    "innovation_differentiation": 8.667,
+    "clinical_credibility": 7.667,
+    "open_source_ecosystem_fit": 9.333,
+    "reproducibility_fda_defensibility": 10.0,
+    "demo_quality_judge_wow": 8.667,
+    "documentation_polish": 9.333,
+    "license_ip_clarity": 10.0,
+    "test_coverage_evidence": 9.333,
+    "ui_visual_design": 7.333
+  },
+  "per_model": [
+    {
+      "provider": "xai",
+      "model": "grok-4-1-fast-reasoning",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 8,
+        "clinical_credibility": 7,
+        "open_source_ecosystem_fit": 9,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 9,
+        "documentation_polish": 9,
+        "license_ip_clarity": 10,
+        "test_coverage_evidence": 9,
+        "ui_visual_design": 8
+      },
+      "composite_arithmetic_mean": 8.8,
+      "verdict": "TOP_TIER",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "No explicit clinical advisor review, full FHIR R4 coverage details, or 21 CFR Part 11 compliance evidence."
+        },
+        {
+          "category": "innovation_differentiation",
+          "gap": "Lacks head-to-head benchmarks against Epic Sense, Hippocratic AI, or OpenEvidence on live cohorts."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "Demo dashboard visuals inferred but no screenshots or density/hierarchy details provided in package."
+        }
+      ],
+      "strengths": [
+        "Bit-identical Q16.16 reproducibility primitive with full audit-chain pinning and replay scripts.",
+        "Comprehensive JUDGES.md with 5-minute all-gates PASS command and 1300+ pinned tests.",
+        "Apache-2.0 clarity with explicit patent grant and mind-mem ecosystem integration."
+      ],
+      "valid": true,
+      "latency_ms": 14358
+    },
+    {
+      "provider": "mistral",
+      "model": "mistral-large-latest",
+      "scores": {
+        "technical_depth": 9,
+        "innovation_differentiation": 9,
+        "clinical_credibility": 9,
+        "open_source_ecosystem_fit": 10,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 9,
+        "documentation_polish": 10,
+        "license_ip_clarity": 10,
+        "test_coverage_evidence": 10,
+        "ui_visual_design": 8
+      },
+      "composite_arithmetic_mean": 9.4,
+      "verdict": "TOP_TIER",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "technical_depth",
+          "gap": "Lacks peer-reviewed publication or preprint demonstrating novel CS contributions beyond BitNet b1.58 adaptation."
+        },
+        {
+          "category": "clinical_credibility",
+          "gap": "No explicit 21 CFR Part 11 audit trail or NPI-linked advisor attestation in submitted materials."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "Dashboard screenshots or live demo lack the information density and brand consistency expected for clinical-grade software."
+        }
+      ],
+      "strengths": [
+        "Bit-identical Q16.16 reproducibility with SHA-256 audit hashes, enabling FDA SaMD defensibility.",
+        "100% recall on contraindicated drug pairs with 0 false positives, validated against OpenEvidence-cited cohort.",
+        "Apache-2.0 license with explicit patent grant and no buried licensing, enabling immediate production deployment.",
+        "1371+ tests with CI green, including bundle integrity pins and clinical cohort validation.",
+        "JUDGES.md provides a 5-minute audit path with single-command verification of all safety gates."
+      ],
+      "valid": true,
+      "latency_ms": 8137
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "scores": {
+        "technical_depth": 8,
+        "innovation_differentiation": 9,
+        "clinical_credibility": 7,
+        "open_source_ecosystem_fit": 9,
+        "reproducibility_fda_defensibility": 10,
+        "demo_quality_judge_wow": 8,
+        "documentation_polish": 9,
+        "license_ip_clarity": 10,
+        "test_coverage_evidence": 9,
+        "ui_visual_design": 6
+      },
+      "composite_arithmetic_mean": 8.5,
+      "verdict": "STRONG_CONTENDER",
+      "blocking_gaps_for_10_10": [
+        {
+          "category": "clinical_credibility",
+          "gap": "No named clinical advisor or formal NPI-linked review; FHIR coverage is claimed but not demonstrated with a live FHIR server integration test."
+        },
+        {
+          "category": "ui_visual_design",
+          "gap": "No screenshots or design system evidence in the submission; information density and brand consistency cannot be assessed."
+        },
+        {
+          "category": "demo_quality_judge_wow",
+          "gap": "The 5-second comprehension is hindered by the massive JUDGES.md; a concise hero demo video or interactive walkthrough is missing."
+        }
+      ],
+      "strengths": [
+        "Bit-identical Q16.16 fixed-point replay with SHA-256 audit chain is a genuine FDA SaMD reproducibility primitive, unmatched by any other submission.",
+        "100% recall on contraindicated class (44/44) with zero false positives on a 10-pair negative control cohort, backed by a 1371-test suite.",
+        "Apache-2.0 with explicit patent grant and full open-source ecosystem fit (mind-mem, MIND Lang, arch-mind governance).",
+        "Six-layer safety pipeline with deterministic tables, OpenEvidence, RxNorm, LLM consensus, and BitNet veto layer shows deep clinical engineering rigor.",
+        "Comprehensive audit trail with pinned bundle hashes, versioned weight files, and cross-pin tests for every claim on the dashboard."
+      ],
+      "valid": true,
+      "latency_ms": 7927
+    },
+    {
+      "provider": "perplexity",
+      "model": "sonar-pro",
+      "error": "Max retries (5) exceeded",
+      "raw_response_head": "",
+      "valid": false,
+      "latency_ms": 43174
+    },
+    {
+      "provider": "nvidia",
+      "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+      "error": "Max retries (5) exceeded",
+      "raw_response_head": "",
+      "valid": false,
+      "latency_ms": 43135
+    }
+  ]
+}
