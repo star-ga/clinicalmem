@@ -332,8 +332,15 @@ def test_no_stale_mind_mem_dep_version_as_live_claim():
     # NOT in a historical / baseline context. We tolerate `v<live>`
     # in any context (always correct). We tolerate `v<future>` in any
     # context (forward-looking, e.g. 'v3.10 transport adapter').
+    # iter-339 ratchet: case-insensitive match closes the iter-338
+    # catch class. Pre-iter-339 the pin only matched lowercase
+    # 'mind-mem' — uppercase variants ('MIND-Mem', 'MIND-mem',
+    # 'Mind-Mem') escaped the scan, which is how 8 stale 'MIND-Mem
+    # v3.9.0' / 'MIND-Mem v3.10 target' refs survived in demo.html +
+    # arch_mind_federation_audit.md + architecture.md until iter-338.
     pat = re.compile(
         r"\bmind-mem v?(\d+)\.(\d+)\.(\d+)\b",
+        re.IGNORECASE,
     )
     extended_tokens = _HISTORICAL_TOKENS + (
         "baseline",          # 'v3.9.0 baseline' is legitimate context
