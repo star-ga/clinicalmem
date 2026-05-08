@@ -2138,7 +2138,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
           <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>10-entry negative-control cohort</strong> with 4 boundary cases (clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim). 0 / 10 false positives.</span></li>
           <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>Cross-architecture determinism stress</strong> — 1200 / 1200 bit-identical replays (12 pairs × 100 iterations). Pinned by <code class="font-mono text-xs">tests/test_scripts/test_bitnet_determinism.py</code>.</span></li>
           <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>Python ↔ JS bit-identity</strong> — the in-browser BitNet forward pass produces the same <code class="font-mono text-xs">repro_hash</code> as the server-side path (warfarin + ibuprofen verified byte-for-byte).</span></li>
-          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>NPI Luhn-validity</strong> — every Practitioner identifier in the 233-entry FHIR cohort passes the CMS Luhn check digit; zero collision with the known-real validation NPI.</span></li>
+          <li class="flex items-start gap-2"><span class="text-clinical-green mt-0.5">✓</span><span><strong>NPI Luhn-validity</strong> — every Practitioner identifier in the 239-entry FHIR cohort passes the CMS Luhn check digit; zero collision with the known-real validation NPI.</span></li>
         </ul>
       </div>
 
