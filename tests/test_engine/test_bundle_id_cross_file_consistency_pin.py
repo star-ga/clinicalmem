@@ -44,6 +44,8 @@ _HISTORICAL_BUNDLE_PREFIXES = frozenset({
     "592ee51e",   # v6 staged (40/41 + 0 FP, h=128, retrain_runpod/bitnet_weights_v6_h128.json)
     "1ff61a6a",   # v5 staged (31/38 + 0 FP, h=128, retrain_runpod/bitnet_weights_v5_h128.json)
     "eea0e637",   # v3 historical (29/31 + 1 FP, h=64, retrain_runpod/bitnet_weights_v3_full.json)
+    "5f7ed5f6",   # iter-421 Path B tier-2 specialist (engine/bitnet_weights_b_specialist.json)
+                  # — ensemble partner alongside live A bundle 1f0f8859, not a replacement
 })
 
 # Files that pin-or-cite the LIVE bundle_id (post-iter-275 = 1f0f8859).

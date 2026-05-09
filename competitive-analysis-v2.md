@@ -7,7 +7,7 @@
 > **Project gallery:** still hidden ("hackathon managers haven't published this gallery yet")
 > **Winners announced:** ~May 27, 2026
 >
-> **Status as of iter-396 (2026-05-09):** P2.1 (test push 235 → 400+) ✅ DONE — live floor 1381+ (3.5× past target), 35 cross-pin discipline families enforcing 0% known misses + 0 PHI leaks. P0/P1/P3 (DevPost form, demo video, screenshots) remain in user-driven submission queue. P4 final pre-submission lockdown begins ~May 10.
+> **Status as of iter-396 (2026-05-09):** P2.1 (test push 235 → 400+) ✅ DONE — live floor 1381+ (3.5× past target), 36 cross-pin discipline families enforcing 0% known misses + 0 PHI leaks. P0/P1/P3 (DevPost form, demo video, screenshots) remain in user-driven submission queue. P4 final pre-submission lockdown begins ~May 10.
 
 ---
 
@@ -164,7 +164,7 @@ The product is already differentiated. The 9-day plan is about **completeness, p
 
 | ID | Item | Time | Why |
 |---|---|---|---|
-| **P2.1** ✅ | **DONE — live floor 1382+ (3.5× past 400+ target as of iter-406).** Coverage achieved: MCP tool round-trip, A2A skill round-trip, every NIH RxNorm error path, every FHIR fallback, every abstention boundary, plus 35 cross-pin discipline families that mechanically enforce 0% known misses + zero PHI leaks under structured logging. | 6 hrs | "Feasibility" criterion weights tests heavily. 1382+ is a clear lead — 3.5× the original target. |
+| **P2.1** ✅ | **DONE — live floor 1382+ (3.5× past 400+ target as of iter-406).** Coverage achieved: MCP tool round-trip, A2A skill round-trip, every NIH RxNorm error path, every FHIR fallback, every abstention boundary, plus 36 cross-pin discipline families that mechanically enforce 0% known misses + zero PHI leaks under structured logging. | 6 hrs | "Feasibility" criterion weights tests heavily. 1382+ is a clear lead — 3.5× the original target. |
 | **P2.2** | Write `docs/abstention_proof.md`: a side-by-side of 12 ambiguous medication queries showing what GPT-5.5 / Gemini Pro / Claude / Grok / Sonar / Flash each returned → where consensus broke → where ClinicalMem abstained → what the right answer is | 4 hrs | Turn the abstention story into a falsifiable, replayable artefact. The single strongest "we're not bullshitting" signal. |
 | **P2.3** | Add a 5-patient demo set: Sarah Mitchell + 4 others (pediatric, oncology, mental-health, post-op) — each catches a different finding class | 4 hrs | Counters the "single demo patient" criticism. |
 | **P2.4** | `docs/regulatory_readiness.md`: HIPAA path (PHI guard + at-rest encryption pathway), DO-178C-style audit (hash chain), FDA-IDE pre-submission outline | 2 hrs | Healthcare AI judges are deeply attuned to "could this actually ship?" |
