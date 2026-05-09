@@ -169,7 +169,7 @@ clinical decision on any device, decades later.
 | Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
 | Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ Pending future mind-mem release — the v3.10.x..v3.11.x line through v3.11.1 (released 2026-05-08) shipped no new federation-transport module (v3.10.x = hook-installer + CLI + docs; v3.11.x = quality-gate + typed-lineage + recall-explainability); its `http_transport.py` remains a **single-workspace REST adapter** (status / query / memories / consolidate / clear endpoints for non-MCP clients like Slack bots, Streamlit dashboards), NOT a peer-to-peer federation transport; a dedicated MIC@2 transport adapter targets a future release | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
 | MCP server (18 tools) | ✅ Live | `mcp_server*.py` deployed on Azure Container Apps |
-| A2A agent (13 skills) | ✅ Live | `a2a_agent/` deployed on Azure Container Apps |
+| A2A agent (5 skills · 13 tools) | ✅ Live | `a2a_agent/` deployed on Azure Container Apps — 5 skills advertised in the agent card (medication-safety-review · clinical-context-recall · contradiction-assessment · care-transition-summary · explain-conflict) wrapping 13 ADK tool functions across `a2a_agent/tools/{memory,fhir,safety}_tools.py` |
 
 The control plane (peer registry, 7 sync scopes, per-scope conflict
 resolution, sync audit log, governance pub/sub fan-out) is now LIVE

@@ -50,7 +50,7 @@ reading. The rest of this file is the long-form drill-down.
 10. **Pipeline (`#pipeline`)** — 6-layer pipeline cards (Layer 1 Deterministic Table · Layer 2 OpenEvidence API · Layer 3 RxNorm API · Layer 4 Multi-LLM Consensus · Layer 4.5 BitNet anchor · Layer 5 LLM Synthesis · Layer 6 Abstention Gate).
 11. **Terminology (`#terminology`)** — RxNorm + SNOMED CT + UMLS Metathesaurus integration cards.
 12. **Audit (`#audit`)** — Reproducibility Manifest card (`docs/reproducibility_manifest.json`) with 7 SHA-256 artifact hashes + dateCreated.
-13. **Tools (`#tools`)** — MCP server (18 tools) + A2A agent (13 skills) deployment status.
+13. **Tools (`#tools`)** — MCP server (18 tools) + A2A agent (5 skills · 13 tools) deployment status.
 14. **Architecture (`#architecture`)** — control-plane + mock-vs-live transport breakdown + federation_transport.py wire-bytes card.
 
 Brand palette: Prompt Opinion orange (`#FF6B35`) accent + Trust teal (`#0F766E`) primary + Mint canvas. Lexend display + Source Sans 3 body + Baloo 2 brand-accent (FDA-grade clinical aesthetic, not early-iteration).
@@ -248,7 +248,7 @@ artifact. Audit map:
 
 ## One-line architecture
 
-`EHR (FHIR R4)` → `engine.fhir_adapter` → `Layer 1 table` → `Layer 2 OpenEvidence` → `Layer 3 RxNorm DDI` → `Layer 4 6-LLM US-based consensus` → **`Layer 4.5 BitNet b1.58 (Q16.16, bit-identical)`** → `Layer 5 LLM synthesis` → `Layer 6 abstention gate` → `mind-mem store + 21 CFR Part 11 audit chain` → `MCP (18 tools) + A2A (13 skills)`.
+`EHR (FHIR R4)` → `engine.fhir_adapter` → `Layer 1 table` → `Layer 2 OpenEvidence` → `Layer 3 RxNorm DDI` → `Layer 4 6-LLM US-based consensus` → **`Layer 4.5 BitNet b1.58 (Q16.16, bit-identical)`** → `Layer 5 LLM synthesis` → `Layer 6 abstention gate` → `mind-mem store + 21 CFR Part 11 audit chain` → `MCP (18 tools) + A2A (5 skills · 13 tools)`.
 
 For deeper architecture see `docs/architecture.md`. For the federation
 control-plane integration see `docs/architecture.md § Mock vs. live transport`
