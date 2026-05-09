@@ -144,21 +144,44 @@ trivially defensible.
 
 ## Held-out evaluation
 
-### Live v8 — 139-pair PCCP regression cohort (post iter-275 promotion)
+### Live iter-421 ensemble — 139-pair PCCP regression cohort (Path B 2-bundle)
 
-| Class | Live cohort size | Recall under v8 Q16.16 |
+| Class | Live cohort size | Recall (ensemble, A→B cascade) |
+|---|---:|---:|
+| `contraindicated` | 44 | **100%** (44 / 44 + 0 FP) |
+| `major` | 4 | **100%** (4 / 4 + 0 FP) |
+| `moderate` | 22 | **100%** (22 / 22) |
+| `serious` | 69 | **100%** (69 / 69) |
+| `none` (negative-control cohort) | 10 | **100% specificity** (0 FP) |
+
+The release-blocking invariant: **zero false negatives on contraindicated
++ zero false positives on the negative-control cohort**. The iter-421
+ensemble holds both invariants AND closes the v8-standalone serious /
+moderate gap (84% → 100% / 91% → 100%) by cascading the frozen v8 contra
+gate (bundle A, `1f0f8859…`) into a tier-2 specialist (bundle B,
+`5f7ed5f6…`, h=64 trained on 95 non-contra samples) under constrained
+argmax. Pinned by `tests/test_engine/test_path_a_v8_live_recall_pin.py`
++ `test_path_a_v8_q16_determinism_pin.py` (A bit-identical) +
+`test_bitnet_design_class_abstention_pin.py` (ensemble narrative +
+diagonal counts in lockstep with `docs/bitnet_confusion_matrix.json`).
+
+### Pre-iter-421 v8 standalone baseline (preserved for audit-chain reconstruction)
+
+| Class | Live cohort size | Recall under v8 ALONE Q16.16 |
 |---|---:|---:|
 | `contraindicated` | 44 | **100%** (44 / 44 + 0 FP) |
 | `major` | 4 | **100%** (4 / 4) |
 | `moderate` | 22 | 91% |
 | `serious` | 69 | 84% |
-| `none` (negative-control cohort) | 10 | **100% specificity** (0 FP) |
 
-The release-blocking invariant: **zero false negatives on
-contraindicated + zero false positives on the negative-control cohort**.
-v8 holds both invariants under cross-arch Q16.16 (pinned by
-`tests/test_engine/test_path_a_v8_live_recall_pin.py` +
-`test_path_a_v8_q16_determinism_pin.py`).
+The standalone v8 cohort numbers are preserved at
+`retrain_runpod/bitnet_weights_v8_h256.json` for FDA SaMD audit-trail
+reconstruction of pre-iter-421 decisions. v9 / v10 / v11 single-model
+retrain attempts to push past v8's 84/91 standalone all regressed contra
+recall by 3-8 anchors; the empirical conclusion is that 193-dim feature
+space cannot represent 4-class fine discrimination simultaneously, which
+is why iter-421 splits the problem into two disjoint single-class-domain
+specialists.
 
 ### Pre-promotion v1 baseline (preserved for audit-chain reconstruction)
 

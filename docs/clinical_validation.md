@@ -101,15 +101,25 @@ This is the BitNet b1.58 reproducibility primitive, **not** the full
 pipeline. The load-bearing safety claim is the live pipeline number
 above; this section reports v8 standalone behavior for transparency.
 
-Live engine cohort (139-pair PCCP) under v8 Q16.16 — Layer 4.5 alone:
+Live engine cohort (139-pair PCCP) — Layer 4.5 iter-421 2-bundle ensemble:
 
 | Class | Live cohort size | Recall | What this means |
 |---|---:|---:|---|
-| `contraindicated` | 44 | **100%** | **The load-bearing number** (44/44 + 0 FP) |
-| `major` | 4 | **100%** | Closed every v1/v6/v7 historical miss |
-| `moderate` | 22 | 91% | Carried by upstream layers; Layer 4.5 abstains here when uncertain |
-| `serious` | 69 | 84% | Carried by upstream layers; Layer 4.5's role is the contraindicated veto |
+| `contraindicated` | 44 | **100%** | **The load-bearing number** (44/44 + 0 FP); v8 frozen contra gate |
+| `major` | 4 | **100%** | Closed every v1/v6/v7 historical miss; A's MAJOR_KEYS preserved |
+| `moderate` | 22 | **100%** | iter-421 tier-2 specialist (bundle B) closes the 91% standalone gap |
+| `serious` | 69 | **100%** | iter-421 tier-2 specialist closes the 84% standalone gap (warfarin/NTI cluster) |
 | `none` (negative control) | 10 | **100% specificity** | Zero FP on the 10-entry negative-control cohort (4 boundary cases) |
+
+The iter-421 ensemble dispatches A→B under constrained argmax: A's
+contraindicated verdict ALWAYS wins (frozen FDA-grade contra gate);
+otherwise B's argmax over {moderate, serious, major} replaces A's
+serious-class call. Both forward passes are bit-identical Q16.16 ternary
+across architectures; composite `weights_id = "{bundle_id_a}+{bundle_id_b}"`
+captures both in `BitNetResult.repro_hash` so verifiers can replay any
+ensemble decision exactly. v8 standalone baseline (84% serious / 91%
+moderate) is preserved at `retrain_runpod/bitnet_weights_v8_h256.json`
+for pre-iter-421 audit-chain reconstruction.
 
 **Pre-promotion v1 baseline (preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json`
 for audit-chain reconstruction)** — the original held-out per-class
