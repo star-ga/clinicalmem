@@ -67,6 +67,11 @@ _USER_DOCS = (
     _REPO_ROOT / "docs" / "fda_q_sub_draft.md",
     _REPO_ROOT / "docs" / "arch_mind_federation_audit.md",
     _REPO_ROOT / "docs" / "bitnet_training.md",
+    # iter-408 scope extension (T5 round-24 cycle-4): clinicalmem_
+    # invariants.md cites 3 test paths but was not in iter-404's
+    # 11-doc scope. Same iter-371 / iter-404 scope-extension
+    # pattern at the user-doc-test-path-existence-pin layer.
+    _REPO_ROOT / "docs" / "clinicalmem_invariants.md",
 )
 
 # Pin-file paths look like `tests/test_<dir>/test_<name>.py`.
