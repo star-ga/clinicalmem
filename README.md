@@ -198,7 +198,7 @@ Full BitNet training recipe + corpus build script + reproducibility hashes: [`do
 | **Hallucination guard** | Evidence grounding validation for LLM output | None |
 | **Audit trail** | SHA-256 Merkle hash chain (HIPAA-aligned, designed for § 164.312(b) audit-control compliance) | None |
 | **When uncertain** | Safe abstention &mdash; refuses to guess | Hallucinates |
-| **Protocol support** | Both MCP (18 tools) AND A2A (13 tools) | One or neither |
+| **Protocol support** | Both MCP (18 tools) AND A2A (5 skills · 13 tools) | One or neither |
 | **Test coverage** | 1381+ tests across engine + scripts; line coverage measured per-suite via `pytest --cov` (not enforced as headline) | Untested |
 | **Deployment** | Azure Container Apps (live, zero cold-start) | Localhost only |
 

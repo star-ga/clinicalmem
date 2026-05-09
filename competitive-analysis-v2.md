@@ -23,7 +23,7 @@ ClinicalMem is **structurally well-positioned to win** but the competitive surfa
 - PHI Detection Guard + Hallucination Detection
 - 1381+ tests (engine + scripts; live floor as of iter-390)
 - Live demo: `clinicalmem-demo.pages.dev`
-- Both MCP server (18 tools) AND A2A agent (13 tools) — covers both hackathon tracks
+- Both MCP server (18 tools) AND A2A agent (5 skills · 13 tools) — covers both hackathon tracks
 
 **The 9-day plan below** focuses on three load-bearing wins: (a) submission-completeness sweep, (b) demo polish to neutralise Gracestack's visual-UI advantage, (c) edge-case testing pass to push tests over 400 and harden the abstention story.
 

@@ -99,7 +99,7 @@ ClinicalMem integrates three NIH terminology services for standardized clinical 
 - **Safe abstention** — When evidence is insufficient, ClinicalMem says "I don't know" instead of hallucinating. In healthcare, this saves lives.
 - **Tamper-proof audit trail** — SHA-256 Merkle chain provides cryptographic proof that clinical decision logs haven't been altered.
 - **1381 tests passing** — Comprehensive coverage across clinical scoring, FHIR integration, drug normalization, allergy cross-reactivity, UMLS crosswalk, LLM synthesis with abstention gating, consensus engine, what-if simulation, FDA integration, clinical trials, PHI detection, and hallucination detection.
-- **Dual protocol support** — Both MCP (18 tools) and A2A (13 tools) for maximum interoperability.
+- **Dual protocol support** — Both MCP (18 tools) and A2A (5 skills · 13 tools) for maximum interoperability.
 - **Live on Azure** — MCP server and A2A agent deployed on Azure Container Apps with zero cold-start.
 
 ## What we learned
