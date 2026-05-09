@@ -42,7 +42,7 @@ docker compose up --build
 
 ## Test Coverage
 
-All changes must maintain 1411/1411 tests passing (live floor as of iter-442). Run the full suite before submitting:
+All changes must maintain 1418/1418 tests passing (live floor as of iter-442). Run the full suite before submitting:
 
 ```bash
 python -m pytest tests/ -v --tb=short

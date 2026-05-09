@@ -519,6 +519,21 @@ def ingest_bundle(
         rt = resource.get("resourceType") or ""
 
         if not rt:
+            # iter-443 T4 ratchet: closes the entry-without-resourceType
+            # silent dispatch path. Operators auditing FHIR-bundle quality
+            # need a per-entry signal — the iter-191 aggregate
+            # `fhir_bundle_rejection_summary` shows counts by resource_type
+            # but groups all "(unknown)" together, masking serial bundle-
+            # builder bugs that emit many empty-resourceType entries.
+            # PHI-safe: structural metadata only — no resource body, no
+            # identifier values, no narrative text.
+            logger.debug(
+                "fhir_bundle_entry_no_resource_type",
+                extra={
+                    "entry_keys_present": sorted((entry or {}).keys()),
+                    "resource_keys_present": sorted((resource or {}).keys()),
+                },
+            )
             rejected.append(("(unknown)", "entry.resource has no resourceType"))
             continue
 
@@ -576,6 +591,29 @@ def ingest_bundle(
             elif rt == "Practitioner":
                 npis = _extract_practitioner_npis(resource, rejected)
                 practitioner_npis.extend(npis)
+                # iter-443 T4 ratchet: closes the Practitioner-zero-NPI
+                # silent dispatch path. _extract_practitioner_npis logs
+                # per-NPI Luhn failures (L370) but a Practitioner whose
+                # ALL identifiers are non-NPI systems (e.g. only internal
+                # synthetic ids) yields an empty NPI list silently. The
+                # Care-team-attestation flow (iter-401) hard-depends on
+                # ≥1 valid NPI per Practitioner; operators need a debug-
+                # level signal so a future EHR ingest with stripped
+                # NPI identifiers fires visibly. PHI-safe: NPIs are
+                # public CMS-registry data; only resource id (FHIR
+                # identifier, synthetic in our cohort) + identifier-
+                # system count surfaces.
+                if not npis:
+                    logger.debug(
+                        "fhir_practitioner_zero_valid_npis",
+                        extra={
+                            "resource_id": resource.get("id", "?"),
+                            "identifier_count": len(
+                                resource.get("identifier") or []
+                            ),
+                            "patient_id_hash_prefix": _hash_patient_id(patient_id),
+                        },
+                    )
 
         except Exception as exc:  # noqa: BLE001 — surface per-resource errors as rejections
             # PHI-safe error log: exception TYPE only, never the message

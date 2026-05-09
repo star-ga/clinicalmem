@@ -691,6 +691,13 @@ _HISTORICAL_COUNTS = (
     "1391", "1392", "1393", "1394", "1395", "1396", "1397", "1398", "1399",
     "1400", "1401", "1402", "1403", "1404", "1405", "1406", "1407", "1408",
     "1409", "1410",
+    # iter-443 T4 round-30 ratchet point: 39th cross-pin family added
+    # (test_fhir_adapter_silent_path_observability_pin.py — closes
+    # 2 silent dispatch paths in fhir_adapter.ingest_bundle: entry-
+    # without-resourceType + Practitioner-zero-valid-NPIs; +7 tests,
+    # 1411 -> 1418). Same iter-368 / iter-375 / iter-390 / iter-442
+    # ratchet-when-headroom-exists pattern at the test-count layer.
+    "1411", "1412", "1413", "1414", "1415", "1416", "1417",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -704,7 +711,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1411
+_TEST_COUNT_FLOOR = 1418
 
 
 def test_no_stale_test_counts_in_docs():
