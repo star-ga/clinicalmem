@@ -342,7 +342,7 @@ clinicalmem/
 │       └── __init__.py
 ├── a2a_agent/                  # A2A Agent (Google ADK)
 │   ├── __init__.py
-│   ├── agent.py                # ADK agent with 13 tools
+│   ├── agent.py                # ADK agent — 5 skills wrapping 13 tools
 │   ├── app.py                  # Starlette + A2A middleware
 │   └── tools/
 │       ├── __init__.py

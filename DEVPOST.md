@@ -46,7 +46,7 @@ ClinicalMem is built on two open-source STARGA technologies:
 
 - **Shared Engine** (`engine/`) — 14 modules: FHIR R4 client, clinical memory, scoring kernels, LLM synthesizer, RxNorm client, SNOMED CT client, UMLS Metathesaurus mapper, consensus engine (6 US-based LLMs), FDA client, clinical trials client, what-if simulator, PHI detector, hallucination detector, **BitNet b1.58 ternary classifier (Q16.16 fixed-point, bit-identical across architectures)**
 - **MCP Server** (`mcp_server/`) — FastMCP 2.x with Streamable HTTP transport, 18 SHARP-on-MCP tools
-- **A2A Agent** (`a2a_agent/`) — Google ADK agent with 13 clinical tools, AgentCard, API key middleware
+- **A2A Agent** (`a2a_agent/`) — Google ADK agent (5 skills wrapping 13 clinical tools), AgentCard, API key middleware
 
 ### The GenAI Pattern: Deterministic Detection + LLM Consensus + Safe Synthesis
 
