@@ -42,6 +42,18 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 # Files where pin-test paths are commonly cited. Keep the list explicit
 # rather than crawling every .md / .html so a stray temporary file doesn't
 # trigger spurious failures.
+#
+# iter-404 scope extension (T1 round-24 cycle-4): add 5 more docs that
+# cite test paths but were not in the iter-228 pin's original scope.
+# Audit at iter-404 found 13 test-path citations across these 5 docs:
+#   - docs/architecture.md (2 paths)
+#   - docs/clinical_validation.md (1 path)
+#   - docs/fda_q_sub_draft.md (6 paths)
+#   - docs/arch_mind_federation_audit.md (1 path)
+#   - docs/bitnet_training.md (3 paths)
+# All would silently lie if the referenced test files were renamed/deleted
+# without the citing doc being updated. Mirror of iter-371 scope-extension
+# pattern at the user-doc-test-path-existence-pin layer.
 _USER_DOCS = (
     _REPO_ROOT / "JUDGES.md",
     _REPO_ROOT / "README.md",
@@ -49,6 +61,12 @@ _USER_DOCS = (
     _REPO_ROOT / "docs" / "demo.html",
     _REPO_ROOT / "docs" / "why_bitnet_b158.md",
     _REPO_ROOT / "docs" / "why_mind_mem_v3.md",
+    # iter-404 scope extensions
+    _REPO_ROOT / "docs" / "architecture.md",
+    _REPO_ROOT / "docs" / "clinical_validation.md",
+    _REPO_ROOT / "docs" / "fda_q_sub_draft.md",
+    _REPO_ROOT / "docs" / "arch_mind_federation_audit.md",
+    _REPO_ROOT / "docs" / "bitnet_training.md",
 )
 
 # Pin-file paths look like `tests/test_<dir>/test_<name>.py`.
