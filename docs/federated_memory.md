@@ -207,10 +207,11 @@ runnable and meaningful after the real transport ships.
 - `mind-mem` MIC@2 / MAP / binary multi-machine transport —
   **scheduled for v4.0 "Platform Scale"** per upstream ROADMAP.md
   (federated recall + gRPC transport are explicitly v4.0 work,
-  out of scope for v3.12). The v3.10.x..v3.11.x line through
-  v3.11.1 ships hook-installer + CLI + docs (v3.10.x) and quality-
-  gate + typed-lineage + recall-explainability (v3.11.x) — none
-  transport-related.
+  out of scope for v3.12). The v3.10.x..v3.12.x line through
+  v3.12.0 ships hook-installer + CLI + docs (v3.10.x), quality-
+  gate + typed-lineage + recall-explainability (v3.11.x), and
+  strict-quality-gate + lineage-staleness + red-team CI (v3.12.x)
+  — none transport-related.
 - ClinicalMem federation client wiring — pending mind-mem v4.0
   "Platform Scale" release; the contract above pins the API
   surface, ready to drop in when the upstream transport adapter

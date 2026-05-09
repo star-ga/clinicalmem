@@ -183,10 +183,11 @@ Honest gaps for the May 11 hackathon submission:
   await a dedicated MIC@2 federation-transport adapter targeting
   a future mind-mem release — v4.0 "Platform Scale" per upstream
   ROADMAP.md, where federated recall + gRPC transport are scheduled).
-  mind-mem v3.11.1 is shipped and
-  pinned (released 2026-05-08; the v3.10.x..v3.11.x line through
-  v3.11.1 covers hook-installer + CLI + docs (v3.10.x) and
-  quality-gate + typed-lineage + recall-explainability (v3.11.x))
+  mind-mem v3.12.0 is shipped and
+  pinned (released 2026-05-09; the v3.10.x..v3.12.x line through
+  v3.12.0 covers hook-installer + CLI + docs (v3.10.x), quality-
+  gate + typed-lineage + recall-explainability (v3.11.x), and
+  strict-quality-gate + lineage-staleness + red-team CI (v3.12.x))
   but ships no new federation-transport module either — its
   `http_transport.py` remains a single-workspace REST adapter
   for non-MCP clients, not p2p federation. The live transport (MIC@2/MAP/binary over a true
