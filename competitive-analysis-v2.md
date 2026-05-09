@@ -1,11 +1,13 @@
 # ClinicalMem — Competitive Analysis v2 + Winning Plan
 
 > **Agents Assemble Healthcare AI Hackathon** | $25K Prize Pool ($7,500 first place)
-> **Deadline:** May 11, 2026 @ 11:00pm EDT — **9 days remaining**
-> **Today:** May 2, 2026
-> **Participants:** 3,762 (up 9× from 411 in March)
+> **Deadline:** May 11, 2026 @ 11:00pm EDT
+> **Snapshot date:** May 2, 2026 (this document)  ·  **Updated:** May 9, 2026 (T-2 days to deadline)
+> **Participants (May 2 snapshot):** 3,762 (up 9× from 411 in March)
 > **Project gallery:** still hidden ("hackathon managers haven't published this gallery yet")
 > **Winners announced:** ~May 27, 2026
+>
+> **Status as of iter-396 (2026-05-09):** P2.1 (test push 235 → 400+) ✅ DONE — live floor 1381+ (3.5× past target), 35 cross-pin discipline families enforcing 0% known misses + 0 PHI leaks. P0/P1/P3 (DevPost form, demo video, screenshots) remain in user-driven submission queue. P4 final pre-submission lockdown begins ~May 10.
 
 ---
 
