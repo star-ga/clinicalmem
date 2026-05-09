@@ -340,21 +340,30 @@ Corpus is deterministically reproducible from the builder script at seed
 
 | Safety metric | Value |
 |---|---|
-| Recall on contraindicated (live engine cohort under v8 Q16.16) | 44/44 — **100%** |
-| Recall on major (live engine cohort under v8 Q16.16) | 4/4 — **100%** |
-| False positives on contraindicated (Layer 4.5 alone) | **0** (release-blocking invariant) |
+| Recall on contraindicated (live engine cohort under iter-421 Q16.16 ensemble) | 44/44 — **100%** |
+| Recall on major (live engine cohort under iter-421 Q16.16 ensemble) | 4/4 — **100%** |
+| Recall on serious (live engine cohort under iter-421 Q16.16 ensemble) | 69/69 — **100%** |
+| Recall on moderate (live engine cohort under iter-421 Q16.16 ensemble) | 22/22 — **100%** |
+| False positives on contraindicated (Layer 4.5 ensemble) | **0** (release-blocking invariant) |
+| False positives on major (Layer 4.5 ensemble) | **0** |
 | False-negative on contraindicated (full pipeline) | **0** (release-blocking invariant) |
-| Contraindicated → none in held-out test (Layer 4.5 alone, n=42) | **0** |
+| Contraindicated → none in held-out test (frozen v8 bundle A standalone, n=42) | **0** |
 | Contraindicated → minor in held-out test | **0** |
-| Macro test accuracy (Layer 4.5 alone) | 68.6% (n=647) |
+| Macro test accuracy (frozen v8 bundle A standalone) | 68.6% (n=647) |
 
-The submitter acknowledges that 68.6% macro accuracy is modest. The load-bearing
-clinical safety claim is the zero-false-negative-on-contraindicated invariant
-enforced jointly by the deterministic table (Layer 1), the multi-LLM consensus
-(Layers 3-4), and the Layer 4.5 disagreement alert. Four independent pipeline
-layers must fail simultaneously for a contraindicated pair to reach a clinician
-as `none`. The Layer 4.5 macro accuracy is not the primary safety mechanism;
-it is the audit anchor.
+The submitter acknowledges that 68.6% macro accuracy is the standalone v8
+bundle A measurement, not the production iter-421 ensemble metric. Under the
+iter-421 Path B 2-bundle ensemble (frozen v8 A + tier-2 specialist B under
+constrained argmax) the live deployment cohort is at 100% recall on every
+severity class with zero false positives on the safety-critical contraindicated
+class. The load-bearing clinical safety claim is the zero-false-negative-on-
+contraindicated invariant enforced jointly by the deterministic table (Layer 1),
+the multi-LLM consensus (Layers 3-4), and the Layer 4.5 ensemble. Four
+independent pipeline layers must fail simultaneously for a contraindicated
+pair to reach a clinician as `none`. The frozen-bundle-A 68.6% macro accuracy
+is preserved as the pre-ensemble audit-chain anchor for any pre-iter-421
+decision replay; the iter-421 ensemble result is the primary safety mechanism
+on the live cohort.
 
 ### 5.4 Regression Suite
 
