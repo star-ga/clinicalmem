@@ -673,6 +673,14 @@ _HISTORICAL_COUNTS = (
     "1378",
     "1379",
     "1380",
+    # iter-406 T3 round-24 cycle-4 ratchet point: iter-398 added 1
+    # test via velocity-pin scope/pattern extension (1381 -> 1382).
+    # Floor advance from 1381 -> 1382 absorbs the iter-398 single-
+    # test growth in lockstep with all 1381-equality user-facing
+    # surfaces (CONTRIBUTING + DEVPOST + JUDGES + README + demo.html
+    # + HACKATHON_PLAN_V2). Same iter-368 / iter-375 / iter-390
+    # ratchet-when-headroom-exists pattern at the test-count layer.
+    "1381",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -686,7 +694,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1381
+_TEST_COUNT_FLOOR = 1382
 
 
 def test_no_stale_test_counts_in_docs():
