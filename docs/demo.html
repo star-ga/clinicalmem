@@ -2904,12 +2904,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await window.ClinicalMemBitNet.classify(a, b, weights, BITNET_WEIGHTS_B);
       const elapsedMs = (performance.now() - t0).toFixed(1);
       const sevColor = {none:'text-slate-500', minor:'text-yellow-600', moderate:'text-amber-600', major:'text-orange-600', contraindicated:'text-red-600'}[r.severity_name] || 'text-slate-500';
+      // iter-426 UX: visualize the iter-421 cascade dispatch decision
+      // live. weights_id length tells us which path fired:
+      //   64 chars  = A-only (contra path; A's verdict ALWAYS wins)
+      //   129 chars = composite "{a_id}+{b_id}" (cascade fired; B took over)
+      const isEnsembleCascade = r.weights_id.length > 64 && r.weights_id.includes('+');
+      let cascadeBlock;
+      if (isEnsembleCascade) {
+        const [aId, bId] = r.weights_id.split('+');
+        cascadeBlock = `
+          <div class="rounded-md bg-blue-50 border border-blue-200 px-2.5 py-1.5 mt-1 text-[11px]">
+            <div class="font-semibold text-clinical-blue mb-0.5">▸ A → B cascade fired (iter-421 ensemble)</div>
+            <div class="text-slate-600 leading-relaxed">A (frozen v8 contra/major gate, <code class="font-mono text-[10px]">${escapeHtml(aId.slice(0,8))}…</code>) ran first; non-contra → B (tier-2 specialist, <code class="font-mono text-[10px]">${escapeHtml(bId.slice(0,8))}…</code>) replaced A's class via constrained argmax over {moderate, serious, major}.</div>
+          </div>`;
+      } else {
+        cascadeBlock = `
+          <div class="rounded-md bg-red-50 border border-red-200 px-2.5 py-1.5 mt-1 text-[11px]">
+            <div class="font-semibold text-clinical-red mb-0.5">▸ A-only path (contra-veto wins)</div>
+            <div class="text-slate-600 leading-relaxed">A (frozen v8, <code class="font-mono text-[10px]">${escapeHtml(r.weights_id.slice(0,8))}…</code>) predicted <strong>contraindicated</strong>; under iter-421 ensemble A's contra verdict ALWAYS wins (FDA-grade contra gate, B is bypassed).</div>
+          </div>`;
+      }
       out.innerHTML = `
         <div class="space-y-1.5">
           <div><span class="text-slate-400">severity:</span> <span class="font-bold ${sevColor} text-base">${escapeHtml(r.severity_name)}</span></div>
           <div><span class="text-slate-400">repro_hash:</span> <span class="text-slate-700 break-all">${escapeHtml(r.repro_hash)}</span></div>
-          <div><span class="text-slate-400">weights_id:</span> <span class="text-slate-700 break-all">${escapeHtml(r.weights_id.slice(0,32))}…</span></div>
+          <div><span class="text-slate-400">weights_id:</span> <span class="text-slate-700 break-all">${escapeHtml(r.weights_id.slice(0,40))}${r.weights_id.length>40?'…':''}</span></div>
           <div><span class="text-slate-400">logits_q16:</span> <span class="text-slate-700 break-all">[${r.logits_q16.join(', ')}]</span></div>
+          ${cascadeBlock}
           <div class="text-[11px] text-clinical-green mt-2">✓ Live Q16.16 forward pass — ${elapsedMs} ms in your browser. Same SHA-256 repro_hash the server-side audit chain recorded.</div>
         </div>`;
     } catch (e) {
