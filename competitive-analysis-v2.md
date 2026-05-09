@@ -23,7 +23,7 @@ ClinicalMem is **structurally well-positioned to win** but the competitive surfa
 - UMLS Metathesaurus crosswalk (ICD-10 ↔ SNOMED ↔ LOINC ↔ RxNorm)
 - What-If medication simulation, FDA Safety Alert integration, ClinicalTrials.gov matching
 - PHI Detection Guard + Hallucination Detection
-- 1418+ tests (engine + scripts; live floor as of iter-442) — 38 cross-pin discipline families mechanically enforcing 0% known misses + 0 PHI leaks
+- 1425+ tests (engine + scripts; live floor as of iter-442) — 38 cross-pin discipline families mechanically enforcing 0% known misses + 0 PHI leaks
 - **Bit-identical Q16.16 cross-architecture replay** under the iter-421 ensemble: composite `weights_id = "{bundle_id_a}+{bundle_id_b}"` audit primitive reproduces every cascade decision byte-for-byte on x86_64 / ARM64 / RISC-V / Pi Zero / A100 / browser
 - Live demo: `clinicalmem-demo.pages.dev`
 - Both MCP server (18 tools) AND A2A agent (5 skills · 13 tools) — covers both hackathon tracks
@@ -126,7 +126,7 @@ Strong A2A v1 compliance (nested `supportedInterfaces`, typed `securitySchemes`)
 |---|---|---|---|---|---|
 | **The AI Factor** (multi-LLM, novelty, sophistication) | High | **6-LLM US-based consensus + 4-tier interaction pipeline + Q16.16 abstention kernels** | Ebbinghaus + HDC (academic novelty) | Single-LLM PA letter generation | Single-LLM FHIR Q&A |
 | **Potential Impact** (does it save patient lives?) | High | **Catches NSAID+warfarin, β-lactam cross-reactivity, declining GFR + metformin, BP-target conflicts — every demo example has a documented "would have prevented harm" case** | Hardcoded interaction lookup; no allergy logic; no cross-provider contradictions | Faster prior auth approval; no patient-safety story | FHIR query convenience; no patient-safety story |
-| **Feasibility** (regulatory, deployable, real) | High | **Live cloud deployment, SHA-256 hash-chain audit, abstention gate, 1418+ tests, Apache-2.0 with explicit patent grant, MCP+A2A both, PHI guard, hallucination detection** | Docker Compose only; localhost; no audit; no abstention; no tests | 21 commits; no audit; no compliance docs | Clean architecture but shallow features |
+| **Feasibility** (regulatory, deployable, real) | High | **Live cloud deployment, SHA-256 hash-chain audit, abstention gate, 1425+ tests, Apache-2.0 with explicit patent grant, MCP+A2A both, PHI guard, hallucination detection** | Docker Compose only; localhost; no audit; no abstention; no tests | 21 commits; no audit; no compliance docs | Clean architecture but shallow features |
 | **Demo polish** (judge experience) | High | **Live demo dashboard + YouTube + Cloudflare Pages + Prompt Opinion native flow** | Static React; no live URL | Likely none deployed | Cloud Run scripts but no live URL cited |
 
 **Estimated rank against today's known field: 1st.**
@@ -212,7 +212,7 @@ The product is already differentiated. The 9-day plan is about **completeness, p
 
 - *"The AI Factor"* — 6-LLM consensus + 4-tier deterministic-then-LLM pipeline + iter-421 Path B 2-bundle BitNet ensemble at Layer 4.5 (frozen v8 contra-gate cascading into a tier-2 specialist under constrained argmax — multi-LLM consensus 4-of-5 architectural recipe) + abstention kernels. The iter-421 ensemble achieves **100% recall on every severity class with bit-identical Q16.16 cross-architecture replay** — no other hackathon entry combines safety-class full recall with composite-bundle-id audit primitives, and no other entry runs **three failed single-model retrain attempts** (v9 / v10 / v11) as documented audit-trail evidence justifying the architectural choice.
 - *"Potential Impact"* — the demo scenario (Sarah Mitchell, NSAID + warfarin) is a documented patient-safety failure that kills people. No other entry tells a "would have saved a life" story. With iter-421 every severity class hits 100% recall on the live cohort, so "would have caught" extends from contra/major to serious/moderate too — every clinically-relevant DDI severity tier is covered at 100%.
-- *"Feasibility"* — live deployment, audit trail, abstention, 1418+ tests, 38 cross-pin discipline families, Apache-2.0 with patent grant, MCP + A2A both, iter-426 audit-replay verifier covers the iter-421 cascade end-to-end (all 47 anchors reproduce byte-for-byte under both bundle hashes). Every other entry has at least one missing pillar.
+- *"Feasibility"* — live deployment, audit trail, abstention, 1425+ tests, 38 cross-pin discipline families, Apache-2.0 with patent grant, MCP + A2A both, iter-426 audit-replay verifier covers the iter-421 cascade end-to-end (all 47 anchors reproduce byte-for-byte under both bundle hashes). Every other entry has at least one missing pillar.
 
 **The 9-day plan turns the existing structural lead into a presentation lead** — same product, sharper signal.
 

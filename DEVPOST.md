@@ -70,7 +70,7 @@ ClinicalMem integrates three NIH terminology services for standardized clinical 
 
 ### Testing
 
-1418 tests covering clinical scoring kernels, FHIR client integration, engine ingestion/recall/safety checks, hash-chain audit trail integrity, LLM synthesis with abstention gating, RxNorm drug normalization, SNOMED CT cross-reactivity detection, UMLS crosswalk mapping, consensus engine verification, what-if simulation, FDA client, clinical trials matching, PHI detection, and hallucination detection.
+1425 tests covering clinical scoring kernels, FHIR client integration, engine ingestion/recall/safety checks, hash-chain audit trail integrity, LLM synthesis with abstention gating, RxNorm drug normalization, SNOMED CT cross-reactivity detection, UMLS crosswalk mapping, consensus engine verification, what-if simulation, FDA client, clinical trials matching, PHI detection, and hallucination detection.
 
 ## Challenges we ran into
 
@@ -98,7 +98,7 @@ ClinicalMem integrates three NIH terminology services for standardized clinical 
 - **Full UMLS terminology integration** — RxNorm, SNOMED CT, and UMLS Metathesaurus for standardized clinical vocabulary across 13 engine modules.
 - **Safe abstention** — When evidence is insufficient, ClinicalMem says "I don't know" instead of hallucinating. In healthcare, this saves lives.
 - **Tamper-proof audit trail** — SHA-256 Merkle chain provides cryptographic proof that clinical decision logs haven't been altered.
-- **1418 tests passing** — Comprehensive coverage across clinical scoring, FHIR integration, drug normalization, allergy cross-reactivity, UMLS crosswalk, LLM synthesis with abstention gating, consensus engine, what-if simulation, FDA integration, clinical trials, PHI detection, and hallucination detection.
+- **1425 tests passing** — Comprehensive coverage across clinical scoring, FHIR integration, drug normalization, allergy cross-reactivity, UMLS crosswalk, LLM synthesis with abstention gating, consensus engine, what-if simulation, FDA integration, clinical trials, PHI detection, and hallucination detection.
 - **Dual protocol support** — Both MCP (18 tools) and A2A (5 skills · 13 tools) for maximum interoperability.
 - **Live on Azure** — MCP server and A2A agent deployed on Azure Container Apps with zero cold-start.
 

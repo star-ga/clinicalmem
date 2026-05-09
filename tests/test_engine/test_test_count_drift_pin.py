@@ -698,6 +698,15 @@ _HISTORICAL_COUNTS = (
     # 1411 -> 1418). Same iter-368 / iter-375 / iter-390 / iter-442
     # ratchet-when-headroom-exists pattern at the test-count layer.
     "1411", "1412", "1413", "1414", "1415", "1416", "1417",
+    # iter-446 T1 round-X ratchet: 40th cross-pin family added
+    # (test_dockerfile_pyproject_pin_lockstep_pin.py — Dockerfile.{mcp,
+    # a2a} ↔ pyproject deployment-pin lockstep with documented-
+    # divergence allowlist for upstream-blocked pins like a2a-sdk
+    # ==0.3.24 — google-adk not yet 1.0+ migrated; +7 tests, 1418 ->
+    # 1425). Closes iter-438/iter-439 deployment-pin drift class at
+    # commit-time. Same iter-368/iter-375/iter-390/iter-442/iter-443
+    # ratchet-when-headroom-exists pattern at the test-count layer.
+    "1418", "1419", "1420", "1421", "1422", "1423", "1424",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -711,7 +720,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1418
+_TEST_COUNT_FLOOR = 1425
 
 
 def test_no_stale_test_counts_in_docs():
