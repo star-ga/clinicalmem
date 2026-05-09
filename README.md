@@ -395,7 +395,7 @@ The canonical list is `python3 -m pytest --co -q`.
 tests/test_engine/         — 600+ tests covering the safety pipeline:
    clinical scoring, BitNet classifier, consensus engine, evidence
    grounding, hallucination detection, FHIR adapter, FDA client,
-   federation transport bridge (mind-mem v3.10.6 MemoryMesh +
+   federation transport bridge (mind-mem v3.10.8 MemoryMesh +
    EventFanout), 21 CFR Part 11 audit export, NPI registry, PHI
    detector, RxNorm / SNOMED / UMLS clients, what-if simulator.
 
