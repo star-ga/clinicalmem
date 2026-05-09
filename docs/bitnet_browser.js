@@ -269,6 +269,58 @@
 
   // ─── Weights bundle ─────────────────────────────────────────────────────
 
+  // iter-421 Path B: optional tier-2 specialist loader. Returns null if
+  // the bundle is absent (fetch 404) so the demo gracefully falls back
+  // to single-bundle (A-only) inference. Same Q16.16 ternary kernels +
+  // canonical-JSON bundle_id integrity primitive as A.
+  async function loadWeightsB(url) {
+    if (!url) url = "engine/bitnet_weights_b_specialist.json";
+    let resp;
+    try {
+      resp = await fetch(url, { cache: "no-cache" });
+    } catch (e) {
+      return null;
+    }
+    if (!resp.ok) return null;
+    return loadWeightsFromObject(await resp.json());
+  }
+
+  // Shared loader body — used by loadWeights + loadWeightsB so both
+  // bundles go through the same shape + schema validation.
+  function loadWeightsFromObject(payload) {
+    const meta = payload._meta || {};
+    const schema = meta.schema || "bitnet_classifier_v1";
+    const hiddenFeatures = payload.hidden_w.length;
+    const inFeatures = payload.hidden_w[0] ? payload.hidden_w[0].length : 0;
+    const outFeatures = payload.output_w.length;
+    if (schema !== "bitnet_classifier_v1" && schema !== "bitnet_classifier_v3_atc_flags") {
+      throw new Error(`unknown bitnet schema ${schema}`);
+    }
+    if (payload.hidden_b.length !== hiddenFeatures) {
+      throw new Error(`hidden_b length ${payload.hidden_b.length} != hidden_features ${hiddenFeatures}`);
+    }
+    if (outFeatures !== 5) throw new Error(`output_w must be 5 rows, got ${outFeatures}`);
+    if (payload.output_w.some(row => row.length !== hiddenFeatures)) {
+      throw new Error(`output_w cols must be hidden_features ${hiddenFeatures}`);
+    }
+    if (payload.output_b.length !== 5) throw new Error("output_b must be 5");
+    const expectedIn = schema === "bitnet_classifier_v1" ? 128 : 193;
+    if (inFeatures !== expectedIn) {
+      throw new Error(`schema ${schema} expects in_features=${expectedIn}, got ${inFeatures}`);
+    }
+    return {
+      hidden_w: payload.hidden_w,
+      hidden_b: payload.hidden_b,
+      output_w: payload.output_w,
+      output_b: payload.output_b,
+      bundle_id: meta.bundle_id || "",
+      schema: schema,
+      in_features: inFeatures,
+      hidden_features: hiddenFeatures,
+      out_features: outFeatures,
+    };
+  }
+
   async function loadWeights(url) {
     if (!url) url = "engine/bitnet_weights.json";
     const resp = await fetch(url, { cache: "no-cache" });
@@ -346,7 +398,37 @@
   const SEVERITY_NAMES_V1 = ["none", "minor", "moderate", "major", "contraindicated"];
   const SEVERITY_NAMES_V8 = ["none", "moderate", "serious", "major", "contraindicated"];
 
-  async function classify(drugA, drugB, weights) {
+  // iter-421 Path B helper: forward pass through B with constrained
+  // argmax over classes {1, 2, 3} = {moderate, serious, major}.
+  // Mirrors engine/bitnet_classifier.py::_classify_constrained_b.
+  async function _classifyConstrainedB(a, b, weightsB) {
+    let pair;
+    if (weightsB.schema === "bitnet_classifier_v3_atc_flags") {
+      const flagsDoc = await loadPharmFlags();
+      pair = encodePairV8(a, b, flagsDoc);
+    } else {
+      pair = encodeDrugToken(a).concat(encodeDrugToken(b));
+    }
+    const activations = pair.map(v => v * Q16_ONE);
+    const H = weightsB.hidden_features;
+    const hiddenPre = new Array(H);
+    for (let j = 0; j < H; j++) {
+      hiddenPre[j] = q16Clamp(q16DotTernary(activations, weightsB.hidden_w[j]) + weightsB.hidden_b[j]);
+    }
+    const hidden = hiddenPre.map(q16Relu);
+    const logits = new Array(5);
+    for (let k = 0; k < 5; k++) {
+      logits[k] = q16Clamp(q16DotTernary(hidden, weightsB.output_w[k]) + weightsB.output_b[k]);
+    }
+    // Constrained argmax over {1, 2, 3}; ties broken by lower index.
+    let severity = 1;
+    let best = logits[1];
+    if (logits[2] > best) { best = logits[2]; severity = 2; }
+    if (logits[3] > best) { best = logits[3]; severity = 3; }
+    return { severity, logits };
+  }
+
+  async function classify(drugA, drugB, weights, weightsB) {
     // Lex-sort the pair.
     const [a, b] = [drugA, drugB].sort();
 
@@ -393,13 +475,35 @@
       if (logits[k] > best) { best = logits[k]; severity = k; }
     }
 
-    // repro_hash = SHA-256 over canonical JSON
+    // iter-421 Path B cascade: when a tier-2 specialist bundle is
+    // supplied, A's contraindicated verdict (severity==4) ALWAYS wins
+    // (frozen FDA-grade contra gate). For all other A predictions, B's
+    // constrained argmax over {1,2,3} replaces A's serious-class call.
+    // Mirrors engine/bitnet_classifier.py::classify post-iter-421.
+    let weightsIdForAudit = weights.bundle_id;
+    let logitsB = null;
+    let bundleIdB = null;
+    if (weightsB && severity !== 4) {
+      const r = await _classifyConstrainedB(a, b, weightsB);
+      severity = r.severity;
+      logitsB = r.logits;
+      bundleIdB = weightsB.bundle_id;
+      weightsIdForAudit = `${weights.bundle_id}+${weightsB.bundle_id}`;
+    }
+
+    // repro_hash = SHA-256 over canonical JSON. iter-421 ensemble
+    // appends bundle_id_b + logits_q16_b to the payload so verifiers
+    // with both bundles can replay the cascade decision exactly.
     const reproPayload = {
       feature_hash: featureHash,
       logits_q16: logits,
       severity: severity,
-      weights_id: weights.bundle_id,
+      weights_id: weightsIdForAudit,
     };
+    if (logitsB !== null) {
+      reproPayload.logits_q16_b = logitsB;
+      reproPayload.bundle_id_b = bundleIdB;
+    }
     const reproHash = await sha256Hex(canonicalJson(reproPayload));
 
     const vocab = weights.schema === "bitnet_classifier_v3_atc_flags"
@@ -414,7 +518,7 @@
       logits_q16: logits,
       feature_hash: featureHash,
       repro_hash: reproHash,
-      weights_id: weights.bundle_id,
+      weights_id: weightsIdForAudit,
     };
   }
 
@@ -433,6 +537,7 @@
 
   window.ClinicalMemBitNet = {
     loadWeights,
+    loadWeightsB,
     loadPharmFlags,
     classify,
     encodeDrugToken,

@@ -2878,12 +2878,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cached precomputed pairs no longer used — the JS computes from
   // weights every time.
   let BITNET_WEIGHTS = null;
+  let BITNET_WEIGHTS_B = null;
   async function ensureBitnetWeights() {
     if (BITNET_WEIGHTS) return BITNET_WEIGHTS;
     if (!window.ClinicalMemBitNet) {
       throw new Error("docs/bitnet_browser.js not loaded — Verify Replay needs the in-browser BitNet runtime");
     }
     BITNET_WEIGHTS = await window.ClinicalMemBitNet.loadWeights('engine/bitnet_weights.json');
+    // iter-421 Path B: opportunistically load the tier-2 specialist
+    // alongside A. Returns null if absent — the cascade just falls back
+    // to A-only inference (no judges-visible regression).
+    BITNET_WEIGHTS_B = await window.ClinicalMemBitNet.loadWeightsB('engine/bitnet_weights_b_specialist.json');
     return BITNET_WEIGHTS;
   }
   async function bitnetClassify() {
@@ -2894,7 +2899,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const weights = await ensureBitnetWeights();
       const t0 = performance.now();
-      const r = await window.ClinicalMemBitNet.classify(a, b, weights);
+      // iter-421 Path B: pass tier-2 specialist if loaded so the
+      // in-browser cascade matches engine/bitnet_classifier.py exactly.
+      const r = await window.ClinicalMemBitNet.classify(a, b, weights, BITNET_WEIGHTS_B);
       const elapsedMs = (performance.now() - t0).toFixed(1);
       const sevColor = {none:'text-slate-500', minor:'text-yellow-600', moderate:'text-amber-600', major:'text-orange-600', contraindicated:'text-red-600'}[r.severity_name] || 'text-slate-500';
       out.innerHTML = `
