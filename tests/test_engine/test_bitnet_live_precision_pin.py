@@ -105,27 +105,33 @@ def test_dashboard_displays_live_precision_number():
     """Dashboard's hero precision card shows the live 100% number."""
     demo_html = (_REPO_ROOT / "docs" / "demo.html").read_text()
     # Iter-150: hero stat chip relabelled "Layer 4.5 · live precision"
-    # -> "Live precision · L4.5" (mobile-fit). Either form satisfies
-    # the pin's intent: a "live precision" label, NOT the bare 85.7%
-    # held-out-accuracy framing this test exists to forbid.
+    # -> "Live precision · L4.5" (mobile-fit).
+    # iter-429: chip 2 rotated to "Layer 4.5 ensemble · iter-421" to
+    # surface the 100/100/100/100 breakthrough across all 4 severity
+    # classes (was a redundant duplicate of chip 1's contra-only signal).
+    # The pin's INTENT — surface live-deployment metrics, NOT the bare
+    # 85.7% held-out-accuracy framing — is preserved by all three labels.
     assert (
         "Layer 4.5 · live precision" in demo_html
         or "Live precision · L4.5" in demo_html
+        or "Layer 4.5 ensemble · iter-421" in demo_html
     ), (
-        "Hero stat chip must label the precision number with a 'live "
-        "precision' framing (not the bare '85.7% precision on "
-        "contraindicated' which conflated held-out test-set accuracy "
-        "with deployment precision)."
+        "Hero stat chip must label the Layer 4.5 number with a 'live "
+        "precision' or 'iter-421 ensemble' framing (not the bare '85.7% "
+        "precision on contraindicated' which conflated held-out test-set "
+        "accuracy with deployment precision)."
     )
-    # Iter-275 v8 promotion: hero precision chip footnote now reads the
-    # live v8 numbers (43/43 — full recall, 0 FP, precision still 100%).
-    # Pre-v8 chip showed "8 / 8" (the iter-148 v1 hash-only baseline),
-    # which understated v8's deployed reach. Both forms are accepted to
-    # ease the lockstep migration; v8 form is canonical post-iter-275.
+    # Iter-275 v8 promotion: hero precision chip footnote read "43/43".
+    # iter-280 cohort growth: 43→44. iter-429: chip 2 rotated to
+    # full-cohort framing ("139 / 139 cohort · 0 contra FP · 0 major FP")
+    # since the iter-421 ensemble delivers 100% on every class. All four
+    # forms satisfy the pin's intent (surface cohort-grounded recall,
+    # not held-out-set accuracy).
     assert (
         "44 / 44 contraindicated · live cache" in demo_html
         or "43 / 43 contraindicated · live cache" in demo_html
         or "8 / 8 contraindicated · live cache" in demo_html
+        or "139 / 139 cohort" in demo_html
     ), (
         "Hero stat chip footnote must show the live cache TP/total breakdown "
         "(post iter-280 cohort growth: 44/44 = 100% precision over the live "

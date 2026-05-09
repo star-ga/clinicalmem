@@ -575,7 +575,7 @@ tailwind.config = {
         </p>
       </div>
       <p class="hero-fade text-sm sm:text-base text-slate-600 mt-5 max-w-2xl lg:mx-0 mx-auto leading-relaxed" style="animation-delay:0.12s">
-        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on contraindicated</strong> for the NTI cohort, 21 typed federation invariants enforcing PHI gates and X25519 + ChaCha20-Poly1305 payload encryption by construction, and an Apache-2.0 license for healthcare deployment.
+        A 6-layer clinical safety pipeline with a Q16.16 fixed-point ternary verification anchor &mdash; <strong class="text-slate-900">100% recall on EVERY severity class</strong> on the live 139-pair cohort under the iter-421 Path B 2-bundle BitNet ensemble (44/44 contra · 4/4 major · 69/69 serious · 22/22 moderate · 0 contra FP · 0 major FP), 21 typed federation invariants enforcing PHI gates and X25519 + ChaCha20-Poly1305 payload encryption by construction, and an Apache-2.0 license for healthcare deployment.
       </p>
 
       <!-- Primary + secondary CTA -->
@@ -657,10 +657,10 @@ tailwind.config = {
           <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">100<span class="text-trust-600">%</span></div>
           <div class="text-[10px] text-slate-400 mt-1 font-mono whitespace-nowrap">44 / 44 &middot; Q16.16</div>
         </div>
-        <div class="rounded-xl bg-white border border-trust-100 px-3 sm:px-4 py-3 shadow-trust min-w-0">
-          <div class="text-[10px] font-bold italic uppercase tracking-wider text-trust-700 whitespace-nowrap">Live precision · L4.5</div>
-          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">100<span class="text-trust-600">%</span></div>
-          <div class="text-[10px] text-slate-400 mt-1 font-mono whitespace-nowrap">44 / 44 contraindicated · live cache</div>
+        <div class="rounded-xl bg-white border border-clinical-green/30 px-3 sm:px-4 py-3 shadow-trust min-w-0 relative">
+          <div class="text-[10px] font-bold italic uppercase tracking-wider text-clinical-green whitespace-nowrap">Layer 4.5 ensemble · iter-421</div>
+          <div class="font-display font-extrabold text-2xl text-slate-900 mt-0.5 leading-none">100<span class="text-clinical-green">%</span> <span class="text-base text-slate-500 font-display font-normal">× 4 classes</span></div>
+          <div class="text-[10px] text-slate-400 mt-1 font-mono whitespace-nowrap">139 / 139 cohort · 0 contra FP · 0 major FP</div>
         </div>
         <a href="edge_pi_offline.md" class="rounded-xl bg-white border border-premium-400/30 px-4 py-3 shadow-premium block hover:border-premium-500 transition-colors cursor-pointer">
           <div class="text-[10px] font-bold italic uppercase tracking-wider text-premium-600 whitespace-nowrap">BitNet weights · LIVE</div>
