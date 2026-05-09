@@ -42,7 +42,7 @@ follows:
 | 1 | PHI-gate coverage | The bridge does not bypass the PHI gate; every publish path goes through `JointMemoryFederation`'s classify → phi_strip → structural FHIR guard before reaching `record_publish_event`. The bridge has no PHI-aware branching of its own — it is a pure observability + audit-log + fanout layer. | ✅ PASS |
 | 2 | Audit-chain anchor density | `record_publish_event` and `record_ingest_event` carry both `semantic_idempotency_hash` (content-addressed) and `transport_dedup_hash` (envelope-addressed) on every emit. 100% of federated payloads are doubly anchored. | ✅ PASS |
 | 3 | BitNet 4.5 invocation discipline | N/A — federation bridge does not invoke BitNet. The Layer-4.5 invariants are enforced upstream in `engine/clinical_scoring.py` and `engine/bitnet_classifier.py`. | ✅ N/A |
-| 4 | Federation-invariant density | `flows/JointMemoryFederation.flow.mind` declares 21 typed runtime invariants; the bridge interacts with 16 of them through the demo's `egress` / `ingress` paths (the X25519-sealing invariants 17–21 await a dedicated MIC@2 federation-transport adapter targeting a future mind-mem release). 16/21 = 76% density. | ⚠️ Phase B target 80% — within margin pending the dedicated MIC@2 federation-transport adapter (mind-mem v3.11.1 is shipped and pinned but ships no new federation-transport module — the v3.10.x..v3.11.x line through v3.11.1 covers hook-installer + CLI + docs (v3.10.x) and quality-gate + typed-lineage + recall-explainability (v3.11.x); `http_transport.py` remains a single-workspace REST adapter for non-MCP clients, not p2p federation) |
+| 4 | Federation-invariant density | `flows/JointMemoryFederation.flow.mind` declares 21 typed runtime invariants; the bridge interacts with 16 of them through the demo's `egress` / `ingress` paths (the X25519-sealing invariants 17–21 await a dedicated MIC@2 federation-transport adapter targeting v4.0 "Platform Scale" per upstream ROADMAP.md). 16/21 = 76% density. | ⚠️ Phase B target 80% — within margin pending the dedicated MIC@2 federation-transport adapter (mind-mem v3.11.1 is shipped and pinned but ships no new federation-transport module — the v3.10.x..v3.11.x line through v3.11.1 covers hook-installer + CLI + docs (v3.10.x) and quality-gate + typed-lineage + recall-explainability (v3.11.x); `http_transport.py` remains a single-workspace REST adapter for non-MCP clients, not p2p federation; federated recall + gRPC transport are explicitly v4.0 work, out of scope for v3.12 per upstream ROADMAP.md) |
 | 5 | NPI Luhn coverage | N/A — federation bridge does not handle NPI. NPI Luhn validation lives in `engine/npi_registry.py`. | ✅ N/A |
 | 6 | Clinician-attestation present | Dr. Ludmila Afonicheva (Clinical Advisor, NPI 1932159530) attestation is recorded in `docs/clinical_validation.md`. The federation bridge does not create new attestation-bearing surfaces. | ✅ PASS |
 
@@ -51,7 +51,7 @@ follows:
 **7 / 7 generic kernel rules pass. 5 / 5 applicable Phase B healthcare
 invariants pass. 1 invariant (federation-invariant density) is within the
 80% target margin pending a dedicated MIC@2 federation-transport adapter
-(targeting a future mind-mem release) — a known boundary documented in
+(targeting v4.0 "Platform Scale" per upstream ROADMAP.md) — a known boundary documented in
 `docs/architecture.md`. Note: mind-mem v3.11.1 IS shipped and pinned (the
 v3.10.x..v3.11.x line through v3.11.1 covers hook-installer + CLI + docs
 (v3.10.x) and quality-gate + typed-lineage + recall-explainability

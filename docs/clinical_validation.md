@@ -181,7 +181,9 @@ Honest gaps for the May 11 hackathon submission:
   demo `scripts/federation_mock_demo.py` exercises 16 of those 21
   end-to-end; the 5 X25519-sealing invariants are declared but
   await a dedicated MIC@2 federation-transport adapter targeting
-  a future mind-mem release). mind-mem v3.11.1 is shipped and
+  a future mind-mem release — v4.0 "Platform Scale" per upstream
+  ROADMAP.md, where federated recall + gRPC transport are scheduled).
+  mind-mem v3.11.1 is shipped and
   pinned (released 2026-05-08; the v3.10.x..v3.11.x line through
   v3.11.1 covers hook-installer + CLI + docs (v3.10.x) and
   quality-gate + typed-lineage + recall-explainability (v3.11.x))
