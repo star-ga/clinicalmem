@@ -46,7 +46,7 @@ reading. The rest of this file is the long-form drill-down.
 6. **Governance (`#governance`)** — 6 healthcare-specific invariants + 9 generic kernel rules + arch-mind L1 gate verification status.
 7. **BitNet Layer 4.5 (`#bitnet`)** — pipeline-landing diagram + interactive Verify Replay button (in-browser BitNet bit-identical with engine since iter-276) + trained model stats card (50,688 ternary / 261 biases / ~118 KB / bundle `1f0f8859…`).
 8. **FHIR (`#fhir`)** — 18-resource bundle visualization (Patient × 30 + Practitioner × 47 + MedicationRequest + AllergyIntolerance + Condition + Observation + Encounter etc.).
-9. **Federation (`#federation`)** — NEW JointMemoryFederation flow with two-lane PHI gate visualization, defence-in-depth 5 hard constraints card, mock transport demo, control plane status chip "LIVE — MIND-Mem v3.10.8 MemoryMesh".
+9. **Federation (`#federation`)** — NEW JointMemoryFederation flow with two-lane PHI gate visualization, defence-in-depth 5 hard constraints card, mock transport demo, control plane status chip "LIVE — MIND-Mem v3.11.1 MemoryMesh".
 10. **Pipeline (`#pipeline`)** — 6-layer pipeline cards (Layer 1 Deterministic Table · Layer 2 OpenEvidence API · Layer 3 RxNorm API · Layer 4 Multi-LLM Consensus · Layer 4.5 BitNet anchor · Layer 5 LLM Synthesis · Layer 6 Abstention Gate).
 11. **Terminology (`#terminology`)** — RxNorm + SNOMED CT + UMLS Metathesaurus integration cards.
 12. **Audit (`#audit`)** — Reproducibility Manifest card (`docs/reproducibility_manifest.json`) with 7 SHA-256 artifact hashes + dateCreated.
@@ -107,7 +107,7 @@ classification from this repo, on any chip, for the next 30 years.
    `flows/JointMemoryFederation.flow.mind`, not a policy doc. 21
    typed invariants enforce PHI gates + Ed25519 signing + X25519 +
    ChaCha20-Poly1305 sealing + severity-quorum gating + KeyEpoch
-   revocation. The control plane is LIVE against `mind-mem v3.10.8`'s
+   revocation. The control plane is LIVE against `mind-mem v3.11.1`'s
    `MemoryMesh` + `EventFanout`.
 5. **Apache-2.0 with explicit § 3 patent grant** — deploy in
    production tomorrow. The patent-pending MIC@2 / MAP / binary
@@ -181,7 +181,7 @@ artifact. Audit map:
 | `Single-file reproducibility manifest` | `docs/reproducibility_manifest.json` (regenerate with `scripts/build_reproducibility_manifest.py`) — content-addressed snapshot of every load-bearing artifact: SHA-256 of 8 SHA-tracked artifacts (cache + weights + confusion matrix + cohort coverage matrix + cohort bundle + calibration + audit-replay pins + pharmacology flags), flow plan_hashes for all 7 `.flow.mind` files, gate verdicts for all 5 gates (PCCP / negative-control / federation / arch-mind / audit-replay), test count, git HEAD. Drops into a compliance review as one file an FDA SaMD reviewer can verify with `--check`. Pinned in `tests/test_scripts/test_reproducibility_manifest.py`. |
 | `Evidence-URL backbone integrity` | `tests/test_engine/test_cache_evidence_urls.py` — 6 tests pin the structural integrity of every cache entry's `evidence_urls`: ≥ 1 URL per entry, all HTTPS (no plain HTTP), all have non-empty host AND non-empty path beyond root, no duplicates within an entry, ≥ 90% from the NIH/FDA/peer-review whitelist, average ≥ 1.5 URLs per pair (corroboration floor — every drug-pair classification backed by ≥ 1 primary citation + ≥ 1 secondary). Live: 315 URLs across 139 entries, 100% authoritative, avg 2.27 URLs/pair. |
 | `21 typed federation invariants` | `flows/JointMemoryFederation.flow.mind` (plan_hash recorded in audit chain). **Cross-doc count integrity** independently pinned by `tests/test_scripts/test_federation_invariant_count_pin.py` (5 tests: live invariant count in flow file = 21; demo's `INVARIANT_DESCRIPTIONS` exercises 16; **all 6 user-facing federation docs** (demo.html, JUDGES.md, architecture.md, clinical_validation.md, fda_q_sub_draft.md, federated_memory.md) cite the canonical `21 typed` count; bare `16 invariants` / `16 typed runtime invariants` claim is forbidden in any of those 6 docs unless paired with `21 typed` disambiguation in the same file (iter-135 scope expansion catching the same insidious `scoped pin + unscoped doc` drift class iter-132 caught for the iter-122 transport-distinction claim — three regulatory-adjacent docs had silently lied about the count for ≥ 113 iterations); the 16-of-21 gap explanation (`5 X25519 sealing invariants await MIC@2 federation-transport adapter targeting a future mind-mem release`) must remain on demo.html. |
-| `Federation control plane LIVE — mind-mem v3.10.8 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
+| `Federation control plane LIVE — mind-mem v3.11.1 MemoryMesh` | `engine/federation_transport.py` (9 unit tests) + `mind_mem.memory_mesh.MemoryMesh` |
 | `arch-mind 9 / 9 rules` | `docs/arch_mind/clinicalmem_rules.mind` + `docs/arch_mind/clinicalmem.scan.json` (run via `scripts/run_arch_mind_gate.py`) |
 | `30 synthetic patients · 47 NPIs` | `docs/synthea_demo_cohort.json` (FHIR R4 bundle, all NPIs Luhn-valid). **Per-patient drug-pair → cache-entry traceability matrix:** `docs/cohort_coverage_matrix.md` (regenerate with `scripts/build_cohort_coverage.py`). Cohort integrity is independently pinned by `tests/test_engine/test_synthea_cohort_integrity_pin.py` (9 tests: FHIR R4 Bundle top-level shape; Patient count floor ≥ 30; Practitioner count floor ≥ 47; every Practitioner has an NPI; every NPI passes CMS Luhn check; every Patient + Practitioner carries `meta._synthetic = true`; every Practitioner carries `meta.npi_source = "DEMO_LUHN_GENERATED"`; demo cites this pin file with the cohort-integrity callout (iter-126 surfacing extension); no demo NPI collides with the known-real clinical-validation NPI 1932159530). |
 | `21 CFR Part 11 audit export` | `engine/audit_export_part11.py` (30 tests) |
@@ -209,17 +209,19 @@ artifact. Audit map:
    submission to the FDA has been made.
 3. **Federation wire transport is mock.** The control plane (peer
    registry, sync scopes, conflict resolution policy, sync audit log,
-   governance pub/sub) is LIVE against `mind-mem v3.10.8` (released
+   governance pub/sub) is LIVE against `mind-mem v3.11.1` (released
    2026-05-08). The actual cross-machine bytes-on-wire still go
    through a single-process queue in
    `scripts/federation_mock_demo.py`. mind-mem v3.9.0 (baseline,
    released 2026-05-04) shipped an `http_transport.py` module but
    it is a **single-workspace REST adapter** for non-MCP clients
    (Slack bots / Streamlit / etc.), NOT a peer-to-peer federation
-   transport; the v3.10.x line through v3.10.8 (released 2026-05-08)
-   ships no new federation-transport module either — it is
-   hook-installer + CLI + docs only — so the dedicated MIC@2
-   federation transport adapter targets a future mind-mem release.
+   transport; the v3.10.x..v3.11.x line through v3.11.1 (released
+   2026-05-08) ships no new federation-transport module either — the
+   v3.10.x sub-line is hook-installer + CLI + docs only and v3.11.x
+   adds quality-gate / typed-lineage / recall-explainability features
+   (none transport-related) — so the dedicated MIC@2 federation
+   transport adapter targets a future mind-mem release.
 4. **6-LLM US-based consensus surface (Layer 4) is implementation-only.** The
    API-key-required path is wired but the eval ran against the
    deterministic Layer 1 / Layer 2 cache / Layer 4.5 BitNet path.
