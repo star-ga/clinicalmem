@@ -661,6 +661,18 @@ _HISTORICAL_COUNTS = (
     "1374",
     "1375",
     "1376",
+    # iter-390 T1 round-22 ratchet point: 35th cross-pin family added
+    # (test_version_currency_narrative_pin.py — closes iter-388
+    # narrative-drift class at the test-pin layer; +4 tests, 1377 ->
+    # 1381). Same iter-368 / iter-375 ratchet-when-headroom-exists
+    # pattern at the test-count layer.
+    "1377",
+    # iter-390 intermediate counts (1378/1379/1380) between iter-388's
+    # narrative-drift catch and the new 35th pin family's 4-test
+    # growth — ensures future surfaces stuck at intermediates fire.
+    "1378",
+    "1379",
+    "1380",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -674,7 +686,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1377
+_TEST_COUNT_FLOOR = 1381
 
 
 def test_no_stale_test_counts_in_docs():

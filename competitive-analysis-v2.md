@@ -21,7 +21,7 @@ ClinicalMem is **structurally well-positioned to win** but the competitive surfa
 - UMLS Metathesaurus crosswalk (ICD-10 ↔ SNOMED ↔ LOINC ↔ RxNorm)
 - What-If medication simulation, FDA Safety Alert integration, ClinicalTrials.gov matching
 - PHI Detection Guard + Hallucination Detection
-- 1377+ tests (engine + scripts; live floor as of iter-375)
+- 1381+ tests (engine + scripts; live floor as of iter-390)
 - Live demo: `clinicalmem-demo.pages.dev`
 - Both MCP server (18 tools) AND A2A agent (13 tools) — covers both hackathon tracks
 
@@ -123,7 +123,7 @@ Strong A2A v1 compliance (nested `supportedInterfaces`, typed `securitySchemes`)
 |---|---|---|---|---|---|
 | **The AI Factor** (multi-LLM, novelty, sophistication) | High | **6-LLM US-based consensus + 4-tier interaction pipeline + Q16.16 abstention kernels** | Ebbinghaus + HDC (academic novelty) | Single-LLM PA letter generation | Single-LLM FHIR Q&A |
 | **Potential Impact** (does it save patient lives?) | High | **Catches NSAID+warfarin, β-lactam cross-reactivity, declining GFR + metformin, BP-target conflicts — every demo example has a documented "would have prevented harm" case** | Hardcoded interaction lookup; no allergy logic; no cross-provider contradictions | Faster prior auth approval; no patient-safety story | FHIR query convenience; no patient-safety story |
-| **Feasibility** (regulatory, deployable, real) | High | **Live cloud deployment, SHA-256 hash-chain audit, abstention gate, 1377+ tests, Apache-2.0 with explicit patent grant, MCP+A2A both, PHI guard, hallucination detection** | Docker Compose only; localhost; no audit; no abstention; no tests | 21 commits; no audit; no compliance docs | Clean architecture but shallow features |
+| **Feasibility** (regulatory, deployable, real) | High | **Live cloud deployment, SHA-256 hash-chain audit, abstention gate, 1381+ tests, Apache-2.0 with explicit patent grant, MCP+A2A both, PHI guard, hallucination detection** | Docker Compose only; localhost; no audit; no abstention; no tests | 21 commits; no audit; no compliance docs | Clean architecture but shallow features |
 | **Demo polish** (judge experience) | High | **Live demo dashboard + YouTube + Cloudflare Pages + Prompt Opinion native flow** | Static React; no live URL | Likely none deployed | Cloud Run scripts but no live URL cited |
 
 **Estimated rank against today's known field: 1st.**
@@ -162,7 +162,7 @@ The product is already differentiated. The 9-day plan is about **completeness, p
 
 | ID | Item | Time | Why |
 |---|---|---|---|
-| **P2.1** ✅ | **DONE — live floor 1377+ (3.4× past 400+ target as of iter-375).** Coverage achieved: MCP tool round-trip, A2A skill round-trip, every NIH RxNorm error path, every FHIR fallback, every abstention boundary, plus 34 cross-pin discipline families that mechanically enforce 0% known misses + zero PHI leaks under structured logging. | 6 hrs | "Feasibility" criterion weights tests heavily. 1377+ is a clear lead — 3.4× the original target. |
+| **P2.1** ✅ | **DONE — live floor 1381+ (3.5× past 400+ target as of iter-390).** Coverage achieved: MCP tool round-trip, A2A skill round-trip, every NIH RxNorm error path, every FHIR fallback, every abstention boundary, plus 35 cross-pin discipline families that mechanically enforce 0% known misses + zero PHI leaks under structured logging. | 6 hrs | "Feasibility" criterion weights tests heavily. 1381+ is a clear lead — 3.5× the original target. |
 | **P2.2** | Write `docs/abstention_proof.md`: a side-by-side of 12 ambiguous medication queries showing what GPT-5.5 / Gemini Pro / Claude / Grok / Sonar / Flash each returned → where consensus broke → where ClinicalMem abstained → what the right answer is | 4 hrs | Turn the abstention story into a falsifiable, replayable artefact. The single strongest "we're not bullshitting" signal. |
 | **P2.3** | Add a 5-patient demo set: Sarah Mitchell + 4 others (pediatric, oncology, mental-health, post-op) — each catches a different finding class | 4 hrs | Counters the "single demo patient" criticism. |
 | **P2.4** | `docs/regulatory_readiness.md`: HIPAA path (PHI guard + at-rest encryption pathway), DO-178C-style audit (hash chain), FDA-IDE pre-submission outline | 2 hrs | Healthcare AI judges are deeply attuned to "could this actually ship?" |
@@ -209,7 +209,7 @@ The product is already differentiated. The 9-day plan is about **completeness, p
 
 - *"The AI Factor"* — 6-LLM consensus + 4-tier deterministic-then-LLM pipeline + abstention kernels is more sophisticated than any other entry by an order of magnitude.
 - *"Potential Impact"* — the demo scenario (Sarah Mitchell, NSAID + warfarin) is a documented patient-safety failure that kills people. No other entry tells a "would have saved a life" story.
-- *"Feasibility"* — live deployment, audit trail, abstention, 1377+ tests, Apache-2.0 with patent grant, MCP + A2A both. Every other entry has at least one missing pillar.
+- *"Feasibility"* — live deployment, audit trail, abstention, 1381+ tests, Apache-2.0 with patent grant, MCP + A2A both. Every other entry has at least one missing pillar.
 
 **The 9-day plan turns the existing structural lead into a presentation lead** — same product, sharper signal.
 
