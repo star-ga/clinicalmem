@@ -681,6 +681,16 @@ _HISTORICAL_COUNTS = (
     # + HACKATHON_PLAN_V2). Same iter-368 / iter-375 / iter-390
     # ratchet-when-headroom-exists pattern at the test-count layer.
     "1381",
+    # iter-442 T3 drift catch: floor advances 1409 -> 1411 absorb the
+    # iter-421 cluster's accumulated test growth (iter-425 +13 bundle B
+    # integrity, iter-428 +10 cascade dispatch contract, iter-432 +4
+    # ensemble_path observability, iter-436 +2 audit-replay). Stale
+    # 1382/1383..1410 surfaces in any user-facing doc must fire this pin
+    # so the rotation is mechanically driven rather than memory-driven.
+    "1382", "1383", "1384", "1385", "1386", "1387", "1388", "1389", "1390",
+    "1391", "1392", "1393", "1394", "1395", "1396", "1397", "1398", "1399",
+    "1400", "1401", "1402", "1403", "1404", "1405", "1406", "1407", "1408",
+    "1409", "1410",
 )
 
 # The "100% line coverage" claim was unverified (the loop's standard
@@ -694,7 +704,7 @@ _FORBIDDEN_COVERAGE_CLAIMS = (
 
 # Pinned floor — the loop's standard scope (engine + scripts) must
 # stay at or above this many tests. Bump when adding new pins.
-_TEST_COUNT_FLOOR = 1409
+_TEST_COUNT_FLOOR = 1411
 
 
 def test_no_stale_test_counts_in_docs():
