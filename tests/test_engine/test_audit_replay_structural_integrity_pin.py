@@ -218,3 +218,126 @@ def test_top_level_jsonld_envelope_intact_iter193(pins: dict) -> None:
         f"bundle_id={pins['bundle_id']!r} is not a 64-char "
         f"lowercase SHA-256 hex (engine weights digest)."
     )
+
+
+def test_iter426_ensemble_envelope_when_schema_v2(pins: dict) -> None:
+    """iter-426 schema v2.0.0 ratchet: if version >= 2.0.0, the JSON-LD
+    envelope MUST also carry ``bundle_id_b`` (64-char hex or null) and
+    ``ensemble_active`` (boolean). Pre-iter-426 v1.0.0 pins are accepted
+    unchanged for backwards compat with archived audit-replay snapshots
+    generated before the iter-421 ensemble shipped.
+
+    Catches the drift where someone regenerates ``audit_replay_pins.json``
+    under single-bundle mode (B bundle missing/unreadable) and the pin
+    file silently loses its ensemble-cascade audit trail. The iter-421
+    ensemble's '47/47 pairs replay byte-for-byte under both bundle hashes'
+    claim depends on these envelope fields surviving any regeneration."""
+    version = pins.get("version", "")
+    # Pre-v2.0.0 pins predate iter-426 — skip.
+    if not version.startswith("2."):
+        return
+    assert "bundle_id_b" in pins, (
+        f"audit_replay_pins.json schema v{version} (>= 2.0.0) requires "
+        f"top-level `bundle_id_b` field (64-char hex when ensemble "
+        f"active, null when degraded to single-bundle). The iter-421 "
+        f"ensemble cascade audit trail depends on this envelope key."
+    )
+    assert "ensemble_active" in pins, (
+        f"audit_replay_pins.json schema v{version} (>= 2.0.0) requires "
+        f"top-level `ensemble_active` boolean. iter-426 closure shipped "
+        f"this field to disambiguate single-bundle replay from cascade "
+        f"replay at the envelope layer."
+    )
+    assert isinstance(pins["ensemble_active"], bool), (
+        f"`ensemble_active` must be a boolean. Got "
+        f"{type(pins['ensemble_active']).__name__}: {pins['ensemble_active']!r}"
+    )
+    bid_b = pins["bundle_id_b"]
+    if bid_b is not None:
+        assert _HEX64_RE.match(bid_b), (
+            f"bundle_id_b={bid_b!r} is not a 64-char lowercase SHA-256 "
+            f"hex (B specialist weights digest). Either set to null "
+            f"(single-bundle degraded mode) or supply the canonical hash."
+        )
+        # If bundle_id_b is set, ensemble_active should be true (consistent
+        # state). If null, ensemble_active should be false.
+        assert pins["ensemble_active"] is True, (
+            f"bundle_id_b is set but ensemble_active=False — inconsistent "
+            f"envelope state. Either both reflect cascade mode (bundle_id_b "
+            f"hex + ensemble_active=true) or both reflect single-bundle "
+            f"degraded mode (bundle_id_b null + ensemble_active=false)."
+        )
+    else:
+        assert pins["ensemble_active"] is False, (
+            f"bundle_id_b is null but ensemble_active=True — inconsistent "
+            f"envelope state."
+        )
+
+
+def test_iter426_per_pair_ensemble_fields_when_schema_v2(pins: dict) -> None:
+    """iter-426 schema v2.0.0 ratchet: when ensemble_active=true at the
+    envelope level, every per-pair entry MUST carry ``weights_id``
+    (composite or single-bundle hex) AND ``ensemble_active`` (boolean
+    matching the dispatch state for that specific pair).
+
+    The per-pair fields disambiguate the 3 dispatch states a forensic
+    auditor would otherwise have to reverse-engineer:
+      - cascade_fired: weights_id length 129 ('{a_id}+{b_id}'),
+        ensemble_active=true
+      - a_only_contra_veto: weights_id length 64 (just bundle_id_a),
+        ensemble_active=false (B was bypassed by safety contract)
+    Mirrors the iter-432 ``ensemble_path`` categorical added to the
+    runtime ``bitnet_classified`` event — iter-426 surfaces the same
+    disambiguation in the audit-replay JSON envelope."""
+    version = pins.get("version", "")
+    if not version.startswith("2."):
+        return
+    if not pins.get("ensemble_active"):
+        return  # single-bundle degraded mode — no per-pair ensemble fields
+    for i, pair in enumerate(pins["pairs"]):
+        assert "weights_id" in pair, (
+            f"audit_replay_pins.json pair[{i}] ({pair.get('drug_a')!r} + "
+            f"{pair.get('drug_b')!r}) missing `weights_id` under schema "
+            f"v{version} ensemble mode. Required for cascade-decision "
+            f"replay."
+        )
+        assert "ensemble_active" in pair, (
+            f"audit_replay_pins.json pair[{i}] missing `ensemble_active` "
+            f"boolean under schema v{version} ensemble mode."
+        )
+        assert isinstance(pair["ensemble_active"], bool), (
+            f"pair[{i}].ensemble_active must be boolean; got "
+            f"{type(pair['ensemble_active']).__name__}"
+        )
+        wid = pair["weights_id"]
+        if pair["ensemble_active"]:
+            # Cascade fired: weights_id is composite "{a_id}+{b_id}"
+            assert "+" in wid and len(wid) == 129, (
+                f"pair[{i}] ensemble_active=True but weights_id "
+                f"({wid!r}) is not the 129-char composite "
+                f"'{{a_id}}+{{b_id}}' format expected when cascade fired."
+            )
+            a_id, b_id = wid.split("+", 1)
+            assert _HEX64_RE.match(a_id) and _HEX64_RE.match(b_id), (
+                f"pair[{i}] weights_id components {a_id!r} + {b_id!r} "
+                f"are not both 64-char hex SHA-256."
+            )
+            assert a_id == pins["bundle_id"], (
+                f"pair[{i}] composite weights_id A-component {a_id[:16]}… "
+                f"!= envelope bundle_id {pins['bundle_id'][:16]}…"
+            )
+            assert b_id == pins["bundle_id_b"], (
+                f"pair[{i}] composite weights_id B-component {b_id[:16]}… "
+                f"!= envelope bundle_id_b {pins['bundle_id_b'][:16]}…"
+            )
+        else:
+            # A's contra-veto bypassed B: weights_id is single bundle_id_a
+            assert wid == pins["bundle_id"], (
+                f"pair[{i}] ensemble_active=False but weights_id "
+                f"{wid[:16]}… != envelope bundle_id "
+                f"{pins['bundle_id'][:16]}…"
+            )
+            assert "+" not in wid, (
+                f"pair[{i}] ensemble_active=False but weights_id contains "
+                f"'+' — should be single 64-char bundle_id_a only."
+            )
