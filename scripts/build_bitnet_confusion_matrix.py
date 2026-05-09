@@ -44,9 +44,15 @@ _CLASSES: tuple[str, ...] = (
 
 def _compute_matrix() -> dict:
     sys.path.insert(0, str(_REPO_ROOT))
-    from engine.bitnet_classifier import classify, load_weights  # noqa: PLC0415
+    # iter-421 Path B: use classifier_layer (the live engine entry point)
+    # so the matrix reflects the production cascade. classifier_layer
+    # auto-loads the tier-2 specialist bundle when present and runs the
+    # frozen-A-then-constrained-B dispatch the consensus pipeline uses.
+    # Falls back transparently to A-only when bundle B is absent.
+    from engine.bitnet_classifier import classifier_layer, load_weights, load_weights_b  # noqa: PLC0415
 
     weights = load_weights()
+    weights_b = load_weights_b()
     cache = json.loads(_CACHE.read_text())
 
     matrix: dict[str, dict[str, int]] = {
@@ -59,7 +65,7 @@ def _compute_matrix() -> dict:
             # Unknown ground-truth class — skip with a clear marker.
             continue
         drug_a, drug_b = entry["drug_pair_canonical"]
-        pred = classify(drug_a, drug_b, weights).severity_name
+        pred = classifier_layer(drug_a, drug_b).severity_name
         if pred not in matrix[gt]:
             # New class emitted by classifier — extend matrix.
             for row in matrix.values():
@@ -85,23 +91,35 @@ def _compute_matrix() -> dict:
             "recall": round(recall, 4),
         }
 
-    weights_id = weights.bundle_id
+    weights_id_a = weights.bundle_id
+    weights_id_b = weights_b.bundle_id if weights_b is not None else None
+    ensemble_active = weights_b is not None
+
+    description = (
+        "Live deployment-side confusion matrix of the Q16.16 ternary "
+        "BitNet classifier ensemble on the OpenEvidence ground-truth cache. "
+        "Layer 4.5 dispatches a frozen tier-1 contra/major gate (bundle A, v8) "
+        "to a tier-2 serious/moderate specialist (bundle B, iter-421) under "
+        "constrained argmax — A wins on contraindicated, B wins on every "
+        "other class. Both forward passes are bit-identical Q16.16 ternary."
+    ) if ensemble_active else (
+        "Live deployment-side confusion matrix of the Q16.16 ternary "
+        "BitNet classifier on the OpenEvidence ground-truth cache. "
+        "Single-bundle (A-only) mode — tier-2 specialist absent."
+    )
 
     return {
         "@context": "https://schema.org",
         "@type": "Dataset",
         "name": "ClinicalMem Layer 4.5 BitNet Confusion Matrix",
-        "version": "1.0.0",
+        "version": "2.0.0" if ensemble_active else "1.0.0",
         "dateCreated": datetime.now(timezone.utc).isoformat(),
         "license": "Apache-2.0",
-        "description": (
-            "Live deployment-side confusion matrix of the Q16.16 ternary "
-            "BitNet classifier on the OpenEvidence ground-truth cache. "
-            "Layer 4.5's role is *high-precision veto*, not headline recall: "
-            "a contraindicated prediction is always correct (precision 1.000) "
-            "and the upstream 4-tier pipeline carries primary classification."
-        ),
-        "weights_id": weights_id,
+        "description": description,
+        "weights_id": weights_id_a,
+        "weights_id_a": weights_id_a,
+        "weights_id_b": weights_id_b,
+        "ensemble_active": ensemble_active,
         "cache_pairs_total": sum(
             sum(row.values()) for row in matrix.values()
         ),

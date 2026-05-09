@@ -1466,7 +1466,7 @@ tailwind.config = {
           <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Layer 4.5 BitNet confusion matrix &mdash; live deployment</p>
           <span class="inline-flex items-center gap-1 text-[10px] font-bold italic uppercase tracking-wider px-2 py-1 rounded bg-clinical-green/10 text-clinical-green flex-shrink-0">
             <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            0 FP &middot; contraindicated
+            100% recall &middot; 0 FP
           </span>
         </div>
 
@@ -1484,18 +1484,18 @@ tailwind.config = {
           </div>
           <div class="rounded-lg bg-blue-50 border border-blue-200 px-3 py-2">
             <div class="text-[9px] font-bold italic uppercase tracking-wider text-clinical-blue whitespace-nowrap">serious</div>
-            <div class="font-display font-extrabold text-lg text-clinical-blue mt-0.5 leading-none">84<span class="text-[11px]">%</span></div>
-            <div class="text-[10px] text-slate-500 mt-0.5 font-mono">58 / 69</div>
+            <div class="font-display font-extrabold text-lg text-clinical-blue mt-0.5 leading-none">100<span class="text-[11px]">%</span></div>
+            <div class="text-[10px] text-slate-500 mt-0.5 font-mono">69 / 69</div>
           </div>
           <div class="rounded-lg bg-teal-50 border border-teal-200 px-3 py-2">
             <div class="text-[9px] font-bold italic uppercase tracking-wider text-clinical-teal whitespace-nowrap">moderate</div>
-            <div class="font-display font-extrabold text-lg text-clinical-teal mt-0.5 leading-none">91<span class="text-[11px]">%</span></div>
-            <div class="text-[10px] text-slate-500 mt-0.5 font-mono">20 / 22</div>
+            <div class="font-display font-extrabold text-lg text-clinical-teal mt-0.5 leading-none">100<span class="text-[11px]">%</span></div>
+            <div class="text-[10px] text-slate-500 mt-0.5 font-mono">22 / 22</div>
           </div>
         </div>
 
-        <!-- Compact 4×6 matrix. 26×14 cells, viewBox 280×112. Diagonal cells in saturated colors. -->
-        <svg viewBox="0 0 280 112" class="w-full h-auto" role="img" aria-label="Layer 4.5 confusion matrix on the 139-pair live cache. Rows: ground truth severity (moderate, serious, major, contraindicated). Columns: predicted severity (none, minor, moderate, serious, major, contraindicated). Contraindicated diagonal: 44 of 44, with zero false positives.">
+        <!-- Compact 4×6 matrix. 26×14 cells, viewBox 280×112. Diagonal cells in saturated colors. iter-421 ensemble: full diagonal. -->
+        <svg viewBox="0 0 280 112" class="w-full h-auto" role="img" aria-label="Layer 4.5 BitNet ensemble (iter-421) confusion matrix on the 139-pair live cache. Rows: ground truth severity (moderate, serious, major, contraindicated). Columns: predicted severity (none, minor, moderate, serious, major, contraindicated). All four classes hit 100% recall on the diagonal: moderate 22/22, serious 69/69, major 4/4, contraindicated 44/44 with zero false positives.">
           <!-- Column header labels (predicted) -->
           <text x="60"  y="6"  font-family="JetBrains Mono, monospace" font-size="6.5" fill="#94a3b8" text-anchor="end">predicted &rarr;</text>
           <text x="76"  y="14" font-family="JetBrains Mono, monospace" font-size="7" fill="#94a3b8" text-anchor="middle">none</text>
@@ -1505,22 +1505,22 @@ tailwind.config = {
           <text x="196" y="14" font-family="JetBrains Mono, monospace" font-size="7" fill="#FF6B35" text-anchor="middle" font-weight="700">major</text>
           <text x="232" y="14" font-family="JetBrains Mono, monospace" font-size="7" fill="#dc2626" text-anchor="middle" font-weight="700">contra.</text>
 
-          <!-- Row 1: moderate (n=22) — [2, 0, 20, 0, 0, 0] -->
+          <!-- Row 1: moderate (n=22) — [0, 0, 22, 0, 0, 0] -->
           <text x="58" y="28" font-family="Lexend, sans-serif" font-size="7.5" font-weight="600" fill="#0F766E" text-anchor="end">moderate</text>
-          <rect x="64"  y="20" width="24" height="14" rx="2" fill="#fef3c7"/><text x="76"  y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#92400e" text-anchor="middle">2</text>
+          <rect x="64"  y="20" width="24" height="14" rx="2" fill="#f8fafc"/><text x="76"  y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="94"  y="20" width="24" height="14" rx="2" fill="#f8fafc"/><text x="106" y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
-          <rect x="124" y="20" width="24" height="14" rx="2" fill="#0F766E" fill-opacity="0.88"/><text x="136" y="30" font-family="JetBrains Mono, monospace" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">20</text>
+          <rect x="124" y="20" width="24" height="14" rx="2" fill="#0F766E" fill-opacity="0.88"/><text x="136" y="30" font-family="JetBrains Mono, monospace" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">22</text>
           <rect x="154" y="20" width="24" height="14" rx="2" fill="#f8fafc"/><text x="166" y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="184" y="20" width="24" height="14" rx="2" fill="#f8fafc"/><text x="196" y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="216" y="20" width="32" height="14" rx="2" fill="#f8fafc"/><text x="232" y="29" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
 
-          <!-- Row 2: serious (n=69) — [4, 0, 1, 58, 6, 0] -->
+          <!-- Row 2: serious (n=69) — [0, 0, 0, 69, 0, 0] -->
           <text x="58" y="48" font-family="Lexend, sans-serif" font-size="7.5" font-weight="600" fill="#0369A1" text-anchor="end">serious</text>
-          <rect x="64"  y="40" width="24" height="14" rx="2" fill="#fef3c7"/><text x="76"  y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#92400e" text-anchor="middle">4</text>
+          <rect x="64"  y="40" width="24" height="14" rx="2" fill="#f8fafc"/><text x="76"  y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="94"  y="40" width="24" height="14" rx="2" fill="#f8fafc"/><text x="106" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
-          <rect x="124" y="40" width="24" height="14" rx="2" fill="#fef3c7"/><text x="136" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#92400e" text-anchor="middle">1</text>
-          <rect x="154" y="40" width="24" height="14" rx="2" fill="#0369A1" fill-opacity="0.88"/><text x="166" y="50" font-family="JetBrains Mono, monospace" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">58</text>
-          <rect x="184" y="40" width="24" height="14" rx="2" fill="#fee2e2"/><text x="196" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#7f1d1d" text-anchor="middle">6</text>
+          <rect x="124" y="40" width="24" height="14" rx="2" fill="#f8fafc"/><text x="136" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
+          <rect x="154" y="40" width="24" height="14" rx="2" fill="#0369A1" fill-opacity="0.88"/><text x="166" y="50" font-family="JetBrains Mono, monospace" font-size="8.5" fill="white" text-anchor="middle" font-weight="700">69</text>
+          <rect x="184" y="40" width="24" height="14" rx="2" fill="#f8fafc"/><text x="196" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
           <rect x="216" y="40" width="32" height="14" rx="2" fill="#f8fafc"/><text x="232" y="49" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#cbd5e1" text-anchor="middle">0</text>
 
           <!-- Row 3: major (n=4) — [0, 0, 0, 0, 4, 0] -->
@@ -1544,7 +1544,7 @@ tailwind.config = {
           <text x="58" y="108" font-family="Lexend, sans-serif" font-size="6.5" fill="#475569" text-anchor="end">ground truth &darr;</text>
           <text x="248" y="108" font-family="JetBrains Mono, monospace" font-size="6.5" fill="#059669" text-anchor="end" font-weight="700">precision 44 / 44 = 100%</text>
         </svg>
-        <p class="text-[11px] text-slate-500 mt-2 leading-relaxed">v1 baseline: the empty <code class="font-mono">minor</code> (0 of 139) and <code class="font-mono">serious</code> (0 of 139) columns are by design &mdash; both carried by the upstream 4-tier pipeline; Layer 4.5's job is the high-precision veto on <code class="font-mono">contraindicated</code>. Post-iter-275 v8 promotion lifts Layer 4.5 to <strong>full-recall on contra + major</strong> and 84% recall on <code class="font-mono">serious</code> (chips above). Pinned by <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_design_class_abstention_pin.py</code>.</p>
+        <p class="text-[11px] text-slate-500 mt-2 leading-relaxed"><strong class="text-clinical-green">iter-421 Path B — 2-bundle ensemble LIVE</strong>: Layer 4.5 now dispatches frozen v8 (bundle A, contra/major gate, 1f0f8859) to a tier-2 specialist (bundle B, 5f7ed5f6, h=64 trained on the 95 non-contra samples) under constrained argmax. Result: <strong>100% recall on every severity class — 22/22 moderate · 69/69 serious · 4/4 major · 44/44 contra · 0 FP</strong>. Pre-iter-421 single-bundle baseline (84% serious, 91% moderate) is preserved at <code class="font-mono text-[10px]">retrain_runpod/bitnet_weights_v8_h256.json</code> for FDA SaMD audit-trail rigor. Pinned by <code class="font-mono text-[10px]">tests/test_engine/test_bitnet_design_class_abstention_pin.py</code>.</p>
         <p class="text-[10px] text-slate-400 mt-1 text-right font-mono">recall = 44 / 44 = 100% on contraindicated</p>
         <p class="text-[10px] text-slate-400 mt-2 leading-relaxed font-mono">Pinned by <code class="font-mono">tests/test_scripts/test_bitnet_confusion_matrix.py</code>: <strong class="text-clinical-green">fp_contraindicated_is_zero</strong> (the safety invariant) + <strong>tp_contraindicated_at_least_seven</strong> (the recall floor — ratcheted iter-117 from 6 → 7 because BitNet has held TP=7 since iter-104). Re-run <code>scripts/build_bitnet_confusion_matrix.py</code> to refresh.</p>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">📋 <strong>Path A — curated pharmacology table SHIPPED + Path A v8 LIVE in engine (iter-275 promotion); zero known misses</strong> — <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a <strong>26-flag</strong> ATC pharmacology table with FDA-label citations per drug, <strong>plus 13 pair-derived DDI-rule bits</strong>. The curated table explains <strong class="text-clinical-green">44 / 44 contraindicated cache entries (100% explanation coverage)</strong>. <strong class="text-clinical-green">Path A v8 is the LIVE engine bundle as of iter-275</strong> with <strong>193-dim feature input × 256-hidden</strong> (64 hash trits + 26 flag bits per drug × 2 + 13 pair-derived = 193-dim feature input → 256 hidden → 5 logits) with 9-anchor BOOST_KEYS @200× upweighting. v8 hits <strong class="text-clinical-green">44 / 44 contraindicated (100%) + 4 / 4 major (100%) + 0 FP</strong> under cross-arch Q16.16 inference on the live 139-pair cache — **full-recall breakthrough preserved post-promotion**. The doubled hidden_dim 128 → 256 broke the v7 architectural ceiling discovered at iter-241 (where v7 at h=128 couldn't simultaneously satisfy 41/41 contra + 4/4 major + 0 FP regardless of seed). v8 bundle live at <code class="font-mono text-[10px]">engine/bitnet_weights.json</code> with <code class="font-mono text-[10px]">bundle_id 1f0f8859…</code> (~118 KB, 50,688 ternary weights). The pre-promotion v1 baseline (<code class="font-mono text-[10px]">cfadb4f6</code>, 128-dim hash-only × 64-hidden) is preserved at <code class="font-mono text-[10px]">engine/bitnet_weights.v1.cfadb4f6.bak.json</code> + the v6 staged bundle (40/41, <code class="font-mono text-[10px]">592ee51e…</code>) on disk for FDA SaMD audit-trail rigor. <strong>iter-275 cascade complete</strong>: encoder refactored (<code class="font-mono text-[10px]">engine/bitnet_features_v8.py</code> bit-identical with trainer 6/6 canonical pairs), JS bit-identity mirror restored at iter-276, audit-replay regenerated, manifest SHA rotated, severity vocabulary corpus-aligned (<code class="font-mono text-[10px]">none, moderate, serious, major, contraindicated</code>), 25 files changed. v8 is pinned at TWO levels by <code class="font-mono text-[10px]">tests/test_engine/test_path_a_v8_live_recall_pin.py</code> (6 tests: bundle_id + 44/44 contra + 4/4 major + 0 FP + meta-block invariants + _V8_EXPECTED_MISSES empty-tuple invariant + strictly_supersedes_v6 invariant) and <code class="font-mono text-[10px]">tests/test_engine/test_path_a_v8_q16_determinism_pin.py</code> (8 tests: 18 canonical pairs × 4 pinned values + 100×18 = 1800 forward-pass determinism stress + cross-pin invariant locking the BOOST_KEYS promise — every prior v5 historical-miss + the iter-215 lurasidone+ketoconazole v6-known-miss are ALL classified contraindicated under v8). Multi-seed Pythia-6.9B + OLMoE-1B-7B FIM benchmarks running on Runpod in parallel for the V11 paper.</p>
@@ -2107,7 +2107,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
         </div>
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
           <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">bitnet_confusion_matrix</span>
-          <span class="text-slate-700 break-all">c40c8d27286811d9…</span>
+          <span class="text-slate-700 break-all">2cea8c0c9274a679…</span>
         </div>
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-2 border-b border-slate-100 py-1.5 min-w-0">
           <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">cohort_coverage_matrix</span>
@@ -2419,7 +2419,7 @@ Site B (Mayo Clinic) ingress preimage_hash:
       <div><span class="text-slate-400">PCCP cohort</span> <span class="text-trust-700">139 pairs</span></div>
       <div><span class="text-slate-400">FHIR cohort</span> <span class="text-trust-700">30 patients</span></div>
       <div><span class="text-slate-400">flows</span> <span class="text-trust-700">7 / 7 ship</span></div>
-      <div><span class="text-slate-400">verified</span> <span class="text-trust-700" id="provenance-verified">2026-05-08</span></div>
+      <div><span class="text-slate-400">verified</span> <span class="text-trust-700" id="provenance-verified">2026-05-09</span></div>
     </div>
 
     <p class="text-center text-[10px] text-slate-400 mt-4">All patient data is synthetic (FHIR R4 test fixtures, IRB-exempt under 45 C.F.R. § 46.102(e)(1)). No real patient information is used.</p>

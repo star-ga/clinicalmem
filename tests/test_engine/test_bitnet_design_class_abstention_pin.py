@@ -98,89 +98,75 @@ def test_bitnet_never_predicts_serious():
 
 
 def test_demo_cites_design_invariant_near_confusion_matrix():
-    """Demo must say 'serious column is by design' near the confusion-matrix."""
+    """Demo must describe Layer 4.5's architectural role near the matrix.
+
+    iter-421 Path B replaced the v1/v8 'high-precision veto' narrative
+    (which corresponded to the abstention architecture) with a frozen-
+    A-to-B-cascade narrative (100% recall on every class via the
+    ensemble). The pin's intent — judges should see Layer 4.5's
+    architectural role explicitly, not just the chart — is preserved;
+    the rhetoric anchors are rotated to match the new architecture.
+    """
     text = _DEMO.read_text()
-    # Specific phrasing that's been in the demo since the confusion-matrix
-    # SVG was added — pinning the rhetoric prevents silent removal during
-    # a future redesign that drops the design-rationale claim.
-    anchor = "empty"  # leading word
-    design = "serious"  # column class
-    by_design = "by design"  # rationale
-    veto = "veto on"  # safety-case rationale
-    contra = "contraindicated"  # the role Layer 4.5 actually fills
-    # Locality: all five tokens must appear within a single 600-character
-    # window (heuristic — covers the existing single-paragraph claim).
+    # iter-421 ensemble narrative anchors.
+    anchors = (
+        "ensemble",         # the architectural primitive of iter-421
+        "constrained argmax",  # the dispatcher rule (B's class-mask)
+        "100% recall",      # the load-bearing claim
+        "tier-2",           # B's role descriptor
+        "contra",           # A's preserved role
+    )
     found = False
     n = len(text)
     for i in range(0, n, 200):
-        window = text[i : i + 600]
-        if (
-            anchor in window and design in window and by_design in window
-            and veto in window and contra in window
-        ):
+        window = text[i : i + 800]
+        if all(a in window for a in anchors):
             found = True
             break
     assert found, (
-        "docs/demo.html must contain the 'empty serious column is by "
-        "design — ... veto on contraindicated' design-rationale claim "
-        "near the confusion-matrix SVG. The architectural invariant "
-        "(BitNet abstains from minor/serious) is the load-bearing "
-        "safety-case justification for the layer's existence; the demo "
-        "must state it explicitly so judges can cross-check it against "
-        "the pinned column-totals."
+        "docs/demo.html must contain the iter-421 ensemble architectural "
+        "claim near the confusion-matrix SVG. All of "
+        f"{anchors!r} must appear within a single 800-char window so "
+        "judges can cross-check the dispatcher narrative against the "
+        "actual matrix and bundle_ids."
     )
 
 
-def test_demo_names_both_abstained_classes_with_counts():
-    """Demo must name BOTH `minor` and `serious` as abstained classes
-    with explicit live column counts (e.g. `0 of 118`).
+def test_demo_names_ensemble_classes_with_counts():
+    """Demo must name all four severity classes with their live counts
+    (e.g. `22/22 moderate`) near the matrix.
 
-    Iter 115 added the design-class abstention pin but only enforced
-    the rhetoric for `serious`. Iter 116 surfaces the BOTH-classes
-    fact in the demo and pins it: the design rationale applies to
-    `minor` and `serious` together (both are upstream-domain), so
-    naming only one is misleading.
-
-    A judge reading the confusion-matrix card should see at a glance:
-      'minor (0 of 118) and serious (0 of 118) columns are by design'
-
-    Future cache growth that bumps 118 must rotate both numbers.
+    iter-421 ensemble achieves 100% recall on every class. The pin's
+    intent — judges should be able to cross-check the matrix JSON
+    against demo prose without running tests — is preserved with new
+    anchors rotated to match the iter-421 cohort sizes (44 contra +
+    4 major + 69 serious + 22 moderate).
     """
-    matrix = json.loads(_CONFUSION.read_text())
-    total_pairs = sum(
-        sum(row.values()) for row in matrix["matrix"].values()
-    )
+    matrix = json.loads(_CONFUSION.read_text())["matrix"]
+    expected_counts = {}
+    for cls in ("contraindicated", "major", "serious", "moderate"):
+        total = sum(matrix[cls].values())
+        expected_counts[cls] = total
     text = _DEMO.read_text()
-    # Locate "by design" region and require BOTH class names within 300 chars
-    # AND at least one explicit "0 of N" count where N is the live total.
-    n = len(text)
-    found_classes = False
-    found_count = False
-    expected_count = f"0 of {total_pairs}"
-    for i in range(0, n, 100):
-        window = text[i : i + 600]
-        if "by design" not in window:
-            continue
-        if "minor" in window and "serious" in window:
-            found_classes = True
-        if expected_count in window:
-            found_count = True
-        if found_classes and found_count:
-            break
-    assert found_classes, (
-        "docs/demo.html confusion-matrix design-rationale claim must "
-        "name BOTH `minor` AND `serious` within ~600 chars of "
-        "'by design'. Iter-115 pin only enforced `serious`; iter-116 "
-        "extends to require both because the architectural-by-design "
-        "invariant applies symmetrically to both upstream-domain "
-        "classes (Layer 4.5 abstains from both)."
+    expected_substrings = (
+        f"{expected_counts['contraindicated']}/{expected_counts['contraindicated']} contra",
+        f"{expected_counts['major']}/{expected_counts['major']} major",
+        f"{expected_counts['serious']}/{expected_counts['serious']} serious",
+        f"{expected_counts['moderate']}/{expected_counts['moderate']} moderate",
     )
-    assert found_count, (
-        f"docs/demo.html design-rationale claim must include the "
-        f"explicit live column count '{expected_count}' so judges can "
-        f"cross-check against `docs/bitnet_confusion_matrix.json` "
-        f"without running the test. Future cache growth that bumps "
-        f"{total_pairs} must rotate the demo number."
+    n = len(text)
+    found = False
+    for i in range(0, n, 100):
+        window = text[i : i + 1000]
+        if all(s in window for s in expected_substrings):
+            found = True
+            break
+    assert found, (
+        "docs/demo.html confusion-matrix card must include all four "
+        f"per-class live counts {expected_substrings!r} within a 1000-char "
+        "window so judges can cross-check `docs/bitnet_confusion_matrix.json` "
+        "against the prose without running tests. Cache growth that bumps "
+        "any of these counts requires rotating the demo numbers in lockstep."
     )
 
 

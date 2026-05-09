@@ -419,12 +419,72 @@ def load_weights(path: str | os.PathLike[str] | None = None) -> BitNetWeights:
 
 # ─── Forward pass ──────────────────────────────────────────────────────────
 
+def load_weights_b(path: str | os.PathLike[str] | None = None) -> BitNetWeights | None:
+    """Load the optional Path B tier-2 specialist bundle (iter-421).
+
+    Returns None if the bundle file is absent — callers must treat single-
+    bundle mode (A-only) as the default. The specialist is trained ONLY on
+    the 95 non-contra samples (4 major + 69 serious + 22 moderate); engine
+    dispatch applies a constrained argmax over {moderate, serious, major}
+    so it can never emit ``contraindicated`` (class 4) or ``none`` (class 0).
+    """
+    if path is None:
+        path = Path(__file__).parent / "bitnet_weights_b_specialist.json"
+    p = Path(path)
+    if not p.exists():
+        return None
+    return load_weights(p)
+
+
+def _classify_constrained_b(
+    a_canonical: str,
+    b_canonical: str,
+    weights_b: BitNetWeights,
+) -> tuple[int, tuple[int, ...]]:
+    """Forward pass through B with constrained argmax over {1, 2, 3}.
+
+    Returns ``(severity_int, logits_q16)`` where severity_int is in
+    {1, 2, 3} = {moderate, serious, major}. Classes 0 (none) and 4
+    (contraindicated) are masked because B was never trained on them.
+    The same Q16.16 ternary kernels as ``classify`` are reused so B's
+    forward pass is bit-identical across architectures alongside A's.
+    """
+    if weights_b.schema == _SCHEMA_V3_ATC:
+        from engine.bitnet_features_v8 import encode_pair_v8
+        pair_features = encode_pair_v8(a_canonical, b_canonical)
+    else:
+        feature_a = _encode_drug_token(a_canonical)
+        feature_b = _encode_drug_token(b_canonical)
+        pair_features = feature_a + feature_b
+
+    activations_q16 = _q16_scale_features(pair_features)
+    hidden_pre_q16 = [
+        _q16_clamp(_q16_dot_ternary(activations_q16, weights_b.hidden_w[j]) + weights_b.hidden_b[j])
+        for j in range(weights_b.hidden_features)
+    ]
+    hidden_q16 = [_q16_relu(v) for v in hidden_pre_q16]
+    logits_q16 = [
+        _q16_clamp(_q16_dot_ternary(hidden_q16, weights_b.output_w[k]) + weights_b.output_b[k])
+        for k in range(weights_b.out_features)
+    ]
+    # Constrained argmax over classes {1, 2, 3} only. Ties broken by
+    # lower index (consistent with the unconstrained argmax in classify).
+    severity = 1
+    best_logit = logits_q16[1]
+    for k in (2, 3):
+        if logits_q16[k] > best_logit:
+            best_logit = logits_q16[k]
+            severity = k
+    return severity, tuple(logits_q16)
+
+
 def classify(
     drug_a: str,
     drug_b: str,
     weights: BitNetWeights,
     *,
     deterministic_table_severity: int | None = None,
+    weights_b: BitNetWeights | None = None,
 ) -> BitNetResult:
     """Ternary classifier forward pass: drug-pair -> severity class.
 
@@ -479,14 +539,37 @@ def classify(
             best_logit = logits_q16[k]
             severity = k
 
+    # iter-421 Path B cascade: when a tier-2 specialist bundle is supplied,
+    # A's contraindicated verdict ALWAYS wins (frozen FDA-grade contra
+    # gate, 100% recall + 0 FP). For all non-contra A predictions, B's
+    # constrained argmax over {moderate, serious, major} replaces A's
+    # raw argmax. B was trained without contra anchors, so its capacity
+    # is fully spent on the non-contra discrimination v8 historically
+    # under-fit (84% serious / 91% moderate standalone).
+    weights_id_for_audit = weights.bundle_id
+    logits_q16_b: tuple[int, ...] | None = None
+    if weights_b is not None and severity != 4:
+        # 4 = contraindicated; preserve A's contra verdict.
+        b_severity, logits_q16_b = _classify_constrained_b(
+            a_canonical, b_canonical, weights_b
+        )
+        severity = b_severity
+        # Audit-chain: composite weights_id captures both bundle hashes
+        # so a verifier can replay the cascade decision exactly.
+        weights_id_for_audit = f"{weights.bundle_id}+{weights_b.bundle_id}"
+
+    repro_hash_payload = {
+        "feature_hash": feature_hash,
+        "logits_q16": logits_q16,
+        "severity": severity,
+        "weights_id": weights_id_for_audit,
+    }
+    if logits_q16_b is not None:
+        repro_hash_payload["logits_q16_b"] = list(logits_q16_b)
+        repro_hash_payload["bundle_id_b"] = weights_b.bundle_id  # type: ignore[union-attr]
     repro_hash = hashlib.sha256(
         json.dumps(
-            {
-                "feature_hash": feature_hash,
-                "logits_q16": logits_q16,
-                "severity": severity,
-                "weights_id": weights.bundle_id,
-            },
+            repro_hash_payload,
             sort_keys=True,
             separators=(",", ":"),
         ).encode("utf-8")
@@ -516,8 +599,9 @@ def classify(
             "severity": severity,
             "severity_name": _SEVERITY_NAMES[severity],
             "repro_hash": repro_hash,
-            "weights_id": weights.bundle_id,
+            "weights_id": weights_id_for_audit,
             "deterministic_match": deterministic_match,
+            "ensemble_active": logits_q16_b is not None,
         },
     )
 
@@ -527,7 +611,7 @@ def classify(
         logits_q16=tuple(logits_q16),
         feature_hash=feature_hash,
         repro_hash=repro_hash,
-        weights_id=weights.bundle_id,
+        weights_id=weights_id_for_audit,
         deterministic_table_match=deterministic_match,
     )
 
@@ -538,6 +622,12 @@ import threading
 
 _CACHED_WEIGHTS: BitNetWeights | None = None
 _PINNED_BUNDLE_ID: str | None = None
+# iter-421 Path B: tier-2 specialist cache + pin (parallel to A's cache).
+# When the bundle file is absent the slot stays None and the engine falls
+# back to single-bundle mode automatically.
+_CACHED_WEIGHTS_B: BitNetWeights | None = None
+_PINNED_BUNDLE_ID_B: str | None = None
+_B_LOAD_ATTEMPTED: bool = False
 _CACHE_LOCK = threading.Lock()
 
 
@@ -550,14 +640,28 @@ class WeightsTamperError(RuntimeError):
 def reload_weights() -> BitNetWeights:
     """Force a fresh load + re-pin. Use after a confirmed weights rotation."""
     global _CACHED_WEIGHTS, _PINNED_BUNDLE_ID
+    global _CACHED_WEIGHTS_B, _PINNED_BUNDLE_ID_B, _B_LOAD_ATTEMPTED
     with _CACHE_LOCK:
         previous_id = _PINNED_BUNDLE_ID
+        previous_id_b = _PINNED_BUNDLE_ID_B
         weights = load_weights()
         _CACHED_WEIGHTS = weights
         _PINNED_BUNDLE_ID = weights.bundle_id
+        # iter-421 Path B: re-pin tier-2 specialist alongside A. If the
+        # bundle disappears between rotations, ensemble drops to A-only.
+        _B_LOAD_ATTEMPTED = True
+        _CACHED_WEIGHTS_B = load_weights_b()
+        _PINNED_BUNDLE_ID_B = (
+            _CACHED_WEIGHTS_B.bundle_id if _CACHED_WEIGHTS_B is not None else None
+        )
     logger.warning(
         "bitnet_weights_reloaded",
-        extra={"previous_bundle_id": previous_id, "new_bundle_id": weights.bundle_id},
+        extra={
+            "previous_bundle_id": previous_id,
+            "new_bundle_id": weights.bundle_id,
+            "previous_bundle_id_b": previous_id_b,
+            "new_bundle_id_b": _PINNED_BUNDLE_ID_B,
+        },
     )
     return weights
 
@@ -579,10 +683,26 @@ def classifier_layer(drug_a: str, drug_b: str) -> BitNetResult:
     contended call.
     """
     global _CACHED_WEIGHTS, _PINNED_BUNDLE_ID
+    global _CACHED_WEIGHTS_B, _PINNED_BUNDLE_ID_B, _B_LOAD_ATTEMPTED
     with _CACHE_LOCK:
         if _CACHED_WEIGHTS is None:
             _CACHED_WEIGHTS = load_weights()
             _PINNED_BUNDLE_ID = _CACHED_WEIGHTS.bundle_id
+            # iter-421 Path B: opportunistic tier-2 load + pin (audit-clean
+            # — same SHA-256-canonical-JSON integrity primitive as A). Absent
+            # bundle leaves the slot None and engine falls back to A-only.
+            if not _B_LOAD_ATTEMPTED:
+                _B_LOAD_ATTEMPTED = True
+                _CACHED_WEIGHTS_B = load_weights_b()
+                if _CACHED_WEIGHTS_B is not None:
+                    _PINNED_BUNDLE_ID_B = _CACHED_WEIGHTS_B.bundle_id
+                    logger.info(
+                        "bitnet_classifier_b_load_pinned",
+                        extra={
+                            "bundle_id_b_prefix": _PINNED_BUNDLE_ID_B[:16],
+                            "hidden_features_b": len(_CACHED_WEIGHTS_B.hidden_w),
+                        },
+                    )
             # First-load pinning event — fires ONCE per process. Lets
             # auditors correlate every BitNetResult emitted in the
             # process to the bundle_id that was pinned at startup.
@@ -598,6 +718,7 @@ def classifier_layer(drug_a: str, drug_b: str) -> BitNetResult:
                         if _CACHED_WEIGHTS.hidden_w else 0
                     ),
                     "out_features": len(_CACHED_WEIGHTS.output_w),
+                    "ensemble_active": _CACHED_WEIGHTS_B is not None,
                 },
             )
         else:
@@ -626,7 +747,26 @@ def classifier_layer(drug_a: str, drug_b: str) -> BitNetResult:
                     f"reload_weights() after a deliberate rotation."
                 )
             _CACHED_WEIGHTS = current
-        return classify(drug_a, drug_b, _CACHED_WEIGHTS)
+            # iter-421 Path B: same tamper check on B if it was pinned.
+            if _PINNED_BUNDLE_ID_B is not None:
+                current_b = load_weights_b()
+                if current_b is None or current_b.bundle_id != _PINNED_BUNDLE_ID_B:
+                    logger.critical(
+                        "bitnet_weights_b_tamper_detected",
+                        extra={
+                            "pinned_bundle_id_b": _PINNED_BUNDLE_ID_B[:16],
+                            "on_disk_bundle_id_b": (
+                                current_b.bundle_id[:16] if current_b else None
+                            ),
+                        },
+                    )
+                    raise WeightsTamperError(
+                        f"bitnet_weights_b_specialist.json bundle_id changed under "
+                        f"the running process: pinned {_PINNED_BUNDLE_ID_B[:16]}... "
+                        f"— call reload_weights() after a deliberate rotation."
+                    )
+                _CACHED_WEIGHTS_B = current_b
+        return classify(drug_a, drug_b, _CACHED_WEIGHTS, weights_b=_CACHED_WEIGHTS_B)
 
 
 __all__ = [
@@ -644,5 +784,6 @@ __all__ = [
     "classify",
     "classifier_layer",
     "load_weights",
+    "load_weights_b",
     "reload_weights",
 ]

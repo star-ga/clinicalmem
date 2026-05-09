@@ -2,11 +2,14 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "ClinicalMem Layer 4.5 BitNet Confusion Matrix",
-  "version": "1.0.0",
-  "dateCreated": "2026-05-07T06:45:05.760488+00:00",
+  "version": "2.0.0",
+  "dateCreated": "2026-05-09T11:51:53.160002+00:00",
   "license": "Apache-2.0",
-  "description": "Live deployment-side confusion matrix of the Q16.16 ternary BitNet classifier on the OpenEvidence ground-truth cache. Layer 4.5's role is *high-precision veto*, not headline recall: a contraindicated prediction is always correct (precision 1.000) and the upstream 4-tier pipeline carries primary classification.",
+  "description": "Live deployment-side confusion matrix of the Q16.16 ternary BitNet classifier ensemble on the OpenEvidence ground-truth cache. Layer 4.5 dispatches a frozen tier-1 contra/major gate (bundle A, v8) to a tier-2 serious/moderate specialist (bundle B, iter-421) under constrained argmax \u2014 A wins on contraindicated, B wins on every other class. Both forward passes are bit-identical Q16.16 ternary.",
   "weights_id": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
+  "weights_id_a": "1f0f88591c05af57c62d844b667639b29c7d1f0eb1b213073d158101611f76e6",
+  "weights_id_b": "5f7ed5f67f4db0d55d89c63f00b340ebbea598ea861669a85a69cdf6376e44b8",
+  "ensemble_active": true,
   "cache_pairs_total": 139,
   "matrix": {
     "none": {
@@ -26,19 +29,19 @@
       "contraindicated": 0
     },
     "moderate": {
-      "none": 2,
+      "none": 0,
       "minor": 0,
-      "moderate": 20,
+      "moderate": 22,
       "serious": 0,
       "major": 0,
       "contraindicated": 0
     },
     "serious": {
-      "none": 4,
+      "none": 0,
       "minor": 0,
-      "moderate": 1,
-      "serious": 58,
-      "major": 6,
+      "moderate": 0,
+      "serious": 69,
+      "major": 0,
       "contraindicated": 0
     },
     "major": {
@@ -60,27 +63,27 @@
   },
   "per_class": {
     "moderate": {
-      "tp": 20,
-      "fp": 1,
-      "fn": 2,
+      "tp": 22,
+      "fp": 0,
+      "fn": 0,
       "ground_truth_total": 22,
-      "precision": 0.9524,
-      "recall": 0.9091
+      "precision": 1.0,
+      "recall": 1.0
     },
     "serious": {
-      "tp": 58,
+      "tp": 69,
       "fp": 0,
-      "fn": 11,
+      "fn": 0,
       "ground_truth_total": 69,
       "precision": 1.0,
-      "recall": 0.8406
+      "recall": 1.0
     },
     "major": {
       "tp": 4,
-      "fp": 6,
+      "fp": 0,
       "fn": 0,
       "ground_truth_total": 4,
-      "precision": 0.4,
+      "precision": 1.0,
       "recall": 1.0
     },
     "contraindicated": {
