@@ -216,9 +216,10 @@ artifact. Audit map:
    released 2026-05-04) shipped an `http_transport.py` module but
    it is a **single-workspace REST adapter** for non-MCP clients
    (Slack bots / Streamlit / etc.), NOT a peer-to-peer federation
-   transport; v3.10.0 ships no new federation-transport module
-   either, so the dedicated MIC@2 federation transport adapter
-   targets a future mind-mem release.
+   transport; the v3.10.x line through v3.10.8 (released 2026-05-08)
+   ships no new federation-transport module either — it is
+   hook-installer + CLI + docs only — so the dedicated MIC@2
+   federation transport adapter targets a future mind-mem release.
 4. **6-LLM US-based consensus surface (Layer 4) is implementation-only.** The
    API-key-required path is wired but the eval ran against the
    deterministic Layer 1 / Layer 2 cache / Layer 4.5 BitNet path.

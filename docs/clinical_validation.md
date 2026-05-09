@@ -181,11 +181,12 @@ Honest gaps for the May 11 hackathon submission:
   demo `scripts/federation_mock_demo.py` exercises 16 of those 21
   end-to-end; the 5 X25519-sealing invariants are declared but
   await a dedicated MIC@2 federation-transport adapter targeting
-  a future mind-mem release). mind-mem v3.10.0 is shipped and
-  pinned (released 2026-05-07) but ships no new federation-
-  transport module either — its `http_transport.py` remains a
-  single-workspace REST adapter for non-MCP clients, not p2p
-  federation. The live transport (MIC@2/MAP/binary over a true
+  a future mind-mem release). mind-mem v3.10.8 is shipped and
+  pinned (released 2026-05-08; the v3.10.x line through v3.10.8
+  is hook-installer + CLI + docs only) but ships no new
+  federation-transport module either — its `http_transport.py`
+  remains a single-workspace REST adapter for non-MCP clients,
+  not p2p federation. The live transport (MIC@2/MAP/binary over a true
   peer-to-peer federation transport) is being implemented in
   parallel by the upstream mind-mem team and is not yet runnable
   end-to-end.
