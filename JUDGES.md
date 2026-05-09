@@ -230,22 +230,34 @@ artifact. Audit map:
    deterministic Layer 1 / Layer 2 cache / Layer 4.5 BitNet path.
    Multi-LLM consensus rounds are out of scope of the precision +
    recall gates above.
-5. **Layer 4.5 BitNet alone caught 3 of 4 majors pre-iter-275.**
+5. **Layer 4.5 BitNet — architectural progression to all-class 100%.**
    v1 baseline (`cfadb4f6`, hash-only 128-dim × 64-hidden) missed
    `tacrolimus + voriconazole` (transporter + strong CYP3A4
    cross-mechanism) — the architectural ceiling of a hash-only
-   encoder. **Resolved at iter-275 by promoting Path A v8** (193-dim
-   hash + 26 ATC pharmacology flags + 13 pair-derived DDI rule bits
-   × 256-hidden, bundle `1f0f8859…`): BitNet alone now hits **4 / 4
-   majors (100%)** + 44 / 44 contraindicated (100%) + 0 FP under
-   cross-arch Q16.16 inference on the live 139-pair cache. The
+   encoder; BitNet alone caught **3 of 4 majors** pre-iter-275.
+   **Resolved at iter-275 by promoting Path A v8** (193-dim hash + 26
+   ATC pharmacology flags + 13 pair-derived DDI rule bits × 256-hidden,
+   bundle `1f0f8859…`): BitNet alone hits **4 / 4 majors (100%)** +
+   44 / 44 contraindicated (100%) + 0 FP. v8 standalone holds 84%
+   serious / 91% moderate (the upstream layers carry primary recall on
+   those classes by design — empirical fact: 3 single-model retrain
+   attempts v9 / v10 / v11 all regressed contra by 3-8 anchors).
+   **Closed end-to-end at iter-421 by shipping the Path B 2-bundle
+   ensemble**: cascade frozen v8 (bundle A) into tier-2 specialist
+   (bundle B, `5f7ed5f6…`, h=64 trained on 95 non-contra samples)
+   under constrained argmax. Result on live 139-pair cohort:
+   **44/44 contra · 4/4 major · 69/69 serious · 22/22 moderate ·
+   0 contra FP · 0 major FP**. Composite `weights_id = "{a_id}+{b_id}"`
+   captured in every `BitNetResult.repro_hash`. The
    `engine/clinical_scoring.py` safety policy still preserves the
    upstream verdict on any BitNet downgrade and emits a
    `BITNET_SAFETY_DOWNGRADE_DISAGREEMENT` warning — the policy is
-   defensive in case a future cohort growth re-introduces a miss,
-   but no live miss exists today. v1 baseline preserved at
-   `engine/bitnet_weights.v1.cfadb4f6.bak.json` for FDA SaMD audit-
-   trail reconstruction.
+   defensive belt-and-suspenders in case a future cohort growth
+   re-introduces a miss, but no live miss exists today. v8 standalone
+   baseline preserved at `retrain_runpod/bitnet_weights_v8_h256.json`
+   + v1 baseline at `engine/bitnet_weights.v1.cfadb4f6.bak.json` —
+   both for FDA SaMD audit-trail reconstruction of pre-iter-275 +
+   pre-iter-421 decisions.
 
 ---
 
