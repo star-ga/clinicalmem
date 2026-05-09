@@ -50,7 +50,7 @@ from pathlib import Path
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO_ROOT))
 
-from engine.bitnet_classifier import classify, load_weights  # noqa: E402
+from engine.bitnet_classifier import classify, load_weights, load_weights_b  # noqa: E402
 
 _PINS = _REPO_ROOT / "docs" / "audit_replay_pins.json"
 _CACHE = _REPO_ROOT / "docs" / "openevidence_cache.json"
@@ -90,10 +90,22 @@ def _build_replay_set() -> list[tuple[str, str]]:
 
 def _build() -> dict:
     weights = load_weights()
+    # iter-426 audit-trail closure: pass tier-2 specialist (B) so the
+    # replay matches the iter-421 ensemble cascade live in the engine.
+    # When B is absent (legacy / single-bundle deployment), this drops
+    # to A-only mode automatically and the schema's `bundle_id_b` /
+    # ensemble_active fields stay null/false for backwards compat.
+    weights_b = load_weights_b()
     replay_set = _build_replay_set()
     pairs: list[dict] = []
     for a, b in replay_set:
-        result = classify(a, b, weights)
+        result = classify(a, b, weights, weights_b=weights_b)
+        # When weights_b is loaded AND A's argmax was non-contra, the
+        # cascade fired and result.weights_id is "{a_id}+{b_id}".
+        ensemble_fired = (
+            weights_b is not None
+            and result.weights_id != weights.bundle_id
+        )
         pairs.append({
             "drug_a": a,
             "drug_b": b,
@@ -101,21 +113,27 @@ def _build() -> dict:
             "feature_hash": result.feature_hash,
             "logits_q16": list(result.logits_q16),
             "repro_hash": result.repro_hash,
+            "weights_id": result.weights_id,
+            "ensemble_active": ensemble_fired,
         })
     return {
         "@context": "https://schema.org",
         "@type": "Dataset",
         "name": "ClinicalMem Layer 4.5 Audit-Replay Pins",
-        "version": "1.0.0",
+        "version": "2.0.0" if weights_b is not None else "1.0.0",
         "description": (
             "Canonical replay set for FDA SaMD audit-trail verification. "
             "Every pair's `repro_hash` MUST reproduce byte-for-byte when "
-            "re-classified under the same `bundle_id`. Run "
+            "re-classified under the same `bundle_id` (single-bundle) or "
+            "the same composite `{bundle_id_a}+{bundle_id_b}` (iter-421 "
+            "Path B 2-bundle ensemble cascade). Run "
             "`scripts/verify_audit_replay.py --check` to verify."
         ),
         "license": "Apache-2.0",
         "dateCreated": datetime.now(timezone.utc).isoformat(),
         "bundle_id": weights.bundle_id,
+        "bundle_id_b": weights_b.bundle_id if weights_b is not None else None,
+        "ensemble_active": weights_b is not None,
         "pairs": pairs,
     }
 
@@ -135,12 +153,30 @@ def _check(verbose: bool = True) -> tuple[bool, dict]:
             "live": weights.bundle_id,
             "remediation": "re-run scripts/verify_audit_replay.py to refresh pins",
         }
+    # iter-426 audit-trail closure: load tier-2 specialist (B) and
+    # require its bundle_id matches the pinned counterpart. Single-
+    # bundle (legacy) pins have bundle_id_b == None and we run the
+    # check in A-only mode for backwards compat.
+    weights_b = load_weights_b()
+    pinned_bundle_id_b = pinned.get("bundle_id_b")
+    if pinned_bundle_id_b is not None:
+        if weights_b is None or weights_b.bundle_id != pinned_bundle_id_b:
+            return False, {
+                "reason": "bundle_id_b_rotated_or_missing",
+                "pinned_b": pinned_bundle_id_b,
+                "live_b": weights_b.bundle_id if weights_b else None,
+                "remediation": "re-run scripts/verify_audit_replay.py to refresh pins",
+            }
+    # Pre-iter-421 pins (no bundle_id_b key) replay under A-only mode
+    # even when a B bundle is on disk — preserves legacy decision
+    # replayability across the iter-421 cascade promotion.
+    weights_b_for_replay = weights_b if pinned_bundle_id_b is not None else None
 
     mismatches: list[dict] = []
     matches: int = 0
     for entry in pinned["pairs"]:
         a, b = entry["drug_a"], entry["drug_b"]
-        result = classify(a, b, weights)
+        result = classify(a, b, weights, weights_b=weights_b_for_replay)
         if result.repro_hash != entry["repro_hash"]:
             mismatches.append({
                 "drug_a": a,
