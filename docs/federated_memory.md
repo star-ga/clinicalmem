@@ -205,9 +205,16 @@ runnable and meaningful after the real transport ships.
 - `scripts/federation_mock_demo.py` — **shipped** (end-to-end
   runnable proof of the contract; mock in-process transport)
 - `mind-mem` MIC@2 / MAP / binary multi-machine transport —
-  **in active development** by the upstream mind-mem team
-- ClinicalMem federation client wiring — pending mind-mem v3.x
-  release; the contract above pins the API surface
+  **scheduled for v4.0 "Platform Scale"** per upstream ROADMAP.md
+  (federated recall + gRPC transport are explicitly v4.0 work,
+  out of scope for v3.12). The v3.10.x..v3.11.x line through
+  v3.11.1 ships hook-installer + CLI + docs (v3.10.x) and quality-
+  gate + typed-lineage + recall-explainability (v3.11.x) — none
+  transport-related.
+- ClinicalMem federation client wiring — pending mind-mem v4.0
+  "Platform Scale" release; the contract above pins the API
+  surface, ready to drop in when the upstream transport adapter
+  ships.
 
 This document tracks ClinicalMem's federation architecture; for
 mind-mem's transport-layer status, see the upstream mind-mem
