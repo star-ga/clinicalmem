@@ -592,6 +592,27 @@ def classify(
     _pair_hash_prefix = hashlib.sha256(
         f"{a_canonical}+{b_canonical}".encode("utf-8")
     ).hexdigest()[:16]
+    # iter-432 observability ratchet: categorical `ensemble_path` field
+    # disambiguates the 3 dispatch states a forensic reader otherwise
+    # has to reverse-engineer from `weights_id` length + `ensemble_active`:
+    #   - "cascade_fired"        : A predicted non-contra AND B was loaded;
+    #                              B's constrained argmax replaced A's class.
+    #   - "a_only_contra_veto"   : A predicted contra (severity=4); B was
+    #                              available but bypassed by the safety
+    #                              contract (A's contra ALWAYS wins).
+    #   - "a_only_no_b"          : B was not loaded (single-bundle mode);
+    #                              ensemble cascade unreachable for this
+    #                              classification regardless of A's output.
+    # Strict subset of the existing `ensemble_active` bool — preserved
+    # alongside for backwards compat with parsers built pre-iter-432.
+    if logits_q16_b is not None:
+        _ensemble_path = "cascade_fired"
+    elif weights_b is None:
+        _ensemble_path = "a_only_no_b"
+    else:
+        # weights_b supplied AND severity == 4 (contra) AND no logits_q16_b:
+        # cascade was bypassed by the contra-veto safety contract.
+        _ensemble_path = "a_only_contra_veto"
     logger.debug(
         "bitnet_classified",
         extra={
@@ -602,6 +623,7 @@ def classify(
             "weights_id": weights_id_for_audit,
             "deterministic_match": deterministic_match,
             "ensemble_active": logits_q16_b is not None,
+            "ensemble_path": _ensemble_path,
         },
     )
 
