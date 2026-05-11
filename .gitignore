@@ -57,3 +57,52 @@ hf_repo/
 .wrangler/
 AUTONOMOUS_WORK_LOG.md
 CONSENSUS_*.json
+
+# Internal hackathon planning + production logs (local only)
+HACKATHON_PLAN.md
+HACKATHON_PLAN_V2.md
+PRODUCTION_LOG.md
+JUDGES.md
+DEVPOST.md
+
+# Internal voiceover generators (contain TTS API keys / voice IDs)
+generate_voiceover.py
+generate_voiceover_v4.py
+generate_voiceover_v4_cartesia.py
+generate_voiceover_v4_elevenlabs.py
+render_v4_natural.py
+sample_voices.py
+gen_gallery_nbp.py
+gen_imagen4.sh
+gen_light_gallery.py
+gen_nbp2.py
+devpost_gallery_refresh.py
+update_video_metadata.py
+upload_to_youtube.py
+upload_yt_api.py
+set_old_video_unlisted.py
+record_demo_v4.py
+
+# Generated voiceover artifacts
+vo_v4_*
+voiceover_*
+concat_v4*.txt
+voice_samples/
+recordings/
+clinicalmem-demo*.mp4
+clinicalmem-main.zip
+user_pick.mp3
+
+# Competitor research (local only)
+competitor_*.json
+competitor_recon_iter*.md
+competitive-analysis*.md
+
+# Devpost form mirrors (local only)
+devpost-form-fields.md
+devpost-submission.md
+
+# YouTube/Google OAuth credentials (NEVER commit)
+youtube_client_secret.json
+client_secret_*.json
+.youtube_token.json
