@@ -331,7 +331,7 @@
     "elderly": {
       "flags": [],
       "evidence_urls": [
-        "https://www.fda.gov/drugs/drug-safety-and-availability/preventable-adverse-drug-reactions-focus-drug-interactions"
+        "https://www.fda.gov/drugs/drug-interactions-labeling/preventable-adverse-drug-reactions-focus-drug-interactions"
       ],
       "atc": null,
       "note": "demographic, not a drug"

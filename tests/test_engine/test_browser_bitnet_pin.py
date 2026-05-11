@@ -98,8 +98,24 @@ import {{ TextEncoder }} from "util";
 globalThis.TextEncoder = TextEncoder;
 globalThis.window = {{}};
 globalThis.fetch = async (url) => {{
-  const data = readFileSync(`{_REPO_ROOT}/${{url}}`, "utf-8");
-  return {{ ok: true, status: 200, json: async () => JSON.parse(data) }};
+  // Mirror Cloudflare Pages docs/-as-root layout: try the literal URL
+  // first (covers `engine/bitnet_weights.json` which lives at the repo
+  // root), then fall back to `docs/<url>` (covers `pharmacology_flags.json`
+  // which the JS-port now defaults to per the live-deploy path fix).
+  const candidates = [`{_REPO_ROOT}/${{url}}`, `{_REPO_ROOT}/docs/${{url}}`];
+  for (const path of candidates) {{
+    try {{
+      const data = readFileSync(path, "utf-8");
+      const ct = path.endsWith(".json") ? "application/json" : "text/plain";
+      return {{
+        ok: true,
+        status: 200,
+        headers: {{ get: (k) => k.toLowerCase() === "content-type" ? ct : null }},
+        json: async () => JSON.parse(data),
+      }};
+    }} catch (e) {{ if (e.code !== "ENOENT") throw e; }}
+  }}
+  throw new Error(`fetch ${{url}}: not found in any candidate path`);
 }};
 
 const script = readFileSync("{_JS}", "utf-8");

@@ -3,10 +3,10 @@
   "@type": "Dataset",
   "name": "ClinicalMem Reproducibility Manifest",
   "version": "1.0.0",
-  "dateCreated": "2026-05-09T13:12:53.664083+00:00",
+  "dateCreated": "2026-05-11T14:09:37.591565+00:00",
   "license": "Apache-2.0",
   "description": "Content-addressed snapshot of every load-bearing deterministic artifact in ClinicalMem. An FDA SaMD auditor (or a CI gate) verifies all eight artifacts + four gate verdicts + flow plan hashes by checking this single file. Re-run `scripts/build_reproducibility_manifest.py --check` to verify the on-disk manifest matches the live computation.",
-  "git_head": "d5ff380db953c730e125514bd11612ca04a781e3",
+  "git_head": "764dff5b09b48388d32e47a1db56f17eb3c4877f",
   "artifacts": {
     "openevidence_cache": {
       "path": "docs/openevidence_cache.json",
@@ -60,7 +60,7 @@
     },
     "pharmacology_flags": {
       "path": "docs/pharmacology_flags.json",
-      "sha256": "094687817f1b6b400726f2e10a3165cb5540092cf195b35fbfb1765d52065de0",
+      "sha256": "fa28ba434398e3f64f49f41044867e6d2a4caac993cb043b3d6fa32f4550c0c8",
       "drug_count": 126,
       "flag_keys": [
         "is_cyp3a4_strong_inhibitor",
@@ -109,6 +109,6 @@
     "arch_mind_l1": "PASS",
     "audit_replay": "PASS"
   },
-  "test_count": 1395,
+  "test_count": 1425,
   "audit_replay_hint": "To verify: (1) check git_head matches the auditor's expected commit, (2) recompute SHA-256 of every artifact path and compare, (3) recompute flow plan_hashes via engine.flow_runner.compute_plan_hash, (4) re-run the four gate scripts, (5) run pytest tests/test_engine tests/test_scripts and confirm test_count is at or above the manifested value."
 }

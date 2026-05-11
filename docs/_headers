@@ -1,0 +1,26 @@
+# Cloudflare Pages headers — security, caching, and content-types
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# llms.txt + sitemap.xml + robots.txt — long cache, immutable
+/llms.txt
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Static JSON audit artifacts — long cache (content-addressed via SHA in manifest)
+/*.json
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff

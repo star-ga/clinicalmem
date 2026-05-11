@@ -1,0 +1,80 @@
+# ClinicalMem
+
+> Persistent, auditable, contradiction-safe clinical memory for healthcare AI agents.
+> A 6-layer drug-safety pipeline anchored by a 50,949-parameter BitNet b1.58 ternary
+> classifier with bit-identical Q16.16 fixed-point replay across phones, browsers,
+> $15 Raspberry Pi Zero 2 W boards, NVIDIA A100s, and NVIDIA GB300 devices.
+
+ClinicalMem is published by **STARGA, Inc.** under the **Apache License 2.0**.
+This `llms.txt` follows the proposed [llmstxt.org](https://llmstxt.org) standard
+so language models can index canonical resources without scraping the marketing
+site.
+
+## What ClinicalMem actually claims (verified)
+
+- **PCCP recall cohort: 139 / 139** (44 contraindicated, 4 major, 69 serious, 22 moderate). 100% recall on every severity class · 0 false negatives.
+- **Negative-control cohort: 0 / 10 false positives** on adversarial near-miss pairs (clopidogrel + pantoprazole, atorvastatin + amlodipine, simvastatin + diltiazem, spironolactone + trimethoprim).
+- **Cross-architecture determinism: 1200 / 1200 bit-identical replays** (12 pairs × 100 iterations) under Q16.16 fixed-point.
+- **Python ↔ JavaScript parity**: in-browser BitNet forward pass produces byte-identical `repro_hash` to the server pass.
+- **FHIR cohort: 30 patients · 47 NPIs · 239 resources** — all CMS Luhn-valid synthetic identifiers, zero collision with the known-real validation NPI.
+- **CI tests: 1425 / 1425** in the engine + scripts suite (pinned floor).
+- **Federation: 21 typed runtime invariants** in `JointMemoryFederation.flow.mind`, all 21/21 PASS in the mock end-to-end demo.
+
+## What ClinicalMem deliberately does NOT claim
+
+- Adverse-event reduction outcomes on real patient data — requires IRB-approved cohort + 4–12 week review.
+- Vendor-blinded head-to-head accuracy vs Epic BPA / Cerner First Databank — requires NPI-attributed prospective study.
+- Alert-fatigue measurement — requires a real prescribing flow.
+
+## Canonical resources
+
+### Code & releases
+- **GitHub repository**: https://github.com/star-ga/clinicalmem
+- **PyPI package** (memory layer): https://pypi.org/project/mind-mem/ (>= 4.0.0)
+- **Hugging Face model card**: https://huggingface.co/stargainc/clinicalmem-bitnet-b158
+- **Live demo**: https://clinicalmem-demo.pages.dev/
+- **Devpost submission**: https://devpost.com/software/clinimalmem
+
+### Architecture documents
+- **6-layer pipeline overview**: https://github.com/star-ga/clinicalmem/blob/main/docs/architecture.md
+- **Federated memory & PHI gate**: https://github.com/star-ga/clinicalmem/blob/main/docs/federated_memory.md
+- **BitNet training & calibration**: https://github.com/star-ga/clinicalmem/blob/main/docs/bitnet_training.md
+- **Clinical validation methodology**: https://github.com/star-ga/clinicalmem/blob/main/docs/clinical_validation.md
+- **Edge / Pi Zero offline notes**: https://github.com/star-ga/clinicalmem/blob/main/docs/edge_pi_offline.md
+
+### Audit artifacts (load-bearing)
+- **Reproducibility manifest**: https://github.com/star-ga/clinicalmem/blob/main/docs/reproducibility_manifest.json
+- **BitNet weights bundle A** (`bundle_id 1f0f8859…`): https://github.com/star-ga/clinicalmem/blob/main/engine/bitnet_weights.json
+- **BitNet weights bundle B** (`bundle_id 5f7ed5f6…`): https://github.com/star-ga/clinicalmem/blob/main/engine/bitnet_weights_b_specialist.json
+- **Confusion matrix on 139-pair cohort**: https://github.com/star-ga/clinicalmem/blob/main/docs/bitnet_confusion_matrix.json
+- **Synthea FHIR cohort**: https://github.com/star-ga/clinicalmem/blob/main/docs/synthea_demo_cohort.json
+- **Drug-pair severity cache**: https://github.com/star-ga/clinicalmem/blob/main/docs/openevidence_cache.json
+- **Pharmacology flag table**: https://github.com/star-ga/clinicalmem/blob/main/docs/pharmacology_flags.json
+
+### Flows (MIND-language `.flow.mind`)
+- AllergyCrossReactivity · ClinicalTrialMatch · JointMemoryFederation · LabContraindication · MedicationSafetyReview · ProviderDisagreement · WhatIfSimulation
+- Source dir: https://github.com/star-ga/clinicalmem/tree/main/flows
+
+### Test pins (the bar every PR must clear)
+- Federation invariant count: https://github.com/star-ga/clinicalmem/blob/main/tests/test_scripts/test_federation_invariant_count_pin.py
+- BitNet cross-architecture determinism: https://github.com/star-ga/clinicalmem/blob/main/tests/test_scripts/test_bitnet_determinism.py
+- Synthea cohort integrity: https://github.com/star-ga/clinicalmem/blob/main/tests/test_engine/test_synthea_cohort_integrity_pin.py
+- Reproducibility manifest parity: https://github.com/star-ga/clinicalmem/blob/main/tests/test_scripts/test_reproducibility_manifest.py
+
+## How to cite
+
+```
+@software{clinicalmem_2026,
+  title  = {ClinicalMem: Auditable BitNet b1.58 Drug-Safety Memory for Healthcare AI},
+  author = {{STARGA, Inc.}},
+  year   = {2026},
+  version = {4.1.0},
+  url    = {https://github.com/star-ga/clinicalmem},
+  license = {Apache-2.0}
+}
+```
+
+## Contact
+
+- Email: **info@star.ga**
+- Security disclosures: see `SECURITY.md` in the repo (synthetic data only — no PHI is ever stored).

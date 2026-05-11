@@ -35,6 +35,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import pytest
+
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _DEMO = _REPO_ROOT / "docs" / "demo.html"
 _V8_PIN = _REPO_ROOT / "tests" / "test_engine" / "test_path_a_v8_live_recall_pin.py"
@@ -96,40 +98,23 @@ def test_zero_known_misses_demo_claims_match_live_pin():
         )
 
 
+@pytest.mark.skip(reason=(
+    "velocity badge retired by user request 2026-05-11 — see "
+    "tests/test_engine/test_velocity_badge_pin.py docstring. The "
+    "'0 known misses' claim still surfaces in the autonomous-work-log "
+    "pin and the v8 callout body (test_zero_misses_callout_in_v8_body)."
+))
 def test_velocity_badge_surfaces_miss_count():
-    """The hero velocity badge MUST surface the live miss count.
-    When 0, the badge shows '0 known misses'. When >0, the badge
-    must show '<N> known miss(es)' so judges see the live state in
-    their 5-second hover window."""
+    """RETIRED — see pytestmark above."""
     miss_count = _live_v8_miss_count()
     demo = _DEMO.read_text()
-
-    # Find the velocity badge span content (anchor on .animate-pulse)
+    # body kept for diff-clarity; skipped at the pytestmark layer.
     m = re.search(
         r"animate-pulse[^<]*</span>\s*<span class=\"font-semibold\">(.*?)</span>",
         demo,
         re.DOTALL,
     )
     assert m, "velocity badge not found in demo.html"
-    badge_text = m.group(1)
-
-    if miss_count == 0:
-        assert "0 known misses" in badge_text, (
-            f"Velocity badge (`{badge_text}`) doesn't surface the live "
-            f"'0 known misses' state. The iter-256 surfacing makes the "
-            f"v8 100%-recall promise visible to judges in 5 sec — "
-            f"don't drop it."
-        )
-    else:
-        # Generic check — the badge should mention the actual count
-        assert (
-            f"{miss_count} known miss" in badge_text
-            or f"{miss_count} miss" in badge_text
-        ), (
-            f"Velocity badge (`{badge_text}`) doesn't surface the live "
-            f"miss count of {miss_count}. Update the badge in lockstep "
-            f"with cohort-growth events that introduce expected misses."
-        )
 
 
 def test_zero_misses_callout_in_v8_body():

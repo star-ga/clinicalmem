@@ -27,8 +27,8 @@
 </p>
 
 <p align="center">
-  <a href="https://clinicalmem-demo.pages.dev/demo"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
-  <a href="https://youtu.be/iDKfbA89AnI"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
+  <a href="https://clinicalmem-demo.pages.dev/"><strong>Live Demo Dashboard</strong></a> &nbsp;|&nbsp;
+  <a href="https://youtu.be/1mICQ3zBbvo"><strong>Video Demo</strong></a> &nbsp;|&nbsp;
   <a href="https://devpost.com/software/clinimalmem"><strong>DevPost</strong></a>
 </p>
 
@@ -311,7 +311,7 @@ docker compose up --build
 |---------|-----|
 | MCP Server | `https://clinicalmem-mcp.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io` |
 | A2A Agent | `https://clinicalmem-a2a.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io` |
-| Demo Dashboard | [clinicalmem-demo.pages.dev](https://clinicalmem-demo.pages.dev/demo) |
+| Demo Dashboard | [clinicalmem-demo.pages.dev](https://clinicalmem-demo.pages.dev/) |
 | Marketplace | [Prompt Opinion Marketplace](https://app.promptopinion.ai/marketplace) |
 
 ## Project Structure

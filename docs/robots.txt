@@ -1,0 +1,14 @@
+# ClinicalMem — robots policy
+# Apache-2.0 · STARGA, Inc.
+
+User-agent: *
+Allow: /
+Disallow: /__history/
+Disallow: /__cache/
+Crawl-delay: 1
+
+# Sitemaps + LLM index
+Sitemap: https://clinicalmem-demo.pages.dev/sitemap.xml
+
+# llms.txt is not indexable but linked from <link rel="alternate"> on /
+# (see https://llmstxt.org)

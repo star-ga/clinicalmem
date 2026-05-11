@@ -338,7 +338,7 @@ Agent: Google ADK | Model: gemini-2.5-flash | Protocol: A2A
 | `detect_record_contradictions` | 5-type contradiction scanner |
 | `explain_clinical_conflict` | LLM explanation with evidence citations |
 
-### v4.0 Tools
+### v4.1.0 Tools
 | Tool | Description |
 |------|-------------|
 | `what_if_scenario` | Simulate medication changes before applying |
@@ -461,4 +461,4 @@ result = consensus_verify_finding(
 
 ---
 
-*Generated from ClinicalMem v4.0.0 source — STARGA Inc.*
+*Generated from ClinicalMem v4.1.0 source — STARGA Inc.*

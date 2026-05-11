@@ -49,7 +49,7 @@ flowchart TB
 
     AUDIT --> MCP & A2A
     MCP["**MCP server** (18 tools)<br/>Streamable HTTP · Azure"]
-    A2A["**A2A agent** (13 skills)<br/>Google ADK · Azure"]
+    A2A["**A2A agent** (5 skills · 13 tools)<br/>Google ADK · Azure"]
     MCP --> AGENT
     A2A --> AGENT
 

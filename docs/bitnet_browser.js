@@ -170,11 +170,20 @@
 
   async function loadPharmFlags(url) {
     if (_PHARM_FLAGS !== null) return _PHARM_FLAGS;
-    // Default URL targets the repo-root-served deployment layout (matches
-    // how loadWeights() defaults to "engine/bitnet_weights.json").
-    const u = url || "docs/pharmacology_flags.json";
+    // Default URL is the demo-deploy-relative path (Cloudflare Pages serves
+    // docs/ as root, so docs/pharmacology_flags.json is reachable as
+    // pharmacology_flags.json from /demo.html). Pass an explicit absolute
+    // URL when calling from outside the demo.
+    const u = url || "pharmacology_flags.json";
     const resp = await fetch(u, { cache: "no-cache" });
     if (!resp.ok) throw new Error(`fetch ${u}: ${resp.status}`);
+    const ct = resp.headers.get("content-type") || "";
+    if (!ct.includes("json")) {
+      // Defensive — Cloudflare Pages serves a 200 HTML fallback on missing
+      // JSON paths; without this guard JSON.parse() fails with the cryptic
+      // "Unexpected token '<', '<!DOCTYPE '... is not valid JSON".
+      throw new Error(`fetch ${u}: expected JSON, got ${ct}`);
+    }
     _PHARM_FLAGS = await resp.json();
     return _PHARM_FLAGS;
   }

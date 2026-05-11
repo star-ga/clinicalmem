@@ -1,23 +1,29 @@
 """Pin: the active-improvement velocity badge in docs/demo.html must
 NOT carry a hardcoded `iter N` count that will drift on every cron
-fire. Use the `<N>+ iter` form (e.g. `160+ iter`) so the badge stays
-honest as the loop iterates without churning the demo every 15 min.
+fire.
 
-Iter-158 surfaced the badge with `iter 158`. Iter-159 ratcheted it to
-`160+ iter` so the cron's per-iter cadence (~96 iters/day at 15-min
-fires) doesn't visibly stale the badge before the next surface sweep
-catches it.
-
-Same drift-prevention pattern as the test count drift pin
-(_HISTORICAL_COUNTS) and the BitNet recall pin (_HISTORICAL_RECALLS).
+RETIRED 2026-05-11: the velocity badge was intentionally removed from
+the demo as part of the compaction pass — the user explicitly asked
+that the loop-cadence surface not be visible in the hero. The drift
+class this pin defended (hardcoded iter-N going stale at the 15-min
+cron cadence) is moot when the surface itself is gone. All three tests
+in this module pytest.skip with a pointer to this docstring; remove
+the entire file once the next cleanup sweep retires the file.
 """
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
+import pytest
+
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _DEMO = _REPO_ROOT / "docs" / "demo.html"
+
+_RETIRED_REASON = (
+    "velocity badge retired by user request 2026-05-11 — drift class moot"
+)
+pytestmark = pytest.mark.skip(reason=_RETIRED_REASON)
 
 
 def _badge_text() -> str:
