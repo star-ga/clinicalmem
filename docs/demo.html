@@ -1679,29 +1679,29 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Live numbers strip -->
-    <div class="max-w-3xl mx-auto rounded-xl bg-slate-900 text-white px-4 py-3 mb-4">
-      <div class="flex flex-wrap items-center justify-between gap-3">
+    <!-- Live numbers strip (mobile-first: header above, 4-up grid on phone, single row on sm+) -->
+    <div class="max-w-3xl mx-auto rounded-xl bg-slate-900 text-white px-3 sm:px-4 py-3 mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
         <div class="flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-clinical-green animate-pulse flex-shrink-0"></span>
           <span class="text-[10px] font-bold uppercase tracking-wider text-clinical-green">Live cache · contraindicated class</span>
         </div>
-        <div class="flex items-center gap-4 sm:gap-6 font-mono">
+        <div class="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:gap-6 font-mono">
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">precision</div>
-            <div class="text-lg font-bold text-clinical-green">100%</div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">precision</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green">100%</div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">recall</div>
-            <div class="text-lg font-bold text-clinical-green"><span id="bitnet-body-contra-recall">100.0%</span></div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">recall</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green"><span id="bitnet-body-contra-recall">100.0%</span></div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">cohort</div>
-            <div class="text-lg font-bold text-white"><span id="bitnet-body-contra-total">n=44 contraindicated</span></div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">cohort</div>
+            <div class="text-sm sm:text-lg font-bold text-white"><span id="bitnet-body-contra-total">n=44</span></div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">false-positives</div>
-            <div class="text-lg font-bold text-clinical-green">0</div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">false&#8209;pos</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green">0</div>
           </div>
         </div>
       </div>
@@ -1856,11 +1856,11 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Path A pharmacology table — compact callout (replaces removed wall of text) -->
+      <!-- Curated pharmacology table callout -->
       <div class="mb-4 rounded-lg border border-clinical-green/30 bg-green-50/30 p-3 text-[11px] text-slate-600 leading-snug">
-        📋 <strong class="text-slate-900">Path A — curated pharmacology table SHIPPED</strong> · <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a <strong>26-flag</strong> ATC table with FDA-label citations + <strong>13 pair-derived DDI-rule bits</strong>; explains <strong>44 / 44 contraindicated cache entries (100% explanation coverage)</strong>. Path A v8 LIVE in engine — bundle <code class="font-mono text-[10px]">1f0f8859</code>, 193-dim feature input × 256 hidden, <strong>0 known misses</strong>.
+        📋 <strong class="text-slate-900">Curated pharmacology table — shipped</strong> · <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> publishes a <strong>26-flag</strong> ATC table with FDA-label citations + <strong>13 pair-derived DDI-rule bits</strong>; explains <strong>44 / 44 contraindicated cache entries (100% explanation coverage)</strong>. Live engine bundle <code class="font-mono text-[10px]">1f0f8859</code> &middot; 193-dim feature input &times; 256 hidden &middot; <strong>0 known misses</strong>.
       </div>
-      <p class="text-[10px] text-slate-400 font-mono mb-4 leading-relaxed">Pin anchors · <code>tests/test_engine/test_path_a_v8_live_recall_pin.py</code>: aggregate: bundle_id + 44/44 + 4/4 + 0 FP + strictly_supersedes · bundle_id + 44/44 contra + 4/4 major + 0 FP + meta-block · v8 catches all 4 majors including <code>tacrolimus + voriconazole</code>.</p>
+      <p class="text-[10px] text-slate-400 font-mono mb-4 leading-relaxed">Pin anchors &middot; <code>tests/test_engine/test_path_a_v8_live_recall_pin.py</code>: bundle_id + 44/44 contra + 4/4 major + 0 FP + meta-block + strictly_supersedes invariant &middot; v8 catches all 4 majors including <code>tacrolimus + voriconazole</code>.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <!-- Ternary weight distribution -->
