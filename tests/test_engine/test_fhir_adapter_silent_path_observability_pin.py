@@ -160,8 +160,9 @@ def test_fhir_practitioner_zero_valid_npis_event_fires(caplog):
 def test_fhir_practitioner_with_valid_npi_does_not_fire_zero_event(caplog):
     """A Practitioner with ≥1 valid CMS NPI MUST NOT fire the iter-443
     zero-NPI event — false-positives would bury the real signal."""
-    # Dr. Afonicheva NPI (Luhn-valid, public CMS-registry data) is the
-    # repo's canonical NPI fixture (iter-289-era). Reuse it here.
+    # Canonical Luhn-valid NPI fixture used across the repo's FHIR tests
+    # (matches the public CMS-registry NPI we reserve for collision-detection
+    # in test_synthea_cohort_integrity_pin.py).
     bundle = _bundle_with([
         _patient_entry(),
         {

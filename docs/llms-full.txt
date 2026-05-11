@@ -16,7 +16,7 @@ models can ingest the project's full claim surface in a single fetch.
 - **Demo:** https://clinicalmem-demo.pages.dev/
 - **Live MCP:** https://clinicalmem-mcp.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io/mcp
 - **Live A2A card:** https://clinicalmem-a2a.thankfulpond-9c3fdc1e.eastus.azurecontainerapps.io/.well-known/agent-card.json
-- **Model card:** https://huggingface.co/stargainc/clinicalmem-bitnet-b158
+- **Model card:** https://huggingface.co/star-ga/clinicalmem-bitnet-b158
 - **Devpost:** https://devpost.com/software/clinimalmem
 - **PyPI memory layer:** https://pypi.org/project/mind-mem/ (>= 4.0.0)
 - **Contact:** info@star.ga
@@ -40,7 +40,7 @@ models can ingest the project's full claim surface in a single fetch.
 | Layer-4.5 BitNet bundle B (tier-2 specialist) | bundle_id `5f7ed5f6…` · 12,741 ternary params · ~30 KB | `engine/bitnet_weights_b_specialist.json` |
 | Live MCP serverInfo | `ClinicalMem` v4.1.0 · 18 tools | `mcp_server/server.py` |
 | Live A2A agent-card | `clinicalmem_agent` v4.1.0 · 5 skills · 13 tools · `supportedInterfaces` present | `a2a_agent/app.py` |
-| External judge-LLM consensus | **9.32 / 10** mean (n=6 models · 6/6 WIN_LIKELY) | `docs/eval_runs/round_4_full.json` + `docs/eval_runs/round_4_recovery_gemini.json` |
+| Independent multi-model code review | Six frontier models on a 10-category rubric | `docs/eval_runs/README.md` |
 
 ## What ClinicalMem deliberately does NOT claim
 
@@ -145,10 +145,10 @@ The replay verifier `scripts/verify_audit_replay.py` re-classifies every pinned 
 - The patent-pending MIC@2 / MAP / binary wire formats ride inside `mind-mem` (also Apache-2.0); the grant transitively applies.
 - IRB-exempt synthetic cohort under 45 C.F.R. § 46.102(e)(1) — see `docs/irb_exemption.md`.
 
-## Clinical advisor
+## Clinical review pathway
 
-- **Dr. Ludmila Afonicheva, MD** — US-licensed Family Medicine, **NPI 1932159530** (CMS Luhn-valid).
-- Independent attestation in `docs/clinical_validation.md` § Clinical Advisor.
+- The target reviewer profile (US-licensed family medicine, multi-hospital affiliation, CMS-NPPES-verifiable NPI) and the scope of review (Sarah Mitchell demo bundle, NTI cohort severity calls, abstention-gate triggers, BP-target conflict) are described in `docs/clinical_validation.md`.
+- Independent clinical sign-off remains a v2 follow-up.
 
 ## Brand + visual identity
 

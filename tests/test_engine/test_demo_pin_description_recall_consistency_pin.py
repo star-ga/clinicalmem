@@ -81,17 +81,21 @@ def test_demo_aggregate_pin_description_quotes_live_contra_fraction():
     consts = _live_v8_constants()
     expected = f"{consts['_V8_CONTRA_HITS']}/{consts['_V8_CONTRA_TOTAL']}"
     text = _DEMO.read_text()
-    # Match the aggregate phrase pattern: anything with "aggregate:" + "bundle_id" +
-    # one or more N/N fractions + "+ 0 FP" within ~150 chars.
+    # Match the aggregate phrase pattern: anything with "bundle_id" +
+    # one or more N/N fractions + "+ 0 FP" + "strictly_supersedes" within
+    # ~200 chars. Accepts both the legacy "aggregate: bundle_id + N/N + 4/4
+    # + 0 FP + strictly_supersedes" form and the cleanup-2026-05-11 form
+    # "bundle_id + N/N contra + 4/4 major + 0 FP + meta-block + strictly_supersedes".
     matches = re.findall(
-        r"aggregate:\s*bundle_id\s*\+\s*(\d+/\d+)\s*\+\s*4/4\s*\+\s*0 FP\s*\+\s*strictly_supersedes",
+        r"bundle_id\s*\+\s*(\d+/\d+)(?:\s+contra)?\s*\+\s*4/4(?:\s+major)?\s*\+\s*0 FP(?:\s*\+\s*meta-block)?\s*\+\s*strictly_supersedes",
         text,
     )
     assert matches, (
         f"demo.html missing the canonical pin-description aggregate phrase. "
         f"Expected at least one occurrence of "
-        f"'aggregate: bundle_id + {expected} + 4/4 + 0 FP + strictly_supersedes'. "
-        f"If the wording was rephrased, update this pin to track the new form."
+        f"'bundle_id + {expected} contra + 4/4 major + 0 FP + meta-block + strictly_supersedes' "
+        f"(or the legacy 'aggregate: bundle_id + {expected} + 4/4 + 0 FP + strictly_supersedes'). "
+        f"If the wording was rephrased again, update this pin to track the new form."
     )
     stale = [m for m in matches if m != expected]
     assert not stale, (

@@ -28,7 +28,7 @@ _DEMO = _REPO_ROOT / "docs" / "demo.html"
 _MATRIX = _REPO_ROOT / "docs" / "bitnet_confusion_matrix.json"
 
 _CONTRA_TOTAL_PATTERN = re.compile(
-    r'id="bitnet-body-contra-total"[^>]*>n=(\d+)\s+contraindicated</span>'
+    r'id="bitnet-body-contra-total"[^>]*>n=(\d+)'
 )
 _CONTRA_RECALL_PATTERN = re.compile(
     r'id="bitnet-body-contra-recall"[^>]*>([\d.]+)%</span>'

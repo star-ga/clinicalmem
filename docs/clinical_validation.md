@@ -8,48 +8,24 @@ codebase is an open-source (Apache-2.0) hackathon submission, not an
 FDA-cleared device — but every published number is reproducible from the
 code in this repo.
 
-## Clinical Advisor & Co-Author
+## Clinical review pathway
 
-**Dr. Ludmila Afonicheva, MD** — Board-certified Family Medicine.
+A board-certified, US-licensed family-medicine clinician is the target
+reviewer profile for the validation methodology described below — a
+21-year solo private practice that admits to two community hospitals
+and provides house calls is exactly the specialty trained to coordinate
+multi-specialist conflicts across fragmented care. Sarah Mitchell's case
+(67 y/o female with T2DM + HTN + CKD-3b + AFib managed by four
+uncoordinated specialists, plus an ER ibuprofen prescription on top of
+warfarin) is a textbook family-medicine coordination problem.
 
-| Credential | Value | Verifiable |
-|---|---|---|
-| Specialty | Family Medicine | Board-certified |
-| Practice | Traditional Family Practice — solo private practice | Continuous since 2003 (~21 years) |
-| Address | 23639 Hawthorne Blvd, Suite 200, Torrance, CA 90505 | [md4family.com](https://md4family.com/) |
-| State License | California | — |
-| NPI | **1932159530** | [CMS NPPES](https://npiregistry.cms.hhs.gov/provider-view/1932159530) — public registry |
-| Hospital affiliations | Torrance Memorial Medical Center (TMMC), Little Company of Mary Hospital (LCMH) | Both Torrance, CA |
-| Practice scope | Family medicine, dermatology, cosmetic procedures, hospital admissions coordination, house calls for homebound patients | Multi-modal primary care |
-
-The advisor's NPI **1932159530** passes the CMS `80840`-prefix Luhn
-check via this repository's own validator (`engine/npi_registry.py::
-validate_npi`) — the same validator that gates every Practitioner
-identifier in the FHIR R4 demo bundle. Reviewers can independently
-verify the NPI against CMS NPPES at the link above.
-
-### Scope of clinical review
-
-Dr. Afonicheva is reviewing the Sarah Mitchell demo bundle, the
-35-pair narrow-therapeutic-index (NTI) cohort severity classifications
-in `engine/clinical_scoring.py::_KNOWN_INTERACTIONS`, the abstention-
-gate trigger conditions in the 6-layer pipeline, and the cardiology
-vs. nephrology blood-pressure target conflict that is the demo killer
-scenario.
-
-Family medicine — particularly a 21-year solo private practice that
-admits to two community hospitals and provides house calls — is
-exactly the specialty trained to coordinate multi-specialist conflicts
-across fragmented care. Sarah Mitchell's case (67 y/o female with
-T2DM + HTN + CKD-3b + AFib managed by four uncoordinated specialists,
-plus an ER ibuprofen prescription on top of warfarin) is a textbook
-family-medicine coordination problem.
-
-Endorsement quote and any clinical-scenario adjustments pending Dr.
-Afonicheva's review (briefing PDF delivered 2026-05-02 with full
-project overview, what we need from her, and the 20% prize-share
-arrangement; review window open through 2026-05-09 ahead of the
-May 11 submission).
+Reviewer credentials will be verified via the CMS NPPES public registry
+using this repository's own validator (`engine/npi_registry.py::
+validate_npi`) — the same `80840`-prefix Luhn check that gates every
+Practitioner identifier in the FHIR R4 demo bundle. Independent
+clinical sign-off remains a v2 follow-up; this document records the
+methodology and the numeric evidence so any qualified reviewer can
+verify both.
 
 ## What we validated
 

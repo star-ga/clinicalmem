@@ -13,7 +13,7 @@ Hackathon submission cut for the **Agents Assemble — The Healthcare AI Endgame
 - SHA-256 Merkle audit chain, TAG_v1 NUL-separated preimages, HIPAA § 164.312(b) aligned.
 - Cross-architecture determinism harness (x86_64 / ARM64 / CUDA).
 - mind-mem v4.0.1 federation HTTP wire transport bridge (4 endpoints flag-gated by `v4.federation`).
-- Open-source HF model release: `huggingface.co/stargainc/clinicalmem-bitnet-b158`.
+- Open-source HF model release: `huggingface.co/star-ga/clinicalmem-bitnet-b158`.
 
 ### Demo
 - Live dashboard: https://clinicalmem-demo.pages.dev/

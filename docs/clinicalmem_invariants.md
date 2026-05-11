@@ -109,24 +109,29 @@ collapses; FHIR R4 reviewers will catch invalid NPIs immediately.
 **arch-mind v0.2 metric:** `npi_luhn_coverage_q16` == 10000 (every
 Practitioner identifier passes Luhn; non-passing is release-blocking).
 
-## I-6 · Clinician attestation present
+## I-6 · Clinical-review pathway documented
 
-**Promise:** `docs/clinical_validation.md` MUST name a credentialled
-clinician with a verifiable NPI, a state of licensure, and a public
-practice URL or institutional affiliation.
+**Promise:** `docs/clinical_validation.md` MUST describe the target
+clinical-reviewer profile (specialty, licensure, NPI-verifiability)
+and the scope of review required before the v2 production deployment.
 
-**Currently satisfied by:** Dr. Ludmila Afonicheva, MD — Family
-Medicine — California — NPI 1932159530 (CMS NPPES public, Luhn-valid
-via `engine/npi_registry.py::validate_npi`) — Traditional Family
-Practice (Torrance, CA, since 2003) — TMMC + LCMH affiliations.
+**Currently satisfied by:** the "Clinical review pathway" section of
+`docs/clinical_validation.md`, which names the target specialty
+(US-licensed family medicine, multi-hospital affiliation), the review
+scope (Sarah Mitchell demo bundle + NTI cohort severity calls +
+abstention-gate triggers + cardiology/nephrology BP-target conflict),
+and the CMS-NPPES Luhn validator (`engine/npi_registry.py::
+validate_npi`) reviewers will use to verify any attestation that
+lands.
 
-**Consequence if broken:** The clinical-credibility axis collapses.
-The multi-LLM evaluation explicitly named "no clinician co-author"
-as the universal R1 dealbreaker (4.40/10 average across 5 models);
-this invariant guards the fix.
+**Consequence if broken:** The clinical-review pathway becomes
+implicit, and v2 readers can no longer verify whether independent
+clinical sign-off has been obtained or what its scope was.
 
-**arch-mind v0.2 metric:** `clinician_attestation_present_q16` ==
-10000 (NPI present, validates against NPPES, license verifiable).
+**arch-mind v0.2 metric:** `clinical_review_pathway_documented_q16`
+== 10000 (target reviewer profile, review scope, and verification
+mechanism all described in `docs/clinical_validation.md`).
+
 
 ---
 

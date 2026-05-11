@@ -140,6 +140,9 @@ def test_zero_misses_callout_in_v8_body():
         r"iter-275 v8 promotion",
         r"Path A v8 LIVE in engine",
         r"Path A v8 is the LIVE engine bundle",
+        # iter-2026-05-11 cleanup: dropped Path A naming, the callout
+        # now reads "Live engine bundle <hash>" as the v8 anchor.
+        r"Live engine bundle",
     )
     body_starts = []
     for pat in anchors:

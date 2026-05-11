@@ -114,7 +114,7 @@
       "email": "info@star.ga",
       "sameAs": [
         "https://github.com/star-ga",
-        "https://huggingface.co/stargainc",
+        "https://huggingface.co/star-ga",
         "https://pypi.org/project/mind-mem/"
       ]
     },
@@ -174,7 +174,7 @@
           "name": "What license does ClinicalMem use?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "ClinicalMem is published under the Apache License 2.0. The BitNet b1.58 model weights on Hugging Face (stargainc/clinicalmem-bitnet-b158) are also Apache-2.0."
+            "text": "ClinicalMem is published under the Apache License 2.0. The BitNet b1.58 model weights on Hugging Face (star-ga/clinicalmem-bitnet-b158) are also Apache-2.0."
           }
         }
       ]
@@ -1385,7 +1385,7 @@ tailwind.config = {
         the FDA-grade reproducibility primitive that lets a regulator replay any decision months later, byte-for-byte.
       </p>
       <div class="mt-5 flex flex-wrap justify-center gap-2">
-        <a href="https://huggingface.co/stargainc/clinicalmem-bitnet-b158" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200 hover:bg-blue-100 hover:border-clinical-blue transition-colors cursor-pointer" title="Hugging Face: stargainc/clinicalmem-bitnet-b158 — A + B cascade weights, model card, architecture diagram">
+        <a href="https://huggingface.co/star-ga/clinicalmem-bitnet-b158" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-clinical-blue border border-blue-200 hover:bg-blue-100 hover:border-clinical-blue transition-colors cursor-pointer" title="Hugging Face: star-ga/clinicalmem-bitnet-b158 — A + B cascade weights, model card, architecture diagram">
           <span aria-hidden="true">🤗</span>
           BitNet b1.58 &middot; bit-identical
           <svg class="w-3 h-3 text-clinical-blue/70" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 010-1.06l8.22-8.22H8.5a.75.75 0 010-1.5h6.75a.75.75 0 01.75.75v6.75a.75.75 0 01-1.5 0V6.56l-8.22 8.22a.75.75 0 01-1.06 0z" clip-rule="evenodd"/></svg>
@@ -1679,29 +1679,29 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Live numbers strip -->
-    <div class="max-w-3xl mx-auto rounded-xl bg-slate-900 text-white px-4 py-3 mb-4">
-      <div class="flex flex-wrap items-center justify-between gap-3">
+    <!-- Live numbers strip (mobile-first: header above, 4-up grid on phone, single row on sm+) -->
+    <div class="max-w-3xl mx-auto rounded-xl bg-slate-900 text-white px-3 sm:px-4 py-3 mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
         <div class="flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-clinical-green animate-pulse flex-shrink-0"></span>
           <span class="text-[10px] font-bold uppercase tracking-wider text-clinical-green">Live cache · contraindicated class</span>
         </div>
-        <div class="flex items-center gap-4 sm:gap-6 font-mono">
+        <div class="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:gap-6 font-mono">
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">precision</div>
-            <div class="text-lg font-bold text-clinical-green">100%</div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">precision</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green">100%</div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">recall</div>
-            <div class="text-lg font-bold text-clinical-green"><span id="bitnet-body-contra-recall">100.0%</span></div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">recall</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green"><span id="bitnet-body-contra-recall">100.0%</span></div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">cohort</div>
-            <div class="text-lg font-bold text-white"><span id="bitnet-body-contra-total">n=44 contraindicated</span></div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">cohort</div>
+            <div class="text-sm sm:text-lg font-bold text-white"><span id="bitnet-body-contra-total">n=44</span></div>
           </div>
           <div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">false-positives</div>
-            <div class="text-lg font-bold text-clinical-green">0</div>
+            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-400">false&#8209;pos</div>
+            <div class="text-sm sm:text-lg font-bold text-clinical-green">0</div>
           </div>
         </div>
       </div>
@@ -1748,9 +1748,9 @@ tailwind.config = {
 
     <!-- Asset links chip strip — secondary -->
     <div class="max-w-3xl mx-auto flex flex-wrap justify-center gap-2 mb-4">
-      <a href="https://huggingface.co/stargainc/clinicalmem-bitnet-b158" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-yellow-50 text-yellow-900 border border-yellow-300 hover:bg-yellow-100 hover:border-yellow-500 transition-colors cursor-pointer shadow-soft" title="Apache-2.0 model weights + classifier code. A + B cascade bundles, full Mermaid architecture diagram.">
+      <a href="https://huggingface.co/star-ga/clinicalmem-bitnet-b158" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-yellow-50 text-yellow-900 border border-yellow-300 hover:bg-yellow-100 hover:border-yellow-500 transition-colors cursor-pointer shadow-soft" title="Apache-2.0 model weights + classifier code. A + B cascade bundles, full Mermaid architecture diagram.">
         <span aria-hidden="true">🤗</span>
-        <code class="font-mono text-[10px]">stargainc/clinicalmem-bitnet-b158</code>
+        <code class="font-mono text-[10px]">star-ga/clinicalmem-bitnet-b158</code>
       </a>
       <a href="https://arxiv.org/abs/2402.17764" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 hover:border-slate-500 transition-colors cursor-pointer" title="Ma et al. 2024 — BitNet b1.58 paper">
         <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 4.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V7h2.5a.5.5 0 01.5.5v8a.5.5 0 01-.5.5h-13a.5.5 0 01-.5-.5v-8a.5.5 0 01.5-.5H6V4.5a.5.5 0 01.5-.5h2.5z"/></svg>
@@ -1856,11 +1856,11 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Path A pharmacology table — compact callout (replaces removed wall of text) -->
+      <!-- Curated pharmacology table callout -->
       <div class="mb-4 rounded-lg border border-clinical-green/30 bg-green-50/30 p-3 text-[11px] text-slate-600 leading-snug">
-        📋 <strong class="text-slate-900">Path A — curated pharmacology table SHIPPED</strong> · <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> ships a <strong>26-flag</strong> ATC table with FDA-label citations + <strong>13 pair-derived DDI-rule bits</strong>; explains <strong>44 / 44 contraindicated cache entries (100% explanation coverage)</strong>. Path A v8 LIVE in engine — bundle <code class="font-mono text-[10px]">1f0f8859</code>, 193-dim feature input × 256 hidden, <strong>0 known misses</strong>.
+        📋 <strong class="text-slate-900">Curated pharmacology table — shipped</strong> · <code class="font-mono text-[10px]">docs/pharmacology_flags.json</code> publishes a <strong>26-flag</strong> ATC table with FDA-label citations + <strong>13 pair-derived DDI-rule bits</strong>; explains <strong>44 / 44 contraindicated cache entries (100% explanation coverage)</strong>. Live engine bundle <code class="font-mono text-[10px]">1f0f8859</code> &middot; 193-dim feature input &times; 256 hidden &middot; <strong>0 known misses</strong>.
       </div>
-      <p class="text-[10px] text-slate-400 font-mono mb-4 leading-relaxed">Pin anchors · <code>tests/test_engine/test_path_a_v8_live_recall_pin.py</code>: aggregate: bundle_id + 44/44 + 4/4 + 0 FP + strictly_supersedes · bundle_id + 44/44 contra + 4/4 major + 0 FP + meta-block · v8 catches all 4 majors including <code>tacrolimus + voriconazole</code>.</p>
+      <p class="text-[10px] text-slate-400 font-mono mb-4 leading-relaxed">Pin anchors &middot; <code>tests/test_engine/test_path_a_v8_live_recall_pin.py</code>: bundle_id + 44/44 contra + 4/4 major + 0 FP + meta-block + strictly_supersedes invariant &middot; v8 catches all 4 majors including <code>tacrolimus + voriconazole</code>.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <!-- Ternary weight distribution -->
@@ -2305,7 +2305,7 @@ tailwind.config = {
           <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Every NPI passes CMS Luhn check digit</span></li>
           <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span><code class="font-mono text-[10px]">meta._synthetic = true</code> on every identity resource</span></li>
           <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span><code class="font-mono text-[10px]">meta.npi_source = "DEMO_LUHN_GENERATED"</code></span></li>
-          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Zero NPI collision with real NPI 1932159530</span></li>
+          <li class="flex items-start gap-1.5"><span class="text-clinical-green flex-shrink-0">✓</span><span>Zero NPI collision with any known-real NPI on the reserved list</span></li>
         </ul>
 
         <p class="text-[10px] text-slate-500 leading-relaxed">

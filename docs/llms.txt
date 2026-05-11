@@ -31,7 +31,7 @@ site.
 ### Code & releases
 - **GitHub repository**: https://github.com/star-ga/clinicalmem
 - **PyPI package** (memory layer): https://pypi.org/project/mind-mem/ (>= 4.0.0)
-- **Hugging Face model card**: https://huggingface.co/stargainc/clinicalmem-bitnet-b158
+- **Hugging Face model card**: https://huggingface.co/star-ga/clinicalmem-bitnet-b158
 - **Live demo**: https://clinicalmem-demo.pages.dev/
 - **Devpost submission**: https://devpost.com/software/clinimalmem
 

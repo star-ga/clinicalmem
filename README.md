@@ -100,7 +100,7 @@ flowchart TB
 
     MCP["MCP Server (FastMCP 2.x)<br/>18 tools · SHARP-on-MCP<br/>Azure Container Apps"]
     A2A["A2A Agent (Google ADK)<br/>5 skills · 13 tools<br/>Azure Container Apps"]
-    HF["🤗 Hugging Face Model<br/>stargainc/clinicalmem-bitnet-b158<br/>Apache-2.0 · A+B dual-bundle cascade"]
+    HF["🤗 Hugging Face Model<br/>star-ga/clinicalmem-bitnet-b158<br/>Apache-2.0 · A+B dual-bundle cascade"]
 
     FHIR --> ENGINE
     APIS --> ENGINE
@@ -586,10 +586,9 @@ Round-2 multi-LLM evaluation across 7 frontier models (Mistral Large, Grok 4.3, 
 | `docs/clinical_validation.md` NTI cohort + 100% recall on contraindicated | Adverse-event-reduction outcomes from real patient data | Requires IRB-approved cohort; review is 4–12 weeks |
 | `docs/openevidence_cache.json` 100+ cached pairs with PubMed citations | Live OpenEvidence API integration | Pending academic-license email response |
 | Federation typed contract (`flows/JointMemoryFederation.flow.mind`, **21/21 invariants exercised end-to-end** including in-process X25519 seal/open round-trip) + 2-node mock demo + **mind-mem v4.0.1 federation HTTP wire transport LIVE** (4 endpoints flag-gated by `v4.federation` + `mind_mem.v4.federation_client.FederationClient`, 11/11 wire + 40/40 existing transport tests pass) | Live multi-site federation across 2+ hospitals | Engineering blocker RESOLVED 2026-05-11 (mind-mem v4.0.1 on PyPI). `engine/federation_transport.py` bridge consumes `FederationClient` on next Azure rebuild. Remaining blocker is hospital BD (months, not engineering). |
-| **Hugging Face model published** ([stargainc/clinicalmem-bitnet-b158](https://huggingface.co/stargainc/clinicalmem-bitnet-b158), Apache-2.0): A+B dual-bundle BitNet b1.58 cascade, ~250 KB total, 100% recall × 4 severity classes, FDA SaMD reproducibility primitive | Independent reproduction by external clinical-AI researcher | Pending community engagement; model card cites every load-bearing claim back to in-repo tests |
-| Clinical Advisor & Co-Author commitment (Dr. Ludmila Afonicheva, MD, NPI 1932159530) | Signed clinician attestation PDF in the repo | Pending her review of the briefing PDF |
+| **Hugging Face model published** ([star-ga/clinicalmem-bitnet-b158](https://huggingface.co/star-ga/clinicalmem-bitnet-b158), Apache-2.0): A+B dual-bundle BitNet b1.58 cascade, ~250 KB total, 100% recall × 4 severity classes, FDA SaMD reproducibility primitive | Independent reproduction by external clinical-AI researcher | Pending community engagement; model card cites every load-bearing claim back to in-repo tests |
 
-This roadmap is intentionally honest. We hit the document-level ceiling around 9.0–9.2; the last 0.7 is real-world execution. We're publishing it here because regulated-domain judges reward honesty over inflated claims — and because every team that wins clinical AI long-term is the one that signed the LOI, ran the IRB cohort, and filed the Q-sub.
+This roadmap is intentionally honest. The document-level surface is mature; the last yard of credibility is real-world execution — signed LOIs, IRB-approved cohorts, filed Q-subs — and every team that wins clinical AI long-term is the one that put those in motion.
 
 ## License
 

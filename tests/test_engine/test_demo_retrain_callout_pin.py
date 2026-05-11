@@ -28,13 +28,17 @@ def test_retrain_callout_present():
         "Retrain v2 staged" in text or
         "Path A staged" in text or
         "Path A v3 staged" in text or
-        "Path A — curated pharmacology table SHIPPED" in text
+        "Path A — curated pharmacology table SHIPPED" in text or
+        # iter-2026-05-11 cleanup: dropped internal "Path A" framing for
+        # the public-facing callout while keeping the same evidence chain.
+        "Curated pharmacology table — shipped" in text
     )
     assert has_callout, (
-        "Demo must surface an active-improvement callout (Retrain v2 "
-        "staged / Path A staged / Path A v3 staged / Path A — curated "
-        "pharmacology table SHIPPED) so judges see the submission is "
-        "being actively improved."
+        "Demo must surface an active-improvement callout (any of: "
+        "'Retrain v2 staged' / 'Path A staged' / 'Path A v3 staged' / "
+        "'Path A — curated pharmacology table SHIPPED' / 'Curated "
+        "pharmacology table — shipped') so judges see the submission "
+        "is being actively improved."
     )
     assert "retrain_runpod/" in text or "pharmacology_flags.json" in text, (
         "Active-improvement callout must point at a staged artifact "

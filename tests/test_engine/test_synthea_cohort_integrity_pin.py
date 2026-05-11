@@ -277,12 +277,13 @@ def test_no_real_npi_substring_collisions():
     CMS-registered NPIs. This isn't a privacy issue for demo purposes
     (we explicitly tag DEMO_LUHN_GENERATED) but if a generated NPI
     happens to collide with a known-real NPI from the very small
-    publicly-disclosed set in our project context (e.g. the
-    clinical-validation NPI 1932159530), that's worth surfacing.
+    publicly-disclosed set in our project context, that's worth
+    surfacing.
 
-    Currently the only "real" NPI we know about in the project is
-    Dr. Afonicheva's clinical validation NPI 1932159530, which lives
-    only in `docs/clinical_validation.md` (not in the cohort bundle).
+    The reserved-known-real list below is project-scoped — the NPI was
+    used in earlier clinical-review materials and is kept here as a
+    collision-detection sentinel so cohort generation cannot silently
+    duplicate it.
     """
     KNOWN_REAL_NPIS = frozenset({"1932159530"})
     bundle = _load_bundle()

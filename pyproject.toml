@@ -43,7 +43,7 @@ dependencies = [
 Homepage = "https://github.com/star-ga/clinicalmem"
 Repository = "https://github.com/star-ga/clinicalmem"
 "Live Demo" = "https://clinicalmem-demo.pages.dev/"
-"Hugging Face Model" = "https://huggingface.co/stargainc/clinicalmem-bitnet-b158"
+"Hugging Face Model" = "https://huggingface.co/star-ga/clinicalmem-bitnet-b158"
 "Devpost" = "https://devpost.com/software/clinimalmem"
 "Prompt Opinion" = "https://app.promptopinion.ai/marketplace"
 

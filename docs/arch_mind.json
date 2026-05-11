@@ -104,7 +104,7 @@
   "pass_count": 9,
   "all_pass": true,
   "summary_sha256": "953453b3ec2e3a5c37ce8afb3214e3435f6bdc314dcbe26f096faa2653a044b7",
-  "rules_sha256": "ba777f153180642ac73ce19b8169556aa54054e128d186a7bf25e6f8727493c8",
+  "rules_sha256": "a60c84b88ac30e145647127c60ae3aba391c9717b05b4d389168f8b2741fd503",
   "summary_path": ".arch-mind/last_summary.json",
   "rules_path": ".arch-mind/rules.mind"
 }
