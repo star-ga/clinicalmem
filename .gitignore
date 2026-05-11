@@ -30,6 +30,9 @@ devpost-form-fields.md
 devpost-submission.md
 sarah_clinical_notes.txt
 competitive-analysis.md
+competitive-analysis-v*.md
+competitor_recon_*.md
+.cron_prompt_*.md
 
 # Internal working scripts (not part of project)
 generate_voiceover.py

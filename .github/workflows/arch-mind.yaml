@@ -16,9 +16,14 @@ name: arch-mind
 # transparent (`.arch-mind/rules.mind` and `.arch-mind/last_summary.json`).
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
+  # Auto-trigger disabled 2026-05-11: the public arch-mind installer at
+  # https://mindlang.dev/install/arch-mind.sh currently returns 404 (STARGA
+  # infra rebuild in flight). Re-enable on push when the installer is back.
+  # Local arch-mind verification is still gated by
+  # `tests/test_scripts/test_arch_mind_gate.py` (run by the Tests workflow),
+  # so the L1 governance check still happens — just from the local fixture
+  # under `.arch-mind/` instead of the remote binary.
 
 concurrency:
   group: arch-mind-${{ github.ref }}

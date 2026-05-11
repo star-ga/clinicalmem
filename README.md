@@ -395,8 +395,10 @@ The canonical list is `python3 -m pytest --co -q`.
 tests/test_engine/         — 600+ tests covering the safety pipeline:
    clinical scoring, BitNet classifier, consensus engine, evidence
    grounding, hallucination detection, FHIR adapter, FDA client,
-   federation transport bridge (mind-mem v3.12.0 MemoryMesh +
-   EventFanout), 21 CFR Part 11 audit export, NPI registry, PHI
+   federation transport bridge (mind-mem v4.0.1 MemoryMesh +
+   EventFanout + v4 federation foundation: vclock + tier_conflict_log
+   + MergeStrategy enum + v4 federation HTTP wire transport with
+   FederationClient), 21 CFR Part 11 audit export, NPI registry, PHI
    detector, RxNorm / SNOMED / UMLS clients, what-if simulator.
 
 tests/test_scripts/        — federation 16-invariant flow demo,
@@ -584,7 +586,7 @@ Round-2 multi-LLM evaluation across 7 frontier models (Mistral Large, Grok 4.3, 
 | `docs/fda_q_sub_draft.md` Q-sub draft | Filed Q-sub with FDA tracking number | FDA pre-sub queue is 60–75 days |
 | `docs/clinical_validation.md` NTI cohort + 100% recall on contraindicated | Adverse-event-reduction outcomes from real patient data | Requires IRB-approved cohort; review is 4–12 weeks |
 | `docs/openevidence_cache.json` 100+ cached pairs with PubMed citations | Live OpenEvidence API integration | Pending academic-license email response |
-| Federation typed contract (`flows/JointMemoryFederation.flow.mind`) + 2-node mock demo (`scripts/federation_mock_demo.py`) | Live multi-site federation across 2+ hospitals | mind-mem MIC@2 / MAP transport in flight by upstream STARGA team |
+| Federation typed contract (`flows/JointMemoryFederation.flow.mind`) + 2-node mock demo (`scripts/federation_mock_demo.py`) + mind-mem v4.0.0 federation foundation primitives (vclock + tier_conflict_log + MergeStrategy enum) + mind-mem v4 federation HTTP wire transport (4 endpoints: GET `/federation/vclock/<id>`, GET `/federation/conflicts`, POST `/federation/write`, POST `/federation/resolve` — flag-gated by `v4.federation`, X-MindMem-Token auth, 11/11 wire tests + 40/40 existing transport tests pass; `mind_mem.v4.federation_client.FederationClient`, shipped in mind-mem v4.0.1 on PyPI (released 2026-05-11, commit `16a3e25` on `main`)) | Live multi-site federation across 2+ hospitals | Hospital BD cycle is months; ClinicalMem federation_transport.py bridge ready to wire through `FederationClient` on next mind-mem PyPI point release |
 | Clinical Advisor & Co-Author commitment (Dr. Ludmila Afonicheva, MD, NPI 1932159530) | Signed clinician attestation PDF in the repo | Pending her review of the briefing PDF |
 
 This roadmap is intentionally honest. We hit the document-level ceiling around 9.0–9.2; the last 0.7 is real-world execution. We're publishing it here because regulated-domain judges reward honesty over inflated claims — and because every team that wins clinical AI long-term is the one that signed the LOI, ran the IRB cohort, and filed the Q-sub.

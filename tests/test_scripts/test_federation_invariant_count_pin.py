@@ -5,10 +5,13 @@ docs/architecture.md, and the federation mock demo:
 
   Spec  : `JointMemoryFederation.flow.mind` declares 21 typed
           runtime invariants (the full federation contract).
-  Demo  : `scripts/federation_mock_demo.py` exercises 16 of those
-          21 (the 5 X25519 sealing invariants 17-21 are *declared*
-          but await mind-mem v3.9 wire transport before the demo
-          can verify them end-to-end).
+  Demo  : `scripts/federation_mock_demo.py` exercises ALL 21
+          end-to-end. Iter-2026-05-11 wired the 5 X25519 sealing
+          invariants (`SealedEnvelope` + `_x25519_seal` /
+          `_x25519_open` round-trip in-process) so the mock demo
+          mirrors the wire-format cryptographic envelope of the
+          v4 federation HTTP wire transport (mind-mem `main`
+          16a3e25, pending v4.0.x PyPI tag).
 
 This test pins both numbers so any future contract edit that adds
 or removes invariants — or any test/demo change that rebases the
@@ -51,7 +54,7 @@ _USER_FACING_FED_DOCS = (
 # the flow contract, update the matching number AND every doc that
 # names it in the same commit.
 _EXPECTED_SPEC_INVARIANT_COUNT = 21    # full typed contract
-_EXPECTED_DEMO_INVARIANT_COUNT = 16    # exercised by federation_mock_demo
+_EXPECTED_DEMO_INVARIANT_COUNT = 21    # exercised by federation_mock_demo (X25519 seal/open landed 2026-05-11)
 
 
 def _count_invariants_in_flow() -> int:
@@ -195,20 +198,21 @@ def test_demo_cites_this_pin_file():
     )
 
 
-def test_demo_to_spec_gap_explanation_present():
-    """The 5-invariant gap (16 demo vs 21 spec) must be explained on the dashboard.
-
-    Iteration 22 added explicit copy under the Phase B governance card
-    that calls out which invariants are *declared* vs *exercised*.
-    Without that disclosure, the 16 vs 21 split would look like a
-    silent overclaim. Make sure the disclosure stays present.
-    """
+def test_demo_to_spec_gap_closed():
+    """As of 2026-05-11 the 5-invariant gap is CLOSED — the mock demo
+    exercises all 21 invariants in-process via SealedEnvelope +
+    `_x25519_seal` / `_x25519_open` round-trip. The demo dashboard must
+    cite the closure (no stale "5 X25519 await wire" disclosure)."""
     demo_html = _DEMO_HTML.read_text()
-    gap = _EXPECTED_SPEC_INVARIANT_COUNT - _EXPECTED_DEMO_INVARIANT_COUNT  # 5
-    assert (
-        f"the {gap} X25519 sealing invariants" in demo_html
-        or f"{gap} X25519 sealing invariants are" in demo_html
-    ), (
-        "The 16-of-21 gap explanation must remain on docs/demo.html "
-        "(governance Phase B card)."
+    gap = _EXPECTED_SPEC_INVARIANT_COUNT - _EXPECTED_DEMO_INVARIANT_COUNT  # 0
+    assert gap == 0, (
+        f"Demo-to-spec gap is {gap}; should be 0 after the iter-2026-05-11 "
+        f"X25519 in-process round-trip landed."
+    )
+    # The stale "5 X25519 sealing invariants are" disclosure must not
+    # remain on the dashboard — it would now be a misclaim.
+    assert "5 X25519 sealing invariants are" not in demo_html, (
+        "docs/demo.html still contains the stale 5-invariant 'await wire' "
+        "disclosure from before the iter-2026-05-11 X25519 in-process "
+        "round-trip landed. Remove the disclosure (the gap is closed)."
     )

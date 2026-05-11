@@ -35,7 +35,7 @@ Sarah is a 67-year-old with Type 2 Diabetes, Hypertension, CKD Stage 3b, and Atr
 
 ClinicalMem is built on two open-source STARGA technologies:
 
-1. **mind-mem** (v3.x) — Our persistent memory system for AI agents, adapted for clinical data. Provides hybrid BM25 + vector + RRF search, contradiction detection, causal dependency graphs, **SQLCipher at-rest encryption (HIPAA-compatible)**, **TAG_v1 audit-integrity preimages with Q16.16 fixed-point scoring**, and **tier-decay (TTL/LRU) for clinical-memory ageing**. The audit chain is replayable against the canonical `mm verify-chain` reference verifier.
+1. **mind-mem** (v4.0.0, released 2026-05-10) — Our persistent memory system for AI agents, adapted for clinical data. Provides hybrid BM25 + vector + RRF search, contradiction detection, causal dependency graphs, **SQLCipher at-rest encryption (HIPAA-compatible)**, **TAG_v1 audit-integrity preimages with Q16.16 fixed-point scoring**, and **tier-decay (TTL/LRU) for clinical-memory ageing**. The audit chain is replayable against the canonical `mm verify-chain` reference verifier. v4.0.0 adds opt-in cognitive-kernel retrieval strategies, knowledge-graph block kinds, federation foundation primitives (vclock + conflict log + merge strategy), and an observability suite (counters / gauges / histograms + structured logging context) — all gated behind `mind-mem.json` `features.v4.<flag>`, no breaking changes to v3.x.
 
 2. **MIND Lang Scoring Kernels** — Pure Python implementations of three MIND Lang kernels:
    - `abstention.mind` → Confidence gating (decides when to abstain)

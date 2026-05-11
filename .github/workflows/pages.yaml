@@ -1,10 +1,13 @@
 name: Deploy Demo to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
   workflow_dispatch:
+  # Auto-trigger disabled 2026-05-11: GitHub Pages is not yet enabled for
+  # the (currently private) repository — `actions/configure-pages@v5` returns
+  # 404 on every push. Re-enable on push after the repo flips to public AND
+  # `gh api -X POST /repos/star-ga/clinicalmem/pages -f build_type=workflow`
+  # is run to enable Pages. The live demo deploys via Cloudflare Pages
+  # (https://clinicalmem-demo.pages.dev/demo) in the meantime.
 
 permissions:
   contents: read

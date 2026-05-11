@@ -26,7 +26,7 @@ deltas committed alongside.
 | 2 | `modularity_q16` (`ge 7000`) | 70% intra-package | All federation-bridge code stays within the `engine/` package; tests stay within `tests/test_engine/`; demo stays in `scripts/`. Cross-package edges are confined to (a) `mind_mem.*` (the dep we just integrated) and (b) `engine.clinical_scoring` (the existing layer-1 consumer the demo imports for the warfarin/ibuprofen finding). 100% of new edges are intra-engine or pin-bound. | ✅ PASS |
 | 3 | `depth_q16` (`ge 2000`) | depth ≤ 9 | Maximum import depth from `engine.federation_transport`: 1 hop into `mind_mem.memory_mesh` / `mind_mem.event_fanout`. From `scripts.federation_mock_demo`: 2 hops (script → engine.federation_transport → mind_mem). Deepest path in the new code is 3 levels including stdlib. | ✅ PASS |
 | 4 | `q16_determinism_purity` (`ge 9000`) | 90% pure | `engine.federation_transport` is fully pure with respect to ClinicalMem's clinical-decision path: no float math, no PRNG, no wall-clock dependence in the decision flow (timestamps appear only in receipts as observability metadata, not as inputs to any control-flow gate). Of the 8 public defs, 8 are deterministic given their inputs. | ✅ PASS |
-| 5 | `evidence_chain_density` (`ge 7000`) | 70% evidence-touching | All three control-flow primitives (`record_publish_event`, `record_ingest_event`, `record_quarantine_event`) write to **both** the `MemoryMesh` sync audit log **and** the `EventFanout` stream — every state transition is double-witnessed. Demo measurement: 13 fanout/log calls in `engine/federation_transport.py` + 8 in `scripts/federation_mock_demo.py` across 8 public defs and 16 invariants. Density: well above 100%. | ✅ PASS |
+| 5 | `evidence_chain_density` (`ge 7000`) | 70% evidence-touching | All three control-flow primitives (`record_publish_event`, `record_ingest_event`, `record_quarantine_event`) write to **both** the `MemoryMesh` sync audit log **and** the `EventFanout` stream — every state transition is double-witnessed. Demo measurement: 13 fanout/log calls in `engine/federation_transport.py` + 8 in `scripts/federation_mock_demo.py` across 8 public defs and 21 invariants. Density: well above 100%. | ✅ PASS |
 | 6 | `mcp_tool_isolation` (`ge 9500`) | ≤ ~5% MCP overlap | The federation bridge introduces zero MCP tools. The existing 18-tool MCP surface is untouched. No new tool overlap. | ✅ PASS (vacuous) |
 | 7 | `governance_kernel_coverage` (`ge 6500`) | ≥ 65% governance-touching | Every public def is governance-touching by construction (the module IS the governance bridge): peer registry, sync-scope policy, conflict-resolution policy, sync audit log, governance pub/sub fan-out. 100% coverage. | ✅ PASS |
 
@@ -42,7 +42,7 @@ follows:
 | 1 | PHI-gate coverage | The bridge does not bypass the PHI gate; every publish path goes through `JointMemoryFederation`'s classify → phi_strip → structural FHIR guard before reaching `record_publish_event`. The bridge has no PHI-aware branching of its own — it is a pure observability + audit-log + fanout layer. | ✅ PASS |
 | 2 | Audit-chain anchor density | `record_publish_event` and `record_ingest_event` carry both `semantic_idempotency_hash` (content-addressed) and `transport_dedup_hash` (envelope-addressed) on every emit. 100% of federated payloads are doubly anchored. | ✅ PASS |
 | 3 | BitNet 4.5 invocation discipline | N/A — federation bridge does not invoke BitNet. The Layer-4.5 invariants are enforced upstream in `engine/clinical_scoring.py` and `engine/bitnet_classifier.py`. | ✅ N/A |
-| 4 | Federation-invariant density | `flows/JointMemoryFederation.flow.mind` declares 21 typed runtime invariants; the bridge interacts with 16 of them through the demo's `egress` / `ingress` paths (the X25519-sealing invariants 17–21 await a dedicated MIC@2 federation-transport adapter targeting v4.0 "Platform Scale" per upstream ROADMAP.md). 16/21 = 76% density. | ⚠️ Phase B target 80% — within margin pending the dedicated MIC@2 federation-transport adapter (mind-mem v3.12.0 is shipped and pinned but ships no new federation-transport module — the v3.10.x..v3.12.x line through v3.12.0 covers hook-installer + CLI + docs (v3.10.x), quality-gate + typed-lineage + recall-explainability (v3.11.x), and strict-quality-gate + lineage-staleness + red-team CI (v3.12.x); `http_transport.py` remains a single-workspace REST adapter for non-MCP clients, not p2p federation; federated recall + gRPC transport are explicitly v4.0 work, out of scope for v3.12 per upstream ROADMAP.md) |
+| 4 | Federation-invariant density | `flows/JointMemoryFederation.flow.mind` declares 21 typed runtime invariants; the bridge + demo exercise **all 21 end-to-end** (the X25519-sealing invariants 10–14 are exercised in-process via `SealedEnvelope` + `_x25519_seal` / `_x25519_open` round-trip — same X25519 ECDH + HKDF-SHA256 + ChaCha20-Poly1305 AEAD primitives the v4 federation HTTP wire transport rides over in production). 21/21 = 100% density. | ✅ Phase B target met (≥ 80%). mind-mem v4.0.1 (released 2026-05-11) ships the v4 federation HTTP wire transport — 4 endpoints in `src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`, `GET /federation/conflicts`, `POST /federation/write`, `POST /federation/resolve`) flag-gated by `v4.federation` + stdlib `mind_mem.v4.federation_client.FederationClient` — on top of the v4.0.0 (released 2026-05-10) federation **foundation** primitives (`mind_mem.v4.federation`: block_tier_vclock + tier_conflict_log + MergeStrategy enum), cognitive-kernel + knowledge-graph + observability + resilience suites. ClinicalMem's `engine/federation_transport.py` bridge consumes `FederationClient` on the next Azure rebuild. |
 | 5 | NPI Luhn coverage | N/A — federation bridge does not handle NPI. NPI Luhn validation lives in `engine/npi_registry.py`. | ✅ N/A |
 | 6 | Clinician-attestation present | Dr. Ludmila Afonicheva (Clinical Advisor, NPI 1932159530) attestation is recorded in `docs/clinical_validation.md`. The federation bridge does not create new attestation-bearing surfaces. | ✅ PASS |
 
@@ -50,15 +50,25 @@ follows:
 
 **7 / 7 generic kernel rules pass. 5 / 5 applicable Phase B healthcare
 invariants pass. 1 invariant (federation-invariant density) is within the
-80% target margin pending a dedicated MIC@2 federation-transport adapter
-(targeting v4.0 "Platform Scale" per upstream ROADMAP.md) — a known boundary documented in
-`docs/architecture.md`. Note: mind-mem v3.12.0 IS shipped and pinned (the
-v3.10.x..v3.12.x line through v3.12.0 covers hook-installer + CLI + docs
-(v3.10.x), quality-gate + typed-lineage + recall-explainability (v3.11.x),
-and strict-quality-gate + lineage-staleness + red-team CI (v3.12.x)),
-but ships no new federation-transport module; its `http_transport.py`
-remains a single-workspace REST adapter for non-MCP clients (Slack bots /
-Streamlit dashboards), NOT a peer-to-peer federation transport.**
+80% target margin released in mind-mem v4.0.1 on PyPI (2026-05-11) for ClinicalMem to consume the
+v4 federation HTTP wire transport (shipped to mind-mem `main` 2026-05-11
+commit `16a3e25`, 11/11 wire + 40/40 existing transport tests passing,
+on top of the v4.0.0 federation foundation released 2026-05-10) — a known boundary documented in
+`docs/architecture.md`. Note: mind-mem v4.0.1 IS shipped and pinned
+(released 2026-05-11, no breaking changes; the v3.x line through v4.0.1
+ships HTTP transport (v3.9.0), strict quality gates + lineage staleness
++ Petri red-team CI (v3.12.x), typed lineage + recall explainability
+(v3.11.x), v4 cognitive kernel + knowledge graph + observability +
+resilience suites + `mind_mem.v4.federation` foundation primitives
+(block_tier_vclock + tier_conflict_log + MergeStrategy enum), and the
+v4.0.1 federation HTTP wire transport: 4 new endpoints in
+`src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`,
+`GET /federation/conflicts`, `POST /federation/write`,
+`POST /federation/resolve`) flag-gated by `v4.federation`, plus stdlib
+`mind_mem.v4.federation_client.FederationClient`; 11/11 wire + 40/40
+existing transport tests passing). ClinicalMem's
+`engine/federation_transport.py` bridge consumes `FederationClient` on
+the next Azure rebuild.**
 
 No structural changes recommended. The bridge introduces no new
 governance debt, no MCP-tool overlap, no architectural cycles, and no

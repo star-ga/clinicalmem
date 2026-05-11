@@ -39,7 +39,14 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PrivateKey,
     Ed25519PublicKey,
 )
-from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.asymmetric.x25519 import (
+    X25519PrivateKey,
+    X25519PublicKey,
+)
+from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.exceptions import InvalidSignature, InvalidTag
 
 # Make the engine package importable when this script is run directly.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -102,13 +109,18 @@ INVARIANT_DESCRIPTIONS: dict[int, str] = {
     7:  "stamped.has_nonce_128bit == true",
     8:  "signed.epoch == site_epoch",
     9:  "signed.canonical_preimage_schema == TAG_v1_NUL_separated",
-    10: "verified.signature_valid == true",
-    11: "verified.key_epoch_revoked == false",
-    12: "verified.payload.issued_at_seconds_ago <= 300",
-    13: "verified.payload.issued_at_seconds_ago >= 0",
-    14: "inbound_scrub.has_phi == false",
-    15: "tier_clamped.value >= 0 and tier_clamped.value <= 5",
-    16: "quorum.has_concurring_signatures or quorum.tier <= 1",
+    10: "sealed.payload_encrypted == true (X25519 ECDH + HKDF-SHA256 + ChaCha20-Poly1305)",
+    11: "sealed.cipher == chacha20-poly1305",
+    12: "sealed.has_aead_tag == true (16-byte Poly1305 tag, AEAD-bound to associated_data)",
+    13: "opened.decryption_succeeded == true (recipient X25519 private key derives matching shared secret)",
+    14: "opened.aead_tag_verified == true (Poly1305 AEAD tag verifies before plaintext is exposed)",
+    15: "verified.signature_valid == true",
+    16: "verified.key_epoch_revoked == false",
+    17: "verified.payload.issued_at_seconds_ago <= 300",
+    18: "verified.payload.issued_at_seconds_ago >= 0",
+    19: "inbound_scrub.has_phi == false",
+    20: "tier_clamped.value >= 0 and tier_clamped.value <= 5",
+    21: "quorum.has_concurring_signatures or quorum.tier <= 1",
 }
 
 # ── Banner + helpers ──────────────────────────────────────────────────────────
@@ -257,12 +269,26 @@ class LocalKnowledge:
 
 
 @dataclass
+class SealedEnvelope:
+    """X25519-ECDH-sealed envelope carrying an encrypted FederatedRecord
+    across the wire. Mirrors the v4 federation HTTP wire transport's
+    on-the-wire shape (mind-mem `main` 16a3e25, pending v4.0.x PyPI tag)."""
+    sender_x25519_pub: bytes   # 32-byte raw X25519 ephemeral public key
+    nonce: bytes               # 12-byte ChaCha20-Poly1305 nonce
+    ciphertext: bytes          # AEAD ciphertext + 16-byte Poly1305 tag suffix
+    cipher: str = "chacha20-poly1305"
+    aead_tag_length: int = 16  # Poly1305 tag is appended to ciphertext
+
+
+@dataclass
 class SiteState:
     """In-process simulation of a ClinicalMem site."""
     name: str
     site_id: str
     private_key: Ed25519PrivateKey
     public_key: Ed25519PublicKey
+    x25519_private: X25519PrivateKey
+    x25519_public: X25519PublicKey
     key_epoch: int = 1
     memory_store: dict[str, LocalKnowledge] = field(default_factory=dict)
     audit_log: list[dict[str, Any]] = field(default_factory=list)
@@ -276,27 +302,146 @@ class SiteState:
 
 def _make_site(name: str, site_id: str, epoch: int = 1) -> SiteState:
     priv = Ed25519PrivateKey.generate()
+    x_priv = X25519PrivateKey.generate()
     return SiteState(
         name=name,
         site_id=site_id,
         private_key=priv,
         public_key=priv.public_key(),
+        x25519_private=x_priv,
+        x25519_public=x_priv.public_key(),
         key_epoch=epoch,
     )
+
+
+# ── X25519 + ChaCha20-Poly1305 AEAD seal / open ──────────────────────────────
+#
+# Mirrors the v4 federation HTTP wire transport's cryptographic envelope
+# (mind-mem `main` 16a3e25): per-record ephemeral X25519 keypair → ECDH
+# shared secret → HKDF-SHA256(info=b"clinicalmem-federation-v1") → 32-byte
+# ChaCha20-Poly1305 key, AEAD encrypt with 12-byte random nonce + 16-byte
+# Poly1305 tag, AEAD-bound to a fixed associated_data. Per-record
+# ephemeral keys give forward secrecy at the record level.
+
+_FED_AAD = b"clinicalmem-federation-v1"
+_FED_HKDF_INFO = b"clinicalmem-federation-v1"
+
+
+def _x25519_seal(
+    record: "FederatedRecord",
+    recipient_pubkey: X25519PublicKey,
+) -> SealedEnvelope:
+    """Encrypt a FederatedRecord using X25519 ECDH + ChaCha20-Poly1305 AEAD.
+
+    Ephemeral sender keypair → forward secrecy. AEAD tag is suffixed onto
+    the ciphertext by the cryptography library (the canonical Poly1305
+    construction).
+    """
+    payload_bytes = json.dumps(
+        {
+            "drug_a": record.drug_a,
+            "drug_b": record.drug_b,
+            "severity": record.severity,
+            "description": record.description,
+            "score": record.score,
+            "issued_at": record.issued_at,
+            "nonce_128bit": record.nonce_128bit,
+            "key_epoch": record.key_epoch,
+            "signer_id": record.signer_id,
+            "signature": record.signature.hex(),
+            "canonical_preimage_hash": record.canonical_preimage_hash,
+            "plan_hash": record.plan_hash,
+            "fhir_resource_type": record.fhir_resource_type,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    ephemeral_priv = X25519PrivateKey.generate()
+    ephemeral_pub = ephemeral_priv.public_key()
+    shared = ephemeral_priv.exchange(recipient_pubkey)
+    derived_key = HKDF(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=None,
+        info=_FED_HKDF_INFO,
+    ).derive(shared)
+
+    chacha = ChaCha20Poly1305(derived_key)
+    nonce = os.urandom(12)
+    ciphertext = chacha.encrypt(nonce, payload_bytes, _FED_AAD)
+
+    return SealedEnvelope(
+        sender_x25519_pub=ephemeral_pub.public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw,
+        ),
+        nonce=nonce,
+        ciphertext=ciphertext,
+    )
+
+
+def _x25519_open(
+    envelope: SealedEnvelope,
+    recipient_privkey: X25519PrivateKey,
+) -> tuple["FederatedRecord", bool]:
+    """Decrypt + AEAD-verify a SealedEnvelope. Returns (record, aead_verified).
+
+    `cryptography.hazmat.primitives.ciphers.aead.ChaCha20Poly1305.decrypt`
+    raises `InvalidTag` on AEAD verification failure, before any plaintext
+    is exposed. Reaching the return statement therefore proves both
+    `decryption_succeeded` and `aead_tag_verified`.
+    """
+    sender_pub = X25519PublicKey.from_public_bytes(envelope.sender_x25519_pub)
+    shared = recipient_privkey.exchange(sender_pub)
+    derived_key = HKDF(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=None,
+        info=_FED_HKDF_INFO,
+    ).derive(shared)
+
+    chacha = ChaCha20Poly1305(derived_key)
+    plaintext = chacha.decrypt(envelope.nonce, envelope.ciphertext, _FED_AAD)
+    payload = json.loads(plaintext.decode())
+
+    record = FederatedRecord(
+        drug_a=payload["drug_a"],
+        drug_b=payload["drug_b"],
+        severity=payload["severity"],
+        description=payload["description"],
+        score=payload["score"],
+        issued_at=payload["issued_at"],
+        nonce_128bit=payload["nonce_128bit"],
+        key_epoch=payload["key_epoch"],
+        signer_id=payload["signer_id"],
+        signature=bytes.fromhex(payload["signature"]),
+        canonical_preimage_hash=payload["canonical_preimage_hash"],
+        plan_hash=payload["plan_hash"],
+        fhir_resource_type=payload["fhir_resource_type"],
+    )
+    return record, True
 
 
 # ── Mock transport ────────────────────────────────────────────────────────────
 
 class MockTransport:
-    """Single-queue in-process mock of the MIC@2 / MAP / binary transport."""
+    """Single-queue in-process mock of the MIC@2 / MAP / binary transport.
+
+    Carries SealedEnvelope (X25519 + ChaCha20-Poly1305 AEAD) — the same
+    on-the-wire shape exercised by the v4 federation HTTP wire transport
+    (`mind_mem.v4.federation_client.FederationClient` against
+    `src/mind_mem/http_transport.py` `/federation/*` endpoints, mind-mem
+    `main` 16a3e25, pending v4.0.x PyPI tag).
+    """
 
     def __init__(self) -> None:
-        self._q: queue.Queue[FederatedRecord] = queue.Queue()
+        self._q: queue.Queue[SealedEnvelope] = queue.Queue()
 
-    def publish(self, record: FederatedRecord) -> None:
-        self._q.put(record)
+    def publish(self, envelope: SealedEnvelope) -> None:
+        self._q.put(envelope)
 
-    def receive(self, timeout: float = 1.0) -> FederatedRecord:
+    def receive(self, timeout: float = 1.0) -> SealedEnvelope:
         return self._q.get(timeout=timeout)
 
 
@@ -331,13 +476,14 @@ def egress(
     site: SiteState,
     finding: ClinicalFinding,
     transport: MockTransport,
+    recipient_x25519_pub: X25519PublicKey,
     fanout: EventFanout | None = None,
     peer_id: str | None = None,
 ) -> FederatedRecord | None:
     """
     Run the JointMemoryFederation egress path:
       classify → phi_strip → structural-FHIR-guard →
-      phi-lane-block → stamp → sign → emit
+      phi-lane-block → stamp → sign → x25519_seal → emit
     """
     _stage(f"EGRESS: {site.name} → federation transport")
     _info("Site", f"{site.name} ({site.site_id})")
@@ -460,9 +606,30 @@ def egress(
         {"signer_id": site.site_id, "epoch": site.key_epoch},
     )
 
+    # ── Invariants 10 + 11 + 12: x25519_seal (cryptographic envelope) ────────
+    # Per-record ephemeral X25519 keypair → ECDH → HKDF-SHA256 →
+    # ChaCha20-Poly1305 AEAD encrypt with associated_data binding. Mirrors
+    # the v4 federation HTTP wire transport's on-the-wire shape (mind-mem
+    # `main` 16a3e25). Forward-secure at the record level: compromising a
+    # site's long-term X25519 key does not retroactively decrypt past
+    # records (the ephemeral keys for those records were never persisted).
+    sealed = _x25519_seal(record, recipient_x25519_pub)
+    assert len(sealed.ciphertext) > 0, (
+        "Invariant 10 failed: x25519_seal produced no ciphertext"
+    )
+    assert sealed.cipher == "chacha20-poly1305", (
+        f"Invariant 11 failed: cipher={sealed.cipher!r}"
+    )
+    assert sealed.aead_tag_length == 16, (
+        f"Invariant 12 failed: aead_tag_length={sealed.aead_tag_length}"
+    )
+    _pass(10, f"X25519+ChaCha20-Poly1305 sealed ({len(sealed.ciphertext)}-byte ciphertext+tag)")
+    _pass(11, f"cipher={sealed.cipher}")
+    _pass(12, f"AEAD tag (Poly1305, {sealed.aead_tag_length} bytes) bound to associated_data")
+
     # ── Emit over mock transport ──────────────────────────────────────────────
-    transport.publish(record)
-    print(f"\n  {GREEN}→ Record published to mock transport (queue depth = 1){RESET}")
+    transport.publish(sealed)
+    print(f"\n  {GREEN}→ SealedEnvelope published to mock transport (queue depth = 1){RESET}")
 
     # mind-mem v3.8.14 control plane: log the sync event in the local
     # MemoryMesh and fan out a clinicalmem.federation.publish event so
@@ -493,7 +660,7 @@ def egress(
 
 def ingress(
     site: SiteState,
-    record: FederatedRecord,
+    sealed_envelope: SealedEnvelope,
     peer_public_key: Ed25519PublicKey,
     peer_signatures: list[FederatedRecord],
     fanout: EventFanout | None = None,
@@ -501,14 +668,30 @@ def ingress(
 ) -> LocalKnowledge:
     """
     Run the JointMemoryFederation ingress path:
-      ed25519_verify → freshness_window → phi_strip_inbound →
+      x25519_open → ed25519_verify → freshness_window → phi_strip_inbound →
       tier_clamp → severity_quorum → mind_mem_ingest
     """
     _stage(f"INGRESS: federation transport → {site.name}")
     _info("Site", f"{site.name} ({site.site_id})")
+
+    # ── Invariants 13 + 14: x25519_open (decrypt + AEAD verify) ──────────────
+    # cryptography.hazmat.primitives.ciphers.aead.ChaCha20Poly1305.decrypt
+    # raises InvalidTag on AEAD verification failure, BEFORE plaintext is
+    # exposed. Reaching the next line therefore proves both
+    # decryption_succeeded == true AND aead_tag_verified == true atomically.
+    try:
+        record, aead_verified = _x25519_open(sealed_envelope, site.x25519_private)
+    except InvalidTag as exc:
+        raise AssertionError(
+            "Invariant 13/14 failed: x25519_open raised InvalidTag — "
+            "AEAD tag mismatch or ECDH shared-secret derivation failed"
+        ) from exc
+    assert aead_verified is True, "Invariant 14 failed: AEAD verify flag false"
+    _pass(13, "X25519 ECDH shared-secret derived; ChaCha20-Poly1305 plaintext recovered")
+    _pass(14, "Poly1305 AEAD tag verified (atomic with decrypt; raises before plaintext exposure)")
     _info("From", record.signer_id)
 
-    # ── Invariants 10 + 11: ed25519_verify ───────────────────────────────────
+    # ── Invariants 15 + 16: ed25519_verify ───────────────────────────────────
     inbound_payload: dict[str, Any] = {
         "drug_a":             record.drug_a,
         "drug_b":             record.drug_b,
@@ -526,42 +709,42 @@ def ingress(
     except InvalidSignature:
         sig_valid = False
 
-    assert sig_valid, "Invariant 10 failed: signature invalid"
-    _pass(10, "Ed25519 signature verified")
+    assert sig_valid, "Invariant 15 failed: signature invalid"
+    _pass(15, "Ed25519 signature verified")
 
     epoch_revoked = record.key_epoch in site.revoked_epochs
-    assert not epoch_revoked, f"Invariant 11 failed: epoch {record.key_epoch} revoked"
-    _pass(11, f"epoch={record.key_epoch} not in deny-list")
+    assert not epoch_revoked, f"Invariant 16 failed: epoch {record.key_epoch} revoked"
+    _pass(16, f"epoch={record.key_epoch} not in deny-list")
 
-    # ── Invariants 12 + 13: freshness window ─────────────────────────────────
+    # ── Invariants 17 + 18: freshness window ─────────────────────────────────
     now                = int(time.time())
     issued_at_ago      = now - record.issued_at
-    assert issued_at_ago <= 300, f"Invariant 12 failed: record too old ({issued_at_ago}s)"
-    assert issued_at_ago >= 0,   f"Invariant 13 failed: negative staleness ({issued_at_ago}s)"
-    _pass(12, f"issued_at_seconds_ago={issued_at_ago}s <= 300")
-    _pass(13, f"issued_at_seconds_ago={issued_at_ago}s >= 0")
+    assert issued_at_ago <= 300, f"Invariant 17 failed: record too old ({issued_at_ago}s)"
+    assert issued_at_ago >= 0,   f"Invariant 18 failed: negative staleness ({issued_at_ago}s)"
+    _pass(17, f"issued_at_seconds_ago={issued_at_ago}s <= 300")
+    _pass(18, f"issued_at_seconds_ago={issued_at_ago}s >= 0")
 
-    # ── Invariant 14: inbound phi_strip ──────────────────────────────────────
+    # ── Invariant 19: inbound phi_strip ──────────────────────────────────────
     _, inbound_phi_found, _ = _phi_strip(inbound_payload)
-    assert not inbound_phi_found, "Invariant 14 failed: PHI detected on inbound scrub"
-    _pass(14, "inbound PHI scrub clean")
+    assert not inbound_phi_found, "Invariant 19 failed: PHI detected on inbound scrub"
+    _pass(19, "inbound PHI scrub clean")
 
-    # ── Invariant 15: tier bounds-check ──────────────────────────────────────
+    # ── Invariant 20: tier bounds-check ──────────────────────────────────────
     raw_tier    = 2   # peer-supplied tier (simulated)
     tier_value  = max(0, min(5, raw_tier))
-    assert 0 <= tier_value <= 5, "Invariant 15 failed"
-    _pass(15, f"tier={tier_value} in [0..5]")
+    assert 0 <= tier_value <= 5, "Invariant 20 failed"
+    _pass(20, f"tier={tier_value} in [0..5]")
 
-    # ── Invariant 16: severity quorum gate ───────────────────────────────────
+    # ── Invariant 21: severity quorum gate ───────────────────────────────────
     # Default quorum is 3-of-5. With 1 peer signature (single site), no quorum.
     n_concurring  = len(peer_signatures)  # 0 in single-peer case
     has_quorum    = n_concurring >= 3
     effective_tier = tier_value if has_quorum else min(tier_value, 1)
 
     # Invariant: quorum OR tier <= 1
-    assert has_quorum or effective_tier <= 1, "Invariant 16 failed"
+    assert has_quorum or effective_tier <= 1, "Invariant 21 failed"
     _pass(
-        16,
+        21,
         f"quorum={has_quorum} (concurring={n_concurring}/5)"
         f" → tier={effective_tier} (low tier, evidence_grade={has_quorum})",
     )
@@ -602,7 +785,7 @@ def ingress(
     # MemoryMesh sync audit log + broadcast on event_fanout. The mesh's
     # per-scope conflict-resolution policy (governance_gated for
     # SEMANTIC + GOVERNANCE) is what the severity-quorum gate
-    # (invariant 16 above) enforces at runtime.
+    # (invariant 21 above) enforces at runtime.
     if fanout is not None and peer_id is not None:
         receipt = record_ingest_event(
             site.mesh,
@@ -748,7 +931,11 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
         )
 
     # ── Egress ────────────────────────────────────────────────────────────────
-    emitted = egress(site_a, finding, transport, fanout=fanout, peer_id=site_b.site_id)
+    emitted = egress(
+        site_a, finding, transport,
+        recipient_x25519_pub=site_b.x25519_public,
+        fanout=fanout, peer_id=site_b.site_id,
+    )
 
     if phi_test:
         assert emitted is None, "PHI test: expected egress to return None (quarantined)"
@@ -760,12 +947,17 @@ def run_demo(phi_test: bool = False) -> tuple[str, str]:
     assert emitted is not None, "Expected emitted record"
 
     # ── Ingress ───────────────────────────────────────────────────────────────
-    received = transport.receive(timeout=1.0)
-    assert received.canonical_preimage_hash == emitted.canonical_preimage_hash
+    received_envelope = transport.receive(timeout=1.0)
+    # Sanity: the envelope opens with site_b's X25519 private key and
+    # reproduces the same canonical_preimage_hash the egress signed.
+    _peek_record, _ = _x25519_open(received_envelope, site_b.x25519_private)
+    assert _peek_record.canonical_preimage_hash == emitted.canonical_preimage_hash, (
+        "Mock-transport round-trip mismatch: opened envelope does not match emitted record"
+    )
 
     ingested = ingress(
         site_b,
-        received,
+        received_envelope,
         peer_public_key=site_a.public_key,
         peer_signatures=[],   # 0-of-5 concurring → low tier by quorum gate
         fanout=fanout,

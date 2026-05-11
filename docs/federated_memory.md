@@ -198,24 +198,42 @@ runnable and meaningful after the real transport ships.
 ## Status
 
 - `flows/JointMemoryFederation.flow.mind` — **shipped** (typed
-  contract, **21 typed invariants** — 16 exercised end-to-end by
-  the mock demo, 5 X25519-sealing invariants 17-21 declared but
-  pending a dedicated MIC@2 federation-transport adapter targeting
-  a future mind-mem release; plan_hash `cbfaf3e8…4e18b`)
+  contract, **21 typed invariants** — all 21 exercised end-to-end
+  by the mock demo, with the X25519-sealing invariants 10-14
+  exercised in-process via `SealedEnvelope` + `_x25519_seal` /
+  `_x25519_open` round-trip mirroring the v4 federation HTTP wire
+  transport released in mind-mem v4.0.1; plan_hash `cbfaf3e8…4e18b`)
 - `scripts/federation_mock_demo.py` — **shipped** (end-to-end
   runnable proof of the contract; mock in-process transport)
-- `mind-mem` MIC@2 / MAP / binary multi-machine transport —
-  **scheduled for v4.0 "Platform Scale"** per upstream ROADMAP.md
-  (federated recall + gRPC transport are explicitly v4.0 work,
-  out of scope for v3.12). The v3.10.x..v3.12.x line through
-  v3.12.0 ships hook-installer + CLI + docs (v3.10.x), quality-
-  gate + typed-lineage + recall-explainability (v3.11.x), and
-  strict-quality-gate + lineage-staleness + red-team CI (v3.12.x)
-  — none transport-related.
-- ClinicalMem federation client wiring — pending mind-mem v4.0
-  "Platform Scale" release; the contract above pins the API
-  surface, ready to drop in when the upstream transport adapter
-  ships.
+- `mind-mem` v4 federation HTTP wire transport — **shipped to
+  mind-mem `main` 2026-05-11 (commit `16a3e25`)**: 4 new endpoints
+  in `src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`,
+  `GET /federation/conflicts`, `POST /federation/write`,
+  `POST /federation/resolve`) flag-gated by `v4.federation`, 1 MiB
+  body cap, X-MindMem-Token auth (same fail-closed contract as the
+  single-workspace HTTP transport from v3.9.0); plus the stdlib
+  `mind_mem.v4.federation_client.FederationClient` with `get_vclock`
+  / `list_conflicts` / `push_write` / `resolve_conflict` and specific
+  exception classes (`FederationAuthError`, `FederationFlagDisabled`,
+  `FederationTransportError`). 11/11 wire-transport tests + 40/40
+  existing `http_transport` tests pass; ruff lint + format clean.
+  Released in mind-mem v4.0.1 on PyPI (2026-05-11) — ClinicalMem can consume on next Azure rebuild.
+  mind-mem v4.0.0 (released 2026-05-10) shipped the v4 federation
+  **foundation** primitives (`mind_mem.v4.federation`:
+  block_tier_vclock + tier_conflict_log + MergeStrategy enum) plus
+  cognitive-kernel + knowledge-graph + observability + resilience
+  suites — all opt-in via `mind-mem.json` `features.v4.<flag>`, no
+  breaking changes to v3.x. Group D follow-ups still deferred:
+  gRPC/QUIC, TLS hardening, mTLS, OAuth/OIDC, DID/VC, ActivityPub
+  bridge.
+- ClinicalMem federation client wiring — `engine/federation_transport.py` consumes mind-mem v4.0.1 `mind_mem.v4.federation_client.FederationClient` on next Azure rebuild;
+  `engine/federation_transport.py` bridge shaped to drop in
+  `FederationClient` as the wire layer beneath the existing
+  `record_publish_event` / `record_ingest_event` calls. The
+  contract above pins the API surface; the swap is one-line for the
+  wire layer with every layer above (21 typed invariants,
+  cryptographic envelope, mesh audit log, fanout stream) staying
+  bit-identical.
 
 This document tracks ClinicalMem's federation architecture; for
 mind-mem's transport-layer status, see the upstream mind-mem

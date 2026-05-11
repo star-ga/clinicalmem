@@ -38,8 +38,8 @@ flowchart TB
 
     L6 -->|"list[DrugInteraction] +<br/>bitnet_severity + repro_hash + weights_id"| MEM
 
-    subgraph MEM["mind-mem v3.x (local store)"]
-      MEM_INNER["SQLCipher at-rest (HIPAA)<br/>· BM25 + vector + RRF retrieval<br/>· TAG_v1 NUL-separated audit chain (Q16.16)<br/>· Local Qwen-3.5-4B memory extract<br/>· Tier decay + contradiction detection"]
+    subgraph MEM["mind-mem v4.0.1 (local store)"]
+      MEM_INNER["SQLCipher at-rest (HIPAA)<br/>· BM25 + vector + RRF retrieval<br/>· TAG_v1 NUL-separated audit chain (Q16.16)<br/>· Local Qwen-3.5-4B memory extract<br/>· Tier decay + contradiction detection<br/>· v4 cognitive kernel + observability (opt-in)"]
     end
 
     MEM --> AUDIT
@@ -68,7 +68,7 @@ flowchart LR
     subgraph SiteA["SITE A — Mass General"]
         direction TB
         A_PIPE["6-layer pipeline"]
-        A_MEM["**Local mind-mem v3.x**<br/>SQLCipher · PHI stays here"]
+        A_MEM["**Local mind-mem v4.0.1**<br/>SQLCipher · PHI stays here"]
         subgraph A_EGRESS["EGRESS · JointMemoryFederation"]
             direction TB
             A1["classify (lane gate)"]
@@ -82,12 +82,13 @@ flowchart LR
         A_PIPE --> A_MEM --> A_EGRESS
     end
 
-    subgraph TRANSPORT["mind-mem v3.x multi-machine transport<br/>(patent-pending STARGA technology)"]
+    subgraph TRANSPORT["mind-mem v4.x multi-machine transport<br/>(patent-pending STARGA technology — HTTP wire shipped 2026-05-11, mind-mem main 16a3e25)"]
         direction TB
         T1["**MAP** — Mind Annotation Protocol"]
         T2["**MIC@2** — Mind Interchange Coding v2"]
         T3["**binary framing**"]
         T4["at-least-once delivery + dedup"]
+        T5["**v4 federation HTTP wire** — 4 endpoints<br/>flag-gated by v4.federation"]
     end
 
     subgraph SiteB["SITE B — Mayo Clinic"]
@@ -102,7 +103,7 @@ flowchart LR
             B6["severity_quorum 3-of-5"]
             B1 --> B2 --> B3 --> B4 --> B5 --> B6
         end
-        B_MEM["**Local mind-mem v3.x**<br/>SQLCipher · PHI stays here"]
+        B_MEM["**Local mind-mem v4.0.1**<br/>SQLCipher · PHI stays here"]
         B_PIPE["6-layer pipeline"]
         B_INGRESS --> B_MEM --> B_PIPE
     end
@@ -165,27 +166,37 @@ clinical decision on any device, decades later.
 | 21 CFR Part 11 audit export | ✅ Live | `engine/audit_export_part11.py` |
 | PCCP regression harness | ✅ Live | `scripts/run_clinical_regression_eval.py` |
 | Federation typed contract | ✅ Live | `flows/JointMemoryFederation.flow.mind` (21 typed runtime invariants, plan_hash cbfaf3e8…4e18b — pinned by `tests/test_scripts/test_federation_plan_hash.py`) |
-| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v3.12.0` MemoryMesh + EventFanout | `engine/federation_transport.py` (9 unit tests) |
+| Federation **control plane** (peer registry + 7 sync scopes + per-scope conflict-resolution policy + sync audit log + governance pub/sub) | ✅ Live via `mind-mem v4.0.1` MemoryMesh + EventFanout (+ v4 federation foundation: `mind_mem.v4.federation` block_tier_vclock + tier_conflict_log + MergeStrategy enum) | `engine/federation_transport.py` (9 unit tests) |
 | Federation **mock** wire transport (in-process queue) | ✅ Live | `scripts/federation_mock_demo.py` |
-| Federation **live** wire transport (HTTP/gRPC/QUIC over MIC@2/MAP/binary) | ⏳ Pending future mind-mem release — the v3.10.x..v3.12.x line through v3.12.0 (released 2026-05-09) shipped no new federation-transport module (v3.10.x = hook-installer + CLI + docs; v3.11.x = quality-gate + typed-lineage + recall-explainability; v3.12.x = strict-quality-gate + lineage-staleness + red-team CI); its `http_transport.py` remains a **single-workspace REST adapter** (status / query / memories / consolidate / clear endpoints for non-MCP clients like Slack bots, Streamlit dashboards), NOT a peer-to-peer federation transport; a dedicated MIC@2 transport adapter targets v4.0 "Platform Scale" per upstream ROADMAP.md (federated recall + gRPC transport are explicitly v4.0 work, out of scope for v3.12) | Drop-in adapter conforming to the `engine.federation_transport.record_publish_event` / `record_ingest_event` shape |
+| Federation **live** wire transport (HTTP over MIC@2/MAP/binary) | ✅ Shipped to mind-mem `main` 2026-05-11 (commit `16a3e25`); available in mind-mem v4.0.1 on PyPI (released 2026-05-11) — Azure rebuild on next deploy. 4 new endpoints in `src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`, `GET /federation/conflicts`, `POST /federation/write`, `POST /federation/resolve`) flag-gated by `v4.federation`, 1 MiB body cap, X-MindMem-Token auth. Stdlib `mind_mem.v4.federation_client.FederationClient` with `get_vclock` / `list_conflicts` / `push_write` / `resolve_conflict` + specific exceptions (`FederationAuthError`, `FederationFlagDisabled`, `FederationTransportError`). 11/11 wire-transport tests + 40/40 existing transport tests pass; ruff clean. Group D follow-ups still deferred: gRPC/QUIC, TLS hardening, mTLS, OAuth/OIDC, DID/VC, ActivityPub bridge. | `engine.federation_transport.record_publish_event` / `record_ingest_event` shape unchanged — wires through `FederationClient` once mind-mem v4.0.x is on PyPI; wire format and crypto envelope already pinned by `flows/JointMemoryFederation.flow.mind` |
 | MCP server (18 tools) | ✅ Live | `mcp_server*.py` deployed on Azure Container Apps |
 | A2A agent (5 skills · 13 tools) | ✅ Live | `a2a_agent/` deployed on Azure Container Apps — 5 skills advertised in the agent card (medication-safety-review · clinical-context-recall · contradiction-assessment · care-transition-summary · explain-conflict) wrapping 13 ADK tool functions across `a2a_agent/tools/{memory,fhir,safety}_tools.py` |
 
 The control plane (peer registry, 7 sync scopes, per-scope conflict
 resolution, sync audit log, governance pub/sub fan-out) is now LIVE
-against `mind-mem v3.12.0`'s `MemoryMesh` and `EventFanout`. Every
-publish, ingest, and PHI quarantine in the federation demo writes a
-`SyncEvent` to the local mesh and broadcasts a structured event on the
-fanout stream — observable end-to-end in the demo's stdout and in the
-9 dedicated unit tests under
-`tests/test_engine/test_federation_transport.py`.
+against `mind-mem v4.0.1`'s `MemoryMesh` and `EventFanout`, with the
+v4 federation foundation primitives (`mind_mem.v4.federation`:
+block_tier_vclock + tier_conflict_log + MergeStrategy enum) available
+for opt-in conflict resolution. Every publish, ingest, and PHI
+quarantine in the federation demo writes a `SyncEvent` to the local
+mesh and broadcasts a structured event on the fanout stream —
+observable end-to-end in the demo's stdout and in the 9 dedicated unit
+tests under `tests/test_engine/test_federation_transport.py`.
 
-The mock wire transport (in-process queue) remains in place pending
-the v3.9 cross-machine adapter. It is a faithful simulation of the
-live path: same canonical preimage encoding, same Ed25519 + X25519 +
-ChaCha20-Poly1305 cryptographic primitives, same TAG_v1 audit chain,
-same MemoryMesh sync bookkeeping. When the live HTTP/gRPC adapter
-ships, the only change is the wire layer beneath the
+The dedicated cross-machine HTTP wire transport landed in mind-mem
+`main` on 2026-05-11 (commit `16a3e25`): 4 new endpoints in
+`src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`,
+`GET /federation/conflicts`, `POST /federation/write`,
+`POST /federation/resolve`), flag-gated by `v4.federation`, 1 MiB body
+cap, X-MindMem-Token auth, with the stdlib `FederationClient` exposed
+from `mind_mem.v4.federation_client` (11/11 wire-transport tests +
+40/40 existing transport tests pass). The single-process mock queue in
+`scripts/federation_mock_demo.py` remains in place as the runnable
+end-to-end demo until the v4.0.x PyPI tag lands — both paths share
+the same canonical preimage encoding, Ed25519 + X25519 +
+ChaCha20-Poly1305 cryptographic primitives, TAG_v1 audit chain, and
+MemoryMesh sync bookkeeping. When ClinicalMem switches to the live
+adapter, the only change is the wire layer beneath the
 `record_publish_event` / `record_ingest_event` calls — every layer
 above (the 21 typed invariants, the cryptographic envelope, the mesh
 audit log, the fanout stream) stays bit-identical.
