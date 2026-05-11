@@ -49,7 +49,7 @@ class TestAgentCardComplete:
     def test_url_and_version(self):
         from a2a_agent.app import agent_card
         assert agent_card.url
-        assert agent_card.version == "0.1.0"
+        assert agent_card.version == "4.1.0"
 
     def test_extension_fhir_context(self):
         from a2a_agent.app import agent_card

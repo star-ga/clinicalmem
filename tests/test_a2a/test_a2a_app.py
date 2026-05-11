@@ -17,7 +17,7 @@ class TestAgentCard:
         assert agent_card.name == "clinicalmem_agent"
         assert "ClinicalMem" in agent_card.description
         assert "STARGA" in agent_card.description
-        assert agent_card.version == "0.1.0"
+        assert agent_card.version == "4.1.0"
         assert len(agent_card.skills) == 5
 
     def test_agent_card_skills(self):
@@ -54,6 +54,51 @@ class TestRateLimitMiddleware:
         mw = RateLimitMiddleware(mock_app)
         assert mw.MAX_REQUESTS == 60
         assert mw.WINDOW_SECONDS == 60
+
+
+class TestAgentCardCompat:
+    """The served agent-card JSON must satisfy a2a-sdk 1.0.x consumers
+    (Prompt Opinion marketplace, A2A directory) which require the
+    `supportedInterfaces` field even though we build against 0.3.x."""
+
+    def _make_client(self):
+        from starlette.applications import Starlette
+        from starlette.routing import Route
+        from starlette.responses import JSONResponse
+        from starlette.testclient import TestClient
+        from a2a_agent.app import AgentCardCompatMiddleware
+
+        async def fallback(_request):
+            return JSONResponse({"error": "should-not-reach"}, status_code=500)
+
+        app = Starlette(routes=[Route("/.well-known/agent-card.json", fallback)])
+        app.add_middleware(AgentCardCompatMiddleware)
+        return TestClient(app)
+
+    def test_card_includes_supported_interfaces(self):
+        client = self._make_client()
+        r = client.get("/.well-known/agent-card.json")
+        assert r.status_code == 200
+        body = r.json()
+        assert "supportedInterfaces" in body, "1.0.x consumers require supportedInterfaces"
+        assert isinstance(body["supportedInterfaces"], list)
+        assert body["supportedInterfaces"], "supportedInterfaces must not be empty"
+        iface = body["supportedInterfaces"][0]
+        assert iface["protocolBinding"] == "JSONRPC"
+        assert iface["protocolVersion"] == "0.3.0"
+        assert iface["url"].startswith("http")
+
+    def test_card_mirrors_security_requirements(self):
+        client = self._make_client()
+        body = client.get("/.well-known/agent-card.json").json()
+        assert body.get("securityRequirements") == body.get("security")
+
+    def test_card_preserves_canonical_fields(self):
+        client = self._make_client()
+        body = client.get("/.well-known/agent-card.json").json()
+        assert body["name"] == "clinicalmem_agent"
+        assert body["version"] == "4.1.0"
+        assert len(body["skills"]) == 5
 
 
 class TestExtractFhirContext:

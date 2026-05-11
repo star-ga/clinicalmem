@@ -21,6 +21,9 @@ Hackathon submission cut for the **Agents Assemble — The Healthcare AI Endgame
 - Devpost submission: https://devpost.com/software/clinimalmem
 - Prompt Opinion Marketplace MCP listing: https://app.promptopinion.ai/marketplace/mcp/019ccad4-0a5f-7da4-b9f4-a2ae212d9217
 
+### Fixed
+- A2A agent card now serves `supportedInterfaces` (and mirrors `securityRequirements`) so registries built against a2a-sdk 1.0.x — including the Prompt Opinion marketplace — accept the card without an SDK upgrade. Implemented as a request-scoped Starlette middleware on `/.well-known/agent-card.json`; no behaviour change for callers built against 0.3.x.
+
 ### Tests
 - 1425 tests passing across engine, MCP server, A2A agent, federation invariants, and Q16.16 determinism stress.
 

@@ -69,6 +69,36 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 
+class AgentCardCompatMiddleware(BaseHTTPMiddleware):
+    """Serve `/.well-known/agent-card.json` in a shape that satisfies both the
+    a2a-sdk 0.3.x SDK we build against and the a2a-sdk 1.0.x schema used by
+    downstream registries (Prompt Opinion marketplace, A2A directory).
+
+    The 1.0.x schema renamed `additionalInterfaces` → `supportedInterfaces`
+    and moved `url` / `preferredTransport` onto each `AgentInterface` entry.
+    Rather than upgrade the SDK (and break the ADK `to_a2a` wrapper), we
+    build the card JSON ourselves and short-circuit the route. This bypass
+    runs *before* ApiKeyMiddleware so the card stays publicly fetchable.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path != "/.well-known/agent-card.json":
+            return await call_next(request)
+        card_dict = agent_card.model_dump(mode="json", exclude_none=True, by_alias=True)
+        # Forward-compat fields expected by a2a-sdk 1.0.x consumers.
+        card_dict["supportedInterfaces"] = [
+            {
+                "url": BASE_URL,
+                "protocolBinding": "JSONRPC",
+                "protocolVersion": "0.3.0",
+            }
+        ]
+        # 1.0.x renamed `security` to `securityRequirements`; mirror it.
+        if "security" in card_dict and "securityRequirements" not in card_dict:
+            card_dict["securityRequirements"] = card_dict["security"]
+        return JSONResponse(card_dict)
+
+
 class ApiKeyMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.url.path == "/.well-known/agent-card.json":
