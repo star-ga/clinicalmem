@@ -215,3 +215,6 @@ agent_card = AgentCard(
 a2a_app = to_a2a(root_agent, port=PORT, agent_card=agent_card)
 a2a_app.add_middleware(ApiKeyMiddleware)
 a2a_app.add_middleware(RateLimitMiddleware)
+# Register last so it wraps outermost — short-circuits the agent-card route
+# before ApiKey/RateLimit gates ever see the request.
+a2a_app.add_middleware(AgentCardCompatMiddleware)

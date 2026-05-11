@@ -100,6 +100,23 @@ class TestAgentCardCompat:
         assert body["version"] == "4.1.0"
         assert len(body["skills"]) == 5
 
+    def test_middleware_is_registered_on_real_a2a_app(self):
+        """Integration: the actual `a2a_app` must register AgentCardCompatMiddleware.
+        Catches the regression where the class is defined but `add_middleware`
+        is never called — the production card would then ship without
+        `supportedInterfaces` even though unit tests pass."""
+        from a2a_agent import app as app_module
+        from starlette.testclient import TestClient
+
+        client = TestClient(app_module.a2a_app)
+        r = client.get("/.well-known/agent-card.json")
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert "supportedInterfaces" in body, (
+            "AgentCardCompatMiddleware not active on a2a_app — "
+            "did you forget `a2a_app.add_middleware(AgentCardCompatMiddleware)`?"
+        )
+
 
 class TestExtractFhirContext:
     def test_fallback_with_json_string(self):
