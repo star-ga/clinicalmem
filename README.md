@@ -80,41 +80,40 @@ Plus 2 bonus findings discovered autonomously:
 
 ## Architecture
 
-```
-                    FHIR R4                      Medical APIs
-                  Patient Data              NIH RxNorm, OpenEvidence
-                      |                     openFDA, ClinicalTrials.gov
-                      v                            |
-              +-------+----------------------------+-------+
-              |           SHARED ENGINE (engine/)           |
-              |                                             |
-              |   Clinical Memory    MIND Kernels           |
-              |   (BM25 + Vector)    (Scoring)              |
-              |                                             |
-              |   Drug Interactions  LLM Synthesizer        |
-              |   (6-tier pipeline)  (evidence-cited)       |
-              |                                             |
-              |   RxNorm Client      SNOMED CT Client       |
-              |   (drug normalize)   (allergy hierarchy)    |
-              |                                             |
-              |   UMLS Mapper        Consensus Engine       |
-              |   (cross-vocabulary) (6 US-based LLMs)      |
-              |                                             |
-              |   What-If Simulator  FDA Client             |
-              |   (digital twin)     (safety alerts)        |
-              |                                             |
-              |   PHI Detector       Hallucination Detector |
-              |   (HIPAA guard)      (evidence grounding)   |
-              |                                             |
-              |   Trials Client      Audit Trail            |
-              |   (ClinicalTrials)   (SHA-256 Merkle Chain) |
-              +--------+------------------+--------+--------+
-                       |                  |        |
-                       v                  v        v
-                  MCP Server         A2A Agent   Audit Trail
-                 (FastMCP 2.x)     (Google ADK)  (Hash Chain)
-                  18 tools          13 tools     Tamper-proof
-                  SHARP-on-MCP      A2A Protocol
+```mermaid
+flowchart TB
+    FHIR["FHIR R4 patient data<br/>(synthetic Sarah Mitchell + 30-patient cohort)"]
+    APIS["Medical APIs<br/>NIH RxNorm · OpenEvidence · openFDA · ClinicalTrials.gov · SNOMED CT · UMLS"]
+
+    subgraph ENGINE["Shared Engine (engine/)"]
+        direction TB
+        MEM["Clinical Memory<br/>(BM25 + vector + RRF, mind-mem v4.0.1)"]
+        SCORE["MIND Scoring Kernels<br/>(abstention + importance + adversarial)"]
+        DDI["Drug-Drug Interactions<br/>(6-layer pipeline + BitNet 4.5)"]
+        SYNTH["LLM Synthesizer<br/>(evidence-cited, abstention-gated)"]
+        TERMS["RxNorm + SNOMED CT + UMLS<br/>(cross-vocabulary normalization)"]
+        CONSENSUS["6-LLM US-based Consensus<br/>(GPT-5.5 + Gemini 3.1 + Grok 4.3 + Claude Opus 4.7 + Sonar Pro + Nemotron Ultra)"]
+        WHATIF["What-If Simulator + PHI Detector<br/>+ Hallucination Detector + FDA Alerts"]
+        AUDIT["Audit Trail<br/>(SHA-256 Merkle chain, TAG_v1)"]
+        FED["Federation Bridge<br/>(21 typed invariants, X25519 + Ed25519)"]
+    end
+
+    MCP["MCP Server (FastMCP 2.x)<br/>18 tools · SHARP-on-MCP<br/>Azure Container Apps"]
+    A2A["A2A Agent (Google ADK)<br/>5 skills · 13 tools<br/>Azure Container Apps"]
+    HF["🤗 Hugging Face Model<br/>stargainc/clinicalmem-bitnet-b158<br/>Apache-2.0 · A+B dual-bundle cascade"]
+
+    FHIR --> ENGINE
+    APIS --> ENGINE
+    ENGINE --> MCP
+    ENGINE --> A2A
+    ENGINE --> HF
+
+    style FHIR fill:#EFF6FF,stroke:#2563eb,color:#1e3a8a
+    style APIS fill:#F0FDFA,stroke:#0F766E,color:#134E4A
+    style ENGINE fill:#FEF3C7,stroke:#d97706,color:#7c2d12
+    style MCP fill:#FEF2F2,stroke:#dc2626,color:#7f1d1d
+    style A2A fill:#FEF2F2,stroke:#dc2626,color:#7f1d1d
+    style HF fill:#FEFCE8,stroke:#ca8a04,color:#713f12
 ```
 
 ## Six-Layer Safety Pipeline
