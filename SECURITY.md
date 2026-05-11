@@ -8,7 +8,7 @@ ClinicalMem uses **synthetic patient data exclusively**. No Protected Health Inf
 
 If you discover a security vulnerability, please report it responsibly:
 
-- **Email:** noreply@star.ga
+- **Email:** info@star.ga
 - **Do not** open a public GitHub issue for security vulnerabilities
 
 ## Security Measures

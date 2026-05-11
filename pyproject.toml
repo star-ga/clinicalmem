@@ -5,7 +5,7 @@ description = "Persistent, Auditable, Contradiction-Safe Clinical Memory for Hea
 requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [
-    { name = "STARGA Inc", email = "noreply@star.ga" }
+    { name = "STARGA Inc", email = "info@star.ga" }
 ]
 readme = "README.md"
 keywords = ["healthcare", "fhir", "mcp", "a2a", "clinical-memory", "drug-interactions", "patient-safety"]
