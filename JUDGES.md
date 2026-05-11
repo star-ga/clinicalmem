@@ -286,6 +286,34 @@ artifact. Audit map:
 
 `EHR (FHIR R4)` → `engine.fhir_adapter` → `Layer 1 table` → `Layer 2 OpenEvidence` → `Layer 3 RxNorm DDI` → `Layer 4 6-LLM US-based consensus` → **`Layer 4.5 BitNet b1.58 (Q16.16, bit-identical)`** → `Layer 5 LLM synthesis` → `Layer 6 abstention gate` → `mind-mem store + 21 CFR Part 11 audit chain` → `MCP (18 tools) + A2A (5 skills · 13 tools)`.
 
+```mermaid
+flowchart LR
+    EHR(["EHR · FHIR R4"])
+    L1["Layer 1<br/>deterministic<br/>table"]
+    L2["Layer 2<br/>OpenEvidence"]
+    L3["Layer 3<br/>RxNorm DDI"]
+    L4["Layer 4<br/>6-LLM<br/>consensus"]
+    L45[["Layer 4.5<br/>BitNet b1.58<br/>Q16.16 anchor"]]
+    L5["Layer 5<br/>LLM synthesis"]
+    L6{{"Layer 6<br/>abstention<br/>gate"}}
+    AUDIT[/"mind-mem +<br/>21 CFR Part 11<br/>audit chain"/]
+    OUT(["MCP · A2A · HF"])
+
+    EHR --> L1 --> L2 --> L3 --> L4 --> L45 --> L5 --> L6 --> AUDIT --> OUT
+
+    classDef io fill:#EFF6FF,stroke:#2563eb,color:#1e3a8a,stroke-width:2px
+    classDef pipe fill:#F0FDFA,stroke:#0F766E,color:#134E4A,stroke-width:2px
+    classDef anchor fill:#FEF2F2,stroke:#dc2626,color:#7f1d1d,stroke-width:3px
+    classDef gate fill:#FEF3C7,stroke:#d97706,color:#7c2d12,stroke-width:2px
+    classDef audit fill:#F0FDF4,stroke:#16a34a,color:#14532d,stroke-width:2px
+
+    class EHR,OUT io
+    class L1,L2,L3,L4,L5 pipe
+    class L45 anchor
+    class L6 gate
+    class AUDIT audit
+```
+
 For deeper architecture see `docs/architecture.md`. For the federation
 control-plane integration see `docs/architecture.md § Mock vs. live transport`
 and `docs/arch_mind_federation_audit.md`.
