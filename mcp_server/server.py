@@ -65,6 +65,7 @@ if os.environ.get("DEMO_MODE", "").lower() in ("1", "true", "yes"):
 
 mcp = FastMCP(
     "ClinicalMem",
+    version="4.1.0",
     instructions=(
         "Persistent, auditable, contradiction-safe clinical memory. "
         "Provides intelligent medication safety analysis, clinical context recall, "

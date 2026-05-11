@@ -102,7 +102,7 @@ agent_card = AgentCard(
         "MIND Lang scoring kernels. By STARGA Inc."
     ),
     url=BASE_URL,
-    version="0.1.0",
+    version="4.1.0",
     defaultInputModes=["text/plain"],
     defaultOutputModes=["text/plain"],
     capabilities=AgentCapabilities(
