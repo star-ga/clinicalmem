@@ -24,7 +24,7 @@ _FIXTURE = _REPO_ROOT / "docs" / "arch_mind" / "clinicalmem.fixture.json"
 
 _arch_mind_present = (
     shutil.which("arch-mind") is not None
-    or Path("~/arch-mind/bin/arch-mind").exists()
+    or (Path.home() / "arch-mind" / "bin" / "arch-mind").exists()
 )
 
 

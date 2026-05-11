@@ -110,9 +110,9 @@ def _arch_mind_binary_present() -> bool:
     import shutil
     if shutil.which("arch-mind"):
         return True
-    for candidate in ("~/arch-mind/bin/arch-mind",):
-        if Path(candidate).exists():
-            return True
+    home_bin = Path.home() / "arch-mind" / "bin" / "arch-mind"
+    if home_bin.exists():
+        return True
     return False
 
 

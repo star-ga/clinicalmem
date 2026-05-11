@@ -88,7 +88,8 @@ def _run(name: str, cmd: list[str], skip_reason: str | None = None) -> GateResul
 def _arch_mind_available() -> bool:
     if shutil.which("arch-mind"):
         return True
-    return Path("~/arch-mind/bin/arch-mind").exists()
+    # Fallback: look for arch-mind in the user's home (STARGA dev-box layout).
+    return (Path.home() / "arch-mind" / "bin" / "arch-mind").exists()
 
 
 def main() -> int:

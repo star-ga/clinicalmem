@@ -61,7 +61,7 @@ Total parameters (v8, LIVE since iter-275 promotion): `193 × 256 + 256 × 5 + 2
 
 Pre-promotion v1 baseline (preserved at `engine/bitnet_weights.v1.cfadb4f6.bak.json` for audit-chain reconstruction): `128 × 64 + 64 × 5 + 64 + 5 = 8,581` (8,512 ternary weights + 69 Q16.16 biases) / ~19 KB JSON.
 
-## Corpus (`clinicalmem-bitnet-training/drug_corpus.jsonl`)
+## Corpus (`retrain_runpod/drug_corpus.jsonl`)
 
 **3,247 labelled drug pairs across 224 unique medications.**
 
@@ -106,11 +106,11 @@ fabricates a class boundary it never observed.
 
 ### Reproducibility
 
-- Builder: `clinicalmem-bitnet-training/build_corpus.py`
+- Builder: `retrain_runpod/build_corpus.py`
 - Seed: `0xC11A1CA1` (negative sampler is deterministic per seed)
 - Run: `python3 build_corpus.py` → idempotent
 
-## Training (`clinicalmem-bitnet-training/train_bitnet.py`)
+## Training (`retrain_runpod/train_bitnet.py`)
 
 PyTorch with **straight-through estimator (STE)** for the ternary
 quantiser, per the BitNet paper's standard recipe:
@@ -238,16 +238,16 @@ verification is local.
 
 ```bash
 # 1. Build the corpus (deterministic)
-python3 clinicalmem-bitnet-training/build_corpus.py
+python3 retrain_runpod/build_corpus.py
 
 # 2. Train (RTX 3080: ~30 s)
-python3 clinicalmem-bitnet-training/train_bitnet.py
+python3 retrain_runpod/train_bitnet.py
 
 # 3. The trained weights are auto-copied to engine/bitnet_weights.json
 #    AND a training_summary.json is dropped next to them.
 
 # 4. Regenerate the dashboard's demo-pair table
-cd clinicalmem
+cd path/to/clinicalmem  # repo root
 python3 scripts/build_bitnet_pairs_json.py
 
 # 5. Run the regression suite

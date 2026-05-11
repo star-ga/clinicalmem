@@ -106,7 +106,7 @@ def _gate_verdict(script_name: str, *extra_args: str) -> str:
     # arch-mind gate degrades to SKIP without binary.
     if script_name == "run_arch_mind_gate.py":
         import shutil
-        if not (shutil.which("arch-mind") or Path("~/arch-mind/bin/arch-mind").exists()):
+        if not (shutil.which("arch-mind") or (Path.home() / "arch-mind" / "bin" / "arch-mind").exists()):
             return "SKIP"
 
     cp = subprocess.run(

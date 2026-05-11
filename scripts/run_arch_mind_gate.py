@@ -43,7 +43,6 @@ _MCP_SERVER = _REPO_ROOT / "mcp_server" / "server.py"
 
 # Locations to look for the arch-mind binary.
 _ARCH_MIND_CANDIDATES = (
-    Path("~/arch-mind/bin/arch-mind"),
     Path.home() / "arch-mind" / "bin" / "arch-mind",
 )
 
@@ -257,7 +256,17 @@ def _run_scan(arch_mind: Path) -> dict | None:
     if cp.returncode != 0:
         sys.stderr.write(cp.stderr)
         return None
-    return json.loads(_SCAN.read_text())
+    # Sanitize the absolute path arch-mind records in `_fixture` so the
+    # checked-in scan.json doesn't leak the dev box's repo root. The
+    # actual fixture is the same file regardless of where it lives.
+    scan = json.loads(_SCAN.read_text())
+    if isinstance(scan, dict) and "_fixture" in scan:
+        try:
+            scan["_fixture"] = str(_FIXTURE.relative_to(_REPO_ROOT))
+        except ValueError:
+            scan["_fixture"] = _FIXTURE.name
+        _SCAN.write_text(json.dumps(scan, indent=2) + "\n")
+    return scan
 
 
 def _run_rules(arch_mind: Path) -> tuple[bool, str]:

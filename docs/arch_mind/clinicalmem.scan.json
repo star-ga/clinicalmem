@@ -1,5 +1,5 @@
 {
-  "_fixture": "clinicalmem/docs/arch_mind/clinicalmem.fixture.json",
+  "_fixture": "docs/arch_mind/clinicalmem.fixture.json",
   "acyclicity_q16": 655360000,
   "depth_q16": 655360000,
   "equality_q16": 646594898,

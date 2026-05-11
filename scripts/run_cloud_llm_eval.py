@@ -24,13 +24,20 @@ import sys
 import time
 from pathlib import Path
 
-# Wire the orchestrator + .env
-ORCH_ROOT = Path(
-    "~/.claude/plugins/marketplaces/claude-code-ultimate/multi-llm-orchestrator"
+# Wire the orchestrator + .env (resolved from $HOME; the STARGA dev box
+# keeps the multi-LLM orchestrator under ~/.claude/plugins/marketplaces
+# and API keys under ~/.claude-ultimate/.env).
+ORCH_ROOT = (
+    Path.home()
+    / ".claude"
+    / "plugins"
+    / "marketplaces"
+    / "claude-code-ultimate"
+    / "multi-llm-orchestrator"
 )
 sys.path.insert(0, str(ORCH_ROOT))
 
-ENV_PATH = Path("~/.claude-ultimate/.env")
+ENV_PATH = Path.home() / ".claude-ultimate" / ".env"
 if ENV_PATH.exists():
     for line in ENV_PATH.read_text().splitlines():
         line = line.strip()

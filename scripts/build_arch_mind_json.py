@@ -29,8 +29,8 @@ RULES_PATH = REPO_ROOT / ".arch-mind" / "rules.mind"
 SUMMARY_PATH = REPO_ROOT / ".arch-mind" / "last_summary.json"
 OUTPUT_PATH = REPO_ROOT / "docs" / "arch_mind.json"
 
-# Path to the arch-mind binary; falls back to "arch-mind" on PATH.
-ARCH_MIND_BIN = Path("~/arch-mind/bin/arch-mind")
+# Path to the arch-mind binary; resolved from PATH or ~/arch-mind/bin.
+ARCH_MIND_BIN = Path.home() / "arch-mind" / "bin" / "arch-mind"
 
 
 _RULE_RE = re.compile(
