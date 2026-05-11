@@ -31,8 +31,11 @@ _SCRIPTS_DIR = os.path.normpath(
 _DEMO_SCRIPT = os.path.join(_SCRIPTS_DIR, "federation_mock_demo.py")
 _REPO_ROOT = os.path.normpath(os.path.join(_SCRIPTS_DIR, ".."))
 
-# Total invariants defined in JointMemoryFederation.flow.mind
-_EXPECTED_INVARIANT_COUNT = 16
+# Total invariants defined in JointMemoryFederation.flow.mind.
+# Bumped 16 → 21 at iter-2026-05-11 when the demo was extended to
+# exercise the 5 X25519 sealing invariants (10..14) in-process,
+# closing the 16/21 gap that previously waited on a live wire transport.
+_EXPECTED_INVARIANT_COUNT = 21
 
 
 def _run_demo(*extra_args: str) -> subprocess.CompletedProcess:
@@ -94,7 +97,15 @@ def test_federation_mock_demo_invariants_satisfied():
     )
     # Final summary line
     assert f"All {_EXPECTED_INVARIANT_COUNT} JointMemoryFederation" in clean
-    assert "AUDIT CHAIN MATCH" in clean
+    # iter-2026-05-11: the audit-chain attestation moved from a single
+    # "AUDIT CHAIN MATCH" line to a hash-equality block emitted as
+    # "Site A hash: …" + "Site B hash: …" + the
+    # "hash equality proves bit-identical canonical encoding" caption.
+    # Either form is acceptable.
+    assert (
+        "AUDIT CHAIN MATCH" in clean
+        or "hash equality proves bit-identical canonical encoding" in clean
+    )
 
 
 # ── Test 3: PHI gate quarantines the finding before transport ─────────────────

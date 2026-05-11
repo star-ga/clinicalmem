@@ -27,7 +27,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-_REPO = Path('clinicalmem')
+_REPO = Path(__file__).resolve().parent.parent
 _CACHE = json.loads((_REPO / 'docs' / 'openevidence_cache.json').read_text())
 _FLAGS_DOC = json.loads((_REPO / 'docs' / 'pharmacology_flags.json').read_text())
 

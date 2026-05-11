@@ -50,3 +50,10 @@ hf_repo/
 # IDE
 .vscode/
 .idea/
+
+# Local-only dev artifacts (untracked at iter-2026-05-11):
+.coverage
+.mind_mem_watch_state.json
+.wrangler/
+AUTONOMOUS_WORK_LOG.md
+CONSENSUS_*.json

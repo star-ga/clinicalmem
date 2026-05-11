@@ -177,12 +177,19 @@ def test_judges_audit_guide_cites_recent_v8_pins():
 
 
 def test_user_doc_pin_path_existence_self_pin():
-    """This pin file itself must be referenced in the iter-228
-    AUTONOMOUS_WORK_LOG entry — keeps the cross-pin lineage
-    auditable. Symmetric to iter-178/183/188/193/198/203/223 cross-pin
-    self-citations."""
+    """Cross-pin self-citation lineage (iter-228 onwards).
+
+    iter-2026-05-11: AUTONOMOUS_WORK_LOG.md is now a local-only dev
+    artifact (untracked in git, kept as a video-script reference). When
+    the file is absent (e.g., in CI or a fresh clone), the cross-pin
+    citation check is a no-op. When the file IS present (developer
+    working tree), the citation check still runs.
+    """
+    import pytest
+
     log_path = _REPO_ROOT / "AUTONOMOUS_WORK_LOG.md"
-    assert log_path.exists(), "AUTONOMOUS_WORK_LOG.md must be present"
+    if not log_path.exists():
+        pytest.skip("AUTONOMOUS_WORK_LOG.md is local-only (untracked); skipping cross-pin citation check")
     log_text = log_path.read_text()
     self_path = "test_user_doc_test_path_existence_pin.py"
     assert self_path in log_text, (

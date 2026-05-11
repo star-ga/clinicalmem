@@ -108,58 +108,32 @@ def test_no_doc_claims_v39_ships_federation_transport():
 
 
 def test_demo_archmind_callout_names_correct_target():
-    """Demo's arch-mind X25519-sealing-invariant callout names v3.10 / MIC@2.
+    """OBSOLETED at iter-2026-05-11.
 
-    The arch-mind 6-healthcare-invariants callout discloses that 5 of
-    21 federation invariants (the X25519 sealing ones) are 'declared
-    but await' the federation transport adapter. The 'await' target
-    must be v3.10 (or the MIC@2 adapter), NOT v3.9 (which is shipped
-    and pinned).
+    The X25519 sealing invariants are no longer 'awaiting' a future
+    transport — mind-mem v4.0.1 shipped wire transport (4 federation
+    endpoints + FederationClient stdlib), and the mock demo now
+    exercises all 21 invariants in-process via X25519/HKDF/ChaCha20-
+    Poly1305. The demo's arch-mind callout was rewritten to reflect
+    21/21 PASS, dropping the obsolete 'await v3.10 / MIC@2' disclosure.
+
+    Pin retained so the file shape stays stable for git history /
+    cross-pin lineage. Body is a no-op.
     """
-    text = _DEMO.read_text()
-    # Find the X25519 sealing disclosure region and check the upstream
-    # target nearby.
-    sealing_anchor = "X25519 sealing invariants"
-    if sealing_anchor not in text:
-        # If the demo refactors away from this exact phrase, this pin
-        # becomes a no-op until the new phrasing stabilizes.
-        return
-    idx = text.index(sealing_anchor)
-    # Look in a 600-char window around the anchor for an upstream-target
-    # phrase. v3.10 OR MIC@2 OR "federation-transport adapter" are all OK.
-    window = text[max(0, idx - 100) : idx + 600]
-    has_v310 = "v3.10" in window
-    has_mic2 = "MIC@2" in window
-    has_adapter = "federation-transport adapter" in window or "federation transport adapter" in window
-    assert has_v310 or has_mic2 or has_adapter, (
-        f"Demo's X25519-sealing-invariant disclosure must name the correct "
-        f"upstream target. Looked for 'v3.10' or 'MIC@2' or "
-        f"'federation-transport adapter' in a 600-char window around "
-        f"'X25519 sealing invariants' — none found. The 'await' target "
-        f"is the dedicated MIC@2 federation-transport adapter (mind-mem "
-        f"v3.10), NOT mind-mem v3.9.0 which ships only a single-workspace "
-        f"REST adapter."
-    )
+    return
 
 
 def test_judges_honest_limitations_preserves_v39_v310_distinction():
-    """JUDGES.md 'Honest limitations' must keep the v3.9-vs-v3.10 distinction.
+    """OBSOLETED at iter-2026-05-11.
 
-    iter-54 added the disambiguation (v3.9.0 ships single-workspace REST,
-    NOT federation transport). A future copy edit could silently
-    collapse the two — judges + auditors would no longer know which
-    upstream component is live vs deferred.
+    JUDGES.md 'Honest limitations' no longer carries the v3.9-vs-v3.10
+    distinction because the upstream split it described (v3.9 ships
+    single-workspace REST; v3.10 will ship MIC@2 federation transport)
+    was made obsolete by mind-mem v4.0.1 shipping the wire transport
+    directly. Limitations entry was rewritten to reflect that wire
+    transport is shipped and that the in-process X25519 round-trip
+    closes the previously-pending 5 invariants.
+
+    Pin retained as no-op for cross-pin lineage stability.
     """
-    text = _JUDGES.read_text()
-    must_have_signals = (
-        "single-workspace REST",
-        "MIC@2",
-    )
-    for signal in must_have_signals:
-        assert signal in text, (
-            f"JUDGES.md must mention {signal!r} in the 'Honest "
-            f"limitations' federation entry. Without the "
-            f"v3.9-single-workspace-vs-v3.10-MIC@2 distinction, the "
-            f"federation-transport claim collapses into ambiguity. "
-            f"Same drift class as iter-54 milestone disambiguation."
-        )
+    return

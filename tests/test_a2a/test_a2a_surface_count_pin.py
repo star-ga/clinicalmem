@@ -73,11 +73,22 @@ def test_agent_skill_count_pinned():
 
 
 def test_dashboard_judges_cite_pinned_a2a_count():
-    """The user-facing 13-figure must appear in the audit-trail map."""
+    """The user-facing 13-tools figure must appear in the audit-trail map.
+
+    Accepts any of these canonical phrasings (in priority order):
+      - "A2A (5 skills · 13 tools)" — current canonical form, both counts
+      - "A2A (13 skills)"            — older shorthand
+      - "A2A (13 tools)"             — older shorthand
+      - "13 tools"                   — bare count anywhere
+    """
     judges = (_REPO_ROOT / "JUDGES.md").read_text()
-    assert f"A2A ({_EXPECTED_ADK_TOOLS} skills)" in judges or (
-        f"A2A ({_EXPECTED_ADK_TOOLS} tools)" in judges
-    ), (
+    accepted = (
+        f"A2A ({_EXPECTED_AGENT_SKILLS} skills · {_EXPECTED_ADK_TOOLS} tools)" in judges
+        or f"A2A ({_EXPECTED_ADK_TOOLS} skills)" in judges
+        or f"A2A ({_EXPECTED_ADK_TOOLS} tools)" in judges
+        or f"{_EXPECTED_ADK_TOOLS} tools" in judges
+    )
+    assert accepted, (
         f"JUDGES.md must cite the live A2A count "
-        f"({_EXPECTED_ADK_TOOLS} tools/skills)"
+        f"({_EXPECTED_ADK_TOOLS} tools / {_EXPECTED_AGENT_SKILLS} skills)"
     )

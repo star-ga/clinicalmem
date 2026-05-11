@@ -110,6 +110,10 @@ def test_manifest_all_gates_pass(manifest):
     `verify_audit_replay.py --check` into run_all_gates.py, and the
     manifest's `gates` dict now includes `audit_replay` alongside the
     iter-20 four. Future gate additions extend `expected` here.
+
+    Note: arch_mind_l1 may report SKIP in environments without the
+    STARGA-internal arch-mind binary; SKIP is acceptable for that
+    gate only.
     """
     gates = manifest["gates"]
     expected = {
@@ -121,10 +125,16 @@ def test_manifest_all_gates_pass(manifest):
     }
     assert set(gates.keys()) == expected
     for name, verdict in gates.items():
-        assert verdict == "PASS", (
-            f"Gate {name} reported {verdict!r} when manifest was built. "
-            f"Re-run that gate, fix the regression, then rebuild."
-        )
+        if name == "arch_mind_l1":
+            assert verdict in ("PASS", "SKIP"), (
+                f"Gate {name} reported {verdict!r}; expected PASS (binary present) "
+                f"or SKIP (binary absent)."
+            )
+        else:
+            assert verdict == "PASS", (
+                f"Gate {name} reported {verdict!r} when manifest was built. "
+                f"Re-run that gate, fix the regression, then rebuild."
+            )
 
 
 def test_manifest_test_count_at_or_above_floor(manifest):
@@ -257,12 +267,34 @@ def test_manifest_pharmacology_flags_integrity(manifest):
 
 
 def test_manifest_matches_live_computation():
-    """`--check` mode confirms artifact is in sync with live state."""
+    """`--check` mode confirms artifact is in sync with live state.
+
+    Tolerates the arch_mind_l1 PASS↔SKIP swap that happens when the
+    STARGA-internal arch-mind binary is present in some environments
+    (developer workstations) and absent in others (public CI). Any
+    OTHER drift still fails the gate.
+    """
     cp = subprocess.run(
         [sys.executable, str(_SCRIPT), "--check"],
         capture_output=True, text=True, timeout=180, cwd=str(_REPO_ROOT),
     )
-    assert cp.returncode == 0, (
-        f"Reproducibility manifest drifted from live state.\n{cp.stdout}\n{cp.stderr}\n"
-        "Re-run `python3 scripts/build_reproducibility_manifest.py` to refresh."
-    )
+    if cp.returncode != 0:
+        # Allowed-only drift: arch_mind_l1 PASS↔SKIP. Anything else fails.
+        diff_lines = [
+            line for line in cp.stdout.splitlines()
+            if "live=" in line and "on_disk=" in line
+        ]
+        only_arch_mind_swap = bool(diff_lines) and all(
+            "gates.arch_mind_l1" in line
+            and (
+                ("live='PASS'" in line and "on_disk='SKIP'" in line)
+                or ("live='SKIP'" in line and "on_disk='PASS'" in line)
+            )
+            for line in diff_lines
+        )
+        if only_arch_mind_swap:
+            return  # accepted environment-dependent swap
+        raise AssertionError(
+            f"Reproducibility manifest drifted from live state.\n{cp.stdout}\n{cp.stderr}\n"
+            "Re-run `python3 scripts/build_reproducibility_manifest.py` to refresh."
+        )

@@ -91,10 +91,24 @@ def _live_test_count() -> int:
 
 
 def _gate_verdict(script_name: str, *extra_args: str) -> str:
-    """Run a gate script and return PASS / FAIL / SKIP."""
+    """Run a gate script and return PASS / FAIL / SKIP.
+
+    Special-case: gates that depend on the STARGA-internal arch-mind
+    binary degrade to SKIP (not FAIL) when that binary is unavailable
+    on $PATH or its default location. This keeps public CI green
+    while preserving the FAIL signal for developer environments where
+    the binary IS installed.
+    """
     script = _REPO_ROOT / "scripts" / script_name
     if not script.exists():
         return "SKIP"
+
+    # arch-mind gate degrades to SKIP without binary.
+    if script_name == "run_arch_mind_gate.py":
+        import shutil
+        if not (shutil.which("arch-mind") or Path("~/arch-mind/bin/arch-mind").exists()):
+            return "SKIP"
+
     cp = subprocess.run(
         [sys.executable, str(script), *extra_args],
         capture_output=True, text=True, timeout=120, cwd=str(_REPO_ROOT),
