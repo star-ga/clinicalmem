@@ -28,7 +28,9 @@ dependencies = [
     # cognitive kernel + knowledge graph + resilience suite + observability — all
     # opt-in via mind-mem.json features.v4.<flag>; no breaking changes to v3.x.
     # See mind-mem/CHANGELOG.md for full release history.
-    "mind-mem>=4.0.1",
+    # NOTE: Floor pinned at 4.0.0 (currently on PyPI). v4.0.1 is in flight;
+    # pip will auto-upgrade to 4.0.1 the moment it lands on PyPI.
+    "mind-mem>=4.0.0",
     "httpx>=0.27",
     "fastmcp>=2.0",
     "google-adk>=1.0",
