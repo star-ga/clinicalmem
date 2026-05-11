@@ -53,7 +53,7 @@ reading. The rest of this file is the long-form drill-down.
 13. **Tools (`#tools`)** — MCP server (18 tools) + A2A agent (5 skills · 13 tools) deployment status.
 14. **Architecture (`#architecture`)** — control-plane + mock-vs-live transport breakdown + federation_transport.py wire-bytes card.
 
-Brand palette: Prompt Opinion orange (`#FF6B35`) accent + Trust teal (`#0F766E`) primary + Mint canvas. Lexend display + Source Sans 3 body + Baloo 2 brand-accent (FDA-grade clinical aesthetic, not early-iteration).
+Brand palette: Prompt Opinion orange (`#FF6B35`) accent + Trust teal (`#0F766E`) primary + Mint canvas. Lexend display + Source Sans 3 body + Baloo 2 brand-accent (FDA-grade clinical aesthetic, production-grade polish).
 
 ## Differentiation — head-to-head with the closest existing products
 

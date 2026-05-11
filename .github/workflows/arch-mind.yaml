@@ -2,9 +2,8 @@ name: arch-mind
 
 # ClinicalMem L1 architectural-governance gate.
 #
-# Runs the same nine-rule kernel that gates rfn-mind, MindLLM, mind-mem,
-# mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind, and
-# ***REMOVED*** — the entire STARGA MIND ecosystem.
+# Runs the same nine-rule kernel that gates the rest of the STARGA MIND
+# ecosystem (mind-mem is the public anchor; see docs/why_mind_mem_v3.md).
 #
 # Floors live in `.arch-mind/rules.mind`. A regression on any rule is a
 # release-blocking event; the CI job exits non-zero and blocks merge.

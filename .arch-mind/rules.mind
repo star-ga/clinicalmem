@@ -14,9 +14,8 @@
 //
 // ClinicalMem is a Python-first repo (engine/, mcp_server/, a2a_agent/) so
 // the metrics here read against the Python sidecar grammar. The same nine-
-// rule kernel runs across the rest of the MIND ecosystem (rfn-mind, MindLLM,
-// mind-mem, mind-flow, 512-mind, mind-inference, mind-runtime, arch-mind,
-// ***REMOVED***) — see docs/why_mind_mem_v3.md for the cross-repo contract.
+// rule kernel runs across the rest of the MIND ecosystem — see
+// docs/why_mind_mem_v3.md for the cross-repo contract.
 //
 // Copyright 2026 STARGA, Inc. — MIT License (matches the rest of the repo).
 

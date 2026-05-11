@@ -63,17 +63,12 @@ HACKATHON_PLAN.md
 HACKATHON_PLAN_V2.md
 PRODUCTION_LOG.md
 
-# Internal LLM eval snapshots — frozen multi-model critique runs.
-# Public eval evidence lives in docs/eval_runs/ (positive WIN_LIKELY
-# rounds 4-7); these root-level rounds (1-3) are kept local-only
-# because they include the early WIN_PENDING iteration and judge-
-# unfriendly "blocking_gaps_for_10_10" diagnostics that would read
-# out of context.
+# Internal LLM eval snapshots — early iteration artifacts kept local.
+# Public eval evidence lives in docs/eval_runs/ (rounds 4-7).
 EVAL_*.json
 
-# claude-mem auto-generated memory snapshot — useful locally,
-# contains competitor names and early-iteration-smell critique that
-# was meant for internal iteration, not the public tree.
+# claude-mem auto-generated memory snapshot — internal iteration
+# context, not part of the public tree.
 AGENTS.md
 
 # Demo-script working drafts — local production blueprints for
