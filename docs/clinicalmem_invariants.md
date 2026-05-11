@@ -144,7 +144,7 @@ mechanism all described in `docs/clinical_validation.md`).
 | I-3 BitNet 4.5 invocation | ✅ | ✅ (5 regression pairs) | ⏳ Phase B | Will activate |
 | I-4 Federation invariant density | ✅ (parser + counter) | ✅ | ⏳ Phase B | Will activate |
 | I-5 NPI Luhn coverage | — | ✅ | ⏳ Phase B | Will activate |
-| I-6 Clinician attestation | — (manual review) | — | ⏳ Phase B | Will activate |
+| I-6 Clinical-review pathway documented | — | ✅ (doc grep) | ⏳ Phase B | Will activate |
 
 The 6 invariants are **already kept** at runtime + test time today;
 the arch-mind L1 (Apache-2.0-public-safe) gate will mechanically
