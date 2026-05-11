@@ -16,13 +16,19 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3.12",
 ]
-
-[project.urls]
-Homepage = "https://github.com/star-ga/clinicalmem"
-Repository = "https://github.com/star-ga/clinicalmem"
-"Prompt Opinion" = "https://app.promptopinion.ai/marketplace"
 dependencies = [
-    "mind-mem>=4.0.1",        # v4.0.1 (released 2026-05-11): v4 federation HTTP wire transport — 4 endpoints in `src/mind_mem/http_transport.py` (`GET /federation/vclock/<block_id>`, `GET /federation/conflicts`, `POST /federation/write`, `POST /federation/resolve`) flag-gated by `v4.federation`, X-MindMem-Token auth, 1 MiB body cap; stdlib `mind_mem.v4.federation_client.FederationClient` with `get_vclock` / `list_conflicts` / `push_write` / `resolve_conflict` + specific exceptions (`FederationAuthError`, `FederationFlagDisabled`, `FederationTransportError`); 11/11 wire-transport tests + 40/40 existing http_transport tests pass. v4.0.0 (released 2026-05-10): cognitive kernel + knowledge graph + resilience suite + observability — all opt-in via `mind-mem.json` `features.v4.<flag>`; no breaking changes to v3.x. New `src/mind_mem/v4/federation.py` ships federation FOUNDATION primitives (block_tier_vclock + tier_conflict_log + MergeStrategy enum). v3.x baseline preserved: HTTP transport (v3.9.0), strict quality gates + lineage staleness + Petri red-team CI (v3.12.x), typed lineage + recall explainability (v3.11.x), SQLCipher at-rest + TAG_v1 audit chain + tier-decay (v3.0.0+). See `mind-mem/CHANGELOG.md` for full release history.
+    # mind-mem v4.0.1 (released 2026-05-11): v4 federation HTTP wire transport
+    # — 4 endpoints in src/mind_mem/http_transport.py (GET /federation/vclock/<block_id>,
+    # GET /federation/conflicts, POST /federation/write, POST /federation/resolve)
+    # flag-gated by v4.federation, X-MindMem-Token auth, 1 MiB body cap; stdlib
+    # mind_mem.v4.federation_client.FederationClient with get_vclock / list_conflicts /
+    # push_write / resolve_conflict + specific exceptions (FederationAuthError,
+    # FederationFlagDisabled, FederationTransportError); 11/11 wire-transport tests
+    # + 40/40 existing http_transport tests pass. v4.0.0 (released 2026-05-10):
+    # cognitive kernel + knowledge graph + resilience suite + observability — all
+    # opt-in via mind-mem.json features.v4.<flag>; no breaking changes to v3.x.
+    # See mind-mem/CHANGELOG.md for full release history.
+    "mind-mem>=4.0.1",
     "httpx>=0.27",
     "fastmcp>=2.0",
     "google-adk>=1.0",
@@ -30,6 +36,14 @@ dependencies = [
     "uvicorn>=0.30",
     "starlette>=0.40",
 ]
+
+[project.urls]
+Homepage = "https://github.com/star-ga/clinicalmem"
+Repository = "https://github.com/star-ga/clinicalmem"
+"Live Demo" = "https://clinicalmem-demo.pages.dev/demo"
+"Hugging Face Model" = "https://huggingface.co/stargainc/clinicalmem-bitnet-b158"
+"Devpost" = "https://devpost.com/software/clinimalmem"
+"Prompt Opinion" = "https://app.promptopinion.ai/marketplace"
 
 [project.optional-dependencies]
 dev = [
