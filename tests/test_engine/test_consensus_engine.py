@@ -304,10 +304,10 @@ class TestVerifyFindingConsensus:
 
     @respx.mock
     def test_nvidia_nemotron_included(self, monkeypatch):
-        """NVIDIA Nemotron Ultra 253B joins consensus when NVIDIA_API_KEY is set.
+        """Meta Llama 4 Maverick (400B MoE) joins consensus when NVIDIA_API_KEY is set.
 
         Added iter-220: brings the cascade to six US-based providers
-        (NVIDIA NIM Llama-3.1-Nemotron-Ultra-253B-v1, OpenAI-compatible
+        (NVIDIA NIM Llama-3.1-Llama-4-Maverick-253B-v1, OpenAI-compatible
         endpoint at integrate.api.nvidia.com)."""
         monkeypatch.setenv("NVIDIA_API_KEY", "nv-test")
 
@@ -320,14 +320,14 @@ class TestVerifyFindingConsensus:
 
         result = verify_finding_consensus_sync("Test finding", [], {})
         assert result.total_models == 1
-        assert result.verdicts[0].model == "NVIDIA-Nemotron-Ultra-253B"
+        assert result.verdicts[0].model == "Meta-Llama-4-Maverick-400B"
         assert result.verdicts[0].agrees is True
 
     @respx.mock
     def test_six_model_consensus(self, monkeypatch):
         """All 6 US-based models fire in parallel when all keys are available.
 
-        Iter-220: NVIDIA-Nemotron-Ultra-253B added as the 6th provider
+        Iter-220: Meta-Llama-4-Maverick-400B added as the 6th provider
         (NIM hosting, native US data residency). Gemini-3.1-Flash-Lite was
         removed from the cascade in v4.2 — diverse-architecture criteria are
         satisfied by the now-six providers across five vendors."""
@@ -385,7 +385,7 @@ class TestVerifyFindingConsensus:
         assert "xAI-Grok-4.3" in models
         assert "Anthropic-Claude-Opus-4.7" in models
         assert "Perplexity-Sonar-Pro" in models
-        assert "NVIDIA-Nemotron-Ultra-253B" in models
+        assert "Meta-Llama-4-Maverick-400B" in models
         # Gemini-3.1-Flash-Lite was dropped in v4.2 (US-based + diverse-architecture
         # criteria are already satisfied by the other providers; Flash-Lite added
         # correlated errors with Gemini-3.1-Pro without diversifying the consensus)

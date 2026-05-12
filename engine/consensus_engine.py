@@ -1,6 +1,6 @@
 """Multi-LLM Consensus Verification — independent verification of clinical findings.
 
-Instead of trusting a single LLM, this module runs up to 5 LLMs independently
+Instead of trusting a single LLM, this module runs up to 6 LLMs independently
 on the same clinical finding and calculates an agreement score. Only findings
 with ≥2/3 agreement are reported as verified.
 
@@ -10,8 +10,9 @@ Models (used when API keys are available — all US-based):
 - xAI Grok 4.3 (fast reasoning, 2M context)
 - Anthropic Claude Opus 4.7 (deepest reasoning, safety-focused)
 - Perplexity Sonar Reasoning Pro (web-grounded clinical search)
+- Meta Llama 4 Maverick (400B MoE, 17B active / 128 experts, via NVIDIA NIM)
 
-All 5 models are US-based providers, ensuring HIPAA-compatible data residency.
+All 6 providers are US-headquartered, ensuring HIPAA-compatible data residency.
 Diversity of model architectures reduces correlated hallucination risk.
 """
 import asyncio
@@ -366,7 +367,7 @@ async def verify_finding_consensus(
             (xai_key, "xAI-Grok-4.3"),
             (anthropic_key, "Anthropic-Claude-Opus-4.7"),
             (perplexity_key, "Perplexity-Sonar-Pro"),
-            (nvidia_key, "NVIDIA-Nemotron-Ultra-253B"),
+            (nvidia_key, "Meta-Llama-4-Maverick-400B"),
         )
         if key
     ]
@@ -402,12 +403,12 @@ async def verify_finding_consensus(
             prompt, perplexity_key,
         )))
     if nvidia_key:
-        tasks.append(("NVIDIA-Nemotron-Ultra-253B", _call_openai_compatible(
+        tasks.append(("Meta-Llama-4-Maverick-400B", _call_openai_compatible(
             prompt,
             nvidia_key,
             "https://integrate.api.nvidia.com",
-            "nvidia/llama-3.1-nemotron-ultra-253b-v1",
-            "NVIDIA-Nemotron-Ultra-253B",
+            "meta/llama-4-maverick-17b-128e-instruct",
+            "Meta-Llama-4-Maverick-400B",
         )))
 
     if not tasks:

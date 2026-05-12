@@ -192,7 +192,7 @@ _HISTORICAL_COUNTS = (
     # pin would false-positive on the live README badge otherwise.
     "1234",
     "1242",
-    # iter-220 NVIDIA Nemotron Ultra 253B addition: live count went
+    # iter-220 Meta Llama 4 Maverick (400B MoE) addition: live count went
     # 1226 → 1227 (net +1: replaced test_five_model_consensus with
     # test_six_model_consensus + added test_nvidia_nemotron_included).
     # 1226 is now the previous floor, so it goes here.

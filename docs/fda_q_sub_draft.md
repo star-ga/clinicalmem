@@ -173,7 +173,7 @@ the Layer 4.5 component in isolation does not produce a final clinical output?*
    (NLM RxNav, Drugs.com API). Structured metadata only.
 3. **Layer 3 — Multi-LLM consensus:** Six large language models (US-based API
    providers — GPT-5.5, Gemini 3.1 Pro, Grok 4.3, Claude Opus 4.7, Perplexity
-   Sonar Pro, NVIDIA Nemotron Ultra 253B) vote on DDI severity. Consensus
+   Sonar Pro, Meta Llama 4 Maverick (400B MoE)) vote on DDI severity. Consensus
    threshold required; bare majority insufficient.
 4. **Layer 4 — Consensus adjudicator:** Aggregates Layer 3 votes; escalates to
    abstention if consensus < threshold.

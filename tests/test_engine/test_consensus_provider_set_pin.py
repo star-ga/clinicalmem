@@ -1,7 +1,7 @@
 """Pin: the Layer-4 consensus surface has exactly 6 US-based providers.
 
 Iter 223 (round 46 T1) — structural pin that codifies the iter-220
-NVIDIA Nemotron Ultra 253B addition as an architectural invariant on
+Meta Llama 4 Maverick (400B MoE) addition as an architectural invariant on
 `engine/consensus_engine.py`. Same drift-prevention shape as the
 iter-178 BOOST_KEYS coverage cross-pin, iter-183 Q16.16 canonical-pin
 coverage cross-pin, iter-188 encode_pair encoder contract pin, and
@@ -32,7 +32,7 @@ Locked surface
      xAI-Grok-4.3
      Anthropic-Claude-Opus-4.7
      Perplexity-Sonar-Pro
-     NVIDIA-Nemotron-Ultra-253B
+     Meta-Llama-4-Maverick-400B
 
 2. The 6 environment variable names appear verbatim:
      OPENAI_API_KEY
@@ -48,7 +48,7 @@ Locked surface
      grok-4.3
      claude-opus-4-7
      sonar-reasoning-pro
-     nvidia/llama-3.1-nemotron-ultra-253b-v1
+     meta/llama-4-maverick-17b-128e-instruct
 
 4. NVIDIA Nemotron uses NIM at integrate.api.nvidia.com (sharing
    _call_openai_compatible with xAI Grok, which is a deliberate
@@ -82,7 +82,7 @@ _CANONICAL_LABELS = (
     "xAI-Grok-4.3",
     "Anthropic-Claude-Opus-4.7",
     "Perplexity-Sonar-Pro",
-    "NVIDIA-Nemotron-Ultra-253B",
+    "Meta-Llama-4-Maverick-400B",
 )
 
 
@@ -102,7 +102,7 @@ _CANONICAL_MODEL_IDS = (
     "grok-4.3",
     "claude-opus-4-7",
     "sonar-reasoning-pro",
-    "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+    "meta/llama-4-maverick-17b-128e-instruct",
 )
 
 
@@ -116,7 +116,7 @@ def test_six_canonical_provider_labels_present():
     assert not missing, (
         f"Missing canonical provider labels in engine/consensus_engine.py: "
         f"{missing}. The Layer-4 consensus surface is pinned at exactly 6 "
-        f"US-based providers (iter-220 added NVIDIA-Nemotron-Ultra-253B as "
+        f"US-based providers (iter-220 added Meta-Llama-4-Maverick-400B as "
         f"the 6th). Removing any of these silently downgrades the consensus "
         f"surface — an architectural change that must be deliberate."
     )
@@ -163,7 +163,7 @@ def test_nvidia_nemotron_uses_nim_endpoint():
     """
     text = _module_text()
     assert "integrate.api.nvidia.com" in text, (
-        "NVIDIA Nemotron Ultra 253B must call the NIM endpoint at "
+        "Meta Llama 4 Maverick (400B MoE) must call the NIM endpoint at "
         "https://integrate.api.nvidia.com — this URL is what the demo's "
         "chip tooltip and the DEVPOST.md L58 wire-format claim both "
         "promise. A change to a different gateway (e.g. build.nvidia.com) "
