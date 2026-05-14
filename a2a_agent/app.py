@@ -70,32 +70,67 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 
 class AgentCardCompatMiddleware(BaseHTTPMiddleware):
-    """Serve `/.well-known/agent-card.json` in a shape that satisfies both the
-    a2a-sdk 0.3.x SDK we build against and the a2a-sdk 1.0.x schema used by
-    downstream registries (Prompt Opinion marketplace, A2A directory).
+    """Serve `/.well-known/agent-card.json` in the A2A v1 shape required by
+    Prompt Opinion (https://docs.promptopinion.ai/a2a-v1-migration) and the
+    A2A v1 specification (https://a2a-protocol.org/latest/specification/),
+    while still building the underlying app against the a2a-sdk 0.3.x SDK
+    that the ADK `to_a2a` wrapper depends on.
 
-    The 1.0.x schema renamed `additionalInterfaces` → `supportedInterfaces`
-    and moved `url` / `preferredTransport` onto each `AgentInterface` entry.
-    Rather than upgrade the SDK (and break the ADK `to_a2a` wrapper), we
-    build the card JSON ourselves and short-circuit the route. This bypass
-    runs *before* ApiKeyMiddleware so the card stays publicly fetchable.
+    v1 breaking changes applied here (verified against
+    a2a-sdk==1.0.3 protobuf field descriptors):
+      • REMOVE top-level `url`         (moved into AgentInterface.url)
+      • REMOVE top-level `preferredTransport`
+      • REMOVE top-level `supportsAuthenticatedExtendedCard`
+      • REMOVE `capabilities.stateTransitionHistory`
+      • RENAME `additionalInterfaces` → `supportedInterfaces`
+      • RENAME `security` → `securityRequirements`
+      • `supportedInterfaces[0]` is the preferred transport
+        and uses v1 protobuf JSON field names:
+        `url`, `protocolBinding`, `protocolVersion`, `tenant`
+
+    This bypass runs *before* ApiKeyMiddleware so the card stays publicly
+    fetchable.
     """
+
+    # Top-level keys that v1 removed entirely.
+    _V1_REMOVED_TOP_LEVEL = ("url", "preferredTransport", "supportsAuthenticatedExtendedCard")
+    # `AgentCapabilities` keys that v1 removed.
+    _V1_REMOVED_CAPABILITIES = ("stateTransitionHistory",)
 
     async def dispatch(self, request: Request, call_next):
         if request.url.path != "/.well-known/agent-card.json":
             return await call_next(request)
         card_dict = agent_card.model_dump(mode="json", exclude_none=True, by_alias=True)
-        # Forward-compat fields expected by a2a-sdk 1.0.x consumers.
+
+        # Strip v0-only top-level fields that v1 explicitly removed.
+        for key in self._V1_REMOVED_TOP_LEVEL:
+            card_dict.pop(key, None)
+
+        # Strip v0-only capability flags.
+        caps = card_dict.get("capabilities")
+        if isinstance(caps, dict):
+            for key in self._V1_REMOVED_CAPABILITIES:
+                caps.pop(key, None)
+
+        # Drop the v0 alias if the 0.3.x SDK emitted it.
+        card_dict.pop("additionalInterfaces", None)
+
+        # Add v1 supportedInterfaces array (first entry = preferred transport).
+        # Field names match a2a-sdk 1.0.3 AgentInterface protobuf JSON
+        # descriptors: url / protocolBinding / protocolVersion.
         card_dict["supportedInterfaces"] = [
             {
                 "url": BASE_URL,
                 "protocolBinding": "JSONRPC",
-                "protocolVersion": "0.3.0",
+                "protocolVersion": "1.0",
             }
         ]
-        # 1.0.x renamed `security` to `securityRequirements`; mirror it.
-        if "security" in card_dict and "securityRequirements" not in card_dict:
-            card_dict["securityRequirements"] = card_dict["security"]
+
+        # v1 renamed `security` → `securityRequirements`. Move, don't mirror,
+        # so consumers that fail-closed on unknown keys don't see both.
+        if "security" in card_dict:
+            card_dict.setdefault("securityRequirements", card_dict.pop("security"))
+
         return JSONResponse(card_dict)
 
 

@@ -85,13 +85,38 @@ class TestAgentCardCompat:
         assert body["supportedInterfaces"], "supportedInterfaces must not be empty"
         iface = body["supportedInterfaces"][0]
         assert iface["protocolBinding"] == "JSONRPC"
-        assert iface["protocolVersion"] == "0.3.0"
+        # protocolVersion tracks the A2A spec version, not our SDK build.
+        assert iface["protocolVersion"] == "1.0"
         assert iface["url"].startswith("http")
 
-    def test_card_mirrors_security_requirements(self):
+    def test_card_moves_security_to_security_requirements(self):
+        """v1 renamed `security` → `securityRequirements`. Middleware MOVES
+        (not mirrors) so consumers that fail-closed on unknown keys don't
+        see both. https://docs.promptopinion.ai/a2a-v1-migration"""
         client = self._make_client()
         body = client.get("/.well-known/agent-card.json").json()
-        assert body.get("securityRequirements") == body.get("security")
+        assert "securityRequirements" in body
+        assert "security" not in body
+
+    def test_card_strips_v1_removed_top_level_fields(self):
+        """A2A v1 removed top-level `url`, `preferredTransport`, and
+        `supportsAuthenticatedExtendedCard` from AgentCard."""
+        client = self._make_client()
+        body = client.get("/.well-known/agent-card.json").json()
+        assert "url" not in body, "v1 removed top-level url (now AgentInterface.url)"
+        assert "preferredTransport" not in body, "v1 removed preferredTransport"
+        assert "supportsAuthenticatedExtendedCard" not in body
+        assert "additionalInterfaces" not in body, "v1 renamed to supportedInterfaces"
+
+    def test_card_strips_state_transition_history_from_capabilities(self):
+        """A2A v1 removed `capabilities.stateTransitionHistory`."""
+        client = self._make_client()
+        body = client.get("/.well-known/agent-card.json").json()
+        caps = body.get("capabilities", {})
+        assert "stateTransitionHistory" not in caps, (
+            "v1 removed capabilities.stateTransitionHistory; "
+            "see https://docs.promptopinion.ai/a2a-v1-migration"
+        )
 
     def test_card_preserves_canonical_fields(self):
         client = self._make_client()
