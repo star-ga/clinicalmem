@@ -4044,9 +4044,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // built from a curated 126-drug pharmacology table. Off-cohort names
   // produce an all-zero feature vector, so the model returns the
   // bias-favoured class (severity 2 = "serious") for any unknown drug.
-  // Surfacing that as a confident verdict misleads judges, so we
-  // short-circuit before the forward pass and point at the source list.
+  // For known drugs in an untrained pair the model generalises — its
+  // prediction is its inference, not a benchmarked cohort label — so
+  // we surface that distinction instead of presenting it as a verified
+  // verdict.
   let _CURATED_DRUGS = null;
+  let _COHORT_PAIRS = null;  // Set of "drugA|drugB" canonical lex-sorted keys
   async function ensureCuratedDrugs() {
     if (_CURATED_DRUGS) return _CURATED_DRUGS;
     const resp = await fetch('pharmacology_flags.json', { cache: 'no-cache' });
@@ -4054,6 +4057,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const doc = await resp.json();
     _CURATED_DRUGS = new Set(Object.keys(doc.drugs || {}));
     return _CURATED_DRUGS;
+  }
+  async function ensureCohortPairs() {
+    if (_COHORT_PAIRS) return _COHORT_PAIRS;
+    const resp = await fetch('openevidence_cache.json', { cache: 'no-cache' });
+    if (!resp.ok) throw new Error(`openevidence_cache.json: ${resp.status}`);
+    const arr = await resp.json();
+    _COHORT_PAIRS = new Set(arr.map(e => {
+      const a = canonicalDrugName(e.drug_a);
+      const b = canonicalDrugName(e.drug_b);
+      return [a, b].sort().join('|');
+    }));
+    return _COHORT_PAIRS;
   }
   function canonicalDrugName(s) {
     return String(s || '').trim().toLowerCase().split(/\s+/).join(' ');
@@ -4094,6 +4109,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return;
       }
+      // Tier-2 (soft) guard: both drugs are in the curated table but
+      // this specific pair was not in the 139-pair training cohort, so
+      // the model's prediction is generalisation, not a benchmarked
+      // label. We still run the forward pass — judges can see what the
+      // model does — but we badge the output as "generalisation" so a
+      // pair like aspirin+ibuprofen (both known, pair not trained)
+      // doesn't read as a verified cohort verdict.
+      const cohort = await ensureCohortPairs();
+      const pairKey = [aN, bN].sort().join('|');
+      const isCohortPair = cohort.has(pairKey);
+
       const weights = await ensureBitnetWeights();
       const t0 = performance.now();
       // iter-421 Path B: pass tier-2 specialist if loaded so the
@@ -4121,11 +4147,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="text-slate-600 leading-relaxed">A (frozen v8, <code class="font-mono text-[10px]">${escapeHtml(r.weights_id.slice(0,8))}…</code>) predicted <strong>contraindicated</strong>; under the 2-bundle ensemble A's contra verdict ALWAYS wins (FDA-grade contra gate, B is bypassed).</div>
           </div>`;
       }
+      const cohortBadge = isCohortPair
+        ? `<span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-clinical-green/10 text-clinical-green ml-2" title="This pair is in the 139-pair PCCP training cohort — the verdict is benchmarked, not generalised.">✓ in cohort</span>`
+        : `<span class="inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 ml-2" title="Both drugs are in the 126-drug curated table, but this specific pair was NOT in the 139-pair training cohort. The verdict is the model's generalisation, not a benchmarked label.">⚠ generalisation</span>`;
+      const cohortCaveat = isCohortPair
+        ? ''
+        : `<div class="rounded-md bg-amber-50 border border-amber-200 px-2.5 py-1.5 mt-1 text-[11px]">
+            <div class="font-semibold text-amber-700 mb-0.5">▸ Off-cohort pair — model generalisation</div>
+            <div class="text-slate-600 leading-relaxed">Both drugs are in the 126-drug curated table, but <code class="font-mono text-[10px]">${escapeHtml(a)} + ${escapeHtml(b)}</code> was not in the 139-pair training cohort. This is what the model predicts on an unseen pair — it is <strong>not</strong> a benchmarked label. The 100% recall claim only applies to the 139 cohort pairs.</div>
+            <div class="mt-1 text-slate-500">See the cohort: <a href="https://github.com/star-ga/clinicalmem/blob/main/docs/openevidence_cache.json" target="_blank" rel="noopener" class="text-amber-700 hover:underline font-semibold">openevidence_cache.json</a></div>
+          </div>`;
       out.innerHTML = `
         <div class="space-y-1.5">
-          <div><span class="text-slate-400">severity:</span> <span class="font-bold ${sevColor} text-base">${escapeHtml(r.severity_name)}</span></div>
+          <div><span class="text-slate-400">severity:</span> <span class="font-bold ${sevColor} text-base">${escapeHtml(r.severity_name)}</span>${cohortBadge}</div>
           <div><span class="text-slate-400">repro_hash:</span> <span class="text-slate-700 break-all">${escapeHtml(r.repro_hash)}</span></div>
           <div><span class="text-slate-400">weights_id:</span> <span class="text-slate-700 break-all">${escapeHtml(r.weights_id.slice(0,40))}${r.weights_id.length>40?'…':''}</span></div>
+          ${cohortCaveat}
           <div><span class="text-slate-400">logits_q16:</span> <span class="text-slate-700 break-all">[${r.logits_q16.join(', ')}]</span></div>
           ${cascadeBlock}
           <div class="text-[11px] text-clinical-green mt-2">✓ Live Q16.16 forward pass — ${elapsedMs} ms in your browser. Same SHA-256 repro_hash the server-side audit chain recorded.</div>
