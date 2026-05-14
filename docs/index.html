@@ -4040,12 +4040,59 @@ document.addEventListener('DOMContentLoaded', () => {
     BITNET_WEIGHTS_B = await window.ClinicalMemBitNet.loadWeightsB('engine/bitnet_weights_b_specialist.json');
     return BITNET_WEIGHTS;
   }
+  // Curated-cohort guard: BitNet was trained on a 139-pair PCCP cohort
+  // built from a curated 126-drug pharmacology table. Off-cohort names
+  // produce an all-zero feature vector, so the model returns the
+  // bias-favoured class (severity 2 = "serious") for any unknown drug.
+  // Surfacing that as a confident verdict misleads judges, so we
+  // short-circuit before the forward pass and point at the source list.
+  let _CURATED_DRUGS = null;
+  async function ensureCuratedDrugs() {
+    if (_CURATED_DRUGS) return _CURATED_DRUGS;
+    const resp = await fetch('pharmacology_flags.json', { cache: 'no-cache' });
+    if (!resp.ok) throw new Error(`pharmacology_flags.json: ${resp.status}`);
+    const doc = await resp.json();
+    _CURATED_DRUGS = new Set(Object.keys(doc.drugs || {}));
+    return _CURATED_DRUGS;
+  }
+  function canonicalDrugName(s) {
+    return String(s || '').trim().toLowerCase().split(/\s+/).join(' ');
+  }
   async function bitnetClassify() {
     const a = document.getElementById('bitnet-drug-a').value || 'warfarin';
     const b = document.getElementById('bitnet-drug-b').value || 'ibuprofen';
     const out = document.getElementById('bitnet-result');
     out.innerHTML = '<span class="text-slate-400">Computing Q16.16 forward pass in-browser…</span>';
     try {
+      // Unknown-drug guard (iter-450): warn instead of producing a
+      // false-confident verdict from an all-zero feature vector.
+      const curated = await ensureCuratedDrugs();
+      const aN = canonicalDrugName(a);
+      const bN = canonicalDrugName(b);
+      const unknown = [];
+      if (!curated.has(aN)) unknown.push(a);
+      if (!curated.has(bN)) unknown.push(b);
+      if (unknown.length > 0) {
+        const list = unknown.map(d => `<code class="font-mono text-[11px] bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">${escapeHtml(d)}</code>`).join(' & ');
+        out.innerHTML = `
+          <div class="space-y-1.5">
+            <div class="text-amber-700 font-semibold">⚠ Off-cohort: ${list} not in the curated 139-pair PCCP cohort.</div>
+            <div class="text-slate-600 text-[11px] leading-relaxed">BitNet would return a bias-favoured class for an all-zero feature vector — misleading as a real verdict. Pick a drug from the curated list to exercise the model honestly.</div>
+            <div class="text-[11px] mt-1.5">
+              <a href="https://github.com/star-ga/clinicalmem/blob/main/docs/pharmacology_flags.json" target="_blank" rel="noopener" class="text-clinical-purple hover:underline font-semibold">→ See the full 126-drug curated list</a>
+              <span class="text-slate-400 mx-1.5">·</span>
+              <span class="text-slate-500">Try: <button type="button" class="prefill-pair text-clinical-purple hover:underline" data-a="warfarin" data-b="ibuprofen">warfarin + ibuprofen</button>, <button type="button" class="prefill-pair text-clinical-purple hover:underline" data-a="simvastatin" data-b="clarithromycin">simvastatin + clarithromycin</button>, <button type="button" class="prefill-pair text-clinical-purple hover:underline" data-a="tacrolimus" data-b="voriconazole">tacrolimus + voriconazole</button></span>
+            </div>
+          </div>`;
+        out.querySelectorAll('.prefill-pair').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('bitnet-drug-a').value = btn.dataset.a;
+            document.getElementById('bitnet-drug-b').value = btn.dataset.b;
+            bitnetClassify();
+          });
+        });
+        return;
+      }
       const weights = await ensureBitnetWeights();
       const t0 = performance.now();
       // iter-421 Path B: pass tier-2 specialist if loaded so the
