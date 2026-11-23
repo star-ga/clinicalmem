@@ -155,8 +155,12 @@ def test_record_publish_event_logs_sync_and_emits_event(
     assert event.payload["peer_id"] == "MAYO-001"
     assert event.payload["semantic_idempotency_hash"] == "deadbeef"
     assert event.payload["transport_dedup_hash"] == "cafef00d"
-    assert event.payload["drug_pair"] == "warfarin+ibuprofen"
-    assert event.payload["severity"] == "major"
+    assert event.payload["scope_kind"] == "semantic"
+    # mind-mem's Event leak guard keeps ids/hashes only: the free-form
+    # summary fields never reach the stream, and the drop is listed.
+    assert "drug_pair" not in event.payload
+    assert "severity" not in event.payload
+    assert event.payload["_dropped"] == ["drug_pair", "severity"]
 
 
 # ── record_ingest_event ───────────────────────────────────────────────────────
@@ -193,6 +197,7 @@ def test_record_ingest_event_logs_sync_and_emits_event(
     event = capture.events[0]
     assert event.kind == EVENT_FEDERATION_INGEST
     assert event.payload["peer_id"] == "MGH-001"
+    assert event.payload["scope_kind"] == "semantic"
     assert event.payload["tier"] == 1
     assert event.payload["evidence_grade"] is False
 
@@ -227,8 +232,11 @@ def test_record_quarantine_event_marks_conflict_resolved(
     event = capture.events[0]
     assert event.kind == EVENT_FEDERATION_QUARANTINE
     assert event.payload["peer_id"] == "MAYO-001"
-    assert event.payload["reason"] == "egress_phi_quarantine"
-    assert event.payload["lane"] == "phi_lane"
+    assert event.payload["reason_code"] == "egress_phi_quarantine"
+    # A PHI-quarantine event must not carry the quarantined finding.
+    assert "drug_pair" not in event.payload
+    assert "lane" not in event.payload
+    assert event.payload["_dropped"] == ["drug_pair", "lane"]
 
 
 # ── End-to-end integration ────────────────────────────────────────────────────
