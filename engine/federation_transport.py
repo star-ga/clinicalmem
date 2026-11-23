@@ -193,8 +193,10 @@ def record_publish_event(
     )
     # Structured trace for the audit chain. PHI discipline: never log
     # payload_summary directly -- it can contain arbitrary caller-supplied
-    # fields. Log key count + canonical hash fingerprints only; the
-    # full payload is captured by mind-mem's sync log + fanout publish.
+    # fields. Log key count + canonical hash fingerprints only. The fanout
+    # event is no wider: mind-mem's Event leak guard (>=5.0.1) keeps only
+    # numbers and ids/hashes/enum names under id-bearing keys, and lists
+    # every other summary field (drug_pair, severity, ...) under `_dropped`.
     logger.debug(
         "federation_publish",
         extra={
@@ -224,7 +226,7 @@ def record_publish_event(
             kind=EVENT_FEDERATION_PUBLISH,
             payload={
                 "peer_id": peer_id,
-                "scope": scope.value,
+                "scope_kind": scope.value,
                 "blocks_transferred": blocks_transferred,
                 "semantic_idempotency_hash": semantic_idempotency_hash,
                 "transport_dedup_hash": transport_dedup_hash,
@@ -295,7 +297,7 @@ def record_ingest_event(
             kind=EVENT_FEDERATION_INGEST,
             payload={
                 "peer_id": peer_id,
-                "scope": scope.value,
+                "scope_kind": scope.value,
                 "blocks_transferred": blocks_transferred,
                 "conflicts_resolved": conflicts_resolved,
                 **payload_summary,
@@ -350,7 +352,7 @@ def record_quarantine_event(
             kind=EVENT_FEDERATION_QUARANTINE,
             payload={
                 "peer_id": peer_id,
-                "reason": reason,
+                "reason_code": reason,
                 **(payload_summary or {}),
             },
         )

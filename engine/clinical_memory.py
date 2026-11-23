@@ -181,10 +181,12 @@ class ClinicalMemEngine:
 
     def _append_audit_mindmem(self, action: str, details: dict[str, Any]) -> str:
         """Append via mind-mem's Merkle-chain audit ledger."""
-        # Map clinical actions to mind-mem's valid operations
+        # Map clinical actions to mind-mem's valid operations.
+        # store_observation mints a new block (fresh obs-<uuid> id), so it is
+        # create_block; mind-mem >=5.0.2 refuses the retired append_block op.
         op_map = {
             "ingest_fhir": "create_block",
-            "store_observation": "append_block",
+            "store_observation": "create_block",
             "recall": "apply_proposal",
             "medication_safety_check": "apply_proposal",
             "detect_contradictions": "apply_proposal",
