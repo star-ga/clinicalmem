@@ -590,6 +590,12 @@ Round-2 multi-LLM evaluation across 7 frontier models (Mistral Large, Grok 4.3, 
 
 This roadmap is intentionally honest. The document-level surface is mature; the last yard of credibility is real-world execution — signed LOIs, IRB-approved cohorts, filed Q-subs — and every team that wins clinical AI long-term is the one that put those in motion.
 
+## Community
+
+- **Discussions:** <https://github.com/star-ga/mind/discussions> — questions,
+  ideas and help for clinicalmem and the wider MIND ecosystem.
+- **Discord:** <https://mindlang.dev/discord> — the MindLang community server.
+
 ## License
 
 Apache-2.0 &mdash; see [LICENSE](LICENSE). Includes the explicit patent grant clause that healthcare procurement and regulatory teams require for hospital deployment.
