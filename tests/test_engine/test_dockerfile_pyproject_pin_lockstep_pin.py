@@ -55,7 +55,7 @@ _KNOWN_DIVERGENCES = (
         "a2a-sdk",
         "Dockerfile.a2a",
         "==0.3.24",
-        ">=0.2",
+        ">=0.3.24,<1.0",
         # iter-439 fix: a2a-sdk 1.0.x dropped the `In` symbol that
         # `a2a_agent/app.py:25` imports for APIKeySecurityScheme(in_=...).
         # google-adk 1.33.0 still imports `from a2a.server.apps import
@@ -65,6 +65,8 @@ _KNOWN_DIVERGENCES = (
         # >=0.2 floor so dev + CI install whatever resolves (currently
         # 0.3.24). When google-adk migrates to a2a-sdk 1.0+, both pins
         # bump together and this entry deletes.
+        # 2026-05-14 (680c51a): pyproject narrowed to >=0.3.24,<1.0 for
+        # the A2A v1 agent-card middleware; the Docker pin stays exact.
         "google-adk 1.33.0 not yet migrated to a2a-sdk 1.0+; "
         "a2a-sdk 1.0 dropped the `In` symbol our app.py imports",
     ),
